@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">TheWitnessPuzzle</string>
+
+    <string name="vertex">
+        uniform mat4 MVP;
+
+        attribute vec4 aPosition;
+        attribute vec4 aColor;
+
+        varying vec4 vColor;
+
+        void main() {
+            gl_Position = MVP * aPosition;
+            vColor = aColor;
+        }
+    </string>
+    <string name="fragment">
+        precision mediump float;
+
+        varying vec4 vColor;
+
+        void main() {
+            gl_FragColor = vColor;
+        }
+    </string>
+</resources>
