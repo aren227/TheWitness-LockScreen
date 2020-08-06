@@ -1,0 +1,79 @@
+package com.aren.thewitnesspuzzle.puzzle.graph;
+
+import com.aren.thewitnesspuzzle.math.MathUtils;
+import com.aren.thewitnesspuzzle.math.Vector2;
+import com.aren.thewitnesspuzzle.math.Vector3;
+import com.aren.thewitnesspuzzle.puzzle.Cursor;
+
+public class Edge extends GraphElement{
+
+    public Vertex from, to;
+    public float proportion; //from -> to [0, 1]
+
+    public Edge(Vertex from, Vertex to){
+        this.from = from;
+        this.to = to;
+    }
+
+    public Edge reverse(){
+        Edge edge = new Edge(to, from);
+        edge.index = index;
+        edge.proportion = 1 - edge.proportion;
+        edge.rule = rule;
+        return edge;
+    }
+
+    public void updateProportion(Cursor cursor, Edge edge){
+        if(!this.equals(edge)) return;
+
+        float nextProportion;
+        if(from == edge.from) nextProportion = edge.proportion;
+        else nextProportion = 1 - edge.proportion;
+
+        cursor.updateProportionWithCollision(this, proportion, nextProportion);
+    }
+
+    public boolean containsVertex(Vertex vertex){
+        return from == vertex || to == vertex;
+    }
+
+    public Vertex getAnotherVertex(Vertex vertex){
+        if(vertex == from) return to;
+        else return from;
+    }
+
+    public float getLength(){
+        return (float)Math.sqrt((from.x - to.x) * (from.x - to.x) + (from.y - to.y) * (from.y - to.y));
+    }
+
+    public Vector2 getMiddlePoint(){
+        return new Vector2((from.x + to.x) / 2, (from.y + to.y) / 2);
+    }
+
+    public Vector2 getProportionPoint(){
+        return new Vector2(MathUtils.lerp(from.x, to.x, proportion), MathUtils.lerp(from.y, to.y, proportion));
+    }
+
+    public Vector2 getProportionMiddlePoint(){
+        return new Vector2(MathUtils.lerp(from.x, to.x, proportion * 0.5f), MathUtils.lerp(from.y, to.y, proportion * 0.5f));
+    }
+
+    public float getAngle(){
+        return (float)Math.atan2(to.x - from.x, to.y - from.y);
+    }
+
+    public float getProportionFromVertex(Vertex vertex){
+        if(vertex == from) return 0;
+        else return 1;
+    }
+
+    @Override
+    public boolean equals(Object obj){
+        if(obj instanceof Edge){
+            Edge e = (Edge) obj;
+            return (from == e.from && to == e.to || from == e.to && to == e.from);
+        }
+        return false;
+    }
+
+}

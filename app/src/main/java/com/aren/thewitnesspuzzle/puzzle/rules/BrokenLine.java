@@ -32,7 +32,7 @@ public class BrokenLine extends Rule {
         return null;
     }
 
-    public float getSize(){
+    public static float getSize(){
         return 0.3f;
     }
 
@@ -62,6 +62,10 @@ public class BrokenLine extends Rule {
             Line line = notPathLines.get(i);
             path.puzzle.addRule(new BrokenLine(path.puzzle, line.x, line.y, line.isHorizontal ? Rule.Site.HLINE : Rule.Site.VLINE));
         }
+    }
+
+    public static float getCollisionCircleRadius(){
+        return getSize() / 2f;
     }
 
 }

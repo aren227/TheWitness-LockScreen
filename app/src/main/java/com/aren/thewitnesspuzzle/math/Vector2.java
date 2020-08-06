@@ -13,8 +13,12 @@ public class Vector2 {
         return new Vector2(x + vec.x, y + vec.y);
     }
 
-    public Vector2 middle(Vector3 another){
+    public Vector2 middle(Vector2 another){
         return new Vector2((x + another.x) / 2f, (y + another.y) / 2f);
+    }
+
+    public Vector3 toVector3(){
+        return new Vector3(x, y, 0);
     }
 
 }

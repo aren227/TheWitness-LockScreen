@@ -2,6 +2,8 @@ package com.aren.thewitnesspuzzle.graphics;
 
 import android.graphics.Color;
 
+import com.aren.thewitnesspuzzle.math.Matrix2x2;
+import com.aren.thewitnesspuzzle.math.Vector2;
 import com.aren.thewitnesspuzzle.math.Vector3;
 
 import java.nio.FloatBuffer;
@@ -10,21 +12,35 @@ public class Rectangle implements Shape{
 
     public Vector3 center;
     public float width, height;
+    public float angle; // Radian
     public int color;
 
-    public Rectangle(Vector3 center, float width, float height, int color){
+    public Rectangle(Vector3 center, float width, float height, float angle, int color){
         this.center = center;
         this.width = width;
         this.height = height;
+        this.angle = angle;
         this.color = color;
     }
 
     @Override
     public void draw(FloatBuffer buffer) {
-        Vector3 a = new Vector3(center.x - width / 2, center.y - height / 2, 0);
-        Vector3 b = new Vector3(center.x - width / 2, center.y + height / 2, 0);
-        Vector3 c = new Vector3(center.x + width / 2, center.y + height / 2, 0);
-        Vector3 d = new Vector3(center.x + width / 2, center.y - height / 2, 0);
+        Vector2 lb = new Vector2(- width / 2, - height / 2);
+        Vector2 lt = new Vector2(- width / 2, + height / 2);
+        Vector2 rt = new Vector2(+ width / 2, + height / 2);
+        Vector2 rb = new Vector2(+ width / 2, - height / 2);
+
+        Matrix2x2 rot = Matrix2x2.getRotationMatrix(angle);
+
+        lb = rot.multiply(lb);
+        lt = rot.multiply(lt);
+        rt = rot.multiply(rt);
+        rb = rot.multiply(rb);
+
+        Vector3 a = new Vector3(center.x + lb.x, center.y + lb.y, 0);
+        Vector3 b = new Vector3(center.x + lt.x, center.y + lt.y, 0);
+        Vector3 c = new Vector3(center.x + rt.x, center.y + rt.y, 0);
+        Vector3 d = new Vector3(center.x + rb.x, center.y + rb.y, 0);
 
         buffer.put(a.x);
         buffer.put(a.y);

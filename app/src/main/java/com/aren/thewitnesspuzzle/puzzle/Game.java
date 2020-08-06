@@ -34,10 +34,7 @@ public class Game {
     }
 
     public void touchEvent(float x, float y, int action){
-        if(puzzle.touchEvent(x, y, action)){
-            WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-            windowManager.removeView(surfaceView);
-        }
+        puzzle.touchEvent(x, y, action);
         update();
     }
 
@@ -64,15 +61,6 @@ public class Game {
     public int getBackgroundColor(){
         if(puzzle != null) return puzzle.getBackgroundColor();
         return Color.BLACK;
-    }
-
-    public float getSceneWidth(){
-        if(puzzle != null) return puzzle.getSceneWidth();
-        return 1;
-    }
-
-    public float getPaddingWidth(){
-        return getSceneWidth() * 0.2f;
     }
 
     public void playSound(Sounds sound){

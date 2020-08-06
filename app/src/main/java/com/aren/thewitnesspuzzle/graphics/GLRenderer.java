@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.aren.thewitnesspuzzle.PuzzleGLSurfaceView;
 import com.aren.thewitnesspuzzle.R;
+import com.aren.thewitnesspuzzle.math.BoundingBox;
 import com.aren.thewitnesspuzzle.math.Vector3;
 import com.aren.thewitnesspuzzle.puzzle.Game;
 
@@ -24,13 +25,13 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class GLRenderer implements GLSurfaceView.Renderer {
 
-    Game game;
-    Context context;
+    private Game game;
+    private Context context;
 
-    int vertexShader, fragmentShader;
-    int glProgram;
+    private int vertexShader, fragmentShader;
+    private int glProgram;
 
-    float ratio = 1;
+    private float ratio = 1;
 
     private final float[] mMVPMatrix = new float[16];
     private final float[] mProjectionMatrix = new float[16];
@@ -39,9 +40,6 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     public GLRenderer(Game game, Context context){
         this.game = game;
         this.context = context;
-
-        //shapes.add(new Triangle(new Vector3(0, 0, 0), new Vector3(0, 1, 0), new Vector3(1, 0, 0)));
-        //shapes.add(new Circle(new Vector3(0, 0, 0), 1));
     }
 
     @Override
@@ -81,14 +79,23 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         float center = game.getSceneWidth() / 2;
         float padding = game.getPaddingWidth();
 
-        Matrix.frustumM(mProjectionMatrix, 0, -padding, center * 2 + padding, center + -ratio * center - ratio * padding, center + ratio * center + ratio * padding, 1, 100);
+        BoundingBox boundingBox = game.getPuzzle().getBoundingBox();
+
+        float bbWidth = boundingBox.getWidth() + game.getPuzzle().getPadding() * 2;
+        float bbHeight = boundingBox.getHeight() * game.getPuzzle().getPadding() * 2;
+
+        float frustumWidth;
+        if(bbWidth > bbHeight) frustumWidth = bbWidth;
+        else frustumWidth = bbHeight / ratio;
+
+        Matrix.frustumM(mProjectionMatrix, 0, -frustumWidth / 2, frustumWidth / 2, -frustumWidth * ratio / 2, frustumWidth * ratio / 2, 1, 100);
 
         int backgroundColor = game.getBackgroundColor();
         GLES20.glClearColor(Color.red(backgroundColor) / 255f, Color.green(backgroundColor) / 255f, Color.blue(backgroundColor) / 255f, 1.0f);
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
 
         //카메라 좌표
-        Matrix.setLookAtM(mViewMatrix, 0, 0, 0, 1, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
+        Matrix.setLookAtM(mViewMatrix, 0, boundingBox.getCenter().x, boundingBox.getCenter().y, 1, boundingBox.getCenter().x, boundingBox.getCenter().y, 0f, 0f, 1.0f, 0.0f);
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
 
         //GL START
