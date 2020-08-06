@@ -18,8 +18,8 @@ import java.util.Random;
 
 public class HexagonDots extends Rule {
 
-    public HexagonDots(GraphElement graphElement){
-        super(graphElement);
+    public HexagonDots(){
+        super();
     }
 
     @Override

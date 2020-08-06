@@ -14,8 +14,8 @@ import java.util.Random;
 
 public class BrokenLine extends Rule {
 
-    public BrokenLine(GraphElement graphElement) {
-        super(graphElement);
+    public BrokenLine() {
+        super();
     }
 
     @Override

@@ -8,7 +8,7 @@ import com.aren.thewitnesspuzzle.puzzle.graph.GraphElement;
 
 public class EndingPoint extends Rule {
 
-    public EndingPoint(GraphElement graphElement) {
-        super(graphElement);
+    public EndingPoint() {
+        super();
     }
 }

@@ -8,6 +8,7 @@ import android.view.MotionEvent;
 
 import com.aren.thewitnesspuzzle.graphics.Circle;
 import com.aren.thewitnesspuzzle.graphics.GLRenderer;
+import com.aren.thewitnesspuzzle.math.BoundingBox;
 import com.aren.thewitnesspuzzle.math.MathUtils;
 import com.aren.thewitnesspuzzle.math.Vector3;
 import com.aren.thewitnesspuzzle.puzzle.Game;
@@ -42,11 +43,12 @@ public class PuzzleGLSurfaceView extends GLSurfaceView {
             float y = e.getY();
 
             float ratio = (float)getHeight() / getWidth();
-            float center = game.getSceneWidth() / 2f;
 
-            x = MathUtils.lerp(-game.getPaddingWidth(), game.getSceneWidth() + game.getPaddingWidth(), x / getWidth());
-            y = getHeight() - y;
-            y = MathUtils.lerp(center + -ratio * center - ratio * game.getPaddingWidth(), center + ratio * center + ratio * game.getPaddingWidth(), y / getHeight());
+            BoundingBox frustumBB = glRenderer.getFrustumBoundingBox();
+
+            x = MathUtils.lerp(frustumBB.min.x, frustumBB.max.x, x / getWidth());
+            y = getHeight() - y; // Bottom-right should be (0, 0)
+            y = MathUtils.lerp(frustumBB.min.y, frustumBB.max.y, y / getHeight());
 
             final float finalX = x;
             final float finalY = y;

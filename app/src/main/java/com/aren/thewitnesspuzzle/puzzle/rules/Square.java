@@ -15,8 +15,8 @@ public class Square extends Rule {
 
     public Color color;
 
-    public Square(GraphElement graphElement, Color color) {
-        super(graphElement);
+    public Square(Color color) {
+        super();
         this.color = color;
     }
 

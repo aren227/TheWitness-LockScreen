@@ -21,27 +21,27 @@ import java.util.HashSet;
 
 public class Puzzle {
 
-    private Game game;
+    protected Game game;
 
-    private ArrayList<Shape> staticShapes = new ArrayList<>();
-    private ArrayList<Shape> dynamicShapes = new ArrayList<>();
+    protected ArrayList<Shape> staticShapes = new ArrayList<>();
+    protected ArrayList<Shape> dynamicShapes = new ArrayList<>();
 
-    private int backgroundColor;
-    private int pathColor;
-    private int cursorColor;
+    protected int backgroundColor;
+    protected int pathColor;
+    protected int cursorColor;
 
-    private float pathWidth;
+    protected float pathWidth;
 
-    private boolean touching = false;
-    private Cursor cursor;
+    protected boolean touching = false;
+    protected Cursor cursor;
 
-    private BoundingBox boundingBox = new BoundingBox();
+    protected BoundingBox boundingBox = new BoundingBox();
 
-    private ArrayList<Vertex> vertices = new ArrayList<>();
-    private ArrayList<Edge> edges = new ArrayList<>();
-    private ArrayList<Tile> tiles = new ArrayList<>();
+    protected ArrayList<Vertex> vertices = new ArrayList<>();
+    protected ArrayList<Edge> edges = new ArrayList<>();
+    protected ArrayList<Tile> tiles = new ArrayList<>();
 
-    HashSet<Class<? extends Rule>> appliedRules = new HashSet<>();
+    protected HashSet<Class<? extends Rule>> appliedRules = new HashSet<>();
 
     public Puzzle(Game game){
         this.game = game;
@@ -105,15 +105,15 @@ public class Puzzle {
         }
 
         for(Vertex vertex : vertices){
-            if(vertex.rule != null) staticShapes.add(vertex.rule.getShape());
+            if(vertex.getRule() != null) staticShapes.add(vertex.getRule().getShape());
         }
 
         for(Edge edge : edges){
-            if(edge.rule != null) staticShapes.add(edge.rule.getShape());
+            if(edge.getRule() != null) staticShapes.add(edge.getRule().getShape());
         }
 
         for(Tile tile : tiles){
-            if(tile.rule != null) staticShapes.add(tile.rule.getShape());
+            if(tile.getRule() != null) staticShapes.add(tile.getRule().getShape());
         }
     }
 
@@ -177,9 +177,8 @@ public class Puzzle {
         return true;
     }
 
-    public void addRule(Rule rule){
-        rule.graphElement.setRule(rule);
-        appliedRules.add(rule.getClass());
+    public HashSet<Class<? extends Rule>> getAppliedRules(){
+        return appliedRules;
     }
 
 }

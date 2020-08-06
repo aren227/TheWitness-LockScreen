@@ -101,7 +101,8 @@ public class LockscreenService extends Service {
                 screenOn = false;
                 Log.i("TAG", "SCREEN_OFF");
 
-                game.setPuzzle(new GridPuzzle(game, 6, 6));
+                //game.setPuzzle(new GridPuzzle(game, 6, 6));
+                game.setPuzzle(new SlidePuzzle(game));
                 lockScreen(context);
                 //game.setPuzzle(new SlidePuzzle());
             }

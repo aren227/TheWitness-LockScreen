@@ -8,9 +8,17 @@ import com.aren.thewitnesspuzzle.puzzle.graph.GraphElement;
 
 public class Rule {
 
-    public GraphElement graphElement;
+    private GraphElement graphElement;
 
-    public Rule(GraphElement graphElement){
+    public Rule(){
+
+    }
+
+    public GraphElement getGraphElement(){
+        return graphElement;
+    }
+
+    public void setGraphElement(GraphElement graphElement){
         this.graphElement = graphElement;
     }
 

@@ -9,8 +9,8 @@ import com.aren.thewitnesspuzzle.puzzle.graph.GraphElement;
 
 public class StartingPoint extends Rule {
 
-    public StartingPoint(GraphElement graphElement) {
-        super(graphElement);
+    public StartingPoint() {
+        super();
     }
 
     @Override

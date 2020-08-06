@@ -10,6 +10,7 @@ import android.util.Log;
 import com.aren.thewitnesspuzzle.PuzzleGLSurfaceView;
 import com.aren.thewitnesspuzzle.R;
 import com.aren.thewitnesspuzzle.math.BoundingBox;
+import com.aren.thewitnesspuzzle.math.Vector2;
 import com.aren.thewitnesspuzzle.math.Vector3;
 import com.aren.thewitnesspuzzle.puzzle.Game;
 
@@ -76,23 +77,16 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onDrawFrame(GL10 gl) {
-        BoundingBox boundingBox = game.getPuzzle().getBoundingBox();
+        BoundingBox frustumBB = getFrustumBoundingBox();
 
-        float bbWidth = boundingBox.getWidth() + game.getPuzzle().getPadding() * 2;
-        float bbHeight = boundingBox.getHeight() * game.getPuzzle().getPadding() * 2;
-
-        float frustumWidth;
-        if(bbWidth > bbHeight) frustumWidth = bbWidth;
-        else frustumWidth = bbHeight / ratio;
-
-        Matrix.frustumM(mProjectionMatrix, 0, -frustumWidth / 2, frustumWidth / 2, -frustumWidth * ratio / 2, frustumWidth * ratio / 2, 1, 100);
+        Matrix.frustumM(mProjectionMatrix, 0, -frustumBB.getWidth() / 2, frustumBB.getWidth() / 2, -frustumBB.getHeight() / 2, frustumBB.getHeight() / 2, 1, 100);
 
         int backgroundColor = game.getBackgroundColor();
         GLES20.glClearColor(Color.red(backgroundColor) / 255f, Color.green(backgroundColor) / 255f, Color.blue(backgroundColor) / 255f, 1.0f);
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
 
         //카메라 좌표
-        Matrix.setLookAtM(mViewMatrix, 0, boundingBox.getCenter().x, boundingBox.getCenter().y, 1, boundingBox.getCenter().x, boundingBox.getCenter().y, 0f, 0f, 1.0f, 0.0f);
+        Matrix.setLookAtM(mViewMatrix, 0, frustumBB.getCenter().x, frustumBB.getCenter().y, 1, frustumBB.getCenter().x, frustumBB.getCenter().y, 0f, 0f, 1.0f, 0.0f);
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
 
         //GL START
@@ -128,5 +122,22 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         GLES20.glCompileShader(shader);
 
         return shader;
+    }
+
+    public float getFrustumWidth(){
+        BoundingBox boundingBox = game.getPuzzle().getBoundingBox();
+
+        float bbWidth = boundingBox.getWidth() + game.getPuzzle().getPadding() * 2;
+        float bbHeight = boundingBox.getHeight() + game.getPuzzle().getPadding() * 2;
+
+        if(bbWidth * ratio > bbHeight) return bbWidth;
+        return bbHeight / ratio;
+    }
+
+    public BoundingBox getFrustumBoundingBox(){
+        BoundingBox boundingBox = new BoundingBox();
+        boundingBox.min = new Vector2(game.getPuzzle().getBoundingBox().getCenter().x - getFrustumWidth() * 0.5f, game.getPuzzle().getBoundingBox().getCenter().y - getFrustumWidth() * ratio * 0.5f);
+        boundingBox.max = new Vector2(game.getPuzzle().getBoundingBox().getCenter().x + getFrustumWidth() * 0.5f, game.getPuzzle().getBoundingBox().getCenter().y + getFrustumWidth() * ratio * 0.5f);
+        return boundingBox;
     }
 }
