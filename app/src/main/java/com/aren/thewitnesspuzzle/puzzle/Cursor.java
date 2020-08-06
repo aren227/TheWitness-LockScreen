@@ -42,7 +42,7 @@ public class Cursor {
 
         ArrayList<Edge> edges = new ArrayList<>();
         for(int i = 0; i < visited.size() - 1; i++){
-            Edge edge = new Edge(visited.get(i), visited.get(i + 1));
+            Edge edge = new Edge(visited.get(i), visited.get(i + 1), "");
             edge.proportion = 1;
             edges.add(edge);
         }
@@ -122,7 +122,7 @@ public class Cursor {
         for(int i = 0; i < visited.size() - 1; i++){
             Vertex v = visited.get(i);
             if(edge.containsVertex(v)){
-                float collisionProportion = puzzle.getPathWidth() * 0.5f / length;
+                float collisionProportion = puzzle.getPathWidth() / length;
                 if(edge.from == v) to = Math.max(collisionProportion, to);
                 else to = Math.min(1 - collisionProportion, to);
             }

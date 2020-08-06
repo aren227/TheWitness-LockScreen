@@ -10,6 +10,8 @@ import com.aren.thewitnesspuzzle.graphics.Rectangle;
 import com.aren.thewitnesspuzzle.graphics.Shape;
 import com.aren.thewitnesspuzzle.math.Vector2Int;
 import com.aren.thewitnesspuzzle.math.Vector3;
+import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
+import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.rules.BrokenLine;
 import com.aren.thewitnesspuzzle.puzzle.rules.EndingPoint;
 import com.aren.thewitnesspuzzle.puzzle.rules.HexagonDots;
@@ -64,7 +66,33 @@ public class GridPuzzle extends Puzzle {
         */
         ColorFactory.setRandomColor(this);
 
+        for(int i = 0; i <= width; i++){
+            for(int j = 0; j <= height; j++){
+                addVertex(new Vertex(this, i, j));
+            }
+        }
+
+        // Horizontal lines
+        for(int i = 0; i < width; i++){
+            for(int j = 0; j <= height; j++){
+                addEdge(new Edge(getVertexAt(i, j), getVertexAt(i + 1, j), "(" + i + ", " + j + ") H"));
+            }
+        }
+
+        // Vertical lines
+        for(int i = 0; i <= width; i++){
+            for(int j = 0; j < height; j++){
+                addEdge(new Edge(getVertexAt(i, j), getVertexAt(i, j + 1), "(" + i + ", " + j + ") V"));
+            }
+        }
+
+        getVertexAt(0, 0).setRule(new StartingPoint());
+
         calcStaticShapes();
+    }
+
+    public Vertex getVertexAt(int x, int y){
+        return vertices.get(x * (height + 1) + y);
     }
 
     public int getWidth() {
