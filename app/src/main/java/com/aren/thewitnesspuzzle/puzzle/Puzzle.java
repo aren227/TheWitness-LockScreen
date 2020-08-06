@@ -100,7 +100,7 @@ public class Puzzle {
     }
 
     public void calcStaticShapes(){
-        pathWidth = (float)Math.sqrt(Math.min(getBoundingBox().getWidth(), getBoundingBox().getHeight())) * 0.1f + 0.1f;
+        pathWidth = Math.min(getBoundingBox().getWidth(), getBoundingBox().getHeight()) * 0.05f + 0.05f;
 
         for(Vertex vertex : vertices){
             staticShapes.add(new Circle(new Vector3(vertex.x, vertex.y, 0), getPathWidth() * 0.5f, getPathColor()));
