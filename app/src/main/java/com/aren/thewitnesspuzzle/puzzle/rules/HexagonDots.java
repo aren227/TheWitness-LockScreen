@@ -10,6 +10,7 @@ import com.aren.thewitnesspuzzle.math.Vector3;
 import com.aren.thewitnesspuzzle.puzzle.Line;
 import com.aren.thewitnesspuzzle.puzzle.Path;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
+import com.aren.thewitnesspuzzle.puzzle.graph.GraphElement;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,17 +18,13 @@ import java.util.Random;
 
 public class HexagonDots extends Rule {
 
-    public static boolean eval(Puzzle puzzle) {
-        return false;
-    }
-
-    public HexagonDots(Puzzle puzzle, int x, int y, Site site){
-        super(puzzle, x, y, site);
+    public HexagonDots(GraphElement graphElement){
+        super(graphElement);
     }
 
     @Override
     public Shape getShape() {
-        if(site == Site.CORNER){
+        /*if(site == Site.CORNER){
             return new Hexagon(new Vector3(x, y, 0), puzzle.getPathWidth() * 0.4f, Color.BLACK);
         }
         else if(site == Site.HLINE){
@@ -35,21 +32,12 @@ public class HexagonDots extends Rule {
         }
         else if(site == Site.VLINE){
             return new Hexagon(new Vector3(x, y + 0.5f, 0), puzzle.getPathWidth() * 0.4f, Color.BLACK);
-        }
+        }*/
         return null;
     }
 
     @Override
     public boolean validate(Path path){
-        if(site == Site.CORNER){
-            return path.hasPoint[x][y];
-        }
-        else if(site == Site.HLINE){
-            return path.hasHLine[x][y];
-        }
-        else if(site == Site.VLINE){
-            return path.hasVLine[x][y];
-        }
         return true;
     }
 
@@ -78,7 +66,7 @@ public class HexagonDots extends Rule {
         for(int i = 0; i < hexagonLinesCount; i++){
             Line line = pathLines.get(i);
             path.puzzle.addRule(new HexagonDots(path.puzzle, line.x, line.y, line.isHorizontal ? Rule.Site.HLINE : Rule.Site.VLINE));
-        }*/
+        }
         ArrayList<Vector2Int> pathPoints = new ArrayList<>();
 
         for(int i = 0; i < path.puzzle.getWidth(); i++){
@@ -95,6 +83,6 @@ public class HexagonDots extends Rule {
         Collections.shuffle(pathPoints);
         for(int i = 0; i < hexagonLinesCount; i++){
             path.puzzle.addRule(new HexagonDots(path.puzzle, pathPoints.get(i).x, pathPoints.get(i).y, Rule.Site.CORNER));
-        }
+        }*/
     }
 }

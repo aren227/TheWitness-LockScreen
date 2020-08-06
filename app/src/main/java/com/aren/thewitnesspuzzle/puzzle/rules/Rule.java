@@ -4,20 +4,14 @@ import com.aren.thewitnesspuzzle.graphics.Shape;
 import com.aren.thewitnesspuzzle.math.Vector3;
 import com.aren.thewitnesspuzzle.puzzle.Path;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
+import com.aren.thewitnesspuzzle.puzzle.graph.GraphElement;
 
 public class Rule {
 
-    public enum Site { TILE, HLINE, VLINE, CORNER }
+    public GraphElement graphElement;
 
-    public Puzzle puzzle;
-    public int x, y;
-    public Site site;
-
-    public Rule(Puzzle puzzle, int x, int y, Site site){
-        this.puzzle = puzzle;
-        this.x = x;
-        this.y = y;
-        this.site = site;
+    public Rule(GraphElement graphElement){
+        this.graphElement = graphElement;
     }
 
     public Shape getShape(){

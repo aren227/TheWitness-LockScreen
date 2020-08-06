@@ -6,6 +6,7 @@ import com.aren.thewitnesspuzzle.math.Vector2Int;
 import com.aren.thewitnesspuzzle.math.Vector3;
 import com.aren.thewitnesspuzzle.puzzle.Path;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
+import com.aren.thewitnesspuzzle.puzzle.graph.GraphElement;
 
 import java.util.Collections;
 import java.util.Random;
@@ -14,21 +15,21 @@ public class Square extends Rule {
 
     public Color color;
 
-    public Square(Puzzle puzzle, int x, int y, Color color) {
-        super(puzzle, x, y, Site.TILE);
+    public Square(GraphElement graphElement, Color color) {
+        super(graphElement);
         this.color = color;
     }
 
     @Override
     public Shape getShape() {
-        if(site == Site.TILE){
+        /*if(site == Site.TILE){
             return new RoundSquare(new Vector3(x + 0.5f, y + 0.5f, 0), 0.18f, color.getRGB());
-        }
+        }*/
         return null;
     }
 
     public static boolean validateGlobally(Path path){
-        Color[] colors = new Color[path.areaCount];
+        /*Color[] colors = new Color[path.areaCount];
 
         for(int i = 0; i < path.puzzle.getWidth(); i++){
             for(int j = 0; j < path.puzzle.getHeight(); j++){
@@ -41,11 +42,12 @@ public class Square extends Rule {
                 }
             }
         }
-
+        */
         return true;
     }
 
     public static void generate(Path path, Random random){
+        /*
         //각 구역에 대해서 최소 하나 이상 표시
         for(int i = 0; i < path.areaCount; i++){
             int squareCount = Math.max((int)(path.areaSizes[i] * random.nextFloat() * 0.7f), 1);
@@ -55,6 +57,7 @@ public class Square extends Rule {
                 path.puzzle.addRule(new Square(path.puzzle, pos.x, pos.y, path.areaColorByAreaId[i]));
             }
         }
+        */
     }
 
 }

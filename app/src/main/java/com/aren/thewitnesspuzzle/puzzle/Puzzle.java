@@ -177,4 +177,9 @@ public class Puzzle {
         return true;
     }
 
+    public void addRule(Rule rule){
+        rule.graphElement.setRule(rule);
+        appliedRules.add(rule.getClass());
+    }
+
 }

@@ -76,9 +76,6 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onDrawFrame(GL10 gl) {
-        float center = game.getSceneWidth() / 2;
-        float padding = game.getPaddingWidth();
-
         BoundingBox boundingBox = game.getPuzzle().getBoundingBox();
 
         float bbWidth = boundingBox.getWidth() + game.getPuzzle().getPadding() * 2;
