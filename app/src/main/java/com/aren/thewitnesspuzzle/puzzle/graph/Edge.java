@@ -21,7 +21,7 @@ public class Edge extends GraphElement{
         Edge edge = new Edge(to, from);
         edge.index = index;
         edge.proportion = 1 - edge.proportion;
-        edge.rule = rule;
+        edge.setRule(getRule());
         return edge;
     }
 

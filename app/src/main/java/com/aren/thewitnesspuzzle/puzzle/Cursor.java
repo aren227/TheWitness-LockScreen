@@ -97,7 +97,7 @@ public class Cursor {
         float length = edge.getLength();
 
         // Broken edge collision check
-        if(edge.rule instanceof BrokenLine){
+        if(edge.getRule() instanceof BrokenLine){
             float collisionProportion = BrokenLine.getCollisionCircleRadius() / length;
             if(from <= 0.5f) to = Math.min(0.5f - collisionProportion, to);
             else to = Math.max(0.5f + collisionProportion, to);

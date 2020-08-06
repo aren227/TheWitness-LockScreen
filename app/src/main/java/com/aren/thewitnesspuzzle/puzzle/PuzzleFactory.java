@@ -26,7 +26,7 @@ public class PuzzleFactory {
     }
 
     public void generatePuzzle(){
-        puzzle.addStartingPoint(new StartingPoint(puzzle, 0, 0));
+        /*puzzle.addStartingPoint(new StartingPoint(puzzle, 0, 0));
         puzzle.addEndingPoint(new EndingPoint(puzzle, puzzle.getWidth(), puzzle.getHeight()));
 
         RandomWalker walker = new RandomWalker(puzzle.getWidth(), puzzle.getHeight());
@@ -39,7 +39,7 @@ public class PuzzleFactory {
 
         BrokenLine.generate(path, random);
         HexagonDots.generate(path, random);
-        Square.generate(path, random);
+        Square.generate(path, random);*/
 
         //Visualize currently generated path
         /*puzzle.touching = true;
