@@ -78,4 +78,9 @@ public class Edge extends GraphElement{
         return false;
     }
 
+    @Override
+    public Vector2 getPosition(){
+        return getMiddlePoint();
+    }
+
 }

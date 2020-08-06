@@ -15,12 +15,7 @@ public class StartingPoint extends Rule {
 
     @Override
     public Shape getShape() {
-        //return new Circle(new Vector3(x , y , 0), getCircleRadius(puzzle), puzzle.getPathColor());
-        return null;
-    }
-
-    public static float getCircleRadius(Puzzle puzzle){
-        return puzzle.getPathWidth() * 1.2f;
+        return new Circle(getGraphElement().getPosition().toVector3(), getGraphElement().getPuzzle().getPathWidth() * 1.2f, getGraphElement().getPuzzle().getPathColor());
     }
 
 }

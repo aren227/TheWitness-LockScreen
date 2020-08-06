@@ -1,5 +1,6 @@
 package com.aren.thewitnesspuzzle.puzzle.graph;
 
+import com.aren.thewitnesspuzzle.math.Vector2;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 import com.aren.thewitnesspuzzle.puzzle.rules.Rule;
 
@@ -7,6 +8,7 @@ public class GraphElement {
 
     public Puzzle puzzle;
     public int index;
+    protected float x, y;
 
     private Rule rule;
 
@@ -22,6 +24,14 @@ public class GraphElement {
 
     public Rule getRule(){
         return rule;
+    }
+
+    public Vector2 getPosition(){
+        return new Vector2(x, y);
+    }
+
+    public Puzzle getPuzzle(){
+        return puzzle;
     }
 
 }
