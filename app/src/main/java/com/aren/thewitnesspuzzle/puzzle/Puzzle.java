@@ -179,7 +179,7 @@ public class Puzzle {
         return pathWidth;
     }
 
-    public void touchEvent(float x, float y, int action){
+    public boolean touchEvent(float x, float y, int action){
         Vector2 pos = new Vector2(x, y);
         if(action == MotionEvent.ACTION_DOWN){
             Vertex start = null;
@@ -195,15 +195,28 @@ public class Puzzle {
             }
         }
         else if(action == MotionEvent.ACTION_MOVE){
-            if(!touching) return;
+            if(!touching) return false;
             Edge edge = getNearestEdge(pos).clone();
             edge.proportion = edge.getProportionFromPointOutside(pos);
             Log.i("PUZZLE", "Edge: " + edge.index + ", Calced Proportion: " + edge.proportion);
             cursor.connectTo(edge);
         }
         else if(action == MotionEvent.ACTION_UP){
-            touching = false;
+            if(touching){
+                Vertex end = null;
+                for(Vertex vertex : vertices){
+                    if(vertex.getRule() instanceof EndingPoint && pos.distance(vertex.getPosition()) <= getPathWidth() * 0.5f){
+                        end = vertex;
+                        break;
+                    }
+                }
+                if(end != null){
+                    return validate();
+                }
+                touching = false;
+            }
         }
+        return false;
     }
 
     public boolean validate(){

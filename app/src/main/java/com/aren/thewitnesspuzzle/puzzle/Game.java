@@ -34,7 +34,10 @@ public class Game {
     }
 
     public void touchEvent(float x, float y, int action){
-        puzzle.touchEvent(x, y, action);
+        if(puzzle.touchEvent(x, y, action)){
+            WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+            windowManager.removeView(surfaceView);
+        }
         update();
     }
 

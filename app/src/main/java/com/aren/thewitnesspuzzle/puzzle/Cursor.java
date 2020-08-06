@@ -5,6 +5,7 @@ import android.util.Log;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.rules.BrokenLine;
+import com.aren.thewitnesspuzzle.puzzle.rules.EndingPoint;
 
 import java.util.ArrayList;
 
@@ -34,7 +35,11 @@ public class Cursor {
     }
 
     public ArrayList<Vertex> getVisitedVertices(){
-        return visited;
+        ArrayList<Vertex> vertices = new ArrayList<>(visited);
+        if(vertices.size() > 0 && vertices.get(vertices.size() - 1).getRule() instanceof EndingPoint){
+            vertices.remove(vertices.size() - 1);
+        }
+        return vertices;
     }
 
     public ArrayList<Edge> getVisitedEdges(){
