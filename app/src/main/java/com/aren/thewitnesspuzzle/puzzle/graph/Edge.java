@@ -82,8 +82,12 @@ public class Edge extends GraphElement{
         Vector2 startToPoint = new Vector2(point.x - from.x, point.y - from.y);
         Vector2 endToPoint = new Vector2(point.x - to.x, point.y - to.y);
 
-        if(startToEnd.dot(startToPoint) < 0) return from.getPosition().distance(point);
-        if(endToPoint.dot(startToPoint) > 0) return to.getPosition().distance(point);
+        if(startToEnd.dot(startToPoint) < 0){
+            return from.getPosition().distance(point);
+        }
+        if(startToEnd.dot(endToPoint) > 0){
+            return to.getPosition().distance(point);
+        }
 
         Vector2 proj = startToPoint.projection(startToEnd);
         return proj.subtract(startToPoint).length();
