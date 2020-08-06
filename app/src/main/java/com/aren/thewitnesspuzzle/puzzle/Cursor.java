@@ -60,6 +60,11 @@ public class Cursor {
         return edges;
     }
 
+    public Edge getCurrentCursorEdge(){
+        if(currentCursorEdge.to == getLastVisitedVertex()) return currentCursorEdge.reverse();
+        return currentCursorEdge.clone();
+    }
+
     public void connectTo(Edge targetEdge){
         // First call
         if(currentCursorEdge == null){

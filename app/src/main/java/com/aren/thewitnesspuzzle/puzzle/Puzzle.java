@@ -203,14 +203,8 @@ public class Puzzle {
         }
         else if(action == MotionEvent.ACTION_UP){
             if(touching){
-                Vertex end = null;
-                for(Vertex vertex : vertices){
-                    if(vertex.getRule() instanceof EndingPoint && pos.distance(vertex.getPosition()) <= getPathWidth() * 0.5f){
-                        end = vertex;
-                        break;
-                    }
-                }
-                if(end != null){
+                Edge cursorEdge = cursor.getCurrentCursorEdge();
+                if(cursorEdge.to.getRule() instanceof EndingPoint && cursorEdge.proportion > 1 - getPathWidth() * 0.5f / cursorEdge.getLength()){
                     return validate();
                 }
                 touching = false;

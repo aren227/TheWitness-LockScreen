@@ -110,21 +110,23 @@ public class GridPuzzle extends Puzzle {
     }
 
     public void addEndingPoint(int x, int y){
+        Vertex vertex = null;
         if(y == 0){
-            Vertex vertex = addVertex(new Vertex(this, x, y - getPathWidth()));
-            addEdge(new Edge(getVertexAt(x, y), vertex));
+            vertex = addVertex(new Vertex(this, x, y - getPathWidth()));
         }
         else if(y == height){
-            Vertex vertex = addVertex(new Vertex(this, x, y + getPathWidth()));
-            addEdge(new Edge(getVertexAt(x, y), vertex));
+            vertex = addVertex(new Vertex(this, x, y + getPathWidth()));
         }
         else if(x == 0){
-            Vertex vertex = addVertex(new Vertex(this, x - getPathWidth(), y));
-            addEdge(new Edge(getVertexAt(x, y), vertex));
+            vertex = addVertex(new Vertex(this, x - getPathWidth(), y));
         }
         else if(x == width){
-            Vertex vertex = addVertex(new Vertex(this, x + getPathWidth(), y));
+            vertex = addVertex(new Vertex(this, x + getPathWidth(), y));
+        }
+
+        if(vertex != null){
             addEdge(new Edge(getVertexAt(x, y), vertex));
+            vertex.setRule(new EndingPoint());
         }
     }
 }
