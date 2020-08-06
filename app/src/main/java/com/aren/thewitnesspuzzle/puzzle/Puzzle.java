@@ -105,15 +105,15 @@ public class Puzzle {
         }
 
         for(Vertex vertex : vertices){
-            if(vertex.getRule() != null) staticShapes.add(vertex.getRule().getShape());
+            if(vertex.getRule() != null && vertex.getRule().getShape() != null) staticShapes.add(vertex.getRule().getShape());
         }
 
         for(Edge edge : edges){
-            if(edge.getRule() != null) staticShapes.add(edge.getRule().getShape());
+            if(edge.getRule() != null && edge.getRule().getShape() != null) staticShapes.add(edge.getRule().getShape());
         }
 
         for(Tile tile : tiles){
-            if(tile.getRule() != null) staticShapes.add(tile.getRule().getShape());
+            if(tile.getRule() != null && tile.getRule().getShape() != null) staticShapes.add(tile.getRule().getShape());
         }
     }
 
@@ -179,6 +179,15 @@ public class Puzzle {
 
     public HashSet<Class<? extends Rule>> getAppliedRules(){
         return appliedRules;
+    }
+
+    public void addVertex(Vertex vertex){
+        vertices.add(vertex);
+        boundingBox.addCircle(new Vector2(vertex.x, vertex.y), 0.5f);
+    }
+
+    public void addEdge(Edge edge){
+        edges.add(edge);
     }
 
 }

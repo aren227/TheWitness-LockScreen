@@ -12,9 +12,9 @@ public class SlidePuzzle extends Puzzle {
 
         ColorFactory.setRandomColor(this);
 
-        vertices.add(new Vertex(this, 0, 0));
-        vertices.add(new Vertex(this, 0, 1));
-        edges.add(new Edge(vertices.get(0), vertices.get(1)));
+        addVertex(new Vertex(this, 0, 0));
+        addVertex(new Vertex(this, 0, 1));
+        addEdge(new Edge(vertices.get(0), vertices.get(1)));
 
         vertices.get(0).setRule(new StartingPoint());
         vertices.get(1).setRule(new EndingPoint());

@@ -32,4 +32,17 @@ public class BoundingBox {
         }
     }
 
+    public void addCircle(Vector2 center, float radius){
+        if(min == null || max == null){
+            min = center.add(new Vector2(-radius, -radius));
+            max = center.add(new Vector2(radius, radius));
+        }
+        else{
+            min.x = Math.min(min.x, center.x - radius);
+            min.y = Math.min(min.y, center.y - radius);
+            max.x = Math.max(max.x, center.x + radius);
+            max.y = Math.max(max.y, center.y + radius);
+        }
+    }
+
 }

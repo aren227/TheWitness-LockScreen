@@ -9,7 +9,7 @@ public class Vector2 {
         this.y = y;
     }
 
-    public Vector2 add(Vector3 vec){
+    public Vector2 add(Vector2 vec){
         return new Vector2(x + vec.x, y + vec.y);
     }
 
