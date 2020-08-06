@@ -42,7 +42,7 @@ public class Cursor {
 
         ArrayList<Edge> edges = new ArrayList<>();
         for(int i = 0; i < visited.size() - 1; i++){
-            Edge edge = new Edge(visited.get(i), visited.get(i + 1), "");
+            Edge edge = new Edge(visited.get(i), visited.get(i + 1));
             edge.proportion = 1;
             edges.add(edge);
         }

@@ -14,7 +14,7 @@ public class SlidePuzzle extends Puzzle {
 
         addVertex(new Vertex(this, 0, 0));
         addVertex(new Vertex(this, 0, 1));
-        addEdge(new Edge(vertices.get(0), vertices.get(1), ""));
+        addEdge(new Edge(vertices.get(0), vertices.get(1)));
 
         vertices.get(0).setRule(new StartingPoint());
         vertices.get(1).setRule(new EndingPoint());

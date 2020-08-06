@@ -100,7 +100,7 @@ public class Puzzle {
     }
 
     public void calcStaticShapes(){
-        pathWidth = Math.min(getBoundingBox().getWidth(), getBoundingBox().getHeight()) * 0.05f + 0.05f;
+        if(pathWidth == 0) pathWidth = Math.min(getBoundingBox().getWidth(), getBoundingBox().getHeight()) * 0.05f + 0.05f;
 
         for(Vertex vertex : vertices){
             staticShapes.add(new Circle(new Vector3(vertex.x, vertex.y, 0), getPathWidth() * 0.5f, getPathColor()));
@@ -198,7 +198,7 @@ public class Puzzle {
             if(!touching) return;
             Edge edge = getNearestEdge(pos).clone();
             edge.proportion = edge.getProportionFromPointOutside(pos);
-            Log.i("PUZZLE", edge.note + " Edge: " + edge.index + ", Calced Proportion: " + edge.proportion);
+            Log.i("PUZZLE", "Edge: " + edge.index + ", Calced Proportion: " + edge.proportion);
             cursor.connectTo(edge);
         }
         else if(action == MotionEvent.ACTION_UP){
@@ -214,15 +214,17 @@ public class Puzzle {
         return appliedRules;
     }
 
-    public void addVertex(Vertex vertex){
+    public Vertex addVertex(Vertex vertex){
         vertex.index = vertices.size();
         vertices.add(vertex);
         boundingBox.addCircle(new Vector2(vertex.x, vertex.y), 0.5f);
+        return vertex;
     }
 
-    public void addEdge(Edge edge){
+    public Edge addEdge(Edge edge){
         edge.index = edges.size();
         edges.add(edge);
+        return edge;
     }
 
     public Edge getNearestEdge(Vector2 pos){

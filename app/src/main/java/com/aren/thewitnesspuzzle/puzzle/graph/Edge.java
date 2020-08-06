@@ -12,17 +12,15 @@ public class Edge extends GraphElement{
 
     public Vertex from, to;
     public float proportion; //from -> to [0, 1]
-    public String note;
 
-    public Edge(Vertex from, Vertex to, String note){
+    public Edge(Vertex from, Vertex to){
         super(from.puzzle);
         this.from = from;
         this.to = to;
-        this.note = note;
     }
 
     public Edge reverse(){
-        Edge edge = new Edge(to, from, note);
+        Edge edge = new Edge(to, from);
         edge.index = index;
         edge.proportion = 1 - proportion;
         edge.setRule(getRule());
@@ -31,7 +29,7 @@ public class Edge extends GraphElement{
 
     @Override
     public Edge clone(){
-        Edge edge = new Edge(to, from, note);
+        Edge edge = new Edge(to, from);
         edge.index = index;
         edge.proportion = proportion;
         edge.setRule(getRule());

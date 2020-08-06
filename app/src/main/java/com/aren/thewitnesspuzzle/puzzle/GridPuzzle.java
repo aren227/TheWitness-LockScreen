@@ -36,6 +36,7 @@ public class GridPuzzle extends Puzzle {
 
         this.width = width;
         this.height = height;
+        pathWidth = Math.min(width, height) * 0.05f + 0.05f;
 
         /*tileRules = new Rule[width][height];
         hLineRules = new Rule[width][height + 1];
@@ -75,18 +76,19 @@ public class GridPuzzle extends Puzzle {
         // Horizontal lines
         for(int i = 0; i < width; i++){
             for(int j = 0; j <= height; j++){
-                addEdge(new Edge(getVertexAt(i, j), getVertexAt(i + 1, j), "(" + i + ", " + j + ") H"));
+                addEdge(new Edge(getVertexAt(i, j), getVertexAt(i + 1, j)));
             }
         }
 
         // Vertical lines
         for(int i = 0; i <= width; i++){
             for(int j = 0; j < height; j++){
-                addEdge(new Edge(getVertexAt(i, j), getVertexAt(i, j + 1), "(" + i + ", " + j + ") V"));
+                addEdge(new Edge(getVertexAt(i, j), getVertexAt(i, j + 1)));
             }
         }
 
-        getVertexAt(0, 0).setRule(new StartingPoint());
+        addStartingPoint(0, 0);
+        addEndingPoint(width, height);
 
         calcStaticShapes();
     }
@@ -101,5 +103,28 @@ public class GridPuzzle extends Puzzle {
 
     public int getHeight() {
         return height;
+    }
+
+    public void addStartingPoint(int x, int y){
+        getVertexAt(x, y).setRule(new StartingPoint());
+    }
+
+    public void addEndingPoint(int x, int y){
+        if(y == 0){
+            Vertex vertex = addVertex(new Vertex(this, x, y - getPathWidth()));
+            addEdge(new Edge(getVertexAt(x, y), vertex));
+        }
+        else if(y == height){
+            Vertex vertex = addVertex(new Vertex(this, x, y + getPathWidth()));
+            addEdge(new Edge(getVertexAt(x, y), vertex));
+        }
+        else if(x == 0){
+            Vertex vertex = addVertex(new Vertex(this, x - getPathWidth(), y));
+            addEdge(new Edge(getVertexAt(x, y), vertex));
+        }
+        else if(x == width){
+            Vertex vertex = addVertex(new Vertex(this, x + getPathWidth(), y));
+            addEdge(new Edge(getVertexAt(x, y), vertex));
+        }
     }
 }
