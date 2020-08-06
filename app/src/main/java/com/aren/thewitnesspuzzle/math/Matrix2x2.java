@@ -11,8 +11,8 @@ public class Matrix2x2 {
     public static Matrix2x2 getRotationMatrix(float angle){
         Matrix2x2 mat = new Matrix2x2();
         mat.a = (float)Math.cos(angle);
-        mat.b = (float)Math.sin(angle);
-        mat.c = -(float)Math.sin(angle);
+        mat.b = -(float)Math.sin(angle);
+        mat.c = (float)Math.sin(angle);
         mat.d = (float)Math.cos(angle);
         return mat;
     }

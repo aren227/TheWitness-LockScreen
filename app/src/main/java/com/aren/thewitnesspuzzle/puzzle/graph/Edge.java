@@ -1,5 +1,7 @@
 package com.aren.thewitnesspuzzle.puzzle.graph;
 
+import android.util.Log;
+
 import com.aren.thewitnesspuzzle.math.MathUtils;
 import com.aren.thewitnesspuzzle.math.Vector2;
 import com.aren.thewitnesspuzzle.math.Vector3;
@@ -20,7 +22,16 @@ public class Edge extends GraphElement{
     public Edge reverse(){
         Edge edge = new Edge(to, from);
         edge.index = index;
-        edge.proportion = 1 - edge.proportion;
+        edge.proportion = 1 - proportion;
+        edge.setRule(getRule());
+        return edge;
+    }
+
+    @Override
+    public Edge clone(){
+        Edge edge = new Edge(to, from);
+        edge.index = index;
+        edge.proportion = proportion;
         edge.setRule(getRule());
         return edge;
     }
@@ -62,6 +73,26 @@ public class Edge extends GraphElement{
 
     public float getAngle(){
         return (float)Math.atan2(to.y - from.y, to.x - from.x);
+    }
+
+    public float getDistance(Vector2 point){
+        Vector2 startToEnd = new Vector2(to.x - from.x, to.y - from.y);
+        Vector2 startToPoint = new Vector2(point.x - from.x, point.y - from.y);
+        Vector2 endToPoint = new Vector2(point.x - to.x, point.y - to.y);
+
+        if(startToEnd.dot(startToPoint) < 0) return from.getPosition().distance(point);
+        if(endToPoint.dot(startToPoint) > 0) return to.getPosition().distance(point);
+
+        Vector2 proj = startToPoint.projection(startToEnd);
+        return proj.subtract(startToPoint).length();
+    }
+
+    public float getProportionFromPointOutside(Vector2 point){
+        Vector2 startToEnd = new Vector2(to.x - from.x, to.y - from.y);
+        Vector2 startToPoint = new Vector2(point.x - from.x, point.y - from.y);
+        if(startToEnd.dot(startToPoint) < 0) return 0;
+        Vector2 proj = startToPoint.projection(startToEnd);
+        return Math.min(proj.length() / startToEnd.length(), 1);
     }
 
     public float getProportionFromVertex(Vertex vertex){

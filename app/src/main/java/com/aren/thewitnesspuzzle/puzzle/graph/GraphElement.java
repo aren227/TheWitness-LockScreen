@@ -17,6 +17,7 @@ public class GraphElement {
     }
 
     public void setRule(Rule rule){
+        if(rule == null) return;
         this.rule = rule;
         rule.setGraphElement(this);
         puzzle.getAppliedRules().add(rule.getClass());

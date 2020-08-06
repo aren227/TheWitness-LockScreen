@@ -1,6 +1,7 @@
 package com.aren.thewitnesspuzzle.puzzle;
 
 import android.util.Log;
+import android.view.MotionEvent;
 
 import com.aren.thewitnesspuzzle.graphics.Circle;
 import com.aren.thewitnesspuzzle.graphics.Rectangle;
@@ -127,10 +128,14 @@ public class Puzzle {
 
         if(touching){
             // It is guaranteed that edges[i - 1].to == edges[i].from
-            for(Edge edge : cursor.getVisitedEdges()){
+            ArrayList<Edge> visitedEdges = cursor.getVisitedEdges();
+            if(visitedEdges.size() == 0) return;
+            for(Edge edge : visitedEdges){
                 dynamicShapes.add(new Circle(new Vector3(edge.from.x, edge.from.y, 0), getPathWidth() * 0.5f, getCursorColor()));
                 dynamicShapes.add(new Rectangle(edge.getProportionMiddlePoint().toVector3(), edge.getLength() * edge.proportion, getPathWidth(), edge.getAngle(), getCursorColor()));
             }
+            Edge lastEdge = visitedEdges.get(visitedEdges.size() - 1);
+            dynamicShapes.add(new Circle(new Vector3(lastEdge.getProportionPoint().x, lastEdge.getProportionPoint().y, 0), getPathWidth() * 0.5f, getCursorColor()));
         }
     }
 
@@ -175,7 +180,30 @@ public class Puzzle {
     }
 
     public void touchEvent(float x, float y, int action){
-
+        Vector2 pos = new Vector2(x, y);
+        if(action == MotionEvent.ACTION_DOWN){
+            Vertex start = null;
+            for(Vertex vertex : vertices){
+                if(vertex.getRule() instanceof StartingPoint && pos.distance(vertex.getPosition()) <= ((StartingPoint)vertex.getRule()).getRadius()){
+                    start = vertex;
+                    break;
+                }
+            }
+            if(start != null){
+                touching = true;
+                cursor = new Cursor(this, start);
+            }
+        }
+        else if(action == MotionEvent.ACTION_MOVE){
+            if(!touching) return;
+            Edge edge = getNearestEdge(pos).clone();
+            edge.proportion = edge.getProportionFromPointOutside(pos);
+            Log.i("PUZZLE", "Edge: " + edge.index + ", Calced Proportion: " + edge.proportion);
+            cursor.connectTo(edge);
+        }
+        else if(action == MotionEvent.ACTION_UP){
+            touching = false;
+        }
     }
 
     public boolean validate(){
@@ -187,12 +215,28 @@ public class Puzzle {
     }
 
     public void addVertex(Vertex vertex){
+        vertex.index = vertices.size();
         vertices.add(vertex);
         boundingBox.addCircle(new Vector2(vertex.x, vertex.y), 0.5f);
     }
 
     public void addEdge(Edge edge){
+        edge.index = edges.size();
         edges.add(edge);
+    }
+
+    public Edge getNearestEdge(Vector2 pos){
+        float minDist = Float.MAX_VALUE;
+        Edge minEdge = null;
+        for(Edge edge : edges){
+            float dist = edge.getDistance(pos);
+            int idx = edge.index;
+            if(dist < minDist){
+                minDist = dist;
+                minEdge = edge;
+            }
+        }
+        return minEdge;
     }
 
 }

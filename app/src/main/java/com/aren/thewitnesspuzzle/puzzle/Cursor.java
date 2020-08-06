@@ -1,5 +1,7 @@
 package com.aren.thewitnesspuzzle.puzzle;
 
+import android.util.Log;
+
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.rules.BrokenLine;
@@ -36,6 +38,8 @@ public class Cursor {
     }
 
     public ArrayList<Edge> getVisitedEdges(){
+        Log.i("CURSOR", "Visited Vertex Count: " + visited.size());
+
         ArrayList<Edge> edges = new ArrayList<>();
         for(int i = 0; i < visited.size() - 1; i++){
             Edge edge = new Edge(visited.get(i), visited.get(i + 1));
@@ -43,8 +47,10 @@ public class Cursor {
             edges.add(edge);
         }
 
-        if(currentCursorEdge.from == getLastVisitedVertex()) edges.add(currentCursorEdge);
-        else edges.add(currentCursorEdge.reverse());
+        if(currentCursorEdge != null){
+            if(currentCursorEdge.from == getLastVisitedVertex()) edges.add(currentCursorEdge);
+            else edges.add(currentCursorEdge.reverse());
+        }
 
         return edges;
     }
@@ -73,6 +79,13 @@ public class Cursor {
             return;
         }
 
+        // Can be connected with last visited vertex
+        if(targetEdge.containsVertex(getLastVisitedVertex())){
+            currentCursorEdge = targetEdge;
+            updateProportionWithCollision(currentCursorEdge, currentCursorEdge.getProportionFromVertex(getLastVisitedVertex()), currentCursorEdge.proportion);
+            return;
+        }
+
         // Can be connected with current edge
         if(targetEdge.containsVertex(currentCursorEdge.getAnotherVertex(getLastVisitedVertex()))){
             // First, check collision before adding a new vertex
@@ -94,6 +107,8 @@ public class Cursor {
     }
 
     public void updateProportionWithCollision(Edge edge, float from, float to){
+        Log.i("CURSOR", "from: " + from + ", to: " + to);
+
         float length = edge.getLength();
 
         // Broken edge collision check
