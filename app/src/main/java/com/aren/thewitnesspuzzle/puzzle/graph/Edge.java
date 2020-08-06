@@ -61,7 +61,7 @@ public class Edge extends GraphElement{
     }
 
     public float getAngle(){
-        return (float)Math.atan2(to.x - from.x, to.y - from.y);
+        return (float)Math.atan2(to.y - from.y, to.x - from.x);
     }
 
     public float getProportionFromVertex(Vertex vertex){

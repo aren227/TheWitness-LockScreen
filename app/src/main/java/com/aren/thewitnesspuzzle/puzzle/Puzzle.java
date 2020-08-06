@@ -1,5 +1,7 @@
 package com.aren.thewitnesspuzzle.puzzle;
 
+import android.util.Log;
+
 import com.aren.thewitnesspuzzle.graphics.Circle;
 import com.aren.thewitnesspuzzle.graphics.Rectangle;
 import com.aren.thewitnesspuzzle.graphics.Shape;
@@ -55,6 +57,7 @@ public class Puzzle {
         for(Shape shape : dynamicShapes){
             vertexCount += shape.getVertexCount();
         }
+        Log.i("PUZZLE", "Vertex Count: " + vertexCount);
         return vertexCount;
     }
 
@@ -96,6 +99,8 @@ public class Puzzle {
     }
 
     public void calcStaticShapes(){
+        pathWidth = Math.min(getBoundingBox().getWidth(), getBoundingBox().getHeight()) * 0.1f;
+
         for(Vertex vertex : vertices){
             staticShapes.add(new Circle(new Vector3(vertex.x, vertex.y, 0), getPathWidth() * 0.5f, getPathColor()));
         }

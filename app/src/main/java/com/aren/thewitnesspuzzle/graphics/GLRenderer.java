@@ -79,6 +79,8 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     public void onDrawFrame(GL10 gl) {
         BoundingBox frustumBB = getFrustumBoundingBox();
 
+        Log.i("GLRenderer", frustumBB.min.x + ", " + frustumBB.min.y + ", " + frustumBB.max.x + ", " + frustumBB.max.y);
+
         Matrix.frustumM(mProjectionMatrix, 0, -frustumBB.getWidth() / 2, frustumBB.getWidth() / 2, -frustumBB.getHeight() / 2, frustumBB.getHeight() / 2, 1, 100);
 
         int backgroundColor = game.getBackgroundColor();
