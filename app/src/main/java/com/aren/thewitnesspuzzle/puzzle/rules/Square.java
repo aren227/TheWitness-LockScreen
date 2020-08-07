@@ -4,6 +4,7 @@ import com.aren.thewitnesspuzzle.graphics.RoundSquare;
 import com.aren.thewitnesspuzzle.graphics.Shape;
 import com.aren.thewitnesspuzzle.math.Vector2Int;
 import com.aren.thewitnesspuzzle.math.Vector3;
+import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.Path;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
@@ -30,21 +31,19 @@ public class Square extends Rule {
         return new RoundSquare(new Vector3(getGraphElement().x, getGraphElement().y, 0), 0.18f, color.getRGB());
     }
 
-    public static boolean validateGlobally(Path path){
-        /*Color[] colors = new Color[path.areaCount];
+    public static boolean validateGlobally(GridAreaSplitter splitter){
+        GridPuzzle puzzle = splitter.getPuzzle();
 
-        for(int i = 0; i < path.puzzle.getWidth(); i++){
-            for(int j = 0; j < path.puzzle.getHeight(); j++){
-                if(path.puzzle.getTileRules()[i][j] instanceof Square){
-                    Square square = (Square)path.puzzle.getTileRules()[i][j];
-                    if(colors[path.areaIds[i][j]] == null) colors[path.areaIds[i][j]] = square.color;
-                    else if(colors[path.areaIds[i][j]] != square.color){
-                        return false;
-                    }
+        for(Area area : splitter.areaList){
+            Color color = null;
+            for(Tile tile : area.tiles){
+                if(tile.getRule() instanceof Square){
+                    Square square = (Square)tile.getRule();
+                    if(color == null) color = square.color;
+                    else if(color != square.color) return false;
                 }
             }
         }
-        */
         return true;
     }
 

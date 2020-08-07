@@ -96,4 +96,8 @@ public class GridAreaSplitter {
         if(y < puzzle.getHeight() - 1) fillColor(x, y + 1, colors, index);
     }
 
+    public GridPuzzle getPuzzle(){
+        return puzzle;
+    }
+
 }
