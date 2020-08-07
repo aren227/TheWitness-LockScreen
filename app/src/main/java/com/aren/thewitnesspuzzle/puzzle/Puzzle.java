@@ -203,17 +203,26 @@ public class Puzzle {
         }
         else if(action == MotionEvent.ACTION_UP){
             if(touching){
+                touching = false;
                 Edge cursorEdge = cursor.getCurrentCursorEdge();
                 if(cursorEdge.to.getRule() instanceof EndingPoint && cursorEdge.proportion > 1 - getPathWidth() * 0.5f / cursorEdge.getLength()){
                     return validate();
                 }
-                touching = false;
             }
         }
         return false;
     }
 
     public boolean validate(){
+        for(Vertex vertex : vertices){
+            if(vertex.getRule() != null && !vertex.getRule().validate(cursor)) return false;
+        }
+        for(Edge edge : edges){
+            if(edge.getRule() != null && !edge.getRule().validate(cursor)) return false;
+        }
+        for(Tile tile : tiles){
+            if(tile.getRule() != null && !tile.getRule().validate(cursor)) return false;
+        }
         return true;
     }
 

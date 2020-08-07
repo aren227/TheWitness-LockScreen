@@ -11,6 +11,7 @@ import com.aren.thewitnesspuzzle.puzzle.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.Line;
 import com.aren.thewitnesspuzzle.puzzle.Path;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
+import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
 import com.aren.thewitnesspuzzle.puzzle.graph.GraphElement;
 import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
@@ -32,7 +33,13 @@ public class HexagonDots extends Rule {
     }
 
     @Override
-    public boolean validate(Path path){
+    public boolean validate(Cursor cursor){
+        if(getGraphElement() instanceof Edge){
+            return cursor.containsEdge((Edge)getGraphElement());
+        }
+        if(getGraphElement() instanceof Vertex){
+            return cursor.containsVertex((Vertex)getGraphElement());
+        }
         return true;
     }
 
