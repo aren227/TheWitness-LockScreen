@@ -8,6 +8,7 @@ import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.rules.BrokenLine;
+import com.aren.thewitnesspuzzle.puzzle.rules.HexagonDots;
 import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridWalker;
 
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ public class TestPuzzleFactory extends PuzzleFactory{
         Cursor cursor = new Cursor(gridPuzzle, vertexPositions, new Edge(gridPuzzle.getVertexAt(gridPuzzle.getWidth(), gridPuzzle.getHeight()), lastVertex));
 
         BrokenLine.generate(cursor, random, random.nextFloat() * 0.15f + 0.05f);
+        HexagonDots.generate(cursor, random, random.nextFloat() * 0.2f + 0.1f);
 
         /*puzzle.addStartingPoint(new StartingPoint(puzzle, 0, 0));
         puzzle.addEndingPoint(new EndingPoint(puzzle, puzzle.getWidth(), puzzle.getHeight()));

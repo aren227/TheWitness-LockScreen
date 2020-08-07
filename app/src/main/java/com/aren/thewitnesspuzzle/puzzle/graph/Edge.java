@@ -17,6 +17,8 @@ public class Edge extends GraphElement{
         super(from.puzzle);
         this.from = from;
         this.to = to;
+        this.x = getMiddlePoint().x;
+        this.y = getMiddlePoint().y;
     }
 
     public Edge reverse(){

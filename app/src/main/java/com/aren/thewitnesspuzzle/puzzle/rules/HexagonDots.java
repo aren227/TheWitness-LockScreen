@@ -7,10 +7,13 @@ import com.aren.thewitnesspuzzle.graphics.Rectangle;
 import com.aren.thewitnesspuzzle.graphics.Shape;
 import com.aren.thewitnesspuzzle.math.Vector2Int;
 import com.aren.thewitnesspuzzle.math.Vector3;
+import com.aren.thewitnesspuzzle.puzzle.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.Line;
 import com.aren.thewitnesspuzzle.puzzle.Path;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 import com.aren.thewitnesspuzzle.puzzle.graph.GraphElement;
+import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
+import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,16 +27,8 @@ public class HexagonDots extends Rule {
 
     @Override
     public Shape getShape() {
-        /*if(site == Site.CORNER){
-            return new Hexagon(new Vector3(x, y, 0), puzzle.getPathWidth() * 0.4f, Color.BLACK);
-        }
-        else if(site == Site.HLINE){
-            return new Hexagon(new Vector3(x + 0.5f, y, 0), puzzle.getPathWidth() * 0.4f, Color.BLACK);
-        }
-        else if(site == Site.VLINE){
-            return new Hexagon(new Vector3(x, y + 0.5f, 0), puzzle.getPathWidth() * 0.4f, Color.BLACK);
-        }*/
-        return null;
+        if(getGraphElement() instanceof Tile) return null;
+        return new Hexagon(new Vector3(getGraphElement().x, getGraphElement().y, 0), getPuzzle().getPathWidth() * 0.4f, Color.BLACK);
     }
 
     @Override
@@ -41,48 +36,15 @@ public class HexagonDots extends Rule {
         return true;
     }
 
-    public static void generate(Path path, Random random){
-        /*ArrayList<Line> pathLines = new ArrayList<>();
+    public static void generate(Cursor solution, Random random, float spawnRate){
+        ArrayList<Vertex> vertices = solution.getVisitedVertices();
 
-        for(int i = 0; i < path.puzzle.getWidth(); i++){
-            for(int j = 0; j <= path.puzzle.getHeight(); j++){
-                if(path.hasHLine[i][j]){
-                    pathLines.add(new Line(path.puzzle, true, i, j));
-                }
-            }
-        }
-        for(int i = 0; i <= path.puzzle.getWidth(); i++){
-            for(int j = 0; j < path.puzzle.getHeight(); j++){
-                if(path.hasVLine[i][j]){
-                    pathLines.add(new Line(path.puzzle, false, i, j));
-                }
-            }
-        }
+        int hexagonVertexCount = (int)(vertices.size() * spawnRate);
 
-        //Hexagon Dots
-        //모든 경로 상 엣지에 대하여
-        int hexagonLinesCount = (int)(pathLines.size() * (random.nextFloat() * 0.2f + 0.1f));
-        Collections.shuffle(pathLines);
-        for(int i = 0; i < hexagonLinesCount; i++){
-            Line line = pathLines.get(i);
-            path.puzzle.addRule(new HexagonDots(path.puzzle, line.x, line.y, line.isHorizontal ? Rule.Site.HLINE : Rule.Site.VLINE));
-        }
-        ArrayList<Vector2Int> pathPoints = new ArrayList<>();
+        Collections.shuffle(vertices, random);
 
-        for(int i = 0; i < path.puzzle.getWidth(); i++){
-            for(int j = 0; j < path.puzzle.getHeight(); j++){
-                if(i == 0 && j == 0 || i == path.puzzle.getWidth() && j == path.puzzle.getHeight()) continue;
-                if(path.hasPoint[i][j]){
-                    pathPoints.add(new Vector2Int(i, j));
-                }
-            }
+        for(int i = 0; i < hexagonVertexCount; i++){
+            vertices.get(i).setRule(new HexagonDots());
         }
-
-        //모든 경로 상 정점에 대하여
-        int hexagonLinesCount = (int)(pathPoints.size() * (random.nextFloat() * 0.2f + 0.1f));
-        Collections.shuffle(pathPoints);
-        for(int i = 0; i < hexagonLinesCount; i++){
-            path.puzzle.addRule(new HexagonDots(path.puzzle, pathPoints.get(i).x, pathPoints.get(i).y, Rule.Site.CORNER));
-        }*/
     }
 }
