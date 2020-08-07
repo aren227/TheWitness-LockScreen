@@ -43,25 +43,25 @@ public class Cursor {
         return visited.get(visited.size() - 2);
     }
 
-    public ArrayList<Vertex> getVisitedVertices(){
+    public ArrayList<Vertex> getVisitedVertices(boolean excludeEndingPoint){
         ArrayList<Vertex> vertices = new ArrayList<>(visited);
-        if(vertices.size() > 0 && vertices.get(vertices.size() - 1).getRule() instanceof EndingPoint){
+        if(!excludeEndingPoint && vertices.size() > 0 && vertices.get(vertices.size() - 1).getRule() instanceof EndingPoint){
             vertices.remove(vertices.size() - 1);
         }
         return vertices;
     }
 
-    public ArrayList<Edge> getVisitedEdges(){
+    public ArrayList<Edge> getVisitedEdges(boolean excludeCurrentCursorEdge){
         Log.i("CURSOR", "Visited Vertex Count: " + visited.size());
 
         ArrayList<Edge> edges = new ArrayList<>();
         for(int i = 0; i < visited.size() - 1; i++){
-            Edge edge = new Edge(visited.get(i), visited.get(i + 1));
+            Edge edge = puzzle.getEdgeByVertex(visited.get(i), visited.get(i + 1)).clone();
             edge.proportion = 1;
             edges.add(edge);
         }
 
-        if(currentCursorEdge != null){
+        if(!excludeCurrentCursorEdge && currentCursorEdge != null){
             if(currentCursorEdge.from == getLastVisitedVertex()) edges.add(currentCursorEdge);
             else edges.add(currentCursorEdge.reverse());
         }
@@ -162,7 +162,8 @@ public class Cursor {
                 }
             }
         }
-        return currentCursorEdge.equals(edge);
+        if(currentCursorEdge != null) return currentCursorEdge.equals(edge);
+        return false;
     }
 
     public boolean containsVertex(Vertex vertex){

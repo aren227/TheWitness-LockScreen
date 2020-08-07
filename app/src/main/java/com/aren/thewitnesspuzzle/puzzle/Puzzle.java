@@ -43,6 +43,7 @@ public class Puzzle {
 
     protected ArrayList<Vertex> vertices = new ArrayList<>();
     protected ArrayList<Edge> edges = new ArrayList<>();
+    protected Edge[][] edgeTable; // Indexed by two vertices pair
     protected ArrayList<Tile> tiles = new ArrayList<>();
 
     protected HashSet<Class<? extends Rule>> appliedRules = new HashSet<>();
@@ -129,7 +130,7 @@ public class Puzzle {
 
         if(touching){
             // It is guaranteed that edges[i - 1].to == edges[i].from
-            ArrayList<Edge> visitedEdges = cursor.getVisitedEdges();
+            ArrayList<Edge> visitedEdges = cursor.getVisitedEdges(false);
             if(visitedEdges.size() == 0) return;
             for(Edge edge : visitedEdges){
                 dynamicShapes.add(new Circle(new Vector3(edge.from.x, edge.from.y, 0), getPathWidth() * 0.5f, getCursorColor()));
@@ -244,6 +245,12 @@ public class Puzzle {
         return edge;
     }
 
+    public Tile addTile(Tile tile){
+        tile.index = tiles.size();
+        tiles.add(tile);
+        return tile;
+    }
+
     public Edge getNearestEdge(Vector2 pos){
         float minDist = Float.MAX_VALUE;
         Edge minEdge = null;
@@ -267,6 +274,19 @@ public class Puzzle {
 
     public ArrayList<Tile> getTiles(){
         return tiles;
+    }
+
+    public void calcEdgeTable(){
+        edgeTable = new Edge[getVertices().size()][getVertices().size()];
+        for(Edge edge : getEdges()){
+            edgeTable[edge.from.index][edge.to.index] = edge;
+            edgeTable[edge.to.index][edge.from.index] = edge.reverse();
+        }
+    }
+
+    public Edge getEdgeByVertex(Vertex from, Vertex to){
+        if(edgeTable == null) calcEdgeTable();
+        return edgeTable[from.index][to.index];
     }
 
 }

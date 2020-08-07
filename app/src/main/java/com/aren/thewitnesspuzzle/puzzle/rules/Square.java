@@ -6,7 +6,11 @@ import com.aren.thewitnesspuzzle.math.Vector2Int;
 import com.aren.thewitnesspuzzle.math.Vector3;
 import com.aren.thewitnesspuzzle.puzzle.Path;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
+import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
+import com.aren.thewitnesspuzzle.puzzle.cursor.area.Area;
+import com.aren.thewitnesspuzzle.puzzle.cursor.area.GridAreaSplitter;
 import com.aren.thewitnesspuzzle.puzzle.graph.GraphElement;
+import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
 
 import java.util.Collections;
 import java.util.Random;
@@ -22,10 +26,8 @@ public class Square extends Rule {
 
     @Override
     public Shape getShape() {
-        /*if(site == Site.TILE){
-            return new RoundSquare(new Vector3(x + 0.5f, y + 0.5f, 0), 0.18f, color.getRGB());
-        }*/
-        return null;
+        if(!(getGraphElement() instanceof Tile)) return null;
+        return new RoundSquare(new Vector3(getGraphElement().x, getGraphElement().y, 0), 0.18f, color.getRGB());
     }
 
     public static boolean validateGlobally(Path path){
@@ -46,18 +48,14 @@ public class Square extends Rule {
         return true;
     }
 
-    public static void generate(Path path, Random random){
-        /*
-        //각 구역에 대해서 최소 하나 이상 표시
-        for(int i = 0; i < path.areaCount; i++){
-            int squareCount = Math.max((int)(path.areaSizes[i] * random.nextFloat() * 0.7f), 1);
-            Collections.shuffle(path.tilesByAreaId.get(i));
+    public static void generate(GridAreaSplitter splitter, Random random, float spawnRate){
+        for(Area area : splitter.areaList){
+            int squareCount = Math.max((int)(area.tiles.size() * spawnRate), 1);
+            Collections.shuffle(area.tiles, random);
             for(int j = 0; j < squareCount; j++){
-                Vector2Int pos = path.tilesByAreaId.get(i).get(j);
-                path.puzzle.addRule(new Square(path.puzzle, pos.x, pos.y, path.areaColorByAreaId[i]));
+                area.tiles.get(j).setRule(new Square(area.color));
             }
         }
-        */
     }
 
 }

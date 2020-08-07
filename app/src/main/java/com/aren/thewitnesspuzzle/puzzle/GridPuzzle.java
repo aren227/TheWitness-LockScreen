@@ -12,6 +12,7 @@ import com.aren.thewitnesspuzzle.math.Vector2Int;
 import com.aren.thewitnesspuzzle.math.Vector3;
 import com.aren.thewitnesspuzzle.puzzle.factory.TestPuzzleFactory;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
+import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.rules.BrokenLine;
 import com.aren.thewitnesspuzzle.puzzle.rules.EndingPoint;
@@ -32,6 +33,11 @@ public class GridPuzzle extends Puzzle {
 
     private int width, height;
 
+    private Vertex[][] gridVerticies;
+    private Edge[][] gridHorizontalEdges;
+    private Edge[][] gridVerticalEdges;
+    private Tile[][] gridTiles;
+
     public GridPuzzle(Game game, int width, int height){
         super(game);
 
@@ -39,51 +45,44 @@ public class GridPuzzle extends Puzzle {
         this.height = height;
         pathWidth = Math.min(width, height) * 0.05f + 0.05f;
 
-        /*tileRules = new Rule[width][height];
-        hLineRules = new Rule[width][height + 1];
-        vLineRules = new Rule[width + 1][height];
-        cornerRules = new Rule[width + 1][height + 1];
-        startingPoints = new ArrayList<>();
-        endingPoints = new ArrayList<>();
-
-        appliedRules = new HashSet<>();
-
-        //tileRules[0][0] = new Square(this, 0, 0, Rule.Where.TILE, Color.BLACK);
-        //tileRules[1][0] = new Square(this, 1, 0, Rule.Where.TILE, Color.WHITE);
-        //hLineRules[0][0] = new BrokenLine(this, 0, 0, Rule.Where.HLINE);
-        //hLineRules[2][1] = new BrokenLine(this, 2, 1, Rule.Where.HLINE);
-        //vLineRules[2][3] = new BrokenLine(this, 2, 3, Rule.Where.VLINE);
-        //vLineRules[0][1] = new HexagonDots(this, 0, 1, Rule.Where.VLINE);
-        //cornerRules[2][2] = new HexagonDots(this, 2, 2, Rule.Where.CORNER);
-
-        PuzzleFactory factory = new PuzzleFactory(this);
-        factory.generatePuzzle();
-
-        /*
-        Solver solver = new Solver(this);
-        long start = System.currentTimeMillis();
-        Log.i("SOLUTIONS", "" + solver.solve());
-        Log.i("MAX_LENGTH", "" + (solver.maxLength + 1));
-        Log.i("TIME ELAPSED", (System.currentTimeMillis() - start) + " ms");
-        */
+        gridVerticies = new Vertex[width + 1][height + 1];
+        gridHorizontalEdges = new Edge[width][height + 1];
+        gridVerticalEdges = new Edge[width + 1][height];
+        gridTiles = new Tile[width][height];
 
         for(int i = 0; i <= width; i++){
             for(int j = 0; j <= height; j++){
-                addVertex(new Vertex(this, i, j));
+                Vertex vertex = addVertex(new Vertex(this, i, j));
+                vertex.gridPosition = new Vector2Int(i, j);
+                gridVerticies[i][j] = vertex;
             }
         }
 
         // Horizontal lines
         for(int i = 0; i < width; i++){
             for(int j = 0; j <= height; j++){
-                addEdge(new Edge(getVertexAt(i, j), getVertexAt(i + 1, j)));
+                Edge edge = addEdge(new Edge(getVertexAt(i, j), getVertexAt(i + 1, j)));
+                edge.gridPosition = new Vector2Int(i, j);
+                edge.isHorizontal = true;
+                gridHorizontalEdges[i][j] = edge;
             }
         }
 
         // Vertical lines
         for(int i = 0; i <= width; i++){
             for(int j = 0; j < height; j++){
-                addEdge(new Edge(getVertexAt(i, j), getVertexAt(i, j + 1)));
+                Edge edge = addEdge(new Edge(getVertexAt(i, j), getVertexAt(i, j + 1)));
+                edge.gridPosition = new Vector2Int(i, j);
+                edge.isHorizontal = false;
+                gridVerticalEdges[i][j] = edge;
+            }
+        }
+
+        for(int i = 0; i < width; i++){
+            for(int j = 0; j < height; j++){
+                Tile tile = addTile(new Tile(this, i + 0.5f, j + 0.5f));
+                tile.gridPosition = new Vector2Int(i, j);
+                gridTiles[i][j] = tile;
             }
         }
 
@@ -93,7 +92,16 @@ public class GridPuzzle extends Puzzle {
     }
 
     public Vertex getVertexAt(int x, int y){
-        return vertices.get(x * (height + 1) + y);
+        return gridVerticies[x][y];
+    }
+
+    public Edge getEdgeAt(int x, int y, boolean horizontal){
+        if(horizontal) return gridHorizontalEdges[x][y];
+        return gridVerticalEdges[x][y];
+    }
+
+    public Tile getTileAt(int x, int y){
+        return gridTiles[x][y];
     }
 
     public int getWidth() {

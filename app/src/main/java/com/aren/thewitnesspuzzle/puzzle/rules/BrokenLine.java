@@ -35,7 +35,7 @@ public class BrokenLine extends Rule {
         ArrayList<Edge> notSolutionEdges = new ArrayList<>();
 
         for(Edge edge : puzzle.getEdges()){
-            if(edge.getRule() == null && solution.containsEdge(edge)){
+            if(edge.getRule() == null && !solution.containsEdge(edge)){
                 notSolutionEdges.add(edge);
             }
         }

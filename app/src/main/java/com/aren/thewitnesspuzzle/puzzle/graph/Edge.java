@@ -7,7 +7,8 @@ import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 public class Edge extends GraphElement{
 
     public Vertex from, to;
-    public float proportion; //from -> to [0, 1]
+    public float proportion; // from -> to [0, 1]
+    public boolean isHorizontal; // Only for grid puzzle
 
     public Edge(Vertex from, Vertex to){
         super(from.puzzle);
@@ -22,6 +23,10 @@ public class Edge extends GraphElement{
         edge.index = index;
         edge.proportion = 1 - proportion;
         edge.setRule(getRule());
+
+        edge.gridPosition = gridPosition;
+        edge.isHorizontal = isHorizontal;
+
         return edge;
     }
 
@@ -31,6 +36,10 @@ public class Edge extends GraphElement{
         edge.index = index;
         edge.proportion = proportion;
         edge.setRule(getRule());
+
+        edge.gridPosition = gridPosition;
+        edge.isHorizontal = isHorizontal;
+
         return edge;
     }
 
