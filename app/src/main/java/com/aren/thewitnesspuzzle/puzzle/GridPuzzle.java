@@ -10,6 +10,7 @@ import com.aren.thewitnesspuzzle.graphics.Rectangle;
 import com.aren.thewitnesspuzzle.graphics.Shape;
 import com.aren.thewitnesspuzzle.math.Vector2Int;
 import com.aren.thewitnesspuzzle.math.Vector3;
+import com.aren.thewitnesspuzzle.puzzle.factory.TestPuzzleFactory;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.rules.BrokenLine;
@@ -65,7 +66,6 @@ public class GridPuzzle extends Puzzle {
         Log.i("MAX_LENGTH", "" + (solver.maxLength + 1));
         Log.i("TIME ELAPSED", (System.currentTimeMillis() - start) + " ms");
         */
-        ColorFactory.setRandomColor(this);
 
         for(int i = 0; i <= width; i++){
             for(int j = 0; j <= height; j++){
@@ -90,6 +90,8 @@ public class GridPuzzle extends Puzzle {
         addStartingPoint(0, 0);
         addEndingPoint(width, height);
 
+        new TestPuzzleFactory(this).generate();
+
         calcStaticShapes();
     }
 
@@ -109,7 +111,8 @@ public class GridPuzzle extends Puzzle {
         getVertexAt(x, y).setRule(new StartingPoint());
     }
 
-    public void addEndingPoint(int x, int y){
+    // Return newly added vertex
+    public Vertex addEndingPoint(int x, int y){
         Vertex vertex = null;
         if(y == 0){
             vertex = addVertex(new Vertex(this, x, y - getPathWidth()));
@@ -128,5 +131,7 @@ public class GridPuzzle extends Puzzle {
             addEdge(new Edge(getVertexAt(x, y), vertex));
             vertex.setRule(new EndingPoint());
         }
+
+        return vertex;
     }
 }

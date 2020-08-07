@@ -3,9 +3,11 @@ package com.aren.thewitnesspuzzle.puzzle.rules;
 import com.aren.thewitnesspuzzle.graphics.Rectangle;
 import com.aren.thewitnesspuzzle.graphics.Shape;
 import com.aren.thewitnesspuzzle.math.Vector3;
+import com.aren.thewitnesspuzzle.puzzle.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.Line;
 import com.aren.thewitnesspuzzle.puzzle.Path;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
+import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
 import com.aren.thewitnesspuzzle.puzzle.graph.GraphElement;
 
 import java.util.ArrayList;
@@ -20,12 +22,10 @@ public class BrokenLine extends Rule {
 
     @Override
     public Shape getShape() {
-        /*if(site == Site.HLINE){
-            return new Rectangle(new Vector3(x + 0.5f, y, 0), getSize(), puzzle.getPathWidth(), puzzle.getBackgroundColor());
+        if(getGraphElement() instanceof Edge){
+            Edge edge = (Edge)getGraphElement();
+            return new Rectangle(edge.getMiddlePoint().toVector3(), getSize() / edge.getLength(), edge.getPuzzle().getPathWidth(), edge.getAngle(), edge.getPuzzle().getBackgroundColor());
         }
-        else if(site == Site.VLINE){
-            return new Rectangle(new Vector3(x, y + 0.5f, 0), puzzle.getPathWidth(), getSize(), puzzle.getBackgroundColor());
-        }*/
         return null;
     }
 
@@ -33,32 +33,22 @@ public class BrokenLine extends Rule {
         return 0.3f;
     }
 
-    public static void generate(Path path, Random random){
-        /*ArrayList<Line> notPathLines = new ArrayList<>();
+    public static void generate(Cursor solution, Random random, float blockRate){
+        Puzzle puzzle = solution.getPuzzle();
 
-        for(int i = 0; i < path.puzzle.getWidth(); i++){
-            for(int j = 0; j <= path.puzzle.getHeight(); j++){
-                if(!path.hasHLine[i][j]){
-                    notPathLines.add(new Line(path.puzzle, true, i, j));
-                }
-            }
-        }
-        for(int i = 0; i <= path.puzzle.getWidth(); i++){
-            for(int j = 0; j < path.puzzle.getHeight(); j++){
-                if(!path.hasVLine[i][j]){
-                    notPathLines.add(new Line(path.puzzle, false, i, j));
-                }
+        ArrayList<Edge> notSolutionEdges = new ArrayList<>();
+
+        for(Edge edge : puzzle.getEdges()){
+            if(solution.containsEdge(edge)){
+                notSolutionEdges.add(edge);
             }
         }
 
-        //Broken Lines
-        //모든 경로가 아닌 엣지에 대하여 막을지 막지 않을지를 결정한다
-        int brokenLinesCount = (int)(notPathLines.size() * (random.nextFloat() * 0.15f + 0.05f));
-        Collections.shuffle(notPathLines);
-        for(int i = 0; i < brokenLinesCount; i++){
-            Line line = notPathLines.get(i);
-            path.puzzle.addRule(new BrokenLine());
-        }*/
+        int brokenEdges = (int)(notSolutionEdges.size() * blockRate);
+        Collections.shuffle(notSolutionEdges, random);
+        for(int i = 0; i < brokenEdges; i++){
+            notSolutionEdges.get(i).setRule(new BrokenLine());
+        }
     }
 
     public static float getCollisionCircleRadius(){

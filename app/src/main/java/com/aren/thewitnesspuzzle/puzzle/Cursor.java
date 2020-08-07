@@ -24,6 +24,14 @@ public class Cursor {
         currentCursorEdge = null;
     }
 
+    public Cursor(Puzzle puzzle, ArrayList<Vertex> vertices, Edge cursorEdge){
+        this.puzzle = puzzle;
+
+        visited = new ArrayList<>(vertices);
+
+        currentCursorEdge = cursorEdge;
+    }
+
     public Vertex getLastVisitedVertex(){
         if(visited == null) return null;
         return visited.get(visited.size() - 1);
@@ -123,7 +131,7 @@ public class Cursor {
 
         // Broken edge collision check
         if(edge.getRule() instanceof BrokenLine){
-            float collisionProportion = BrokenLine.getCollisionCircleRadius() / length;
+            float collisionProportion = BrokenLine.getCollisionCircleRadius() + puzzle.getPathWidth() * 0.5f / length;
             if(from <= 0.5f) to = Math.min(0.5f - collisionProportion, to);
             else to = Math.max(0.5f + collisionProportion, to);
         }
@@ -139,6 +147,28 @@ public class Cursor {
         }
 
         edge.proportion = to;
+    }
+
+    public Puzzle getPuzzle(){
+        return puzzle;
+    }
+
+    public boolean containsEdge(Edge edge){
+        if(visited.size() > 0){
+            for(int i = 0; i < visited.size() - 1; i++){
+                if(edge.equals(new Edge(visited.get(i), visited.get(i + 1)))){
+                    return true;
+                }
+            }
+        }
+        return currentCursorEdge.equals(edge);
+    }
+
+    public boolean containsVertex(Vertex vertex){
+        for(int i = 0; i < visited.size(); i++){
+            if(visited.get(i) == vertex) return true;
+        }
+        return false;
     }
 
 }

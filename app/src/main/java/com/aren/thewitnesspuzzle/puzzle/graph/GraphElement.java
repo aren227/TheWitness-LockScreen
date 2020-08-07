@@ -8,7 +8,7 @@ public class GraphElement {
 
     public Puzzle puzzle;
     public int index;
-    protected float x, y;
+    public float x, y;
 
     private Rule rule;
 

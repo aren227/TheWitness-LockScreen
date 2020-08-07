@@ -30,4 +30,8 @@ public class Rule {
         return true;
     }
 
+    public Puzzle getPuzzle(){
+        return graphElement.getPuzzle();
+    }
+
 }

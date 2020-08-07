@@ -247,4 +247,16 @@ public class Puzzle {
         return minEdge;
     }
 
+    public ArrayList<Vertex> getVertices(){
+        return vertices;
+    }
+
+    public ArrayList<Edge> getEdges(){
+        return edges;
+    }
+
+    public ArrayList<Tile> getTiles(){
+        return tiles;
+    }
+
 }

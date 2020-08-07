@@ -1,33 +1,36 @@
-package com.aren.thewitnesspuzzle.puzzle;
+package com.aren.thewitnesspuzzle.puzzle.walker;
 
 import android.util.Log;
 
 import com.aren.thewitnesspuzzle.math.Vector2Int;
+import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
+import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-public class RandomWalker {
+public class RandomGridWalker {
 
-    int width, height;
+    private GridPuzzle gridPuzzle;
+    private int width, height;
 
-    long hist; //지금까지 지나온 점들의 집합
-    long deltaUpperBit; //각 점에 대해, 그 점에서 이동한 방향의 인덱스의 상위 비트 (4 cases = 2bit)
-    long deltaLowerBit; //각 점에 대해, 그 점에서 이동한 방향의 인덱스의 하위 비트
-    int x, y;
+    private long hist; //지금까지 지나온 점들의 집합
+    private long deltaUpperBit; //각 점에 대해, 그 점에서 이동한 방향의 인덱스의 상위 비트 (4 cases = 2bit)
+    private long deltaLowerBit; //각 점에 대해, 그 점에서 이동한 방향의 인덱스의 하위 비트
+    private int x, y;
 
-    int minimumVerticies = 0;
-    boolean stopWalk = false;
-    int touch = 0;
+    private int minimumVerticies = 0;
+    private boolean stopWalk = false;
+    private int touch = 0;
 
-    Random random;
+    private Random random;
 
-    int[][] travelOrder = {{0,1,2,3}, {0,1,3,2}, {0,2,1,3}, {0,2,3,1}, {0,3,1,2}, {0,3,2,1}, {1,0,2,3}, {1,0,3,2}, {1,2,0,3}, {1,2,3,0}, {1,3,0,2}, {1,3,2,0}, {2,0,1,3}, {2,0,3,1}, {2,1,0,3}, {2,1,3,0}, {2,3,0,1}, {2,3,1,0}, {3,0,1,2}, {3,0,2,1}, {3,1,0,2}, {3,1,2,0}, {3,2,0,1}, {3,2,1,0}};
-    int[][] delta = {{-1, 0}, {1, 0}, {0, 1}, {0, -1}};
+    private int[][] travelOrder = {{0,1,2,3}, {0,1,3,2}, {0,2,1,3}, {0,2,3,1}, {0,3,1,2}, {0,3,2,1}, {1,0,2,3}, {1,0,3,2}, {1,2,0,3}, {1,2,3,0}, {1,3,0,2}, {1,3,2,0}, {2,0,1,3}, {2,0,3,1}, {2,1,0,3}, {2,1,3,0}, {2,3,0,1}, {2,3,1,0}, {3,0,1,2}, {3,0,2,1}, {3,1,0,2}, {3,1,2,0}, {3,2,0,1}, {3,2,1,0}};
+    private int[][] delta = {{-1, 0}, {1, 0}, {0, 1}, {0, -1}};
 
-    ArrayList<Vector2Int> result;
+    private ArrayList<Vector2Int> result;
 
-    boolean walk(){
+    private boolean walk(){
         if(x < 0 || y < 0 || x > width || y > height) return false;
 
         if(x == width && y == height){
@@ -58,10 +61,14 @@ public class RandomWalker {
         return false;
     }
 
-    public RandomWalker(int width, int height){
-        this.width = width;
-        this.height = height;
-        random = new Random();
+    public RandomGridWalker(GridPuzzle gridPuzzle, Random random){
+        this.gridPuzzle = gridPuzzle;
+        this.width = gridPuzzle.getWidth();
+        this.height = gridPuzzle.getHeight();
+        if(this.width > 7 || this.height > 7){
+            throw new RuntimeException("Width and height must be less than or equal to 7.");
+        }
+        this.random = random;
     }
 
     public void doWalkAsManyAsPossible(int iters){
@@ -98,7 +105,7 @@ public class RandomWalker {
         Log.i("WALKER", "[" + (width + height + 1) + ", " + ((Math.pow(width+1, 2)-(1+Math.pow(-1, width+1))/2)) + "]");
     }
 
-    public ArrayList<Vector2Int> getRandomWalk(){
+    public ArrayList<Vertex> getResult(){
         //시간이 허락하는 한 복잡한 경로를 찾아보자
         long wallTime = 100;
 
@@ -125,7 +132,11 @@ public class RandomWalker {
             e.printStackTrace();
         }
 
-        return result;
-    }
+        ArrayList<Vertex> vertices = new ArrayList<>();
+        for(Vector2Int pos : result){
+            vertices.add(gridPuzzle.getVertexAt(pos.x, pos.y));
+        }
 
+        return vertices;
+    }
 }

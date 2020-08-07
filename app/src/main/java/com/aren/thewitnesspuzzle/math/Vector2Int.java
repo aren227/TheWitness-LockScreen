@@ -9,4 +9,13 @@ public class Vector2Int {
         this.y = y;
     }
 
+    @Override
+    public boolean equals(Object obj){
+        if(obj instanceof Vector2Int){
+            Vector2Int e = (Vector2Int) obj;
+            return x == e.x && y == e.y;
+        }
+        return false;
+    }
+
 }
