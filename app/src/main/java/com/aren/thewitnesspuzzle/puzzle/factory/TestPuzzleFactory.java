@@ -1,8 +1,7 @@
 package com.aren.thewitnesspuzzle.puzzle.factory;
 
-import com.aren.thewitnesspuzzle.math.Vector2Int;
 import com.aren.thewitnesspuzzle.puzzle.ColorFactory;
-import com.aren.thewitnesspuzzle.puzzle.Cursor;
+import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;

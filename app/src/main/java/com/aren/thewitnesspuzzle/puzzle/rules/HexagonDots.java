@@ -3,16 +3,10 @@ package com.aren.thewitnesspuzzle.puzzle.rules;
 import android.graphics.Color;
 
 import com.aren.thewitnesspuzzle.graphics.Hexagon;
-import com.aren.thewitnesspuzzle.graphics.Rectangle;
 import com.aren.thewitnesspuzzle.graphics.Shape;
-import com.aren.thewitnesspuzzle.math.Vector2Int;
 import com.aren.thewitnesspuzzle.math.Vector3;
-import com.aren.thewitnesspuzzle.puzzle.Cursor;
-import com.aren.thewitnesspuzzle.puzzle.Line;
-import com.aren.thewitnesspuzzle.puzzle.Path;
-import com.aren.thewitnesspuzzle.puzzle.Puzzle;
+import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
-import com.aren.thewitnesspuzzle.puzzle.graph.GraphElement;
 import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 
@@ -44,7 +38,10 @@ public class HexagonDots extends Rule {
     }
 
     public static void generate(Cursor solution, Random random, float spawnRate){
-        ArrayList<Vertex> vertices = solution.getVisitedVertices();
+        ArrayList<Vertex> vertices = new ArrayList<>();
+        for(Vertex vertex : solution.getVisitedVertices()){
+            if(vertex.getRule() == null) vertices.add(vertex);
+        }
 
         int hexagonVertexCount = (int)(vertices.size() * spawnRate);
 

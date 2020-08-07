@@ -1,7 +1,8 @@
-package com.aren.thewitnesspuzzle.puzzle;
+package com.aren.thewitnesspuzzle.puzzle.cursor;
 
 import android.util.Log;
 
+import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.rules.BrokenLine;

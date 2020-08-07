@@ -87,9 +87,6 @@ public class GridPuzzle extends Puzzle {
             }
         }
 
-        addStartingPoint(0, 0);
-        addEndingPoint(width, height);
-
         new TestPuzzleFactory(this).generate();
 
         calcStaticShapes();

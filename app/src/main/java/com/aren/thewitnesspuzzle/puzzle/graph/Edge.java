@@ -1,12 +1,8 @@
 package com.aren.thewitnesspuzzle.puzzle.graph;
 
-import android.util.Log;
-
 import com.aren.thewitnesspuzzle.math.MathUtils;
 import com.aren.thewitnesspuzzle.math.Vector2;
-import com.aren.thewitnesspuzzle.math.Vector3;
-import com.aren.thewitnesspuzzle.puzzle.Cursor;
-import com.aren.thewitnesspuzzle.puzzle.Puzzle;
+import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 
 public class Edge extends GraphElement{
 

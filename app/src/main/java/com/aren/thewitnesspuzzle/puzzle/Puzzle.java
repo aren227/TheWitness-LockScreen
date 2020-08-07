@@ -9,6 +9,7 @@ import com.aren.thewitnesspuzzle.graphics.Shape;
 import com.aren.thewitnesspuzzle.math.BoundingBox;
 import com.aren.thewitnesspuzzle.math.Vector2;
 import com.aren.thewitnesspuzzle.math.Vector3;
+import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
 import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;

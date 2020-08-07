@@ -2,13 +2,9 @@ package com.aren.thewitnesspuzzle.puzzle.rules;
 
 import com.aren.thewitnesspuzzle.graphics.Rectangle;
 import com.aren.thewitnesspuzzle.graphics.Shape;
-import com.aren.thewitnesspuzzle.math.Vector3;
-import com.aren.thewitnesspuzzle.puzzle.Cursor;
-import com.aren.thewitnesspuzzle.puzzle.Line;
-import com.aren.thewitnesspuzzle.puzzle.Path;
+import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
-import com.aren.thewitnesspuzzle.puzzle.graph.GraphElement;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,7 +35,7 @@ public class BrokenLine extends Rule {
         ArrayList<Edge> notSolutionEdges = new ArrayList<>();
 
         for(Edge edge : puzzle.getEdges()){
-            if(solution.containsEdge(edge)){
+            if(edge.getRule() == null && solution.containsEdge(edge)){
                 notSolutionEdges.add(edge);
             }
         }
