@@ -33,6 +33,10 @@ public class Cursor {
         currentCursorEdge = cursorEdge;
     }
 
+    public Vertex getFirstVisitedVertex(){
+        return visited.get(0);
+    }
+
     public Vertex getLastVisitedVertex(){
         if(visited == null) return null;
         return visited.get(visited.size() - 1);

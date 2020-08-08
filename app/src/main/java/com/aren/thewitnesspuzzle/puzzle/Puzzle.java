@@ -129,6 +129,8 @@ public class Puzzle {
         dynamicShapes.clear();
 
         if(touching){
+            dynamicShapes.add(new Circle(cursor.getFirstVisitedVertex().getPosition().toVector3(), ((StartingPoint)cursor.getFirstVisitedVertex().getRule()).getRadius(), getCursorColor()));
+
             // It is guaranteed that edges[i - 1].to == edges[i].from
             ArrayList<Edge> visitedEdges = cursor.getVisitedEdges(false);
             if(visitedEdges.size() == 0) return;
