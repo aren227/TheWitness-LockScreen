@@ -47,24 +47,16 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         GLES20.glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
 
-        //vertex shader 타입의 객체를 생성하여 vertexShaderCode에 저장된 소스코드를 로드한 후,
-        //   컴파일합니다.
         vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, context.getString(R.string.vertex));
 
-        //fragment shader 타입의 객체를 생성하여 fragmentShaderCode에 저장된 소스코드를 로드한 후,
-        //  컴파일합니다.
         fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER, context.getString(R.string.fragment));
 
-        // Program 객체를 생성한다.
         glProgram = GLES20.glCreateProgram();
 
-        // vertex shader를 program 객체에 추가
         GLES20.glAttachShader(glProgram, vertexShader);
 
-        // fragment shader를 program 객체에 추가
         GLES20.glAttachShader(glProgram, fragmentShader);
 
-        // program객체를 OpenGL에 연결한다. program에 추가된 shader들이 OpenGL에 연결된다.
         GLES20.glLinkProgram(glProgram);
     }
 
@@ -78,8 +70,6 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onDrawFrame(GL10 gl) {
         BoundingBox frustumBB = getFrustumBoundingBox();
-
-        Log.i("GLRenderer", frustumBB.min.x + ", " + frustumBB.min.y + ", " + frustumBB.max.x + ", " + frustumBB.max.y);
 
         Matrix.frustumM(mProjectionMatrix, 0, -frustumBB.getWidth() / 2, frustumBB.getWidth() / 2, -frustumBB.getHeight() / 2, frustumBB.getHeight() / 2, 1, 100);
 

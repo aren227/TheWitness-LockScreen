@@ -56,8 +56,6 @@ public class Cursor {
     }
 
     public ArrayList<Edge> getVisitedEdges(boolean excludeCurrentCursorEdge){
-        Log.i("CURSOR", "Visited Vertex Count: " + visited.size());
-
         ArrayList<Edge> edges = new ArrayList<>();
         for(int i = 0; i < visited.size() - 1; i++){
             Edge edge = puzzle.getEdgeByVertex(visited.get(i), visited.get(i + 1)).clone();
@@ -130,8 +128,6 @@ public class Cursor {
     }
 
     public void updateProportionWithCollision(Edge edge, float from, float to){
-        Log.i("CURSOR", "from: " + from + ", to: " + to);
-
         float length = edge.getLength();
 
         // Broken edge collision check

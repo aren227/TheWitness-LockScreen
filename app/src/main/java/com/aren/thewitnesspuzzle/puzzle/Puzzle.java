@@ -202,7 +202,6 @@ public class Puzzle {
             if(!touching) return false;
             Edge edge = getNearestEdge(pos).clone();
             edge.proportion = edge.getProportionFromPointOutside(pos);
-            Log.i("PUZZLE", "Edge: " + edge.index + ", Calced Proportion: " + edge.proportion);
             cursor.connectTo(edge);
         }
         else if(action == MotionEvent.ACTION_UP){
