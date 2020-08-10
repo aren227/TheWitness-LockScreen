@@ -34,7 +34,7 @@ public class TestPuzzleFactory extends PuzzleFactory{
         ColorFactory.setRandomColor(gridPuzzle);
 
         gridPuzzle.addStartingPoint(0, 0);
-        Vertex lastVertex = gridPuzzle.addEndingPoint(gridPuzzle.getWidth(), gridPuzzle.getHeight());
+        gridPuzzle.addEndingPoint(gridPuzzle.getWidth(), gridPuzzle.getHeight());
 
         RandomGridWalker walker = new RandomGridWalker(gridPuzzle, random);
         ArrayList<Vertex> vertexPositions = walker.getResult();

@@ -23,8 +23,11 @@ import android.widget.Toast;
 
 import com.aren.thewitnesspuzzle.puzzle.Game;
 import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
+import com.aren.thewitnesspuzzle.puzzle.GridSymmetryPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 import com.aren.thewitnesspuzzle.puzzle.SlidePuzzle;
+import com.aren.thewitnesspuzzle.puzzle.factory.TestPuzzleFactory;
+import com.aren.thewitnesspuzzle.puzzle.factory.TestSymmetryPuzzleFactory;
 
 import java.util.ArrayList;
 
@@ -101,7 +104,10 @@ public class LockscreenService extends Service {
                 screenOn = false;
                 Log.i("TAG", "SCREEN_OFF");
 
-                game.setPuzzle(new GridPuzzle(game, 4, 4));
+                //Puzzle puzzle = new GridPuzzle(game, 4, 4);
+                Puzzle puzzle = new GridSymmetryPuzzle(game, 4, 4, GridSymmetryPuzzle.SymmetryType.POINT);
+                game.setPuzzle(puzzle);
+                new TestSymmetryPuzzleFactory(puzzle).generate();
                 //game.setPuzzle(new SlidePuzzle(game));
                 lockScreen(context);
                 //game.setPuzzle(new SlidePuzzle());
@@ -156,6 +162,9 @@ public class LockscreenService extends Service {
             //권한이 없다면 여기서 에러 발생
             mWindowManager.addView(game.getSurfaceView(), mLayoutParams);
         }
+
+        // First draw
+        game.update();
     }
 
     public void unlockScreen(){

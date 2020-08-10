@@ -46,7 +46,7 @@ public class Game {
     }
 
     public void update(){
-        puzzle.calcDynamicShapes();
+        puzzle.prepareForDrawing();
 
         surfaceView.requestRender();
     }
@@ -54,7 +54,7 @@ public class Game {
     public void setPuzzle(Puzzle puzzle){
         this.puzzle = puzzle;
 
-        update();
+        //update();
     }
 
     public Puzzle getPuzzle(){

@@ -27,6 +27,7 @@ public class Puzzle {
 
     protected Game game;
 
+    protected boolean staticShapesCalculated = false;
     protected ArrayList<Shape> staticShapes = new ArrayList<>();
     protected ArrayList<Shape> dynamicShapes = new ArrayList<>();
 
@@ -125,6 +126,14 @@ public class Puzzle {
         }
     }
 
+    public void prepareForDrawing(){
+        if(!staticShapesCalculated){
+            calcStaticShapes();
+            staticShapesCalculated = true;
+        }
+        calcDynamicShapes();
+    }
+
     public void calcDynamicShapes(){
         dynamicShapes.clear();
 
@@ -195,7 +204,7 @@ public class Puzzle {
             }
             if(start != null){
                 touching = true;
-                cursor = new Cursor(this, start);
+                cursor = createCursor(start);
             }
         }
         else if(action == MotionEvent.ACTION_MOVE){
@@ -288,6 +297,10 @@ public class Puzzle {
     public Edge getEdgeByVertex(Vertex from, Vertex to){
         if(edgeTable == null) calcEdgeTable();
         return edgeTable[from.index][to.index];
+    }
+
+    protected Cursor createCursor(Vertex start){
+        return new Cursor(this, start);
     }
 
 }

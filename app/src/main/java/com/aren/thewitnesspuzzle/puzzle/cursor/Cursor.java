@@ -12,9 +12,9 @@ import java.util.ArrayList;
 
 public class Cursor {
 
-    private Puzzle puzzle;
-    private ArrayList<Vertex> visited;
-    private Edge currentCursorEdge;
+    protected Puzzle puzzle;
+    protected ArrayList<Vertex> visited;
+    protected Edge currentCursorEdge;
 
     public Cursor(Puzzle puzzle, Vertex start){
         this.puzzle = puzzle;

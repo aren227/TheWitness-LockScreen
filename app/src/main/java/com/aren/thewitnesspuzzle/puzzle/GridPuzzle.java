@@ -32,12 +32,12 @@ import java.util.Queue;
 
 public class GridPuzzle extends Puzzle {
 
-    private int width, height;
+    protected int width, height;
 
-    private Vertex[][] gridVerticies;
-    private Edge[][] gridHorizontalEdges;
-    private Edge[][] gridVerticalEdges;
-    private Tile[][] gridTiles;
+    protected Vertex[][] gridVerticies;
+    protected Edge[][] gridHorizontalEdges;
+    protected Edge[][] gridVerticalEdges;
+    protected Tile[][] gridTiles;
 
     public GridPuzzle(Game game, int width, int height){
         super(game);
@@ -86,10 +86,6 @@ public class GridPuzzle extends Puzzle {
                 gridTiles[i][j] = tile;
             }
         }
-
-        new TestPuzzleFactory(this).generate();
-
-        calcStaticShapes();
     }
 
     public Vertex getVertexAt(int x, int y){
@@ -117,8 +113,7 @@ public class GridPuzzle extends Puzzle {
         getVertexAt(x, y).setRule(new StartingPoint());
     }
 
-    // Return newly added vertex
-    public Vertex addEndingPoint(int x, int y){
+    public Edge addEndingPoint(int x, int y){
         Vertex vertex = null;
         if(y == 0){
             vertex = addVertex(new Vertex(this, x, y - getPathWidth()));
@@ -134,11 +129,11 @@ public class GridPuzzle extends Puzzle {
         }
 
         if(vertex != null){
-            addEdge(new Edge(getVertexAt(x, y), vertex));
+            Edge edge = addEdge(new Edge(getVertexAt(x, y), vertex));
             vertex.setRule(new EndingPoint());
+            return edge;
         }
-
-        return vertex;
+        return null;
     }
 
     @Override
