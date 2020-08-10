@@ -11,6 +11,7 @@ import com.aren.thewitnesspuzzle.puzzle.rules.BrokenLine;
 import com.aren.thewitnesspuzzle.puzzle.rules.Color;
 import com.aren.thewitnesspuzzle.puzzle.rules.HexagonDots;
 import com.aren.thewitnesspuzzle.puzzle.rules.Square;
+import com.aren.thewitnesspuzzle.puzzle.rules.Triangle;
 import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridWalker;
 
 import java.util.ArrayList;
@@ -44,31 +45,10 @@ public class TestPuzzleFactory extends PuzzleFactory{
         GridAreaSplitter splitter = new GridAreaSplitter(cursor);
         splitter.assignAreaColorRandomly(random, Arrays.asList(Color.WHITE, Color.BLACK));
 
-        BrokenLine.generate(cursor, random, random.nextFloat() * 0.15f + 0.05f);
+        /*BrokenLine.generate(cursor, random, random.nextFloat() * 0.15f + 0.05f);
         HexagonDots.generate(cursor, random, random.nextFloat() * 0.2f + 0.1f);
-        Square.generate(splitter, random, random.nextFloat() * 0.25f + 0.4f);
+        Square.generate(splitter, random, random.nextFloat() * 0.25f + 0.4f);*/
 
-        /*puzzle.addStartingPoint(new StartingPoint(puzzle, 0, 0));
-        puzzle.addEndingPoint(new EndingPoint(puzzle, puzzle.getWidth(), puzzle.getHeight()));
-
-        RandomWalker walker = new RandomWalker(puzzle.getWidth(), puzzle.getHeight());
-        ArrayList<Vector2Int> pathArr = walker.getRandomWalk();
-
-        Path path = new Path(puzzle, pathArr);
-        Random random = new Random();
-
-        path.generateAreaColorsRandomly(random);
-
-        BrokenLine.generate(path, random);
-        HexagonDots.generate(path, random);
-        Square.generate(path, random);*/
-
-        //Visualize currently generated path
-        /*puzzle.touching = true;
-        puzzle.cursorPosition = new Vector3(pathArr.get(pathArr.size() - 1).x, pathArr.get(pathArr.size() - 1).y, 0);
-        puzzle.cursorPositionStack = new ArrayList<>();
-        for(Vector2Int vector2Int : pathArr){
-            puzzle.cursorPositionStack.add(new Vector3(vector2Int.x, vector2Int.y, 0));
-        }*/
+        Triangle.generate(cursor, random, 0.5f);
     }
 }

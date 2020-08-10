@@ -84,6 +84,11 @@ public class GridPuzzle extends Puzzle {
                 Tile tile = addTile(new Tile(this, i + 0.5f, j + 0.5f));
                 tile.gridPosition = new Vector2Int(i, j);
                 gridTiles[i][j] = tile;
+
+                tile.edges.add(getEdgeAt(i, j, true));
+                tile.edges.add(getEdgeAt(i, j, false));
+                tile.edges.add(getEdgeAt(i, j + 1, true));
+                tile.edges.add(getEdgeAt(i + 1, j, false));
             }
         }
     }
@@ -138,7 +143,7 @@ public class GridPuzzle extends Puzzle {
 
     @Override
     public boolean validate(){
-        super.validate();
+        if(!super.validate()) return false;
 
         GridAreaSplitter splitter = new GridAreaSplitter(cursor);
 
