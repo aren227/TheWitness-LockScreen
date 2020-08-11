@@ -13,7 +13,9 @@ import com.aren.thewitnesspuzzle.puzzle.cursor.area.GridAreaSplitter;
 import com.aren.thewitnesspuzzle.puzzle.graph.GraphElement;
 import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 public class Square extends Rule {
@@ -36,28 +38,31 @@ public class Square extends Rule {
         return false;
     }
 
-    public static boolean validateGlobally(GridAreaSplitter splitter){
-        GridPuzzle puzzle = splitter.getPuzzle();
-
-        for(Area area : splitter.areaList){
-            Color color = null;
-            for(Tile tile : area.tiles){
-                if(tile.getRule() instanceof Square){
-                    Square square = (Square)tile.getRule();
-                    if(color == null) color = square.color;
-                    else if(color != square.color) return false;
+    public static List<Rule> areaValidate(Area area){
+        Color color = null;
+        for(Tile tile : area.tiles){
+            if(tile.getRule() instanceof Square){
+                Square square = (Square)tile.getRule();
+                if(color == null) color = square.color;
+                else if(color != square.color){
+                    List<Rule> areaErrors = new ArrayList<>();
+                    for(Tile t : area.tiles){
+                        if(t.getRule() instanceof Square) areaErrors.add(t.getRule());
+                    }
+                    return areaErrors;
                 }
             }
         }
-        return true;
+        return new ArrayList<>();
     }
 
     public static void generate(GridAreaSplitter splitter, Random random, float spawnRate){
         for(Area area : splitter.areaList){
-            int squareCount = Math.max((int)(area.tiles.size() * spawnRate), 1);
-            Collections.shuffle(area.tiles, random);
+            ArrayList<Tile> tiles = new ArrayList<>(area.tiles);
+            int squareCount = Math.max((int)(tiles.size() * spawnRate), 1);
+            Collections.shuffle(tiles, random);
             for(int j = 0; j < squareCount; j++){
-                area.tiles.get(j).setRule(new Square(area.color));
+                tiles.get(j).setRule(new Square(area.color));
             }
         }
     }

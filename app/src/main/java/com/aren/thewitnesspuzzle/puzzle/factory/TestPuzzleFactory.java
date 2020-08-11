@@ -45,10 +45,12 @@ public class TestPuzzleFactory extends PuzzleFactory{
         GridAreaSplitter splitter = new GridAreaSplitter(cursor);
         splitter.assignAreaColorRandomly(random, Arrays.asList(Color.WHITE, Color.BLACK));
 
+        Square.generate(splitter, random, random.nextFloat() * 0.25f + 0.4f);
+
         /*BrokenLine.generate(cursor, random, random.nextFloat() * 0.15f + 0.05f);
         HexagonDots.generate(cursor, random, random.nextFloat() * 0.2f + 0.1f);
         Square.generate(splitter, random, random.nextFloat() * 0.25f + 0.4f);*/
 
-        Triangle.generate(cursor, random, 0.5f);
+        //Triangle.generate(cursor, random, 0.5f);
     }
 }
