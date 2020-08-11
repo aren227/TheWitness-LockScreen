@@ -8,6 +8,7 @@ import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.rules.Color;
 import com.aren.thewitnesspuzzle.puzzle.rules.Rule;
 import com.aren.thewitnesspuzzle.puzzle.rules.Square;
+import com.aren.thewitnesspuzzle.puzzle.rules.Sun;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -59,6 +60,7 @@ public class Area {
 
         List<Rule> areaErrors = new ArrayList<>();
         areaErrors.addAll(Square.areaValidate(this));
+        areaErrors.addAll(Sun.areaValidate(this));
 
         return localErrors.size() == 0 && areaErrors.size() == 0;
     }

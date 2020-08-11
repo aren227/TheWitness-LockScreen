@@ -11,6 +11,7 @@ import com.aren.thewitnesspuzzle.puzzle.rules.BrokenLine;
 import com.aren.thewitnesspuzzle.puzzle.rules.Color;
 import com.aren.thewitnesspuzzle.puzzle.rules.HexagonDots;
 import com.aren.thewitnesspuzzle.puzzle.rules.Square;
+import com.aren.thewitnesspuzzle.puzzle.rules.Sun;
 import com.aren.thewitnesspuzzle.puzzle.rules.Triangle;
 import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridWalker;
 
@@ -46,6 +47,7 @@ public class TestPuzzleFactory extends PuzzleFactory{
         splitter.assignAreaColorRandomly(random, Arrays.asList(Color.WHITE, Color.BLACK));
 
         Square.generate(splitter, random, random.nextFloat() * 0.25f + 0.4f);
+        Sun.generate(splitter, random, random.nextFloat() * 0.4f + 0.1f);
 
         /*BrokenLine.generate(cursor, random, random.nextFloat() * 0.15f + 0.05f);
         HexagonDots.generate(cursor, random, random.nextFloat() * 0.2f + 0.1f);

@@ -18,13 +18,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-public class Square extends Rule {
-
-    public Color color;
+public class Square extends Colorable {
 
     public Square(Color color) {
-        super();
-        this.color = color;
+        super(color);
     }
 
     @Override
