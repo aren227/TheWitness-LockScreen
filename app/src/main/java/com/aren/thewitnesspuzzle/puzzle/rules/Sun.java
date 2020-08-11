@@ -24,7 +24,7 @@ public class Sun extends Colorable {
     @Override
     public Shape getShape(){
         if(!(getGraphElement() instanceof Tile)) return null;
-        return new SunSquare(new Vector3(getGraphElement().x, getGraphElement().y, 0), 0.18f, color.getRGB());
+        return new SunSquare(new Vector3(getGraphElement().x, getGraphElement().y, 0), 0.2f, color.getRGB());
     }
 
     @Override
