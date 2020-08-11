@@ -25,7 +25,11 @@ public class Rule {
         return null;
     }
 
-    public boolean validate(Cursor cursor){
+    public boolean validateLocally(Cursor cursor){
+        return true;
+    }
+
+    public boolean canValidateLocally(){
         return true;
     }
 

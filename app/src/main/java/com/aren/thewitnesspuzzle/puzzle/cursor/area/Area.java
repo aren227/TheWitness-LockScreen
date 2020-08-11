@@ -19,4 +19,8 @@ public class Area {
         this.puzzle = puzzle;
         tiles = new ArrayList<>();
     }
+
+    public boolean validate(){
+        return true;
+    }
 }

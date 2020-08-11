@@ -31,6 +31,11 @@ public class Square extends Rule {
         return new RoundSquare(new Vector3(getGraphElement().x, getGraphElement().y, 0), 0.18f, color.getRGB());
     }
 
+    @Override
+    public boolean canValidateLocally(){
+        return false;
+    }
+
     public static boolean validateGlobally(GridAreaSplitter splitter){
         GridPuzzle puzzle = splitter.getPuzzle();
 

@@ -226,14 +226,15 @@ public class Puzzle {
     }
 
     public boolean validate(){
+        //TODO: Support area validation
         for(Vertex vertex : vertices){
-            if(vertex.getRule() != null && !vertex.getRule().validate(cursor)) return false;
+            if(vertex.getRule() != null && !vertex.getRule().validateLocally(cursor)) return false;
         }
         for(Edge edge : edges){
-            if(edge.getRule() != null && !edge.getRule().validate(cursor)) return false;
+            if(edge.getRule() != null && !edge.getRule().validateLocally(cursor)) return false;
         }
         for(Tile tile : tiles){
-            if(tile.getRule() != null && !tile.getRule().validate(cursor)) return false;
+            if(tile.getRule() != null && !tile.getRule().validateLocally(cursor)) return false;
         }
         return true;
     }

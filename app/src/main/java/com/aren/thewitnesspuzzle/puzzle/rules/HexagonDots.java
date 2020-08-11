@@ -27,7 +27,7 @@ public class HexagonDots extends Rule {
     }
 
     @Override
-    public boolean validate(Cursor cursor){
+    public boolean validateLocally(Cursor cursor){
         if(getGraphElement() instanceof Edge){
             return cursor.containsEdge((Edge)getGraphElement());
         }

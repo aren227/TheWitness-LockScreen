@@ -28,7 +28,7 @@ public class Triangle extends Rule {
     }
 
     @Override
-    public boolean validate(Cursor cursor){
+    public boolean validateLocally(Cursor cursor){
         if(getGraphElement() instanceof Tile){
             Tile tile = (Tile)getGraphElement();
             int c = 0;

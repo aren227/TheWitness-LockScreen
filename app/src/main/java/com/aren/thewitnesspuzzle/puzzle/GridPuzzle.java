@@ -10,6 +10,7 @@ import com.aren.thewitnesspuzzle.graphics.Rectangle;
 import com.aren.thewitnesspuzzle.graphics.Shape;
 import com.aren.thewitnesspuzzle.math.Vector2Int;
 import com.aren.thewitnesspuzzle.math.Vector3;
+import com.aren.thewitnesspuzzle.puzzle.cursor.area.Area;
 import com.aren.thewitnesspuzzle.puzzle.cursor.area.GridAreaSplitter;
 import com.aren.thewitnesspuzzle.puzzle.factory.TestPuzzleFactory;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
@@ -143,12 +144,10 @@ public class GridPuzzle extends Puzzle {
 
     @Override
     public boolean validate(){
-        if(!super.validate()) return false;
-
         GridAreaSplitter splitter = new GridAreaSplitter(cursor);
-
-        if(!Square.validateGlobally(splitter)) return false;
-
+        for(Area area : splitter.areaList){
+            if(!area.validate()) return false;
+        }
         return true;
     }
 
