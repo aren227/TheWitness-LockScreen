@@ -3,6 +3,7 @@ package com.aren.thewitnesspuzzle.puzzle.cursor.area;
 import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
+import com.aren.thewitnesspuzzle.puzzle.graph.EdgeProportion;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.rules.Color;
 
@@ -39,12 +40,12 @@ public class GridAreaSplitter {
         areaList = new ArrayList<>();
         areas = new Area[puzzle.getWidth()][puzzle.getHeight()];
 
-        for(Edge edge : cursor.getVisitedEdges(true)){
+        for(Edge edge : cursor.getFullyVisitedEdges()){
             if(edge.isHorizontal) hasHorizontalEdge[edge.gridPosition.x][edge.gridPosition.y] = true;
             else hasVerticalEdge[edge.gridPosition.x][edge.gridPosition.y] = true;
         }
 
-        for(Vertex vertex : cursor.getVisitedVertices(true)){
+        for(Vertex vertex : cursor.getVisitedVertices()){
             hasVertex[vertex.gridPosition.x][vertex.gridPosition.y] = true;
         }
 

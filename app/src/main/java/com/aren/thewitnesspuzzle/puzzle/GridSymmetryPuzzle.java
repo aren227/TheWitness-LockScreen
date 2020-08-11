@@ -10,6 +10,7 @@ import com.aren.thewitnesspuzzle.math.Vector3;
 import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.cursor.SymmetryCursor;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
+import com.aren.thewitnesspuzzle.puzzle.graph.EdgeProportion;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.rules.EndingPoint;
 import com.aren.thewitnesspuzzle.puzzle.rules.StartingPoint;
@@ -52,10 +53,10 @@ public class GridSymmetryPuzzle extends GridPuzzle {
         for(int i = 0; i < width; i++){
             for(int j = 0; j <= height; j++){
                 if(symmetryType == SymmetryType.VLINE){
-                    oppositeEdge.put(getEdgeAt(i, j, true).index, getEdgeAt(width - i - 1, j, true).reverse());
+                    oppositeEdge.put(getEdgeAt(i, j, true).index, getEdgeAt(width - i - 1, j, true));
                 }
                 else if(symmetryType == SymmetryType.POINT){
-                    oppositeEdge.put(getEdgeAt(i, j, true).index, getEdgeAt(width - i - 1, height - j, true).reverse());
+                    oppositeEdge.put(getEdgeAt(i, j, true).index, getEdgeAt(width - i - 1, height - j, true));
                 }
             }
         }
@@ -67,7 +68,7 @@ public class GridSymmetryPuzzle extends GridPuzzle {
                     oppositeEdge.put(getEdgeAt(i, j, false).index, getEdgeAt(width - i, j, false));
                 }
                 else if(symmetryType == SymmetryType.POINT){
-                    oppositeEdge.put(getEdgeAt(i, j, false).index, getEdgeAt(width - i, height - j - 1, false).reverse());
+                    oppositeEdge.put(getEdgeAt(i, j, false).index, getEdgeAt(width - i, height - j - 1, false));
                 }
             }
         }
@@ -85,24 +86,15 @@ public class GridSymmetryPuzzle extends GridPuzzle {
             dynamicShapes.add(new Circle(cursor.getFirstVisitedVertex().getPosition().toVector3(), ((StartingPoint)cursor.getFirstVisitedVertex().getRule()).getRadius(), getCursorColor()));
             dynamicShapes.add(new Circle(getOppositeVertex(cursor.getFirstVisitedVertex()).getPosition().toVector3(), ((StartingPoint)getOppositeVertex(cursor.getFirstVisitedVertex()).getRule()).getRadius(), getCursorColor()));
 
-            // It is guaranteed that edges[i - 1].to == edges[i].from
-            ArrayList<Edge> visitedEdges = cursor.getVisitedEdges(false);
+            ArrayList<EdgeProportion> visitedEdges = cursor.getVisitedEdgesWithProportion(true);
             if(visitedEdges.size() == 0) return;
             for(int i = 0; i < visitedEdges.size(); i++){
-                Edge edge = visitedEdges.get(i);
-                Edge oppositeEdge = getOppositeEdge(edge);
-
-                oppositeEdge.proportion = edge.proportion;
-
-                dynamicShapes.add(new Circle(new Vector3(edge.from.x, edge.from.y, 0), getPathWidth() * 0.5f, getCursorColor()));
-                dynamicShapes.add(new Circle(new Vector3(oppositeEdge.from.x, oppositeEdge.from.y, 0), getPathWidth() * 0.5f, getCursorColor()));
-                dynamicShapes.add(new Rectangle(edge.getProportionMiddlePoint().toVector3(), edge.getLength() * edge.proportion, getPathWidth(), edge.getAngle(), getCursorColor()));
-                dynamicShapes.add(new Rectangle(oppositeEdge.getProportionMiddlePoint().toVector3(), oppositeEdge.getLength() * oppositeEdge.proportion, getPathWidth(), oppositeEdge.getAngle(), getCursorColor()));
-
-                if(i == visitedEdges.size() - 1){
-                    dynamicShapes.add(new Circle(new Vector3(edge.getProportionPoint().x, edge.getProportionPoint().y, 0), getPathWidth() * 0.5f, getCursorColor()));
-                    dynamicShapes.add(new Circle(new Vector3(oppositeEdge.getProportionPoint().x, oppositeEdge.getProportionPoint().y, 0), getPathWidth() * 0.5f, getCursorColor()));
-                }
+                EdgeProportion edgeProportion = visitedEdges.get(i);
+                EdgeProportion oppositeEdgeProportion = getOppositeEdgeProportion(edgeProportion);
+                dynamicShapes.add(new Circle(new Vector3(edgeProportion.getProportionPoint().x, edgeProportion.getProportionPoint().y, 0), getPathWidth() * 0.5f, getCursorColor()));
+                dynamicShapes.add(new Circle(new Vector3(oppositeEdgeProportion.getProportionPoint().x, oppositeEdgeProportion.getProportionPoint().y, 0), getPathWidth() * 0.5f, getCursorColor()));
+                dynamicShapes.add(new Rectangle(edgeProportion.getProportionMiddlePoint().toVector3(), edgeProportion.getProportionLength(), getPathWidth(), edgeProportion.edge.getAngle(), getCursorColor()));
+                dynamicShapes.add(new Rectangle(oppositeEdgeProportion.getProportionMiddlePoint().toVector3(), oppositeEdgeProportion.getProportionLength(), getPathWidth(), oppositeEdgeProportion.edge.getAngle(), getCursorColor()));
             }
         }
     }
@@ -139,8 +131,20 @@ public class GridSymmetryPuzzle extends GridPuzzle {
 
     public Edge getOppositeEdge(Edge edge){
         if(oppositeEdge.containsKey(edge.index)){
-            if(edges.get(edge.index).from == edge.from) return oppositeEdge.get(edge.index);
-            else return oppositeEdge.get(edge.index).reverse();
+            return oppositeEdge.get(edge.index);
+        }
+        return null;
+    }
+
+    public EdgeProportion getOppositeEdgeProportion(EdgeProportion edgeProportion){
+        EdgeProportion opposite = new EdgeProportion(getOppositeEdge(edgeProportion.edge));
+        if(symmetryType == SymmetryType.VLINE){
+            if(opposite.edge.isHorizontal) opposite.reverse = !opposite.reverse;
+            return opposite;
+        }
+        else if(symmetryType == SymmetryType.POINT){
+            opposite.reverse = !opposite.reverse;
+            return opposite;
         }
         return null;
     }

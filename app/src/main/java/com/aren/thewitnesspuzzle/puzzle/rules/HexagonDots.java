@@ -39,7 +39,7 @@ public class HexagonDots extends Rule {
 
     public static void generate(Cursor solution, Random random, float spawnRate){
         ArrayList<Vertex> vertices = new ArrayList<>();
-        for(Vertex vertex : solution.getVisitedVertices(true)){
+        for(Vertex vertex : solution.getVisitedVertices()){
             if(vertex.getRule() == null) vertices.add(vertex);
         }
 

@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
+import com.aren.thewitnesspuzzle.puzzle.graph.EdgeProportion;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.rules.BrokenLine;
 import com.aren.thewitnesspuzzle.puzzle.rules.EndingPoint;
@@ -14,7 +15,9 @@ public class Cursor {
 
     protected Puzzle puzzle;
     protected ArrayList<Vertex> visited;
-    protected Edge currentCursorEdge;
+    protected ArrayList<Edge> visitedEdges;
+    protected ArrayList<EdgeProportion> visitedEdgesWithProportion; // directional
+    protected EdgeProportion currentCursorEdge;
 
     public Cursor(Puzzle puzzle, Vertex start){
         this.puzzle = puzzle;
@@ -22,13 +25,30 @@ public class Cursor {
         visited = new ArrayList<>();
         visited.add(start);
 
+        visitedEdges = new ArrayList<>();
+        visitedEdgesWithProportion = new ArrayList<>();
+
         currentCursorEdge = null;
     }
 
-    public Cursor(Puzzle puzzle, ArrayList<Vertex> vertices, Edge cursorEdge){
+    public Cursor(Puzzle puzzle, ArrayList<Vertex> vertices, EdgeProportion cursorEdge){
         this.puzzle = puzzle;
 
-        visited = new ArrayList<>(vertices);
+        visited = new ArrayList<>();
+        visitedEdges = new ArrayList<>();
+        visitedEdgesWithProportion = new ArrayList<>();
+
+        for(int i = 0; i < vertices.size(); i++){
+            if(i == vertices.size() - 1 && vertices.get(i).getRule() instanceof EndingPoint) continue;
+            visited.add(vertices.get(i));
+            if(i > 0){
+                EdgeProportion edgeProportion = new EdgeProportion(puzzle.getEdgeByVertex(vertices.get(i - 1), vertices.get(i)));
+                if(edgeProportion.to() == vertices.get(i - 1)) edgeProportion.reverse();
+                edgeProportion.proportion = 1f;
+                visitedEdges.add(edgeProportion.edge);
+                visitedEdgesWithProportion.add(edgeProportion);
+            }
+        }
 
         currentCursorEdge = cursorEdge;
     }
@@ -47,87 +67,93 @@ public class Cursor {
         return visited.get(visited.size() - 2);
     }
 
-    public ArrayList<Vertex> getVisitedVertices(boolean excludeEndingPoint){
-        ArrayList<Vertex> vertices = new ArrayList<>(visited);
-        if(!excludeEndingPoint && vertices.size() > 0 && vertices.get(vertices.size() - 1).getRule() instanceof EndingPoint){
-            vertices.remove(vertices.size() - 1);
-        }
-        return vertices;
+    public ArrayList<Vertex> getVisitedVertices(){
+        return visited;
     }
 
-    public ArrayList<Edge> getVisitedEdges(boolean excludeCurrentCursorEdge){
-        ArrayList<Edge> edges = new ArrayList<>();
-        for(int i = 0; i < visited.size() - 1; i++){
-            Edge edge = puzzle.getEdgeByVertex(visited.get(i), visited.get(i + 1)).clone();
-            edge.proportion = 1;
-            edges.add(edge);
-        }
-
-        if(!excludeCurrentCursorEdge && currentCursorEdge != null){
-            if(currentCursorEdge.from == getLastVisitedVertex()) edges.add(currentCursorEdge);
-            else edges.add(currentCursorEdge.reverse());
-        }
-
-        return edges;
+    public ArrayList<Edge> getFullyVisitedEdges(){
+        return visitedEdges;
     }
 
-    public Edge getCurrentCursorEdge(){
-        if(currentCursorEdge.to == getLastVisitedVertex()) return currentCursorEdge.reverse();
-        return currentCursorEdge.clone();
+    public ArrayList<EdgeProportion> getVisitedEdgesWithProportion(boolean includeCurrentCursorEdge){
+        if(includeCurrentCursorEdge){
+            ArrayList<EdgeProportion> arr = new ArrayList<>(visitedEdgesWithProportion);
+            if(currentCursorEdge != null) arr.add(currentCursorEdge);
+            return arr;
+        }
+        return visitedEdgesWithProportion;
     }
 
-    public void connectTo(Edge targetEdge){
+    public EdgeProportion getCurrentCursorEdge(){
+        return currentCursorEdge;
+    }
+
+    public void connectTo(EdgeProportion target){
+        // NOTE: We should guarantee that visitedEdges[i - 1].to == visitedEdges[i].from so all edges are connected right direction.
+        // But the direction of 'target' (target.reverse) is not configured here.
+
         // First call
         if(currentCursorEdge == null){
-            if(targetEdge.containsVertex(getLastVisitedVertex())){
-                currentCursorEdge = targetEdge;
-                updateProportionWithCollision(currentCursorEdge, currentCursorEdge.getProportionFromVertex(getLastVisitedVertex()), currentCursorEdge.proportion);
+            if(target.to() == getLastVisitedVertex()) target.reverse();
+            if(target.from() == getLastVisitedVertex()){
+                currentCursorEdge = target;
+                updateProportionWithCollision(currentCursorEdge, 0, currentCursorEdge.proportion);
             }
             return;
         }
 
         // Just update proportion
-        if(targetEdge.equals(currentCursorEdge)){
-            currentCursorEdge.updateProportion(this, targetEdge);
+        if(currentCursorEdge.edge == target.edge){
+            if(currentCursorEdge.to() == target.from()) target.reverse();
+            currentCursorEdge.updateProportion(this, target.proportion);
             return;
         }
 
-        // Remove visited vertex from top
-        if(targetEdge.containsVertex(getLastVisitedVertex()) && targetEdge.containsVertex(getSecondLastVisitedVertex())){
+        // Remove visited vertex from top (backward)
+        if(target.edge.containsVertex(getSecondLastVisitedVertex()) && target.edge.containsVertex(getLastVisitedVertex())){
+            if(target.to() == getSecondLastVisitedVertex()) target.reverse();
             visited.remove(visited.size() - 1);
-            currentCursorEdge = targetEdge;
+            visitedEdges.remove(visitedEdges.size() - 1);
+            visitedEdgesWithProportion.remove(visitedEdgesWithProportion.size() - 1);
+
+            currentCursorEdge = target;
             // No need to check collision since it was previously proved
             return;
         }
 
         // Can be connected with last visited vertex
-        if(targetEdge.containsVertex(getLastVisitedVertex())){
-            currentCursorEdge = targetEdge;
-            updateProportionWithCollision(currentCursorEdge, currentCursorEdge.getProportionFromVertex(getLastVisitedVertex()), currentCursorEdge.proportion);
+        if(target.edge.containsVertex(getLastVisitedVertex())){
+            if(target.to() == getLastVisitedVertex()) target.reverse();
+            currentCursorEdge = target;
+            updateProportionWithCollision(currentCursorEdge, 0, currentCursorEdge.proportion);
             return;
         }
 
         // Can be connected with current edge
-        if(targetEdge.containsVertex(currentCursorEdge.getAnotherVertex(getLastVisitedVertex()))){
+        if(target.edge.containsVertex(currentCursorEdge.to())){
+            if(target.to() == currentCursorEdge.to()) target.reverse();
+
             // First, check collision before adding a new vertex
-            Vertex newlyVisited = currentCursorEdge.getAnotherVertex(getLastVisitedVertex());
-            updateProportionWithCollision(currentCursorEdge, currentCursorEdge.proportion, currentCursorEdge.getProportionFromVertex(newlyVisited));
+            updateProportionWithCollision(currentCursorEdge, currentCursorEdge.proportion, 1f);
 
             // Collided
-            if(currentCursorEdge.proportion != currentCursorEdge.getProportionFromVertex(newlyVisited)){
+            if(currentCursorEdge.proportion < 1f){
                 return;
             }
 
-            visited.add(newlyVisited);
+            visited.add(currentCursorEdge.to());
+            visitedEdges.add(currentCursorEdge.edge);
+            visitedEdgesWithProportion.add(currentCursorEdge);
 
-            currentCursorEdge = targetEdge;
-            updateProportionWithCollision(currentCursorEdge, currentCursorEdge.getProportionFromVertex(newlyVisited), currentCursorEdge.proportion);
+            currentCursorEdge = target;
+            updateProportionWithCollision(currentCursorEdge, 0, currentCursorEdge.proportion);
         }
 
-        // Failed to update
+        // Failed to update. Ignoring...
     }
 
-    public void updateProportionWithCollision(Edge edge, float from, float to){
+    public void updateProportionWithCollision(EdgeProportion edgeProportion, float from, float to){
+        Edge edge = edgeProportion.edge;
         float length = edge.getLength();
 
         // Broken edge collision check
@@ -142,12 +168,11 @@ public class Cursor {
             Vertex v = visited.get(i);
             if(edge.containsVertex(v)){
                 float collisionProportion = puzzle.getPathWidth() / length;
-                if(edge.from == v) to = Math.max(collisionProportion, to);
-                else to = Math.min(1 - collisionProportion, to);
+                to = Math.min(1 - collisionProportion, to);
             }
         }
 
-        edge.proportion = to;
+        edgeProportion.proportion = to;
     }
 
     public Puzzle getPuzzle(){
@@ -155,22 +180,11 @@ public class Cursor {
     }
 
     public boolean containsEdge(Edge edge){
-        if(visited.size() > 0){
-            for(int i = 0; i < visited.size() - 1; i++){
-                if(edge.equals(new Edge(visited.get(i), visited.get(i + 1)))){
-                    return true;
-                }
-            }
-        }
-        if(currentCursorEdge != null) return currentCursorEdge.equals(edge);
-        return false;
+        return getFullyVisitedEdges().contains(edge);
     }
 
     public boolean containsVertex(Vertex vertex){
-        for(int i = 0; i < visited.size(); i++){
-            if(visited.get(i) == vertex) return true;
-        }
-        return false;
+        return getVisitedVertices().contains(vertex);
     }
 
 }

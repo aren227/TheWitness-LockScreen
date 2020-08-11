@@ -11,6 +11,7 @@ import com.aren.thewitnesspuzzle.math.Vector2;
 import com.aren.thewitnesspuzzle.math.Vector3;
 import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
+import com.aren.thewitnesspuzzle.puzzle.graph.EdgeProportion;
 import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.rules.EndingPoint;
@@ -140,15 +141,12 @@ public class Puzzle {
         if(touching){
             dynamicShapes.add(new Circle(cursor.getFirstVisitedVertex().getPosition().toVector3(), ((StartingPoint)cursor.getFirstVisitedVertex().getRule()).getRadius(), getCursorColor()));
 
-            // It is guaranteed that edges[i - 1].to == edges[i].from
-            ArrayList<Edge> visitedEdges = cursor.getVisitedEdges(false);
+            ArrayList<EdgeProportion> visitedEdges = cursor.getVisitedEdgesWithProportion(true);
             if(visitedEdges.size() == 0) return;
-            for(Edge edge : visitedEdges){
-                dynamicShapes.add(new Circle(new Vector3(edge.from.x, edge.from.y, 0), getPathWidth() * 0.5f, getCursorColor()));
-                dynamicShapes.add(new Rectangle(edge.getProportionMiddlePoint().toVector3(), edge.getLength() * edge.proportion, getPathWidth(), edge.getAngle(), getCursorColor()));
+            for(EdgeProportion edgeProportion : visitedEdges){
+                dynamicShapes.add(new Circle(new Vector3(edgeProportion.getProportionPoint().x, edgeProportion.getProportionPoint().y, 0), getPathWidth() * 0.5f, getCursorColor()));
+                dynamicShapes.add(new Rectangle(edgeProportion.getProportionMiddlePoint().toVector3(), edgeProportion.getProportionLength(), getPathWidth(), edgeProportion.edge.getAngle(), getCursorColor()));
             }
-            Edge lastEdge = visitedEdges.get(visitedEdges.size() - 1);
-            dynamicShapes.add(new Circle(new Vector3(lastEdge.getProportionPoint().x, lastEdge.getProportionPoint().y, 0), getPathWidth() * 0.5f, getCursorColor()));
         }
     }
 
@@ -209,15 +207,17 @@ public class Puzzle {
         }
         else if(action == MotionEvent.ACTION_MOVE){
             if(!touching) return false;
-            Edge edge = getNearestEdge(pos).clone();
-            edge.proportion = edge.getProportionFromPointOutside(pos);
-            cursor.connectTo(edge);
+            Edge edge = getNearestEdge(pos);
+            EdgeProportion edgeProportion = new EdgeProportion(edge);
+            edgeProportion.proportion = edgeProportion.getProportionFromPointOutside(pos);
+            cursor.connectTo(edgeProportion);
         }
         else if(action == MotionEvent.ACTION_UP){
             if(touching){
                 touching = false;
-                Edge cursorEdge = cursor.getCurrentCursorEdge();
-                if(cursorEdge.to.getRule() instanceof EndingPoint && cursorEdge.proportion > 1 - getPathWidth() * 0.5f / cursorEdge.getLength()){
+                EdgeProportion currentCursorEdge = cursor.getCurrentCursorEdge();
+                Edge edge = currentCursorEdge.edge;
+                if(currentCursorEdge.to().getRule() instanceof EndingPoint && currentCursorEdge.proportion > 1 - getPathWidth() * 0.5f / edge.getLength()){
                     return validate();
                 }
             }
@@ -291,7 +291,7 @@ public class Puzzle {
         edgeTable = new Edge[getVertices().size()][getVertices().size()];
         for(Edge edge : getEdges()){
             edgeTable[edge.from.index][edge.to.index] = edge;
-            edgeTable[edge.to.index][edge.from.index] = edge.reverse();
+            edgeTable[edge.to.index][edge.from.index] = edge;
         }
     }
 

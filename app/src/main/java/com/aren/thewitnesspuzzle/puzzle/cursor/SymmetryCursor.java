@@ -3,6 +3,7 @@ package com.aren.thewitnesspuzzle.puzzle.cursor;
 import com.aren.thewitnesspuzzle.puzzle.GridSymmetryPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
+import com.aren.thewitnesspuzzle.puzzle.graph.EdgeProportion;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.rules.BrokenLine;
 
@@ -13,7 +14,8 @@ public class SymmetryCursor extends Cursor {
     }
 
     @Override
-    public void updateProportionWithCollision(Edge edge, float from, float to){
+    public void updateProportionWithCollision(EdgeProportion edgeProportion, float from, float to){
+        Edge edge = edgeProportion.edge;
         float length = edge.getLength();
 
         GridSymmetryPuzzle gridSymmetryPuzzle = (GridSymmetryPuzzle)puzzle;
@@ -30,33 +32,27 @@ public class SymmetryCursor extends Cursor {
         // Cursor self collision check
         for(int i = 0; i < visited.size() - 1; i++){
             Vertex v = visited.get(i);
-            if(edge.containsVertex(v)){
+            if(edgeProportion.to() == v){
                 float collisionProportion = puzzle.getPathWidth() / length;
-                if(edge.from == v) to = Math.max(collisionProportion, to);
-                else to = Math.min(1 - collisionProportion, to);
+                to = Math.min(1 - collisionProportion, to);
             }
         }
 
         // Opposite cursor collision check
         for(int i = 0; i < visited.size() - 1; i++){
             Vertex v = gridSymmetryPuzzle.getOppositeVertex(visited.get(i));
-            if(edge.containsVertex(v)){
+            if(edgeProportion.to() == v){
                 float collisionProportion = puzzle.getPathWidth() / length;
-                if(edge.from == v) to = Math.max(collisionProportion, to);
-                else to = Math.min(1 - collisionProportion, to);
+                to = Math.min(1 - collisionProportion, to);
             }
         }
 
         // Two cursors collided each other
-        if(oppositeEdge.containsVertex(edge.to)){
+        if(edgeProportion.to() == gridSymmetryPuzzle.getOppositeVertex(edgeProportion.to())){
             float collisionProportion = puzzle.getPathWidth() * 0.5f / length;
             to = Math.min(1 - collisionProportion, to);
         }
-        if(oppositeEdge.containsVertex(edge.from)){
-            float collisionProportion = puzzle.getPathWidth() * 0.5f / length;
-            to = Math.max(collisionProportion, to);
-        }
 
-        edge.proportion = to;
+        edgeProportion.proportion = to;
     }
 }
