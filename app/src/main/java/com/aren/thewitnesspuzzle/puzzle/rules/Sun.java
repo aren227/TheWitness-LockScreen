@@ -46,20 +46,16 @@ public class Sun extends Colorable {
 
         for(Color color : sunColors.keySet()){
             ArrayList<Rule> suns = sunColors.get(color);
-            // Pair with another color symbol
-            if(suns.size() == 1){
-                boolean paired = false;
-                for(Tile tile : area.tiles){
-                    if(tile.getRule() instanceof Colorable && !(tile.getRule() instanceof Sun)){
-                        if(((Sun)suns.get(0)).color == ((Colorable)tile.getRule()).color){
-                            paired = true;
-                            break;
-                        }
+            int count = 0;
+            for(Tile tile : area.tiles){
+                if(tile.getRule() instanceof Colorable){
+                    if(((Sun)suns.get(0)).color == ((Colorable)tile.getRule()).color){
+                        count++;
+                        if(count > 2) break;
                     }
                 }
-                if(!paired) areaErrors.addAll(suns);
             }
-            else if(suns.size() > 2){
+            if(count != 2){
                 areaErrors.addAll(suns);
             }
         }
@@ -68,7 +64,7 @@ public class Sun extends Colorable {
     }
 
     public static void generate(GridAreaSplitter splitter, Random random, float applyRate){
-        ArrayList<Area> areas = new ArrayList<>(splitter.areaList);
+        /*ArrayList<Area> areas = new ArrayList<>(splitter.areaList);
         int applyAreaCount = (int)Math.ceil(areas.size() * applyRate);
         Collections.shuffle(areas, random);
         for(int i = 0; i < applyAreaCount; i++){
@@ -81,7 +77,7 @@ public class Sun extends Colorable {
             Collections.shuffle(tiles, random);
             tiles.get(0).setRule(new Sun(Color.BLACK));
             tiles.get(1).setRule(new Sun(Color.BLACK));
-        }
+        }*/
     }
 
 }
