@@ -12,7 +12,7 @@ import java.util.Random;
 
 public class Triangle extends Rule {
 
-    public final int COLOR = android.graphics.Color.parseColor("#ffaa00");
+    public static final int COLOR = android.graphics.Color.parseColor("#ffaa00");
 
     public int count;
 

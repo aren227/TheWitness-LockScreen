@@ -104,7 +104,7 @@ public class LockscreenService extends Service {
                 screenOn = false;
                 Log.i("TAG", "SCREEN_OFF");
 
-                Puzzle puzzle = new GridPuzzle(game, 4, 4);
+                Puzzle puzzle = new GridPuzzle(game, 5, 6);
                 //Puzzle puzzle = new GridSymmetryPuzzle(game, 4, 4, GridSymmetryPuzzle.SymmetryType.POINT);
                 game.setPuzzle(puzzle);
                 new TestPuzzleFactory(puzzle).generate();

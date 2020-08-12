@@ -5,6 +5,7 @@ import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
 import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
+import com.aren.thewitnesspuzzle.puzzle.rules.Block;
 import com.aren.thewitnesspuzzle.puzzle.rules.Color;
 import com.aren.thewitnesspuzzle.puzzle.rules.Rule;
 import com.aren.thewitnesspuzzle.puzzle.rules.Square;
@@ -61,6 +62,7 @@ public class Area {
         List<Rule> areaErrors = new ArrayList<>();
         areaErrors.addAll(Square.areaValidate(this));
         areaErrors.addAll(Sun.areaValidate(this));
+        areaErrors.addAll(Block.areaValidate(this));
 
         return localErrors.size() == 0 && areaErrors.size() == 0;
     }
