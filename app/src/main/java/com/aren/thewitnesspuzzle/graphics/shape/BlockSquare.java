@@ -1,14 +1,11 @@
-package com.aren.thewitnesspuzzle.graphics;
+package com.aren.thewitnesspuzzle.graphics.shape;
 
-import android.graphics.Color;
-
+import com.aren.thewitnesspuzzle.graphics.shape.Shape;
 import com.aren.thewitnesspuzzle.math.Matrix2x2;
 import com.aren.thewitnesspuzzle.math.Vector2;
 import com.aren.thewitnesspuzzle.math.Vector3;
 
-import java.nio.FloatBuffer;
-
-public class BlockSquare implements Shape {
+public class BlockSquare extends Shape {
 
     private static final float BLOCK_SIZE = 0.13f;
     private static final float PADDING = 0.015f;
@@ -18,10 +15,10 @@ public class BlockSquare implements Shape {
     public int height;
     public int blockCount;
     public boolean rotatable;
-    public Vector3 center;
-    public int color;
 
     public BlockSquare(boolean[][] blocks, boolean rotatable, Vector3 center, int color){
+        super(center, 1, color);
+
         this.blocks = blocks;
         width = blocks.length;
         height = blocks[0].length;
@@ -31,12 +28,10 @@ public class BlockSquare implements Shape {
             }
         }
         this.rotatable = rotatable;
-        this.center = center;
-        this.color = color;
     }
 
     @Override
-    public void draw(FloatBuffer buffer) {
+    public void draw() {
         float bs = BLOCK_SIZE + PADDING * 2;
 
         Matrix2x2 rot = null;
@@ -58,49 +53,13 @@ public class BlockSquare implements Shape {
                     d = rot.multiply(d);
                 }
 
-                Vector3 aa = new Vector3(center.x + a.x, center.y + a.y, center.z);
-                Vector3 bb = new Vector3(center.x + b.x, center.y + b.y, center.z);
-                Vector3 cc = new Vector3(center.x + c.x, center.y + c.y, center.z);
-                Vector3 dd = new Vector3(center.x + d.x, center.y + d.y, center.z);
-
-                buffer.put(aa.x);
-                buffer.put(aa.y);
-                buffer.put(aa.z);
-                buffer.put(bb.x);
-                buffer.put(bb.y);
-                buffer.put(bb.z);
-                buffer.put(cc.x);
-                buffer.put(cc.y);
-                buffer.put(cc.z);
-
-                buffer.put(aa.x);
-                buffer.put(aa.y);
-                buffer.put(aa.z);
-                buffer.put(cc.x);
-                buffer.put(cc.y);
-                buffer.put(cc.z);
-                buffer.put(dd.x);
-                buffer.put(dd.y);
-                buffer.put(dd.z);
+                addVertex(a);
+                addVertex(b);
+                addVertex(c);
+                addVertex(a);
+                addVertex(c);
+                addVertex(d);
             }
         }
-    }
-
-    @Override
-    public void drawColor(FloatBuffer buffer) {
-        float r = Color.red(color) / 255f;
-        float g = Color.green(color) / 255f;
-        float b = Color.blue(color) / 255f;
-
-        for(int i = 0; i < getVertexCount(); i++){
-            buffer.put(r);
-            buffer.put(g);
-            buffer.put(b);
-        }
-    }
-
-    @Override
-    public int getVertexCount() {
-        return 6 * blockCount;
     }
 }
