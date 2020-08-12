@@ -9,6 +9,8 @@ public class Rule {
 
     private GraphElement graphElement;
 
+    public boolean eliminated;
+
     public Rule(){
 
     }

@@ -37,6 +37,7 @@ public class Sun extends Colorable {
         for(Tile tile : area.tiles){
             if(tile.getRule() instanceof Sun){
                 Sun sun = (Sun)tile.getRule();
+                if(sun.eliminated) continue;
                 if(!sunColors.containsKey(sun.color)) sunColors.put(sun.color, new ArrayList<Rule>());
                 sunColors.get(sun.color).add(sun);
             }
@@ -49,6 +50,7 @@ public class Sun extends Colorable {
             int count = 0;
             for(Tile tile : area.tiles){
                 if(tile.getRule() instanceof Colorable){
+                    if(((Colorable)tile.getRule()).eliminated) continue;
                     if(((Sun)suns.get(0)).color == ((Colorable)tile.getRule()).color){
                         count++;
                         if(count > 2) break;

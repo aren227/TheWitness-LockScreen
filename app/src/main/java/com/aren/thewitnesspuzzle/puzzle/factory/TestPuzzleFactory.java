@@ -10,6 +10,7 @@ import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.rules.Block;
 import com.aren.thewitnesspuzzle.puzzle.rules.BrokenLine;
 import com.aren.thewitnesspuzzle.puzzle.rules.Color;
+import com.aren.thewitnesspuzzle.puzzle.rules.Elimination;
 import com.aren.thewitnesspuzzle.puzzle.rules.HexagonDots;
 import com.aren.thewitnesspuzzle.puzzle.rules.Square;
 import com.aren.thewitnesspuzzle.puzzle.rules.Sun;
@@ -47,16 +48,22 @@ public class TestPuzzleFactory extends PuzzleFactory{
         GridAreaSplitter splitter = new GridAreaSplitter(cursor);
         splitter.assignAreaColorRandomly(random, Arrays.asList(Color.WHITE, Color.BLACK));
 
+        gridPuzzle.getTileAt(0, 0).setRule(new Elimination());
+        gridPuzzle.getTileAt(1, 0).setRule(new Square(Color.WHITE));
+        gridPuzzle.getTileAt(2, 0).setRule(new Square(Color.BLACK));
+        gridPuzzle.getTileAt(3, 0).setRule(new Square(Color.WHITE));
+
         //Square.generate(splitter, random, random.nextFloat() * 0.25f + 0.4f);
         //Sun.generate(splitter, random, random.nextFloat() * 0.4f + 0.1f);
 
-        gridPuzzle.getTileAt(0, 2).setRule(new Block(new boolean[][]{{true, true}, {false, true}, {false, true}}, gridPuzzle.getHeight(), true, false));
+        /*gridPuzzle.getTileAt(0, 2).setRule(new Block(new boolean[][]{{true, true}, {false, true}, {false, true}}, gridPuzzle.getHeight(), true, false));
         gridPuzzle.getTileAt(1, 0).setRule(new Block(new boolean[][]{{true, false}, {true, true}, {true, false}}, gridPuzzle.getHeight(), true, false));
         gridPuzzle.getTileAt(1, 3).setRule(new Block(new boolean[][]{{true, true}, {true, true}}, gridPuzzle.getHeight(), true, false));
         gridPuzzle.getTileAt(1, 5).setRule(new Block(new boolean[][]{{false, true}, {false, true}, {true, true}}, gridPuzzle.getHeight(), true, false));
         gridPuzzle.getTileAt(3, 0).setRule(new Block(new boolean[][]{{false, true}, {true, true}, {true, false}}, gridPuzzle.getHeight(), true, false));
         gridPuzzle.getTileAt(3, 3).setRule(new Block(new boolean[][]{{false, true, true}, {true, true, false}}, gridPuzzle.getHeight(), true, false));
         gridPuzzle.getTileAt(4, 3).setRule(new Block(new boolean[][]{{true, true, true, true}}, gridPuzzle.getHeight(), true, false));
+        gridPuzzle.getTileAt(0, 0).setRule(new Elimination());*/
 
         /*BrokenLine.generate(cursor, random, random.nextFloat() * 0.15f + 0.05f);
         HexagonDots.generate(cursor, random, random.nextFloat() * 0.2f + 0.1f);

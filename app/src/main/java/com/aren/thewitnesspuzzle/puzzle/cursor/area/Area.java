@@ -7,11 +7,13 @@ import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.rules.Block;
 import com.aren.thewitnesspuzzle.puzzle.rules.Color;
+import com.aren.thewitnesspuzzle.puzzle.rules.Elimination;
 import com.aren.thewitnesspuzzle.puzzle.rules.Rule;
 import com.aren.thewitnesspuzzle.puzzle.rules.Square;
 import com.aren.thewitnesspuzzle.puzzle.rules.Sun;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -35,7 +37,7 @@ public class Area {
         vertices = new HashSet<>();
     }
 
-    public boolean validate(Cursor cursor){
+    public List<Rule> validate(Cursor cursor){
         for(Tile tile : tiles){
             for(Edge edge : tile.edges){
                 if(!cursor.containsEdge(edge)) edges.add(edge);
@@ -64,6 +66,48 @@ public class Area {
         areaErrors.addAll(Sun.areaValidate(this));
         areaErrors.addAll(Block.areaValidate(this));
 
-        return localErrors.size() == 0 && areaErrors.size() == 0;
+        List<Elimination> eliminationRules = new ArrayList<>();
+        for(Tile tile : tiles){
+            if(tile.getRule() instanceof Elimination){
+                eliminationRules.add((Elimination)tile.getRule());
+            }
+        }
+
+        if(eliminationRules.size() == 0){
+            areaErrors.addAll(localErrors);
+            return areaErrors;
+        }
+        else if(eliminationRules.size() == 1){
+            if(localErrors.size() + areaErrors.size() == 0){
+                return Arrays.asList((Rule)eliminationRules.get(0));
+            }
+            else if(localErrors.size() + areaErrors.size() == 1){
+                return new ArrayList<>();
+            }
+            else if(localErrors.size() == 0){
+                List<Rule> newAreaErrors = new ArrayList<>();
+                for(Rule rule : areaErrors){
+                    rule.eliminated = true;
+
+                    newAreaErrors.clear();
+                    newAreaErrors.addAll(Square.areaValidate(this));
+                    newAreaErrors.addAll(Sun.areaValidate(this));
+                    newAreaErrors.addAll(Block.areaValidate(this));
+
+                    if(newAreaErrors.size() == 0) break;
+
+                    rule.eliminated = false;
+                }
+                return newAreaErrors;
+            }
+            else{
+                localErrors.get(0).eliminated = true;
+                areaErrors.addAll(localErrors);
+                return areaErrors;
+            }
+        }
+
+        //TODO: I think it's undefined behaviour. Can elimination symbols cancel each other?
+        throw new RuntimeException("Multiple elimination symbols in the same area are not supported.");
     }
 }

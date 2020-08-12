@@ -146,7 +146,7 @@ public class GridPuzzle extends Puzzle {
     public boolean validate(){
         GridAreaSplitter splitter = new GridAreaSplitter(cursor);
         for(Area area : splitter.areaList){
-            if(!area.validate(cursor)) return false;
+            if(area.validate(cursor).size() > 0) return false;
         }
         return true;
     }

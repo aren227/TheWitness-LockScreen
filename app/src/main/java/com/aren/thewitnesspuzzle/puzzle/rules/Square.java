@@ -40,6 +40,7 @@ public class Square extends Colorable {
         for(Tile tile : area.tiles){
             if(tile.getRule() instanceof Square){
                 Square square = (Square)tile.getRule();
+                if(square.eliminated) continue;
                 if(color == null) color = square.color;
                 else if(color != square.color){
                     List<Rule> areaErrors = new ArrayList<>();

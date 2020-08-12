@@ -168,6 +168,7 @@ public class Block extends Rule {
         for(Tile tile : area.tiles){
             if(tile.getRule() instanceof Block){
                 Block block = (Block)tile.getRule();
+                if(block.eliminated) continue;
                 blockRules.add(block);
                 rules.add(block);
                 blockCount += Long.bitCount(block.blockBits[0]);
