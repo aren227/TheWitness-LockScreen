@@ -12,6 +12,7 @@ import com.aren.thewitnesspuzzle.math.Vector3;
 import com.aren.thewitnesspuzzle.puzzle.animation.Animation;
 import com.aren.thewitnesspuzzle.puzzle.animation.CursorFailedAnimation;
 import com.aren.thewitnesspuzzle.puzzle.animation.EliminatedAnimation;
+import com.aren.thewitnesspuzzle.puzzle.animation.EliminatorActivatedAnimation;
 import com.aren.thewitnesspuzzle.puzzle.animation.ErrorAnimation;
 import com.aren.thewitnesspuzzle.puzzle.animation.PuzzleAnimation;
 import com.aren.thewitnesspuzzle.puzzle.animation.WaitAnimation;
@@ -22,6 +23,7 @@ import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
 import com.aren.thewitnesspuzzle.puzzle.graph.EdgeProportion;
 import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
+import com.aren.thewitnesspuzzle.puzzle.rules.Elimination;
 import com.aren.thewitnesspuzzle.puzzle.rules.EndingPoint;
 import com.aren.thewitnesspuzzle.puzzle.rules.Rule;
 import com.aren.thewitnesspuzzle.puzzle.rules.StartingPoint;
@@ -237,6 +239,9 @@ public class Puzzle {
                             for(Rule rule : result.getEliminatedRules()){
                                 addAnimation(new EliminatedAnimation(rule));
                             }
+                            for(Rule rule : result.getEliminators()){
+                                addAnimation(new EliminatorActivatedAnimation(rule));
+                            }
                             addAnimation(new CursorFailedAnimation(Puzzle.this));
                         }
                         else{
@@ -430,6 +435,18 @@ public class Puzzle {
             for(Area.AreaValidationResult result : areaValidationResults){
                 for(Rule rule : result.originalErrors){
                     if(rule.eliminated){
+                        rules.add(rule);
+                    }
+                }
+            }
+            return rules;
+        }
+
+        public List<Rule> getEliminators(){
+            List<Rule> rules = new ArrayList<>();
+            for(Area.AreaValidationResult result : areaValidationResults){
+                for(Rule rule : result.area.getAllRules()){
+                    if(rule instanceof Elimination){
                         rules.add(rule);
                     }
                 }

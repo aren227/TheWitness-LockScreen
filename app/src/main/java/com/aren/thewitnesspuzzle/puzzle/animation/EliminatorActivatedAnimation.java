@@ -5,12 +5,12 @@ import com.aren.thewitnesspuzzle.math.MathUtils;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 import com.aren.thewitnesspuzzle.puzzle.rules.Rule;
 
-public class EliminatedAnimation extends Animation{
+public class EliminatorActivatedAnimation extends Animation {
 
     private Shape shape;
     private Puzzle puzzle;
 
-    public EliminatedAnimation(Rule rule){
+    public EliminatorActivatedAnimation(Rule rule){
         super(1000, 1, true);
         shape = rule.getShape();
         puzzle = rule.getPuzzle();
@@ -18,8 +18,6 @@ public class EliminatedAnimation extends Animation{
 
     @Override
     protected void update(float rate) {
-        shape.scale.setAnimationValue(this, MathUtils.lerp(1f, 0.85f, rate));
-
         // Fake alpha effect
         float s = rate * 0.5f; // Alpha 1 -> 0.5
         int r = android.graphics.Color.red(shape.color.getOriginalValue());

@@ -72,7 +72,7 @@ public class Area {
             }
         }
 
-        AreaValidationResult result = new AreaValidationResult();
+        AreaValidationResult result = new AreaValidationResult(this);
         result.originalErrors.addAll(localErrors);
         result.originalErrors.addAll(areaErrors);
 
@@ -143,9 +143,14 @@ public class Area {
 
     public class AreaValidationResult{
 
+        public Area area;
         public List<Rule> originalErrors = new ArrayList<>();
         public boolean eliminated = false;
         public List<Rule> newErrors = new ArrayList<>();
+
+        public AreaValidationResult(Area area){
+            this.area = area;
+        }
 
     }
 }
