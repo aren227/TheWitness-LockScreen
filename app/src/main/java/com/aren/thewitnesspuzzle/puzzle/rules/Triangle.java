@@ -1,7 +1,7 @@
 package com.aren.thewitnesspuzzle.puzzle.rules;
 
-import com.aren.thewitnesspuzzle.graphics.Shape;
-import com.aren.thewitnesspuzzle.graphics.Triangles;
+import com.aren.thewitnesspuzzle.graphics.shape.Shape;
+import com.aren.thewitnesspuzzle.graphics.shape.Triangles;
 import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
 import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
@@ -22,7 +22,7 @@ public class Triangle extends Rule {
     }
 
     @Override
-    public Shape getShape(){
+    public Shape generateShape(){
         if(!(getGraphElement() instanceof Tile)) return null;
         return new Triangles(getGraphElement().getPosition().toVector3(), getPuzzle().getPathWidth() * 0.5f, count, COLOR);
     }

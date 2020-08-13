@@ -17,6 +17,7 @@ public class EliminationMark extends Shape {
 
     @Override
     public void draw() {
+        super.draw();
         float width = 0.1f, height = 0.17f;
         float[] angles = new float[]{(float)Math.toRadians(120f), 0, (float)Math.toRadians(-120f)};
         float[] cx = new float[]{-0.43f * height, 0, 0.43f * height};

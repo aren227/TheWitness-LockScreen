@@ -15,27 +15,29 @@ public abstract class Shape {
     public float scale;
     public int color;
 
-    private List<Vector3> verticies;
+    private List<Vector3> vertices;
 
     public Shape(Vector3 center, float scale, int color){
         this.center = center;
         this.scale = scale;
         this.color = color;
-        verticies = new ArrayList<>();
+        vertices = new ArrayList<>();
     }
 
-    public abstract void draw();
+    public void draw(){
+        vertices.clear();
+    }
 
     public void addVertex(Vector3 vector3){
-        verticies.add(vector3);
+        vertices.add(vector3);
     }
 
     public void addVertex(Vector2 vector2){
-        verticies.add(new Vector3(vector2.x, vector2.y, 0));
+        vertices.add(new Vector3(vector2.x, vector2.y, 0));
     }
 
     public void fillVertexBuffer(FloatBuffer buffer){
-        for(Vector3 vector3 : verticies){
+        for(Vector3 vector3 : vertices){
             buffer.put(vector3.x * scale + center.x);
             buffer.put(vector3.y * scale + center.y);
             buffer.put(vector3.z * scale + center.z);
@@ -54,7 +56,7 @@ public abstract class Shape {
     }
 
     public int getVertexCount(){
-        return verticies.size();
+        return vertices.size();
     }
 
 }

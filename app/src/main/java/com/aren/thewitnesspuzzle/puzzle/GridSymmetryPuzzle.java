@@ -1,18 +1,13 @@
 package com.aren.thewitnesspuzzle.puzzle;
 
-import android.view.MotionEvent;
-
-import com.aren.thewitnesspuzzle.graphics.Circle;
-import com.aren.thewitnesspuzzle.graphics.Rectangle;
-import com.aren.thewitnesspuzzle.math.Vector2;
-import com.aren.thewitnesspuzzle.math.Vector2Int;
+import com.aren.thewitnesspuzzle.graphics.shape.Circle;
+import com.aren.thewitnesspuzzle.graphics.shape.Rectangle;
 import com.aren.thewitnesspuzzle.math.Vector3;
 import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.cursor.SymmetryCursor;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
 import com.aren.thewitnesspuzzle.puzzle.graph.EdgeProportion;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
-import com.aren.thewitnesspuzzle.puzzle.rules.EndingPoint;
 import com.aren.thewitnesspuzzle.puzzle.rules.StartingPoint;
 
 import java.util.ArrayList;
@@ -82,7 +77,7 @@ public class GridSymmetryPuzzle extends GridPuzzle {
     public void calcDynamicShapes(){
         dynamicShapes.clear();
 
-        if(touching){
+        if(cursor != null){
             dynamicShapes.add(new Circle(cursor.getFirstVisitedVertex().getPosition().toVector3(), ((StartingPoint)cursor.getFirstVisitedVertex().getRule()).getRadius(), getCursorColor()));
             dynamicShapes.add(new Circle(getOppositeVertex(cursor.getFirstVisitedVertex()).getPosition().toVector3(), ((StartingPoint)getOppositeVertex(cursor.getFirstVisitedVertex()).getRule()).getRadius(), getCursorColor()));
 

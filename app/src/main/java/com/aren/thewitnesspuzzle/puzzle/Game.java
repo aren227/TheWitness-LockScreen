@@ -3,19 +3,11 @@ package com.aren.thewitnesspuzzle.puzzle;
 import android.content.Context;
 import android.graphics.Color;
 import android.media.MediaPlayer;
-import android.util.Log;
-import android.view.MotionEvent;
+import android.opengl.GLSurfaceView;
 import android.view.WindowManager;
 
 import com.aren.thewitnesspuzzle.PuzzleGLSurfaceView;
-import com.aren.thewitnesspuzzle.graphics.Circle;
-import com.aren.thewitnesspuzzle.graphics.Shape;
-import com.aren.thewitnesspuzzle.math.Vector3;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Game {
@@ -34,10 +26,7 @@ public class Game {
     }
 
     public void touchEvent(float x, float y, int action){
-        if(puzzle.touchEvent(x, y, action)){
-            WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-            windowManager.removeView(surfaceView);
-        }
+        puzzle.touchEvent(x, y, action);
         update();
     }
 
@@ -46,9 +35,12 @@ public class Game {
     }
 
     public void update(){
-        puzzle.prepareForDrawing();
-
         surfaceView.requestRender();
+    }
+
+    public void close(){
+        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        windowManager.removeView(surfaceView);
     }
 
     public void setPuzzle(Puzzle puzzle){

@@ -1,7 +1,7 @@
 package com.aren.thewitnesspuzzle.puzzle.rules;
 
-import com.aren.thewitnesspuzzle.graphics.Rectangle;
-import com.aren.thewitnesspuzzle.graphics.Shape;
+import com.aren.thewitnesspuzzle.graphics.shape.Rectangle;
+import com.aren.thewitnesspuzzle.graphics.shape.Shape;
 import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
@@ -17,7 +17,7 @@ public class BrokenLine extends Rule {
     }
 
     @Override
-    public Shape getShape() {
+    public Shape generateShape(){
         if(getGraphElement() instanceof Edge){
             Edge edge = (Edge)getGraphElement();
             return new Rectangle(edge.getMiddlePoint().toVector3(), getSize() / edge.getLength(), edge.getPuzzle().getPathWidth(), edge.getAngle(), edge.getPuzzle().getBackgroundColor());

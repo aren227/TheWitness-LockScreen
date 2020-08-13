@@ -1,11 +1,7 @@
 package com.aren.thewitnesspuzzle.puzzle.rules;
 
-import com.aren.thewitnesspuzzle.graphics.Circle;
-import com.aren.thewitnesspuzzle.graphics.RoundSquare;
-import com.aren.thewitnesspuzzle.graphics.Shape;
-import com.aren.thewitnesspuzzle.math.Vector3;
-import com.aren.thewitnesspuzzle.puzzle.Puzzle;
-import com.aren.thewitnesspuzzle.puzzle.graph.GraphElement;
+import com.aren.thewitnesspuzzle.graphics.shape.Circle;
+import com.aren.thewitnesspuzzle.graphics.shape.Shape;
 
 public class StartingPoint extends Rule {
 
@@ -14,7 +10,7 @@ public class StartingPoint extends Rule {
     }
 
     @Override
-    public Shape getShape() {
+    public Shape generateShape() {
         return new Circle(getGraphElement().getPosition().toVector3(), getRadius(), getGraphElement().getPuzzle().getPathColor());
     }
 

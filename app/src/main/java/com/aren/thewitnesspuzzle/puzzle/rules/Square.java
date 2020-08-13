@@ -1,16 +1,10 @@
 package com.aren.thewitnesspuzzle.puzzle.rules;
 
-import com.aren.thewitnesspuzzle.graphics.RoundSquare;
-import com.aren.thewitnesspuzzle.graphics.Shape;
-import com.aren.thewitnesspuzzle.math.Vector2Int;
+import com.aren.thewitnesspuzzle.graphics.shape.RoundSquare;
+import com.aren.thewitnesspuzzle.graphics.shape.Shape;
 import com.aren.thewitnesspuzzle.math.Vector3;
-import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
-import com.aren.thewitnesspuzzle.puzzle.Path;
-import com.aren.thewitnesspuzzle.puzzle.Puzzle;
-import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.cursor.area.Area;
 import com.aren.thewitnesspuzzle.puzzle.cursor.area.GridAreaSplitter;
-import com.aren.thewitnesspuzzle.puzzle.graph.GraphElement;
 import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
 
 import java.util.ArrayList;
@@ -25,7 +19,7 @@ public class Square extends Colorable {
     }
 
     @Override
-    public Shape getShape() {
+    public Shape generateShape() {
         if(!(getGraphElement() instanceof Tile)) return null;
         return new RoundSquare(new Vector3(getGraphElement().x, getGraphElement().y, 0), 0.18f, color.getRGB());
     }

@@ -2,8 +2,8 @@ package com.aren.thewitnesspuzzle.puzzle.rules;
 
 import android.util.Log;
 
-import com.aren.thewitnesspuzzle.graphics.BlockSquare;
-import com.aren.thewitnesspuzzle.graphics.Shape;
+import com.aren.thewitnesspuzzle.graphics.shape.BlockSquare;
+import com.aren.thewitnesspuzzle.graphics.shape.Shape;
 import com.aren.thewitnesspuzzle.math.Vector3;
 import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.cursor.area.Area;
@@ -91,9 +91,8 @@ public class Block extends Rule {
     }*/
 
     @Override
-    public Shape getShape(){
-        if(!(getGraphElement() instanceof Tile)) return null;
-        return new BlockSquare(blocks, rotatable, new Vector3(getGraphElement().x, getGraphElement().y, 0), COLOR);
+    public Shape generateShape(){
+         return new BlockSquare(blocks, rotatable, new Vector3(getGraphElement().x, getGraphElement().y, 0), COLOR);
     }
 
     @Override

@@ -23,6 +23,7 @@ public class Rectangle extends Shape {
 
     @Override
     public void draw() {
+        super.draw();
         Vector2 lb = new Vector2(- width / 2, - height / 2);
         Vector2 lt = new Vector2(- width / 2, + height / 2);
         Vector2 rt = new Vector2(+ width / 2, + height / 2);
@@ -35,10 +36,10 @@ public class Rectangle extends Shape {
         rt = rot.multiply(rt);
         rb = rot.multiply(rb);
 
-        Vector2 a = new Vector2(lb.x, center.y + lb.y);
-        Vector2 b = new Vector2(lt.x, center.y + lt.y);
-        Vector2 c = new Vector2(rt.x, center.y + rt.y);
-        Vector2 d = new Vector2(rb.x, center.y + rb.y);
+        Vector2 a = new Vector2(lb.x, lb.y);
+        Vector2 b = new Vector2(lt.x, lt.y);
+        Vector2 c = new Vector2(rt.x,  rt.y);
+        Vector2 d = new Vector2(rb.x, rb.y);
 
         addVertex(a);
         addVertex(b);

@@ -1,35 +1,18 @@
 package com.aren.thewitnesspuzzle.puzzle;
 
-import android.util.Log;
-import android.util.Pair;
-import android.view.MotionEvent;
-import android.widget.Toast;
-
-import com.aren.thewitnesspuzzle.graphics.Circle;
-import com.aren.thewitnesspuzzle.graphics.Rectangle;
-import com.aren.thewitnesspuzzle.graphics.Shape;
 import com.aren.thewitnesspuzzle.math.Vector2Int;
-import com.aren.thewitnesspuzzle.math.Vector3;
+import com.aren.thewitnesspuzzle.puzzle.animation.ErrorAnimation;
 import com.aren.thewitnesspuzzle.puzzle.cursor.area.Area;
 import com.aren.thewitnesspuzzle.puzzle.cursor.area.GridAreaSplitter;
-import com.aren.thewitnesspuzzle.puzzle.factory.TestPuzzleFactory;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
 import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
-import com.aren.thewitnesspuzzle.puzzle.rules.BrokenLine;
 import com.aren.thewitnesspuzzle.puzzle.rules.EndingPoint;
-import com.aren.thewitnesspuzzle.puzzle.rules.HexagonDots;
 import com.aren.thewitnesspuzzle.puzzle.rules.Rule;
-import com.aren.thewitnesspuzzle.puzzle.rules.Square;
 import com.aren.thewitnesspuzzle.puzzle.rules.StartingPoint;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.List;
 
 public class GridPuzzle extends Puzzle {
 
@@ -145,10 +128,17 @@ public class GridPuzzle extends Puzzle {
     @Override
     public boolean validate(){
         GridAreaSplitter splitter = new GridAreaSplitter(cursor);
+        List<Rule> errors = new ArrayList<>();
         for(Area area : splitter.areaList){
-            if(area.validate(cursor).size() > 0) return false;
+            errors.addAll(area.validate(cursor));
         }
-        return true;
+        for(Rule rule : errors){
+            rule.error = true;
+            ErrorAnimation errorAnimation = new ErrorAnimation(rule);
+            addAnimation(errorAnimation);
+        }
+
+        return errors.size() == 0;
     }
 
 }

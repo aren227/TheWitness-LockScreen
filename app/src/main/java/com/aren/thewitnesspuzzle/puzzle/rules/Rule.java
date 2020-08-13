@@ -1,6 +1,6 @@
 package com.aren.thewitnesspuzzle.puzzle.rules;
 
-import com.aren.thewitnesspuzzle.graphics.Shape;
+import com.aren.thewitnesspuzzle.graphics.shape.Shape;
 import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 import com.aren.thewitnesspuzzle.puzzle.graph.GraphElement;
@@ -10,6 +10,9 @@ public class Rule {
     private GraphElement graphElement;
 
     public boolean eliminated;
+    public boolean error;
+
+    protected Shape shape;
 
     public Rule(){
 
@@ -23,8 +26,15 @@ public class Rule {
         this.graphElement = graphElement;
     }
 
-    public Shape getShape(){
+    public Shape generateShape(){
         return null;
+    }
+
+    public Shape getShape(){
+        if(shape == null){
+            shape = generateShape();
+        }
+        return shape;
     }
 
     public boolean validateLocally(Cursor cursor){

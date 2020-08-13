@@ -3,12 +3,15 @@ package com.aren.thewitnesspuzzle.puzzle;
 import android.util.Log;
 import android.view.MotionEvent;
 
-import com.aren.thewitnesspuzzle.graphics.Circle;
-import com.aren.thewitnesspuzzle.graphics.Rectangle;
-import com.aren.thewitnesspuzzle.graphics.Shape;
+import com.aren.thewitnesspuzzle.graphics.shape.Circle;
+import com.aren.thewitnesspuzzle.graphics.shape.Rectangle;
+import com.aren.thewitnesspuzzle.graphics.shape.Shape;
 import com.aren.thewitnesspuzzle.math.BoundingBox;
 import com.aren.thewitnesspuzzle.math.Vector2;
 import com.aren.thewitnesspuzzle.math.Vector3;
+import com.aren.thewitnesspuzzle.puzzle.animation.Animation;
+import com.aren.thewitnesspuzzle.puzzle.animation.CursorFailedAnimation;
+import com.aren.thewitnesspuzzle.puzzle.animation.PuzzleAnimation;
 import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
 import com.aren.thewitnesspuzzle.puzzle.graph.EdgeProportion;
@@ -50,8 +53,18 @@ public class Puzzle {
 
     protected HashSet<Class<? extends Rule>> appliedRules = new HashSet<>();
 
+    protected PuzzleAnimation animation;
+
     public Puzzle(Game game){
         this.game = game;
+
+        animation = new PuzzleAnimation(this);
+    }
+
+    public void updateDynamicShapes(){
+        for(Shape shape : dynamicShapes){
+            shape.draw();
+        }
     }
 
     public int getVertexCount(){
@@ -73,10 +86,10 @@ public class Puzzle {
         FloatBuffer vertexBuffer = bb.asFloatBuffer();
 
         for(Shape shape : staticShapes){
-            shape.draw(vertexBuffer);
+            shape.fillVertexBuffer(vertexBuffer);
         }
         for(Shape shape : dynamicShapes){
-            shape.draw(vertexBuffer);
+            shape.fillVertexBuffer(vertexBuffer);
         }
 
         vertexBuffer.position(0);
@@ -92,10 +105,10 @@ public class Puzzle {
 
         //FIXME: ConcurrentModificationException
         for(Shape shape : staticShapes){
-            shape.drawColor(vertexBuffer);
+            shape.fillColorBuffer(vertexBuffer);
         }
         for(Shape shape : dynamicShapes){
-            shape.drawColor(vertexBuffer);
+            shape.fillColorBuffer(vertexBuffer);
         }
 
         vertexBuffer.position(0);
@@ -125,6 +138,10 @@ public class Puzzle {
         for(Tile tile : tiles){
             if(tile.getRule() != null && tile.getRule().getShape() != null) staticShapes.add(tile.getRule().getShape());
         }
+
+        for(Shape shape : staticShapes){
+            shape.draw();
+        }
     }
 
     public void prepareForDrawing(){
@@ -138,7 +155,7 @@ public class Puzzle {
     public void calcDynamicShapes(){
         dynamicShapes.clear();
 
-        if(touching){
+        if(cursor != null){
             dynamicShapes.add(new Circle(cursor.getFirstVisitedVertex().getPosition().toVector3(), ((StartingPoint)cursor.getFirstVisitedVertex().getRule()).getRadius(), getCursorColor()));
 
             ArrayList<EdgeProportion> visitedEdges = cursor.getVisitedEdgesWithProportion(true);
@@ -190,7 +207,27 @@ public class Puzzle {
         return pathWidth;
     }
 
-    public boolean touchEvent(float x, float y, int action){
+    protected void startTracing(Vertex start){
+        resetAnimation();
+        touching = true;
+        cursor = createCursor(start);
+    }
+
+    protected void endTracing(){
+        touching = false;
+        EdgeProportion currentCursorEdge = cursor.getCurrentCursorEdge();
+        Edge edge = currentCursorEdge.edge;
+        if(currentCursorEdge.to().getRule() instanceof EndingPoint && currentCursorEdge.proportion > 1 - getPathWidth() * 0.5f / edge.getLength()){
+            if(!validate()){
+                addAnimation(new CursorFailedAnimation(this));
+            }
+            else{
+                game.close();
+            }
+        }
+    }
+
+    public void touchEvent(float x, float y, int action){
         Vector2 pos = new Vector2(x, y);
         if(action == MotionEvent.ACTION_DOWN){
             Vertex start = null;
@@ -201,12 +238,12 @@ public class Puzzle {
                 }
             }
             if(start != null){
-                touching = true;
-                cursor = createCursor(start);
+                startTracing(start);
             }
         }
         else if(action == MotionEvent.ACTION_MOVE){
-            if(!touching) return false;
+            if(!touching) return;
+
             Edge edge = getNearestEdge(pos);
             EdgeProportion edgeProportion = new EdgeProportion(edge);
             edgeProportion.proportion = edgeProportion.getProportionFromPointOutside(pos);
@@ -214,15 +251,29 @@ public class Puzzle {
         }
         else if(action == MotionEvent.ACTION_UP){
             if(touching){
-                touching = false;
-                EdgeProportion currentCursorEdge = cursor.getCurrentCursorEdge();
-                Edge edge = currentCursorEdge.edge;
-                if(currentCursorEdge.to().getRule() instanceof EndingPoint && currentCursorEdge.proportion > 1 - getPathWidth() * 0.5f / edge.getLength()){
-                    return validate();
-                }
+                endTracing();
             }
         }
-        return false;
+    }
+
+    public boolean shouldUpdateAnimation(){
+        return animation.shouldUpdate();
+    }
+
+    public void updateAnimation(){
+        animation.process();
+    }
+
+    public void resetAnimation(){
+        animation.reset();
+    }
+
+    public void addAnimation(Animation animation){
+        this.animation.addAnimation(animation);
+    }
+
+    public void clearCursor(){
+        cursor = null;
     }
 
     public boolean validate(){

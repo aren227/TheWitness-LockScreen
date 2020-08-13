@@ -19,6 +19,7 @@ public class Hexagon extends Shape {
 
     @Override
     public void draw() {
+        super.draw();
         for(int i = 0; i < 6; i++){
             float a = 2 * (float)Math.PI * i / 6;
             float b = 2 * (float)Math.PI * (i + 1) / 6;

@@ -1,15 +1,13 @@
 package com.aren.thewitnesspuzzle.puzzle.rules;
 
-import com.aren.thewitnesspuzzle.R;
-import com.aren.thewitnesspuzzle.graphics.Shape;
-import com.aren.thewitnesspuzzle.graphics.SunSquare;
+import com.aren.thewitnesspuzzle.graphics.shape.Shape;
+import com.aren.thewitnesspuzzle.graphics.shape.SunSquare;
 import com.aren.thewitnesspuzzle.math.Vector3;
 import com.aren.thewitnesspuzzle.puzzle.cursor.area.Area;
 import com.aren.thewitnesspuzzle.puzzle.cursor.area.GridAreaSplitter;
 import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +20,7 @@ public class Sun extends Colorable {
     }
 
     @Override
-    public Shape getShape(){
+    public Shape generateShape(){
         if(!(getGraphElement() instanceof Tile)) return null;
         return new SunSquare(new Vector3(getGraphElement().x, getGraphElement().y, 0), 0.2f, color.getRGB());
     }

@@ -19,6 +19,8 @@ public class SunSquare extends Shape {
 
     @Override
     public void draw() {
+        super.draw();
+
         Vector2 a = new Vector2(0, radius);
         Vector2 b = new Vector2(radius, 0);
         Vector2 c = new Vector2(0, -radius);

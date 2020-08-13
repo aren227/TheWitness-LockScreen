@@ -2,8 +2,8 @@ package com.aren.thewitnesspuzzle.puzzle.rules;
 
 import android.graphics.Color;
 
-import com.aren.thewitnesspuzzle.graphics.Hexagon;
-import com.aren.thewitnesspuzzle.graphics.Shape;
+import com.aren.thewitnesspuzzle.graphics.shape.Hexagon;
+import com.aren.thewitnesspuzzle.graphics.shape.Shape;
 import com.aren.thewitnesspuzzle.math.Vector3;
 import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
@@ -21,7 +21,7 @@ public class HexagonDots extends Rule {
     }
 
     @Override
-    public Shape getShape() {
+    public Shape generateShape() {
         if(getGraphElement() instanceof Tile) return null;
         return new Hexagon(new Vector3(getGraphElement().x, getGraphElement().y, 0), getPuzzle().getPathWidth() * 0.4f, Color.BLACK);
     }

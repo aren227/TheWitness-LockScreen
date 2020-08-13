@@ -32,6 +32,7 @@ public class BlockSquare extends Shape {
 
     @Override
     public void draw() {
+        super.draw();
         float bs = BLOCK_SIZE + PADDING * 2;
 
         Matrix2x2 rot = null;

@@ -23,6 +23,8 @@ public class RoundSquare extends Shape {
 
     @Override
     public void draw() {
+        super.draw();
+
         int[] signX = {1, -1, -1, 1};
         int[] signY = {1, 1, -1, -1};
 

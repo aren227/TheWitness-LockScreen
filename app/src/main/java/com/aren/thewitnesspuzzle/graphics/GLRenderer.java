@@ -69,6 +69,17 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onDrawFrame(GL10 gl) {
+        if(game.getPuzzle().shouldUpdateAnimation()){
+            game.getSurfaceView().setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
+        }
+        else{
+            game.getSurfaceView().setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+        }
+        game.getPuzzle().prepareForDrawing();
+
+        game.getPuzzle().updateAnimation();
+        game.getPuzzle().updateDynamicShapes();
+
         BoundingBox frustumBB = getFrustumBoundingBox();
 
         Matrix.frustumM(mProjectionMatrix, 0, -frustumBB.getWidth() / 2, frustumBB.getWidth() / 2, -frustumBB.getHeight() / 2, frustumBB.getHeight() / 2, 1, 100);
