@@ -10,7 +10,6 @@ public class Rule {
     private GraphElement graphElement;
 
     public boolean eliminated;
-    public boolean error;
 
     protected Shape shape;
 

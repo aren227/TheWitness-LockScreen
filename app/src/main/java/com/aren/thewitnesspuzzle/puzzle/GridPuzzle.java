@@ -126,19 +126,13 @@ public class GridPuzzle extends Puzzle {
     }
 
     @Override
-    public boolean validate(){
+    public ValidationResult validate(){
         GridAreaSplitter splitter = new GridAreaSplitter(cursor);
-        List<Rule> errors = new ArrayList<>();
+        ValidationResult result = new ValidationResult();
         for(Area area : splitter.areaList){
-            errors.addAll(area.validate(cursor));
+            result.areaValidationResults.add(area.validate(cursor));
         }
-        for(Rule rule : errors){
-            rule.error = true;
-            ErrorAnimation errorAnimation = new ErrorAnimation(rule);
-            addAnimation(errorAnimation);
-        }
-
-        return errors.size() == 0;
+        return result;
     }
 
 }

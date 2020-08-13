@@ -15,6 +15,12 @@ public class ErrorAnimation extends Animation {
         originalColor = shape.color;
     }
 
+    public ErrorAnimation(Rule rule, int repeat){
+        super(500, repeat);
+        shape = rule.getShape();
+        originalColor = shape.color;
+    }
+
     @Override
     protected void update(float rate) {
         float s = (float)(-Math.cos(rate * Math.PI * 2) + 1) / 2f;

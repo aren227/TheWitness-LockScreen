@@ -5,6 +5,8 @@ import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 
 public class CursorFailedAnimation extends Animation {
 
+    public static final int COLOR = android.graphics.Color.parseColor("#050a0f");
+
     private Puzzle puzzle;
     private int originalColor;
 
@@ -23,13 +25,16 @@ public class CursorFailedAnimation extends Animation {
 
     @Override
     protected void update(float rate) {
+        int rr = android.graphics.Color.red(COLOR);
+        int gg = android.graphics.Color.green(COLOR);
+        int bb = android.graphics.Color.blue(COLOR);
         int r = android.graphics.Color.red(puzzle.getPathColor());
         int g = android.graphics.Color.green(puzzle.getPathColor());
         int b = android.graphics.Color.blue(puzzle.getPathColor());
         int c = android.graphics.Color.rgb(
-                (int) MathUtils.lerp(5, r, rate),
-                (int)MathUtils.lerp(10, g, rate),
-                (int)MathUtils.lerp(15, b, rate));
+                (int) MathUtils.lerp(rr, r, rate),
+                (int)MathUtils.lerp(gg, g, rate),
+                (int)MathUtils.lerp(bb, b, rate));
         puzzle.setCursorColor(c);
     }
 

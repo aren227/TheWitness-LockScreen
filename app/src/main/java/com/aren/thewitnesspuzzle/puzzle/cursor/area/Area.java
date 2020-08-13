@@ -37,7 +37,7 @@ public class Area {
         vertices = new HashSet<>();
     }
 
-    public List<Rule> validate(Cursor cursor){
+    public AreaValidationResult validate(Cursor cursor){
         for(Tile tile : tiles){
             for(Edge edge : tile.edges){
                 if(!cursor.containsEdge(edge)) edges.add(edge);
@@ -73,41 +73,63 @@ public class Area {
             }
         }
 
+        AreaValidationResult result = new AreaValidationResult();
+        result.originalErrors.addAll(localErrors);
+        result.originalErrors.addAll(areaErrors);
+
+        //FIXME: Dirty code
         if(eliminationRules.size() == 0){
-            areaErrors.addAll(localErrors);
-            return areaErrors;
+            return result;
         }
         else if(eliminationRules.size() == 1){
             if(localErrors.size() + areaErrors.size() == 0){
-                return Arrays.asList((Rule)eliminationRules.get(0));
+                result.originalErrors.add(eliminationRules.get(0));
+                return result;
             }
             else if(localErrors.size() + areaErrors.size() == 1){
-                return new ArrayList<>();
+                result.eliminated = true;
+                result.originalErrors.get(0).eliminated = true;
+                return result;
             }
+            // localErrors.size() + areaErrors.size() >= 2
             else if(localErrors.size() == 0){
-                List<Rule> newAreaErrors = new ArrayList<>();
+                result.eliminated = true;
                 for(Rule rule : areaErrors){
                     rule.eliminated = true;
 
-                    newAreaErrors.clear();
-                    newAreaErrors.addAll(Square.areaValidate(this));
-                    newAreaErrors.addAll(Sun.areaValidate(this));
-                    newAreaErrors.addAll(Block.areaValidate(this));
+                    result.newErrors.clear();
+                    result.newErrors.addAll(Square.areaValidate(this));
+                    result.newErrors.addAll(Sun.areaValidate(this));
+                    result.newErrors.addAll(Block.areaValidate(this));
 
-                    if(newAreaErrors.size() == 0) break;
+                    if(result.newErrors.size() == 0){
+                        return result;
+                    }
 
                     rule.eliminated = false;
                 }
-                return newAreaErrors;
+                // Failed. Mark last rule as eliminated
+                areaErrors.get(areaErrors.size() - 1).eliminated = true;
+                return result;
             }
             else{
+                result.eliminated = true;
                 localErrors.get(0).eliminated = true;
-                areaErrors.addAll(localErrors);
-                return areaErrors;
+                for(int i = 1; i < localErrors.size(); i++) result.newErrors.add(localErrors.get(i));
+                result.newErrors.addAll(areaErrors);
+                return result;
             }
         }
 
         //TODO: I think it's undefined behaviour. Can elimination symbols cancel each other?
         throw new RuntimeException("Multiple elimination symbols in the same area are not supported.");
+    }
+
+    public class AreaValidationResult{
+
+        public List<Rule> originalErrors = new ArrayList<>();
+        public boolean eliminated = false;
+        public List<Rule> newErrors = new ArrayList<>();
+
     }
 }

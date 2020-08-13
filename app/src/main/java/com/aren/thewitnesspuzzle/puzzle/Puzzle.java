@@ -11,8 +11,12 @@ import com.aren.thewitnesspuzzle.math.Vector2;
 import com.aren.thewitnesspuzzle.math.Vector3;
 import com.aren.thewitnesspuzzle.puzzle.animation.Animation;
 import com.aren.thewitnesspuzzle.puzzle.animation.CursorFailedAnimation;
+import com.aren.thewitnesspuzzle.puzzle.animation.EliminatedAnimation;
+import com.aren.thewitnesspuzzle.puzzle.animation.ErrorAnimation;
 import com.aren.thewitnesspuzzle.puzzle.animation.PuzzleAnimation;
+import com.aren.thewitnesspuzzle.puzzle.animation.WaitAnimation;
 import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
+import com.aren.thewitnesspuzzle.puzzle.cursor.area.Area;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
 import com.aren.thewitnesspuzzle.puzzle.graph.EdgeProportion;
 import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
@@ -26,6 +30,7 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 public class Puzzle {
 
@@ -211,6 +216,25 @@ public class Puzzle {
         resetAnimation();
         touching = true;
         cursor = createCursor(start);
+
+        for(Vertex vertex : vertices){
+            if(vertex.getRule() != null){
+                vertex.getRule().eliminated = false;
+                if(vertex.getRule().getShape() != null) vertex.getRule().getShape().scale = 1f;
+            }
+        }
+        for(Edge edge : edges){
+            if(edge.getRule() != null){
+                edge.getRule().eliminated = false;
+                if(edge.getRule().getShape() != null) edge.getRule().getShape().scale = 1f;
+            }
+        }
+        for(Tile tile : tiles){
+            if(tile.getRule() != null){
+                tile.getRule().eliminated = false;
+                if(tile.getRule().getShape() != null) tile.getRule().getShape().scale = 1f;
+            }
+        }
     }
 
     protected void endTracing(){
@@ -218,11 +242,40 @@ public class Puzzle {
         EdgeProportion currentCursorEdge = cursor.getCurrentCursorEdge();
         Edge edge = currentCursorEdge.edge;
         if(currentCursorEdge.to().getRule() instanceof EndingPoint && currentCursorEdge.proportion > 1 - getPathWidth() * 0.5f / edge.getLength()){
-            if(!validate()){
-                addAnimation(new CursorFailedAnimation(this));
+            final ValidationResult result = validate();
+
+            if(result.hasEliminatedRule()){
+                for(Rule rule : result.getOriginalErrors()){
+                    addAnimation(new ErrorAnimation(rule, 2));
+                }
+                addAnimation(new WaitAnimation(this, new Runnable() {
+                    @Override
+                    public void run() {
+                        if(result.failed()){
+                            for(Rule rule : result.getNewErrors()){
+                                addAnimation(new ErrorAnimation(rule));
+                            }
+                            for(Rule rule : result.getEliminatedRules()){
+                                addAnimation(new EliminatedAnimation(rule));
+                            }
+                            addAnimation(new CursorFailedAnimation(Puzzle.this));
+                        }
+                        else{
+                            game.close();
+                        }
+                    }
+                }));
             }
             else{
-                game.close();
+                if(result.failed()){
+                    for(Rule rule : result.getOriginalErrors()){
+                        addAnimation(new ErrorAnimation(rule));
+                    }
+                    addAnimation(new CursorFailedAnimation(this));
+                }
+                else{
+                    game.close();
+                }
             }
         }
     }
@@ -276,18 +329,25 @@ public class Puzzle {
         cursor = null;
     }
 
-    public boolean validate(){
+    public ValidationResult validate(){
+        ValidationResult result = new ValidationResult();
         //TODO: Support area validation
         for(Vertex vertex : vertices){
-            if(vertex.getRule() != null && !vertex.getRule().validateLocally(cursor)) return false;
+            if(vertex.getRule() != null && !vertex.getRule().validateLocally(cursor)){
+                result.notOnAreaErrors.add(vertex.getRule());
+            }
         }
         for(Edge edge : edges){
-            if(edge.getRule() != null && !edge.getRule().validateLocally(cursor)) return false;
+            if(edge.getRule() != null && !edge.getRule().validateLocally(cursor)){
+                result.notOnAreaErrors.add(edge.getRule());
+            }
         }
         for(Tile tile : tiles){
-            if(tile.getRule() != null && !tile.getRule().validateLocally(cursor)) return false;
+            if(tile.getRule() != null && !tile.getRule().validateLocally(cursor)){
+                result.notOnAreaErrors.add(tile.getRule());
+            }
         }
-        return true;
+        return result;
     }
 
     public HashSet<Class<? extends Rule>> getAppliedRules(){
@@ -353,6 +413,57 @@ public class Puzzle {
 
     protected Cursor createCursor(Vertex start){
         return new Cursor(this, start);
+    }
+
+    public class ValidationResult{
+
+        public List<Rule> notOnAreaErrors = new ArrayList<>();
+        public List<Area.AreaValidationResult> areaValidationResults = new ArrayList<>();
+
+        public boolean failed(){
+            if(notOnAreaErrors.size() > 0) return true;
+            for(Area.AreaValidationResult result : areaValidationResults){
+                if(!result.eliminated && result.originalErrors.size() > 0) return true;
+                if(result.eliminated && result.newErrors.size() > 0) return true;
+            }
+            return false;
+        }
+
+        public boolean hasEliminatedRule(){
+            for(Area.AreaValidationResult result : areaValidationResults){
+                if(result.eliminated) return true;
+            }
+            return false;
+        }
+
+        public List<Rule> getEliminatedRules(){
+            List<Rule> rules = new ArrayList<>();
+            for(Area.AreaValidationResult result : areaValidationResults){
+                for(Rule rule : result.originalErrors){
+                    if(rule.eliminated){
+                        rules.add(rule);
+                    }
+                }
+            }
+            return rules;
+        }
+
+        public List<Rule> getOriginalErrors(){
+            List<Rule> rules = new ArrayList<>();
+            for(Area.AreaValidationResult result : areaValidationResults){
+                rules.addAll(result.originalErrors);
+            }
+            return rules;
+        }
+
+        public List<Rule> getNewErrors(){
+            List<Rule> rules = new ArrayList<>();
+            for(Area.AreaValidationResult result : areaValidationResults){
+                rules.addAll(result.newErrors);
+            }
+            return rules;
+        }
+
     }
 
 }

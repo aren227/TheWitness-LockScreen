@@ -50,8 +50,13 @@ public class TestPuzzleFactory extends PuzzleFactory{
 
         gridPuzzle.getTileAt(0, 0).setRule(new Elimination());
         gridPuzzle.getTileAt(1, 0).setRule(new Square(Color.WHITE));
-        gridPuzzle.getTileAt(2, 0).setRule(new Square(Color.BLACK));
-        gridPuzzle.getTileAt(3, 0).setRule(new Square(Color.WHITE));
+        gridPuzzle.getTileAt(2, 0).setRule(new Sun(Color.WHITE));
+        gridPuzzle.getTileAt(0, 1).setRule(new Square(Color.BLACK));
+        gridPuzzle.getTileAt(1, 1).setRule(new Square(Color.BLACK));
+        gridPuzzle.getTileAt(2, 1).setRule(new Square(Color.BLACK));
+        gridPuzzle.getTileAt(0, 2).setRule(new Square(Color.WHITE));
+        gridPuzzle.getTileAt(1, 2).setRule(new Square(Color.WHITE));
+        gridPuzzle.getTileAt(2, 2).setRule(new Sun(Color.WHITE));
 
         //Square.generate(splitter, random, random.nextFloat() * 0.25f + 0.4f);
         //Sun.generate(splitter, random, random.nextFloat() * 0.4f + 0.1f);

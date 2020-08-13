@@ -9,12 +9,17 @@ import java.util.List;
 public class PuzzleAnimation {
 
     private List<Animation> animations;
+    private List<Animation> tempQueue;
+    private boolean lock;
 
     public PuzzleAnimation(Puzzle puzzle){
         animations = new ArrayList<>();
+        tempQueue = new ArrayList<>();
+        lock = false;
     }
 
     public void process(){
+        lock = true;
         Iterator<Animation> iterator = animations.iterator();
         while(iterator.hasNext()){
             Animation animation = iterator.next();
@@ -22,6 +27,10 @@ public class PuzzleAnimation {
                 iterator.remove();
             }
         }
+        lock = false;
+
+        animations.addAll(tempQueue);
+        tempQueue.clear();
     }
 
     public boolean shouldUpdate(){
@@ -36,7 +45,8 @@ public class PuzzleAnimation {
     }
 
     public void addAnimation(Animation animation){
-        animations.add(animation);
+        if(lock) tempQueue.add(animation);
+        else animations.add(animation);
     }
 
 }
