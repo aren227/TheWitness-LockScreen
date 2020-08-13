@@ -14,12 +14,12 @@ public class EliminatedAnimation extends Animation{
 
     @Override
     protected void update(float rate) {
-        this.rule.getShape().scale = MathUtils.lerp(1f, 0.75f, rate);
+        this.rule.getShape().scale = MathUtils.lerp(1f, 0.9f, rate);
     }
 
     @Override
     protected void done(){
         super.done();
-        this.rule.getShape().scale = 0.75f;
+        this.rule.getShape().scale = 0.9f;
     }
 }

@@ -253,6 +253,7 @@ public class Puzzle {
                     public void run() {
                         if(result.failed()){
                             for(Rule rule : result.getNewErrors()){
+                                if(rule.eliminated) continue;
                                 addAnimation(new ErrorAnimation(rule));
                             }
                             for(Rule rule : result.getEliminatedRules()){
@@ -459,7 +460,8 @@ public class Puzzle {
         public List<Rule> getNewErrors(){
             List<Rule> rules = new ArrayList<>();
             for(Area.AreaValidationResult result : areaValidationResults){
-                rules.addAll(result.newErrors);
+                if(result.eliminated) rules.addAll(result.newErrors);
+                else rules.addAll(result.originalErrors);
             }
             return rules;
         }

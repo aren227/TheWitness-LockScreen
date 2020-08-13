@@ -9,7 +9,9 @@ import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class Square extends Colorable {
@@ -30,22 +32,30 @@ public class Square extends Colorable {
     }
 
     public static List<Rule> areaValidate(Area area){
-        Color color = null;
+        Map<Color, ArrayList<Rule>> squareColors = new HashMap<>();
         for(Tile tile : area.tiles){
             if(tile.getRule() instanceof Square){
                 Square square = (Square)tile.getRule();
                 if(square.eliminated) continue;
-                if(color == null) color = square.color;
-                else if(color != square.color){
-                    List<Rule> areaErrors = new ArrayList<>();
-                    for(Tile t : area.tiles){
-                        if(t.getRule() instanceof Square) areaErrors.add(t.getRule());
-                    }
-                    return areaErrors;
-                }
+                if(!squareColors.containsKey(square.color)) squareColors.put(square.color, new ArrayList<Rule>());
+                squareColors.get(square.color).add(square);
             }
         }
-        return new ArrayList<>();
+
+        if(squareColors.keySet().size() <= 1) return new ArrayList<>();
+
+        int minSize = Integer.MAX_VALUE;
+        for(Color color : squareColors.keySet()){
+            minSize = Math.min(squareColors.get(color).size(), minSize);
+        }
+
+        List<Rule> areaErrors = new ArrayList<>();
+        for(Color color : squareColors.keySet()){
+            if(squareColors.get(color).size() == minSize){
+                areaErrors.addAll(squareColors.get(color));
+            }
+        }
+        return areaErrors;
     }
 
     public static void generate(GridAreaSplitter splitter, Random random, float spawnRate){

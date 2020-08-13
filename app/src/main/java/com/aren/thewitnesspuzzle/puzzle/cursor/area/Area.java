@@ -14,6 +14,7 @@ import com.aren.thewitnesspuzzle.puzzle.rules.Sun;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -93,6 +94,9 @@ public class Area {
             }
             // localErrors.size() + areaErrors.size() >= 2
             else if(localErrors.size() == 0){
+                // Shuffle area errors to randomly eliminate symbol when validation is failed
+                Collections.shuffle(areaErrors);
+
                 result.eliminated = true;
                 for(Rule rule : areaErrors){
                     rule.eliminated = true;
