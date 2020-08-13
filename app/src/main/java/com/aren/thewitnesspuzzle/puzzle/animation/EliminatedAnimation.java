@@ -3,6 +3,7 @@ package com.aren.thewitnesspuzzle.puzzle.animation;
 import com.aren.thewitnesspuzzle.graphics.shape.Shape;
 import com.aren.thewitnesspuzzle.math.MathUtils;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
+import com.aren.thewitnesspuzzle.puzzle.rules.Elimination;
 import com.aren.thewitnesspuzzle.puzzle.rules.Rule;
 
 public class EliminatedAnimation extends Animation{
@@ -18,20 +19,24 @@ public class EliminatedAnimation extends Animation{
 
     @Override
     protected void update(float rate) {
-        shape.scale.setAnimationValue(this, MathUtils.lerp(1f, 0.85f, rate));
+        shape.scale.setAnimationValue(this, MathUtils.lerp(1f, 0.9f, rate));
+
+        int sr = android.graphics.Color.red(Elimination.COLOR);
+        int sg = android.graphics.Color.green(Elimination.COLOR);
+        int sb = android.graphics.Color.blue(Elimination.COLOR);
 
         // Fake alpha effect
-        float s = rate * 0.5f; // Alpha 1 -> 0.5
         int r = android.graphics.Color.red(shape.color.getOriginalValue());
         int g = android.graphics.Color.green(shape.color.getOriginalValue());
         int b = android.graphics.Color.blue(shape.color.getOriginalValue());
         int rr = android.graphics.Color.red(puzzle.getBackgroundColor());
         int gg = android.graphics.Color.green(puzzle.getBackgroundColor());
         int bb = android.graphics.Color.blue(puzzle.getBackgroundColor());
+
         int c = android.graphics.Color.rgb(
-                (int)MathUtils.lerp(r, rr, s),
-                (int)MathUtils.lerp(g, gg, s),
-                (int)MathUtils.lerp(b, bb, s));
+                (int)MathUtils.lerp(sr, (r + rr) / 2f, rate),
+                (int)MathUtils.lerp(sg, (g + gg) / 2f, rate),
+                (int)MathUtils.lerp(sb, (b + bb) / 2f, rate));
         shape.color.setAnimationValue(this, c);
     }
 }
