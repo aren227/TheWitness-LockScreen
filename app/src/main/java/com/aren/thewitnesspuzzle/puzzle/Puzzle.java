@@ -15,6 +15,7 @@ import com.aren.thewitnesspuzzle.puzzle.animation.EliminatedAnimation;
 import com.aren.thewitnesspuzzle.puzzle.animation.ErrorAnimation;
 import com.aren.thewitnesspuzzle.puzzle.animation.PuzzleAnimation;
 import com.aren.thewitnesspuzzle.puzzle.animation.WaitAnimation;
+import com.aren.thewitnesspuzzle.puzzle.animation.value.Value;
 import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.cursor.area.Area;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
@@ -42,7 +43,7 @@ public class Puzzle {
 
     protected int backgroundColor;
     protected int pathColor;
-    protected int cursorColor;
+    protected Value<Integer> cursorColor = new Value<>(0);
 
     protected float pathWidth;
 
@@ -161,13 +162,13 @@ public class Puzzle {
         dynamicShapes.clear();
 
         if(cursor != null){
-            dynamicShapes.add(new Circle(cursor.getFirstVisitedVertex().getPosition().toVector3(), ((StartingPoint)cursor.getFirstVisitedVertex().getRule()).getRadius(), getCursorColor()));
+            dynamicShapes.add(new Circle(cursor.getFirstVisitedVertex().getPosition().toVector3(), ((StartingPoint)cursor.getFirstVisitedVertex().getRule()).getRadius(), cursorColor().get()));
 
             ArrayList<EdgeProportion> visitedEdges = cursor.getVisitedEdgesWithProportion(true);
             if(visitedEdges.size() == 0) return;
             for(EdgeProportion edgeProportion : visitedEdges){
-                dynamicShapes.add(new Circle(new Vector3(edgeProportion.getProportionPoint().x, edgeProportion.getProportionPoint().y, 0), getPathWidth() * 0.5f, getCursorColor()));
-                dynamicShapes.add(new Rectangle(edgeProportion.getProportionMiddlePoint().toVector3(), edgeProportion.getProportionLength(), getPathWidth(), edgeProportion.edge.getAngle(), getCursorColor()));
+                dynamicShapes.add(new Circle(new Vector3(edgeProportion.getProportionPoint().x, edgeProportion.getProportionPoint().y, 0), getPathWidth() * 0.5f, cursorColor().get()));
+                dynamicShapes.add(new Rectangle(edgeProportion.getProportionMiddlePoint().toVector3(), edgeProportion.getProportionLength(), getPathWidth(), edgeProportion.edge.getAngle(), cursorColor().get()));
             }
         }
     }
@@ -188,11 +189,7 @@ public class Puzzle {
         return pathColor;
     }
 
-    public void setCursorColor(int color){
-        cursorColor = color;
-    }
-
-    public int getCursorColor(){
+    public Value<Integer> cursorColor(){
         return cursorColor;
     }
 
@@ -216,25 +213,6 @@ public class Puzzle {
         resetAnimation();
         touching = true;
         cursor = createCursor(start);
-
-        for(Vertex vertex : vertices){
-            if(vertex.getRule() != null){
-                vertex.getRule().eliminated = false;
-                if(vertex.getRule().getShape() != null) vertex.getRule().getShape().scale = 1f;
-            }
-        }
-        for(Edge edge : edges){
-            if(edge.getRule() != null){
-                edge.getRule().eliminated = false;
-                if(edge.getRule().getShape() != null) edge.getRule().getShape().scale = 1f;
-            }
-        }
-        for(Tile tile : tiles){
-            if(tile.getRule() != null){
-                tile.getRule().eliminated = false;
-                if(tile.getRule().getShape() != null) tile.getRule().getShape().scale = 1f;
-            }
-        }
     }
 
     protected void endTracing(){
@@ -333,19 +311,9 @@ public class Puzzle {
     public ValidationResult validate(){
         ValidationResult result = new ValidationResult();
         //TODO: Support area validation
-        for(Vertex vertex : vertices){
-            if(vertex.getRule() != null && !vertex.getRule().validateLocally(cursor)){
-                result.notOnAreaErrors.add(vertex.getRule());
-            }
-        }
-        for(Edge edge : edges){
-            if(edge.getRule() != null && !edge.getRule().validateLocally(cursor)){
-                result.notOnAreaErrors.add(edge.getRule());
-            }
-        }
-        for(Tile tile : tiles){
-            if(tile.getRule() != null && !tile.getRule().validateLocally(cursor)){
-                result.notOnAreaErrors.add(tile.getRule());
+        for(Rule rule : getAllRules()){
+            if(!rule.validateLocally(cursor)){
+                result.notOnAreaErrors.add(rule);
             }
         }
         return result;
@@ -414,6 +382,26 @@ public class Puzzle {
 
     protected Cursor createCursor(Vertex start){
         return new Cursor(this, start);
+    }
+
+    public List<Rule> getAllRules(){
+        List<Rule> rules = new ArrayList<>();
+        for(Vertex vertex : vertices){
+            if(vertex.getRule() != null){
+                rules.add(vertex.getRule());
+            }
+        }
+        for(Edge edge : edges){
+            if(edge.getRule() != null){
+                rules.add(edge.getRule());
+            }
+        }
+        for(Tile tile : tiles){
+            if(tile.getRule() != null){
+                rules.add(tile.getRule());
+            }
+        }
+        return rules;
     }
 
     public class ValidationResult{

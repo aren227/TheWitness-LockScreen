@@ -7,7 +7,7 @@ public class ColorFactory {
     public static void setRandomColor(Puzzle puzzle){
         puzzle.setBackgroundColor(android.graphics.Color.parseColor("#ffbb02"));
         puzzle.setPathColor(android.graphics.Color.parseColor("#4b3906"));
-        puzzle.setCursorColor(android.graphics.Color.parseColor("#fefffe"));
+        puzzle.cursorColor().set(android.graphics.Color.parseColor("#fefffe"));
     }
 
 }

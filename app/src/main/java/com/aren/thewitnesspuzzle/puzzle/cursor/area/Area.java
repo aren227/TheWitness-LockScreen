@@ -49,17 +49,15 @@ public class Area {
             if(!cursor.containsVertex(edge.to)) vertices.add(edge.to);
         }
 
+        for(Rule rule : getAllRules()){
+            rule.eliminated = false;
+        }
+
         List<Rule> localErrors = new ArrayList<>();
 
         // Local validation
-        for(Tile tile : tiles){
-            if(tile.getRule() != null && !tile.getRule().validateLocally(cursor)) localErrors.add(tile.getRule());
-        }
-        for(Edge edge : edges){
-            if(edge.getRule() != null && !edge.getRule().validateLocally(cursor)) localErrors.add(edge.getRule());
-        }
-        for(Vertex vertex : vertices){
-            if(vertex.getRule() != null && !vertex.getRule().validateLocally(cursor)) localErrors.add(vertex.getRule());
+        for(Rule rule : getAllRules()){
+            if(!rule.validateLocally(cursor)) localErrors.add(rule);
         }
 
         List<Rule> areaErrors = new ArrayList<>();
@@ -127,6 +125,20 @@ public class Area {
 
         //TODO: I think it's undefined behaviour. Can elimination symbols cancel each other?
         throw new RuntimeException("Multiple elimination symbols in the same area are not supported.");
+    }
+
+    public List<Rule> getAllRules(){
+        List<Rule> rules = new ArrayList<>();
+        for(Tile tile : tiles){
+            if(tile.getRule() != null) rules.add(tile.getRule());
+        }
+        for(Edge edge : edges){
+            if(edge.getRule() != null) rules.add(edge.getRule());
+        }
+        for(Vertex vertex : vertices){
+            if(vertex.getRule() != null) rules.add(vertex.getRule());
+        }
+        return rules;
     }
 
     public class AreaValidationResult{

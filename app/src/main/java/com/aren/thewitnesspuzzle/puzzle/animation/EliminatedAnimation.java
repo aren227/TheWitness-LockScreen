@@ -8,18 +8,12 @@ public class EliminatedAnimation extends Animation{
     private Rule rule;
 
     public EliminatedAnimation(Rule rule){
-        super(1000, 1);
+        super(1000, 1, true);
         this.rule = rule;
     }
 
     @Override
     protected void update(float rate) {
-        this.rule.getShape().scale = MathUtils.lerp(1f, 0.9f, rate);
-    }
-
-    @Override
-    protected void done(){
-        super.done();
-        this.rule.getShape().scale = 0.9f;
+        this.rule.getShape().scale.setAnimationValue(this, MathUtils.lerp(1f, 0.85f, rate));
     }
 }

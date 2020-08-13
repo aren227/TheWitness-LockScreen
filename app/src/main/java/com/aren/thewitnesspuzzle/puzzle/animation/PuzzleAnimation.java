@@ -23,7 +23,8 @@ public class PuzzleAnimation {
         Iterator<Animation> iterator = animations.iterator();
         while(iterator.hasNext()){
             Animation animation = iterator.next();
-            if(!animation.process()){
+            if(!animation.isDone() && !animation.process()){
+                animation.remove();
                 iterator.remove();
             }
         }
@@ -34,14 +35,18 @@ public class PuzzleAnimation {
     }
 
     public boolean shouldUpdate(){
-        return animations.size() > 0;
+        for(Animation animation : animations){
+            if(!animation.isDone()) return true;
+        }
+        return false;
     }
 
     public void reset(){
         for(Animation animation : animations){
-            animation.done();
+            animation.remove();
         }
         animations.clear();
+        tempQueue.clear();
     }
 
     public void addAnimation(Animation animation){
