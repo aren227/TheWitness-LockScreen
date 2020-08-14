@@ -9,6 +9,9 @@ import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.rules.EndingPointRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.StartingPointRule;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GridPuzzle extends Puzzle {
 
     protected int width, height;
@@ -128,6 +131,19 @@ public class GridPuzzle extends Puzzle {
             result.areaValidationResults.add(area.validate(cursor));
         }
         return result;
+    }
+
+    public List<Vertex> getBorderVertices(){
+        List<Vertex> vertices = new ArrayList<>();
+        for(int x = 0; x <= width; x++){
+            vertices.add(getVertexAt(x, 0));
+            vertices.add(getVertexAt(x, height));
+        }
+        for(int y = 1; y < height; y++){
+            vertices.add(getVertexAt(0, y));
+            vertices.add(getVertexAt(width, y));
+        }
+        return vertices;
     }
 
 }

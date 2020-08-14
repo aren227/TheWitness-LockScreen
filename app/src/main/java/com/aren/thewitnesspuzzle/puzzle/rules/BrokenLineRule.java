@@ -2,6 +2,7 @@ package com.aren.thewitnesspuzzle.puzzle.rules;
 
 import com.aren.thewitnesspuzzle.graphics.shape.RectangleShape;
 import com.aren.thewitnesspuzzle.graphics.shape.Shape;
+import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
@@ -35,7 +36,7 @@ public class BrokenLineRule extends Rule {
         ArrayList<Edge> notSolutionEdges = new ArrayList<>();
 
         for(Edge edge : puzzle.getEdges()){
-            if(edge.getRule() == null && !solution.containsEdge(edge)){
+            if(edge.getRule() == null && !edge.isEndingEdge() && !solution.containsEdge(edge)){
                 notSolutionEdges.add(edge);
             }
         }

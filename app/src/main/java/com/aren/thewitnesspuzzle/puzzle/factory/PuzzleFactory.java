@@ -1,15 +1,14 @@
 package com.aren.thewitnesspuzzle.puzzle.factory;
 
+import com.aren.thewitnesspuzzle.puzzle.Game;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 
-public abstract class PuzzleFactory {
+import java.util.Random;
 
-    Puzzle puzzle;
+public interface PuzzleFactory {
 
-    public PuzzleFactory(Puzzle puzzle){
-        this.puzzle = puzzle;
-    }
+    Puzzle generate(Game game, Random random);
 
-    public abstract void generate();
+    Difficulty getDifficulty();
 
 }

@@ -12,6 +12,9 @@ import java.util.Random;
 public class RandomGridWalker {
 
     private GridPuzzle gridPuzzle;
+
+    private int startX, startY, endX, endY;
+
     private int width, height;
 
     private long hist; //지금까지 지나온 점들의 집합
@@ -33,7 +36,7 @@ public class RandomGridWalker {
     private boolean walk(){
         if(x < 0 || y < 0 || x > width || y > height) return false;
 
-        if(x == width && y == height){
+        if(x == endX && y == endY){
             return true;
         }
 
@@ -61,7 +64,7 @@ public class RandomGridWalker {
         return false;
     }
 
-    public RandomGridWalker(GridPuzzle gridPuzzle, Random random){
+    public RandomGridWalker(GridPuzzle gridPuzzle, Random random, int startX, int startY, int endX, int endY){
         this.gridPuzzle = gridPuzzle;
         this.width = gridPuzzle.getWidth();
         this.height = gridPuzzle.getHeight();
@@ -69,6 +72,10 @@ public class RandomGridWalker {
             throw new RuntimeException("Width and height must be less than or equal to 7.");
         }
         this.random = random;
+        this.startX = startX;
+        this.startY = startY;
+        this.endX = endX;
+        this.endY = endY;
     }
 
     public void doWalkAsManyAsPossible(int iters){
@@ -78,7 +85,8 @@ public class RandomGridWalker {
             if(stopWalk) break;
 
             hist = deltaUpperBit = deltaLowerBit = 0;
-            x = y = 0;
+            x = startX;
+            y = startY;
 
             if(!walk()) break; //음
 
@@ -87,15 +95,15 @@ public class RandomGridWalker {
             minimumVerticies = Long.bitCount(hist); //최고 정점 개수 갱신
 
             result = new ArrayList<>();
-            int x = 0, y = 0;
-            while(x != width || y != height){
+            int x = startX, y = startY;
+            while(x != endX || y != endY){
                 result.add(new Vector2Int(x, y));
                 int pos = (x + y * (width + 1));
                 int dir = (int)((((deltaUpperBit >> pos) & 1) << 1) | ((deltaLowerBit >> pos) & 1));
                 x += delta[dir][0];
                 y += delta[dir][1];
             }
-            result.add(new Vector2Int(width, height));
+            result.add(new Vector2Int(endX, endY));
 
             Log.i("WALKER", "" + (minimumVerticies + 1));
         }

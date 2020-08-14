@@ -1,6 +1,7 @@
 package com.aren.thewitnesspuzzle.puzzle.graph;
 
 import com.aren.thewitnesspuzzle.math.Vector2;
+import com.aren.thewitnesspuzzle.puzzle.rules.EndingPointRule;
 
 public class Edge extends GraphElement{
 
@@ -55,6 +56,10 @@ public class Edge extends GraphElement{
     @Override
     public Vector2 getPosition(){
         return getMiddlePoint();
+    }
+
+    public boolean isEndingEdge(){
+        return from.getRule() instanceof EndingPointRule || to.getRule() instanceof EndingPointRule;
     }
 
 }

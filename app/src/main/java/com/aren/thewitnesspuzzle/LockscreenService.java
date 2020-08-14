@@ -5,31 +5,20 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.view.Display;
-import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.aren.thewitnesspuzzle.puzzle.Game;
-import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
-import com.aren.thewitnesspuzzle.puzzle.GridSymmetryPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
-import com.aren.thewitnesspuzzle.puzzle.SlidePuzzle;
-import com.aren.thewitnesspuzzle.puzzle.factory.TestPuzzleFactory;
-import com.aren.thewitnesspuzzle.puzzle.factory.TestSymmetryPuzzleFactory;
+import com.aren.thewitnesspuzzle.puzzle.factory.SimpleMazePuzzleFactory;
+import com.aren.thewitnesspuzzle.puzzle.factory.SimpleSquarePuzzleFactory;
 
-import java.util.ArrayList;
+import java.util.Random;
 
 public class LockscreenService extends Service {
 
@@ -104,10 +93,9 @@ public class LockscreenService extends Service {
                 screenOn = false;
                 Log.i("TAG", "SCREEN_OFF");
 
-                Puzzle puzzle = new GridPuzzle(game, 3, 3);
-                //Puzzle puzzle = new GridSymmetryPuzzle(game, 4, 4, GridSymmetryPuzzle.SymmetryType.POINT);
+
+                Puzzle puzzle = new SimpleSquarePuzzleFactory().generate(game, new Random());
                 game.setPuzzle(puzzle);
-                new TestPuzzleFactory(puzzle).generate();
                 //game.setPuzzle(new SlidePuzzle(game));
                 lockScreen(context);
                 //game.setPuzzle(new SlidePuzzle());

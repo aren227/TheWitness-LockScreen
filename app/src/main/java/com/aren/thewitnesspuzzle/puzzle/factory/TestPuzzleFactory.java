@@ -1,6 +1,7 @@
 package com.aren.thewitnesspuzzle.puzzle.factory;
 
 import com.aren.thewitnesspuzzle.puzzle.ColorFactory;
+import com.aren.thewitnesspuzzle.puzzle.Game;
 import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
@@ -16,26 +17,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-public class TestPuzzleFactory extends PuzzleFactory{
-
-    public TestPuzzleFactory(Puzzle puzzle) {
-        super(puzzle);
-    }
+public class TestPuzzleFactory implements PuzzleFactory{
 
     @Override
-    public void generate(){
-        if(!(puzzle instanceof GridPuzzle)) return;
-
-        Random random = new Random();
-
-        GridPuzzle gridPuzzle = (GridPuzzle)puzzle;
+    public Puzzle generate(Game game, Random random){
+        GridPuzzle gridPuzzle = new GridPuzzle(game, 4, 4);
 
         ColorFactory.setRandomColor(gridPuzzle);
 
         gridPuzzle.addStartingPoint(0, 0);
         gridPuzzle.addEndingPoint(gridPuzzle.getWidth(), gridPuzzle.getHeight());
 
-        RandomGridWalker walker = new RandomGridWalker(gridPuzzle, random);
+        RandomGridWalker walker = new RandomGridWalker(gridPuzzle, random, 0, 0, gridPuzzle.getWidth(), gridPuzzle.getHeight());
         ArrayList<Vertex> vertexPositions = walker.getResult();
 
         Cursor cursor = new Cursor(gridPuzzle, vertexPositions, null);
@@ -70,5 +63,11 @@ public class TestPuzzleFactory extends PuzzleFactory{
         SquareRule.generate(splitter, random, random.nextFloat() * 0.25f + 0.4f);*/
 
         //TrianglesRule.generate(cursor, random, 0.5f);
+        return gridPuzzle;
+    }
+
+    @Override
+    public Difficulty getDifficulty() {
+        return Difficulty.NORMAL;
     }
 }
