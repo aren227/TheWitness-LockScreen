@@ -3,8 +3,8 @@ package com.aren.thewitnesspuzzle.puzzle;
 import android.util.Log;
 import android.view.MotionEvent;
 
-import com.aren.thewitnesspuzzle.graphics.shape.Circle;
-import com.aren.thewitnesspuzzle.graphics.shape.Rectangle;
+import com.aren.thewitnesspuzzle.graphics.shape.CircleShape;
+import com.aren.thewitnesspuzzle.graphics.shape.RectangleShape;
 import com.aren.thewitnesspuzzle.graphics.shape.Shape;
 import com.aren.thewitnesspuzzle.math.BoundingBox;
 import com.aren.thewitnesspuzzle.math.Vector2;
@@ -14,8 +14,8 @@ import com.aren.thewitnesspuzzle.puzzle.animation.CursorFailedAnimation;
 import com.aren.thewitnesspuzzle.puzzle.animation.EliminatedAnimation;
 import com.aren.thewitnesspuzzle.puzzle.animation.EliminatorActivatedAnimation;
 import com.aren.thewitnesspuzzle.puzzle.animation.ErrorAnimation;
-import com.aren.thewitnesspuzzle.puzzle.animation.PuzzleAnimation;
-import com.aren.thewitnesspuzzle.puzzle.animation.WaitAnimation;
+import com.aren.thewitnesspuzzle.puzzle.animation.PuzzleAnimationManager;
+import com.aren.thewitnesspuzzle.puzzle.animation.WaitForEliminationAnimation;
 import com.aren.thewitnesspuzzle.puzzle.animation.value.Value;
 import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.cursor.area.Area;
@@ -23,10 +23,10 @@ import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
 import com.aren.thewitnesspuzzle.puzzle.graph.EdgeProportion;
 import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
-import com.aren.thewitnesspuzzle.puzzle.rules.Elimination;
-import com.aren.thewitnesspuzzle.puzzle.rules.EndingPoint;
+import com.aren.thewitnesspuzzle.puzzle.rules.EliminationRule;
+import com.aren.thewitnesspuzzle.puzzle.rules.EndingPointRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.Rule;
-import com.aren.thewitnesspuzzle.puzzle.rules.StartingPoint;
+import com.aren.thewitnesspuzzle.puzzle.rules.StartingPointRule;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -61,12 +61,12 @@ public class Puzzle {
 
     protected HashSet<Class<? extends Rule>> appliedRules = new HashSet<>();
 
-    protected PuzzleAnimation animation;
+    protected PuzzleAnimationManager animation;
 
     public Puzzle(Game game){
         this.game = game;
 
-        animation = new PuzzleAnimation(this);
+        animation = new PuzzleAnimationManager(this);
     }
 
     public void updateDynamicShapes(){
@@ -128,11 +128,11 @@ public class Puzzle {
         if(pathWidth == 0) pathWidth = Math.min(getBoundingBox().getWidth(), getBoundingBox().getHeight()) * 0.05f + 0.05f;
 
         for(Vertex vertex : vertices){
-            staticShapes.add(new Circle(new Vector3(vertex.x, vertex.y, 0), getPathWidth() * 0.5f, getPathColor()));
+            staticShapes.add(new CircleShape(new Vector3(vertex.x, vertex.y, 0), getPathWidth() * 0.5f, getPathColor()));
         }
 
         for(Edge edge : edges){
-            staticShapes.add(new Rectangle(edge.getMiddlePoint().toVector3(), edge.getLength(), getPathWidth(), edge.getAngle(), getPathColor()));
+            staticShapes.add(new RectangleShape(edge.getMiddlePoint().toVector3(), edge.getLength(), getPathWidth(), edge.getAngle(), getPathColor()));
         }
 
         for(Vertex vertex : vertices){
@@ -164,13 +164,13 @@ public class Puzzle {
         dynamicShapes.clear();
 
         if(cursor != null){
-            dynamicShapes.add(new Circle(cursor.getFirstVisitedVertex().getPosition().toVector3(), ((StartingPoint)cursor.getFirstVisitedVertex().getRule()).getRadius(), cursorColor().get()));
+            dynamicShapes.add(new CircleShape(cursor.getFirstVisitedVertex().getPosition().toVector3(), ((StartingPointRule)cursor.getFirstVisitedVertex().getRule()).getRadius(), cursorColor().get()));
 
             ArrayList<EdgeProportion> visitedEdges = cursor.getVisitedEdgesWithProportion(true);
             if(visitedEdges.size() == 0) return;
             for(EdgeProportion edgeProportion : visitedEdges){
-                dynamicShapes.add(new Circle(new Vector3(edgeProportion.getProportionPoint().x, edgeProportion.getProportionPoint().y, 0), getPathWidth() * 0.5f, cursorColor().get()));
-                dynamicShapes.add(new Rectangle(edgeProportion.getProportionMiddlePoint().toVector3(), edgeProportion.getProportionLength(), getPathWidth(), edgeProportion.edge.getAngle(), cursorColor().get()));
+                dynamicShapes.add(new CircleShape(new Vector3(edgeProportion.getProportionPoint().x, edgeProportion.getProportionPoint().y, 0), getPathWidth() * 0.5f, cursorColor().get()));
+                dynamicShapes.add(new RectangleShape(edgeProportion.getProportionMiddlePoint().toVector3(), edgeProportion.getProportionLength(), getPathWidth(), edgeProportion.edge.getAngle(), cursorColor().get()));
             }
         }
     }
@@ -221,14 +221,14 @@ public class Puzzle {
         touching = false;
         EdgeProportion currentCursorEdge = cursor.getCurrentCursorEdge();
         Edge edge = currentCursorEdge.edge;
-        if(currentCursorEdge.to().getRule() instanceof EndingPoint && currentCursorEdge.proportion > 1 - getPathWidth() * 0.5f / edge.getLength()){
+        if(currentCursorEdge.to().getRule() instanceof EndingPointRule && currentCursorEdge.proportion > 1 - getPathWidth() * 0.5f / edge.getLength()){
             final ValidationResult result = validate();
 
             if(result.hasEliminatedRule()){
                 for(Rule rule : result.getOriginalErrors()){
                     addAnimation(new ErrorAnimation(rule, 2));
                 }
-                addAnimation(new WaitAnimation(this, new Runnable() {
+                addAnimation(new WaitForEliminationAnimation(this, new Runnable() {
                     @Override
                     public void run() {
                         if(result.failed()){
@@ -269,7 +269,7 @@ public class Puzzle {
         if(action == MotionEvent.ACTION_DOWN){
             Vertex start = null;
             for(Vertex vertex : vertices){
-                if(vertex.getRule() instanceof StartingPoint && pos.distance(vertex.getPosition()) <= ((StartingPoint)vertex.getRule()).getRadius()){
+                if(vertex.getRule() instanceof StartingPointRule && pos.distance(vertex.getPosition()) <= ((StartingPointRule)vertex.getRule()).getRadius()){
                     start = vertex;
                     break;
                 }
@@ -446,7 +446,7 @@ public class Puzzle {
             List<Rule> rules = new ArrayList<>();
             for(Area.AreaValidationResult result : areaValidationResults){
                 for(Rule rule : result.area.getAllRules()){
-                    if(rule instanceof Elimination){
+                    if(rule instanceof EliminationRule){
                         rules.add(rule);
                     }
                 }

@@ -1,13 +1,11 @@
 package com.aren.thewitnesspuzzle.puzzle.cursor;
 
-import android.util.Log;
-
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
 import com.aren.thewitnesspuzzle.puzzle.graph.EdgeProportion;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
-import com.aren.thewitnesspuzzle.puzzle.rules.BrokenLine;
-import com.aren.thewitnesspuzzle.puzzle.rules.EndingPoint;
+import com.aren.thewitnesspuzzle.puzzle.rules.BrokenLineRule;
+import com.aren.thewitnesspuzzle.puzzle.rules.EndingPointRule;
 
 import java.util.ArrayList;
 
@@ -39,7 +37,7 @@ public class Cursor {
         visitedEdgesWithProportion = new ArrayList<>();
 
         for(int i = 0; i < vertices.size(); i++){
-            if(i == vertices.size() - 1 && vertices.get(i).getRule() instanceof EndingPoint) continue;
+            if(i == vertices.size() - 1 && vertices.get(i).getRule() instanceof EndingPointRule) continue;
             visited.add(vertices.get(i));
             if(i > 0){
                 EdgeProportion edgeProportion = new EdgeProportion(puzzle.getEdgeByVertex(vertices.get(i - 1), vertices.get(i)));
@@ -157,8 +155,8 @@ public class Cursor {
         float length = edge.getLength();
 
         // Broken edge collision check
-        if(edge.getRule() instanceof BrokenLine){
-            float collisionProportion = BrokenLine.getCollisionCircleRadius() + puzzle.getPathWidth() * 0.5f / length;
+        if(edge.getRule() instanceof BrokenLineRule){
+            float collisionProportion = BrokenLineRule.getCollisionCircleRadius() + puzzle.getPathWidth() * 0.5f / length;
             if(from <= 0.5f) to = Math.min(0.5f - collisionProportion, to);
             else to = Math.max(0.5f + collisionProportion, to);
         }

@@ -8,11 +8,11 @@ import com.aren.thewitnesspuzzle.math.Vector3;
 
 import java.nio.FloatBuffer;
 
-public class Hexagon extends Shape {
+public class HexagonShape extends Shape {
 
     public float radius;
 
-    public Hexagon(Vector3 center, float radius, int color){
+    public HexagonShape(Vector3 center, float radius, int color){
         super(center, 1, color);
         this.radius = radius;
     }

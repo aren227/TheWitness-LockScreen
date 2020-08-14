@@ -9,9 +9,9 @@ import com.aren.thewitnesspuzzle.math.Vector3;
 
 import java.nio.FloatBuffer;
 
-public class EliminationMark extends Shape {
+public class EliminatorShape extends Shape {
 
-    public EliminationMark(Vector3 center, int color){
+    public EliminatorShape(Vector3 center, int color){
         super(center, 1, color);
     }
 

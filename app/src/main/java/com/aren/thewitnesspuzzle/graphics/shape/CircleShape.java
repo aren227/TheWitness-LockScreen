@@ -8,13 +8,13 @@ import com.aren.thewitnesspuzzle.math.Vector3;
 
 import java.nio.FloatBuffer;
 
-public class Circle extends Shape {
+public class CircleShape extends Shape {
 
     private static final int TRIANGLES = 32;
 
     public float radius;
 
-    public Circle(Vector3 center, float radius, int color){
+    public CircleShape(Vector3 center, float radius, int color){
         super(center, 1, color);
         this.radius = radius;
     }

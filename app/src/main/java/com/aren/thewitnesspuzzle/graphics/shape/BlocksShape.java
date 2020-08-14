@@ -5,7 +5,7 @@ import com.aren.thewitnesspuzzle.math.Matrix2x2;
 import com.aren.thewitnesspuzzle.math.Vector2;
 import com.aren.thewitnesspuzzle.math.Vector3;
 
-public class BlockSquare extends Shape {
+public class BlocksShape extends Shape {
 
     private static final float BLOCK_SIZE = 0.13f;
     private static final float PADDING = 0.015f;
@@ -16,7 +16,7 @@ public class BlockSquare extends Shape {
     public int blockCount;
     public boolean rotatable;
 
-    public BlockSquare(boolean[][] blocks, boolean rotatable, Vector3 center, int color){
+    public BlocksShape(boolean[][] blocks, boolean rotatable, Vector3 center, int color){
         super(center, 1, color);
 
         this.blocks = blocks;

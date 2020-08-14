@@ -2,7 +2,7 @@ package com.aren.thewitnesspuzzle.puzzle.rules;
 
 import android.graphics.Color;
 
-import com.aren.thewitnesspuzzle.graphics.shape.Hexagon;
+import com.aren.thewitnesspuzzle.graphics.shape.HexagonShape;
 import com.aren.thewitnesspuzzle.graphics.shape.Shape;
 import com.aren.thewitnesspuzzle.math.Vector3;
 import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
@@ -14,16 +14,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
-public class HexagonDots extends Rule {
+public class HexagonRule extends Rule {
 
-    public HexagonDots(){
+    public HexagonRule(){
         super();
     }
 
     @Override
     public Shape generateShape() {
         if(getGraphElement() instanceof Tile) return null;
-        return new Hexagon(new Vector3(getGraphElement().x, getGraphElement().y, 0), getPuzzle().getPathWidth() * 0.4f, Color.BLACK);
+        return new HexagonShape(new Vector3(getGraphElement().x, getGraphElement().y, 0), getPuzzle().getPathWidth() * 0.4f, Color.BLACK);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class HexagonDots extends Rule {
         Collections.shuffle(vertices, random);
 
         for(int i = 0; i < hexagonVertexCount; i++){
-            vertices.get(i).setRule(new HexagonDots());
+            vertices.get(i).setRule(new HexagonRule());
         }
     }
 }

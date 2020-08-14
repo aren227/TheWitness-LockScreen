@@ -1,7 +1,7 @@
 package com.aren.thewitnesspuzzle.puzzle.rules;
 
 import com.aren.thewitnesspuzzle.graphics.shape.Shape;
-import com.aren.thewitnesspuzzle.graphics.shape.Triangles;
+import com.aren.thewitnesspuzzle.graphics.shape.TrianglesShape;
 import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
 import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
@@ -10,13 +10,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
-public class Triangle extends Rule {
+public class TrianglesRule extends Rule {
 
     public static final int COLOR = android.graphics.Color.parseColor("#ffaa00");
 
     public int count;
 
-    public Triangle(int count){
+    public TrianglesRule(int count){
         super();
         this.count = count;
     }
@@ -24,7 +24,7 @@ public class Triangle extends Rule {
     @Override
     public Shape generateShape(){
         if(!(getGraphElement() instanceof Tile)) return null;
-        return new Triangles(getGraphElement().getPosition().toVector3(), getPuzzle().getPathWidth() * 0.5f, count, COLOR);
+        return new TrianglesShape(getGraphElement().getPosition().toVector3(), getPuzzle().getPathWidth() * 0.5f, count, COLOR);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class Triangle extends Rule {
             for(Edge edge : tiles.get(i).edges){
                 if(solution.containsEdge(edge)) edgeCount++;
             }
-            tiles.get(i).setRule(new Triangle(edgeCount));
+            tiles.get(i).setRule(new TrianglesRule(edgeCount));
         }
     }
 

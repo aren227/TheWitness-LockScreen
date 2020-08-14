@@ -8,11 +8,11 @@ import com.aren.thewitnesspuzzle.math.Vector3;
 
 import java.nio.FloatBuffer;
 
-public class SunSquare extends Shape {
+public class SunShape extends Shape {
 
     public float radius;
 
-    public SunSquare(Vector3 center, float radius, int color){
+    public SunShape(Vector3 center, float radius, int color){
         super(center, 1, color);
         this.radius = radius;
     }

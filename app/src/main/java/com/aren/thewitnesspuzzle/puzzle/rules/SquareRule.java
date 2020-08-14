@@ -1,6 +1,6 @@
 package com.aren.thewitnesspuzzle.puzzle.rules;
 
-import com.aren.thewitnesspuzzle.graphics.shape.RoundSquare;
+import com.aren.thewitnesspuzzle.graphics.shape.RoundedSquareShape;
 import com.aren.thewitnesspuzzle.graphics.shape.Shape;
 import com.aren.thewitnesspuzzle.math.Vector3;
 import com.aren.thewitnesspuzzle.puzzle.cursor.area.Area;
@@ -14,16 +14,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-public class Square extends Colorable {
+public class SquareRule extends Colorable {
 
-    public Square(Color color) {
+    public SquareRule(Color color) {
         super(color);
     }
 
     @Override
     public Shape generateShape() {
         if(!(getGraphElement() instanceof Tile)) return null;
-        return new RoundSquare(new Vector3(getGraphElement().x, getGraphElement().y, 0), 0.18f, color.getRGB());
+        return new RoundedSquareShape(new Vector3(getGraphElement().x, getGraphElement().y, 0), 0.18f, color.getRGB());
     }
 
     @Override
@@ -34,8 +34,8 @@ public class Square extends Colorable {
     public static List<Rule> areaValidate(Area area){
         Map<Color, ArrayList<Rule>> squareColors = new HashMap<>();
         for(Tile tile : area.tiles){
-            if(tile.getRule() instanceof Square){
-                Square square = (Square)tile.getRule();
+            if(tile.getRule() instanceof SquareRule){
+                SquareRule square = (SquareRule)tile.getRule();
                 if(square.eliminated) continue;
                 if(!squareColors.containsKey(square.color)) squareColors.put(square.color, new ArrayList<Rule>());
                 squareColors.get(square.color).add(square);
@@ -64,7 +64,7 @@ public class Square extends Colorable {
             int squareCount = Math.max((int)(tiles.size() * spawnRate), 1);
             Collections.shuffle(tiles, random);
             for(int j = 0; j < squareCount; j++){
-                tiles.get(j).setRule(new Square(area.color));
+                tiles.get(j).setRule(new SquareRule(area.color));
             }
         }
     }

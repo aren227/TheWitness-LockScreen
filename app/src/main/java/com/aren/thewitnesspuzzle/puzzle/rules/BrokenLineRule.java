@@ -1,6 +1,6 @@
 package com.aren.thewitnesspuzzle.puzzle.rules;
 
-import com.aren.thewitnesspuzzle.graphics.shape.Rectangle;
+import com.aren.thewitnesspuzzle.graphics.shape.RectangleShape;
 import com.aren.thewitnesspuzzle.graphics.shape.Shape;
 import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
@@ -10,9 +10,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
-public class BrokenLine extends Rule {
+public class BrokenLineRule extends Rule {
 
-    public BrokenLine() {
+    public BrokenLineRule() {
         super();
     }
 
@@ -20,7 +20,7 @@ public class BrokenLine extends Rule {
     public Shape generateShape(){
         if(getGraphElement() instanceof Edge){
             Edge edge = (Edge)getGraphElement();
-            return new Rectangle(edge.getMiddlePoint().toVector3(), getSize() / edge.getLength(), edge.getPuzzle().getPathWidth(), edge.getAngle(), edge.getPuzzle().getBackgroundColor());
+            return new RectangleShape(edge.getMiddlePoint().toVector3(), getSize() / edge.getLength(), edge.getPuzzle().getPathWidth(), edge.getAngle(), edge.getPuzzle().getBackgroundColor());
         }
         return null;
     }
@@ -43,7 +43,7 @@ public class BrokenLine extends Rule {
         int brokenEdges = (int)(notSolutionEdges.size() * blockRate);
         Collections.shuffle(notSolutionEdges, random);
         for(int i = 0; i < brokenEdges; i++){
-            notSolutionEdges.get(i).setRule(new BrokenLine());
+            notSolutionEdges.get(i).setRule(new BrokenLineRule());
         }
     }
 

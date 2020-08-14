@@ -3,7 +3,7 @@ package com.aren.thewitnesspuzzle.puzzle.animation;
 import com.aren.thewitnesspuzzle.graphics.shape.Shape;
 import com.aren.thewitnesspuzzle.math.MathUtils;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
-import com.aren.thewitnesspuzzle.puzzle.rules.Elimination;
+import com.aren.thewitnesspuzzle.puzzle.rules.EliminationRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.Rule;
 
 public class EliminatedAnimation extends Animation{
@@ -21,9 +21,9 @@ public class EliminatedAnimation extends Animation{
     protected void update(float rate) {
         shape.scale.setAnimationValue(this, MathUtils.lerp(1f, 0.9f, rate));
 
-        int sr = android.graphics.Color.red(Elimination.COLOR);
-        int sg = android.graphics.Color.green(Elimination.COLOR);
-        int sb = android.graphics.Color.blue(Elimination.COLOR);
+        int sr = android.graphics.Color.red(EliminationRule.COLOR);
+        int sg = android.graphics.Color.green(EliminationRule.COLOR);
+        int sb = android.graphics.Color.blue(EliminationRule.COLOR);
 
         // Fake alpha effect
         int r = android.graphics.Color.red(shape.color.getOriginalValue());

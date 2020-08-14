@@ -6,13 +6,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class PuzzleAnimation {
+public class PuzzleAnimationManager {
 
     private List<Animation> animations;
     private List<Animation> tempQueue;
     private boolean lock;
 
-    public PuzzleAnimation(Puzzle puzzle){
+    public PuzzleAnimationManager(Puzzle puzzle){
         animations = new ArrayList<>();
         tempQueue = new ArrayList<>();
         lock = false;

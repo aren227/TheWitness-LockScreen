@@ -2,7 +2,7 @@ package com.aren.thewitnesspuzzle.puzzle.rules;
 
 import android.util.Log;
 
-import com.aren.thewitnesspuzzle.graphics.shape.BlockSquare;
+import com.aren.thewitnesspuzzle.graphics.shape.BlocksShape;
 import com.aren.thewitnesspuzzle.graphics.shape.Shape;
 import com.aren.thewitnesspuzzle.math.Vector3;
 import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
@@ -12,7 +12,7 @@ import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Block extends Rule {
+public class BlocksRule extends Rule {
 
     public static final int COLOR = android.graphics.Color.parseColor("#ffe000");
 
@@ -27,7 +27,7 @@ public class Block extends Rule {
     public boolean rotatable;
     public boolean subtractive;
 
-    public Block(boolean[][] blocks, int puzzleHeight, boolean rotatable, boolean subtractive){
+    public BlocksRule(boolean[][] blocks, int puzzleHeight, boolean rotatable, boolean subtractive){
         this.blocks = blocks;
         width = blocks.length;
         height = blocks[0].length;
@@ -92,7 +92,7 @@ public class Block extends Rule {
 
     @Override
     public Shape generateShape(){
-         return new BlockSquare(blocks, rotatable, new Vector3(getGraphElement().x, getGraphElement().y, 0), COLOR);
+         return new BlocksShape(blocks, rotatable, new Vector3(getGraphElement().x, getGraphElement().y, 0), COLOR);
     }
 
     @Override
@@ -103,7 +103,7 @@ public class Block extends Rule {
     private static long board = 0;
     private static int[][] boardDebug;
 
-    public static boolean tryAllPermutation(List<Block> rules, boolean[] taken, int takenCount, int puzzleWidth, int puzzleHeight){
+    public static boolean tryAllPermutation(List<BlocksRule> rules, boolean[] taken, int takenCount, int puzzleWidth, int puzzleHeight){
         if(takenCount == taken.length){
             return true;
         }
@@ -114,7 +114,7 @@ public class Block extends Rule {
             int indexY = index % puzzleHeight;
             for(int i = 0; i < taken.length; i++){
                 if(taken[i]) continue;
-                Block block = rules.get(i);
+                BlocksRule block = rules.get(i);
                 // If the block is rotatable, try all directions
                 for(int j = 0; j < block.blockBits.length; j++){
                     // check top boundary (If firstBitY > 0, it means left-bottom of the block is empty
@@ -161,12 +161,12 @@ public class Block extends Rule {
     }
 
     public static List<Rule> areaValidate(Area area){
-        List<Block> blockRules = new ArrayList<>();
+        List<BlocksRule> blockRules = new ArrayList<>();
         List<Rule> rules = new ArrayList<>();
         int blockCount = 0;
         for(Tile tile : area.tiles){
-            if(tile.getRule() instanceof Block){
-                Block block = (Block)tile.getRule();
+            if(tile.getRule() instanceof BlocksRule){
+                BlocksRule block = (BlocksRule)tile.getRule();
                 if(block.eliminated) continue;
                 blockRules.add(block);
                 rules.add(block);

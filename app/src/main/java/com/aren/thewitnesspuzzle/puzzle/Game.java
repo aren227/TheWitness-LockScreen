@@ -3,10 +3,10 @@ package com.aren.thewitnesspuzzle.puzzle;
 import android.content.Context;
 import android.graphics.Color;
 import android.media.MediaPlayer;
-import android.opengl.GLSurfaceView;
 import android.view.WindowManager;
 
 import com.aren.thewitnesspuzzle.PuzzleGLSurfaceView;
+import com.aren.thewitnesspuzzle.puzzle.sound.Sounds;
 
 import java.util.HashMap;
 

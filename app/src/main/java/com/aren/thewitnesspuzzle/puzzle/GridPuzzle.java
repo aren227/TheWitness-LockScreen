@@ -1,18 +1,13 @@
 package com.aren.thewitnesspuzzle.puzzle;
 
 import com.aren.thewitnesspuzzle.math.Vector2Int;
-import com.aren.thewitnesspuzzle.puzzle.animation.ErrorAnimation;
 import com.aren.thewitnesspuzzle.puzzle.cursor.area.Area;
 import com.aren.thewitnesspuzzle.puzzle.cursor.area.GridAreaSplitter;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
 import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
-import com.aren.thewitnesspuzzle.puzzle.rules.EndingPoint;
-import com.aren.thewitnesspuzzle.puzzle.rules.Rule;
-import com.aren.thewitnesspuzzle.puzzle.rules.StartingPoint;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.aren.thewitnesspuzzle.puzzle.rules.EndingPointRule;
+import com.aren.thewitnesspuzzle.puzzle.rules.StartingPointRule;
 
 public class GridPuzzle extends Puzzle {
 
@@ -99,7 +94,7 @@ public class GridPuzzle extends Puzzle {
     }
 
     public void addStartingPoint(int x, int y){
-        getVertexAt(x, y).setRule(new StartingPoint());
+        getVertexAt(x, y).setRule(new StartingPointRule());
     }
 
     public Edge addEndingPoint(int x, int y){
@@ -119,7 +114,7 @@ public class GridPuzzle extends Puzzle {
 
         if(vertex != null){
             Edge edge = addEdge(new Edge(getVertexAt(x, y), vertex));
-            vertex.setRule(new EndingPoint());
+            vertex.setRule(new EndingPointRule());
             return edge;
         }
         return null;

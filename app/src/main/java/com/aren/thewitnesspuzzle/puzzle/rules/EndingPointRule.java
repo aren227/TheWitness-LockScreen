@@ -1,8 +1,8 @@
 package com.aren.thewitnesspuzzle.puzzle.rules;
 
-public class EndingPoint extends Rule {
+public class EndingPointRule extends Rule {
 
-    public EndingPoint() {
+    public EndingPointRule() {
         super();
     }
 }

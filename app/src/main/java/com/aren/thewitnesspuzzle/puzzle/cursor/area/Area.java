@@ -5,15 +5,14 @@ import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
 import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
-import com.aren.thewitnesspuzzle.puzzle.rules.Block;
+import com.aren.thewitnesspuzzle.puzzle.rules.BlocksRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.Color;
-import com.aren.thewitnesspuzzle.puzzle.rules.Elimination;
+import com.aren.thewitnesspuzzle.puzzle.rules.EliminationRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.Rule;
-import com.aren.thewitnesspuzzle.puzzle.rules.Square;
+import com.aren.thewitnesspuzzle.puzzle.rules.SquareRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.Sun;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -61,14 +60,14 @@ public class Area {
         }
 
         List<Rule> areaErrors = new ArrayList<>();
-        areaErrors.addAll(Square.areaValidate(this));
+        areaErrors.addAll(SquareRule.areaValidate(this));
         areaErrors.addAll(Sun.areaValidate(this));
-        areaErrors.addAll(Block.areaValidate(this));
+        areaErrors.addAll(BlocksRule.areaValidate(this));
 
-        List<Elimination> eliminationRules = new ArrayList<>();
+        List<EliminationRule> eliminationRules = new ArrayList<>();
         for(Tile tile : tiles){
-            if(tile.getRule() instanceof Elimination){
-                eliminationRules.add((Elimination)tile.getRule());
+            if(tile.getRule() instanceof EliminationRule){
+                eliminationRules.add((EliminationRule)tile.getRule());
             }
         }
 
@@ -100,9 +99,9 @@ public class Area {
                     rule.eliminated = true;
 
                     result.newErrors.clear();
-                    result.newErrors.addAll(Square.areaValidate(this));
+                    result.newErrors.addAll(SquareRule.areaValidate(this));
                     result.newErrors.addAll(Sun.areaValidate(this));
-                    result.newErrors.addAll(Block.areaValidate(this));
+                    result.newErrors.addAll(BlocksRule.areaValidate(this));
 
                     if(result.newErrors.size() == 0){
                         return result;

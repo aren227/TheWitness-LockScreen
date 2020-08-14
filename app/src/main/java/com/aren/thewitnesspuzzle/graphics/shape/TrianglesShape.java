@@ -8,12 +8,12 @@ import com.aren.thewitnesspuzzle.math.Vector3;
 
 import java.nio.FloatBuffer;
 
-public class Triangles extends Shape {
+public class TrianglesShape extends Shape {
 
     public float size; // radius
     public int amount;
 
-    public Triangles(Vector3 center, float size, int amount, int color){
+    public TrianglesShape(Vector3 center, float size, int amount, int color){
         super(center, 1, color);
         this.size = size;
         this.amount = amount;

@@ -9,12 +9,12 @@ import com.aren.thewitnesspuzzle.math.Vector3;
 
 import java.nio.FloatBuffer;
 
-public class Rectangle extends Shape {
+public class RectangleShape extends Shape {
 
     public float width, height;
     public float angle; // Radian
 
-    public Rectangle(Vector3 center, float width, float height, float angle, int color){
+    public RectangleShape(Vector3 center, float width, float height, float angle, int color){
         super(center, 1, color);
         this.width = width;
         this.height = height;

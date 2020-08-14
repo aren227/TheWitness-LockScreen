@@ -1,11 +1,10 @@
 package com.aren.thewitnesspuzzle.puzzle.cursor;
 
 import com.aren.thewitnesspuzzle.puzzle.GridSymmetryPuzzle;
-import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
 import com.aren.thewitnesspuzzle.puzzle.graph.EdgeProportion;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
-import com.aren.thewitnesspuzzle.puzzle.rules.BrokenLine;
+import com.aren.thewitnesspuzzle.puzzle.rules.BrokenLineRule;
 
 public class SymmetryCursor extends Cursor {
 
@@ -23,8 +22,8 @@ public class SymmetryCursor extends Cursor {
         Edge oppositeEdge = gridSymmetryPuzzle.getOppositeEdge(edge);
 
         // Broken edge collision check
-        if(edge.getRule() instanceof BrokenLine || oppositeEdge.getRule() instanceof BrokenLine){
-            float collisionProportion = BrokenLine.getCollisionCircleRadius() + puzzle.getPathWidth() * 0.5f / length;
+        if(edge.getRule() instanceof BrokenLineRule || oppositeEdge.getRule() instanceof BrokenLineRule){
+            float collisionProportion = BrokenLineRule.getCollisionCircleRadius() + puzzle.getPathWidth() * 0.5f / length;
             if(from <= 0.5f) to = Math.min(0.5f - collisionProportion, to);
             else to = Math.max(0.5f + collisionProportion, to);
         }

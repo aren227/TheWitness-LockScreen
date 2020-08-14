@@ -9,14 +9,14 @@ import com.aren.thewitnesspuzzle.math.Vector3;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
-public class RoundSquare extends Shape {
+public class RoundedSquareShape extends Shape {
 
     private static final int CORNER_TRIANGLE = 6;
     private static final float CORNER_RATE = 0.65f;
 
     public float radius;
 
-    public RoundSquare(Vector3 center, float radius, int color){
+    public RoundedSquareShape(Vector3 center, float radius, int color){
         super(center, 1, color);
         this.radius = radius;
     }
