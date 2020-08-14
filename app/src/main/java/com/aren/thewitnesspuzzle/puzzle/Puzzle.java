@@ -27,6 +27,7 @@ import com.aren.thewitnesspuzzle.puzzle.rules.EliminationRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.EndingPointRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.Rule;
 import com.aren.thewitnesspuzzle.puzzle.rules.StartingPointRule;
+import com.aren.thewitnesspuzzle.puzzle.sound.Sounds;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -215,6 +216,7 @@ public class Puzzle {
         resetAnimation();
         touching = true;
         cursor = createCursor(start);
+        game.playSound(Sounds.START_TRACING);
     }
 
     protected void endTracing(){
@@ -225,12 +227,14 @@ public class Puzzle {
             final ValidationResult result = validate();
 
             if(result.hasEliminatedRule()){
+                game.playSound(Sounds.POTENTIAL_FAILURE);
                 for(Rule rule : result.getOriginalErrors()){
                     addAnimation(new ErrorAnimation(rule, 2));
                 }
                 addAnimation(new WaitForEliminationAnimation(this, new Runnable() {
                     @Override
                     public void run() {
+                        game.playSound(Sounds.ERASER_APPLY);
                         if(result.failed()){
                             for(Rule rule : result.getNewErrors()){
                                 if(rule.eliminated) continue;
@@ -243,8 +247,10 @@ public class Puzzle {
                                 addAnimation(new EliminatorActivatedAnimation(rule));
                             }
                             addAnimation(new CursorFailedAnimation(Puzzle.this));
+                            game.playSound(Sounds.FAILURE);
                         }
                         else{
+                            game.playSound(Sounds.SUCCESS);
                             game.close();
                         }
                     }
@@ -256,8 +262,10 @@ public class Puzzle {
                         addAnimation(new ErrorAnimation(rule));
                     }
                     addAnimation(new CursorFailedAnimation(this));
+                    game.playSound(Sounds.FAILURE);
                 }
                 else{
+                    game.playSound(Sounds.SUCCESS);
                     game.close();
                 }
             }
