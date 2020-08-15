@@ -33,7 +33,7 @@ public class SimpleHexagonPuzzleFactory implements PuzzleFactory {
         puzzle.addStartingPoint(start.gridPosition.x, start.gridPosition.y);
         puzzle.addEndingPoint(end.gridPosition.x, end.gridPosition.y);
 
-        RandomGridWalker walker = new RandomGridWalker(puzzle, random, start.gridPosition.x, start.gridPosition.y, end.gridPosition.x, end.gridPosition.y);
+        RandomGridWalker walker = new RandomGridWalker(puzzle, random, 10, start.gridPosition.x, start.gridPosition.y, end.gridPosition.x, end.gridPosition.y);
         ArrayList<Vertex> vertexPositions = walker.getResult();
 
         Cursor cursor = new Cursor(puzzle, vertexPositions, null);

@@ -28,7 +28,7 @@ public class TestPuzzleFactory implements PuzzleFactory{
         gridPuzzle.addStartingPoint(0, 0);
         gridPuzzle.addEndingPoint(gridPuzzle.getWidth(), gridPuzzle.getHeight());
 
-        RandomGridWalker walker = new RandomGridWalker(gridPuzzle, random, 0, 0, gridPuzzle.getWidth(), gridPuzzle.getHeight());
+        RandomGridWalker walker = new RandomGridWalker(gridPuzzle, random, 10, 0, 0, gridPuzzle.getWidth(), gridPuzzle.getHeight());
         ArrayList<Vertex> vertexPositions = walker.getResult();
 
         Cursor cursor = new Cursor(gridPuzzle, vertexPositions, null);

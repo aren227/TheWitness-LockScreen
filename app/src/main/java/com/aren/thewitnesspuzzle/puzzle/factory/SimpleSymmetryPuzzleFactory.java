@@ -45,7 +45,7 @@ public class SimpleSymmetryPuzzleFactory implements PuzzleFactory {
         symmetryPuzzle.addStartingPoint(startX, startY);
         symmetryPuzzle.addEndingPoint(endX, endY);
 
-        RandomGridWalker walker = new RandomGridWalker(symmetryPuzzle, random, startX, startY, endX, endY);
+        RandomGridWalker walker = new RandomGridWalker(symmetryPuzzle, random, 10, startX, startY, endX, endY);
         ArrayList<Vertex> vertexPositions = walker.getResult();
 
         SymmetryCursor cursor = new SymmetryCursor(symmetryPuzzle, vertexPositions, null);

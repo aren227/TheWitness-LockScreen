@@ -33,7 +33,7 @@ public class SymmetryHexagonPuzzleFactory implements PuzzleFactory{
         symmetryPuzzle.addStartingPoint(0, 0);
         symmetryPuzzle.addEndingPoint(end.gridPosition.x, end.gridPosition.y);
 
-        RandomGridWalker walker = new RandomGridWalker(symmetryPuzzle, random, 0, 0, end.gridPosition.x, end.gridPosition.y);
+        RandomGridWalker walker = new RandomGridWalker(symmetryPuzzle, random, 10, 0, 0, end.gridPosition.x, end.gridPosition.y);
         ArrayList<Vertex> vertexPositions = walker.getResult();
 
         SymmetryCursor cursor = new SymmetryCursor(symmetryPuzzle, vertexPositions, null);

@@ -14,6 +14,7 @@ public class RandomGridWalker {
 
     private GridPuzzle gridPuzzle;
 
+    private int iters;
     private int startX, startY, endX, endY;
 
     private int width, height;
@@ -92,7 +93,7 @@ public class RandomGridWalker {
         return false;
     }
 
-    public RandomGridWalker(GridPuzzle gridPuzzle, Random random, int startX, int startY, int endX, int endY){
+    public RandomGridWalker(GridPuzzle gridPuzzle, Random random, int iters, int startX, int startY, int endX, int endY){
         this.gridPuzzle = gridPuzzle;
         this.width = gridPuzzle.getWidth();
         this.height = gridPuzzle.getHeight();
@@ -100,6 +101,7 @@ public class RandomGridWalker {
             throw new RuntimeException("Width and height must be less than or equal to 7.");
         }
         this.random = random;
+        this.iters = iters;
         this.startX = startX;
         this.startY = startY;
         this.endX = endX;
@@ -110,7 +112,7 @@ public class RandomGridWalker {
         }
     }
 
-    public void doWalkAsManyAsPossible(int iters){
+    public void doWalkAsManyAsPossible(){
         int i = 0;
         long start = System.currentTimeMillis();
         for(i = 0; i < iters; i++){
@@ -152,7 +154,7 @@ public class RandomGridWalker {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                doWalkAsManyAsPossible(10);
+                doWalkAsManyAsPossible();
             }
         });
 

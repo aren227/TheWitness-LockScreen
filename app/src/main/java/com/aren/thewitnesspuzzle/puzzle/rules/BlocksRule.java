@@ -4,13 +4,19 @@ import android.util.Log;
 
 import com.aren.thewitnesspuzzle.graphics.shape.BlocksShape;
 import com.aren.thewitnesspuzzle.graphics.shape.Shape;
+import com.aren.thewitnesspuzzle.math.Vector2;
+import com.aren.thewitnesspuzzle.math.Vector2Int;
 import com.aren.thewitnesspuzzle.math.Vector3;
 import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
+import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 import com.aren.thewitnesspuzzle.puzzle.cursor.area.Area;
+import com.aren.thewitnesspuzzle.puzzle.cursor.area.GridAreaSplitter;
 import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 public class BlocksRule extends Rule {
 
@@ -78,6 +84,10 @@ public class BlocksRule extends Rule {
         return bit;
     }
 
+    public int getBlockSize(){
+        return Long.bitCount(blockBits[0]);
+    }
+
     /*public static boolean[][] getBlocksFromBitMagic(long bit, int width, int height){
         boolean[][] blocks = new boolean[width][height];
         for(int i = 0; i < width; i++){
@@ -92,7 +102,7 @@ public class BlocksRule extends Rule {
 
     @Override
     public Shape generateShape(){
-         return new BlocksShape(blocks, rotatable, new Vector3(getGraphElement().x, getGraphElement().y, 0), COLOR);
+        return new BlocksShape(blocks, rotatable, new Vector3(getGraphElement().x, getGraphElement().y, 0), COLOR);
     }
 
     @Override
@@ -201,6 +211,110 @@ public class BlocksRule extends Rule {
             Log.i("BLOCK", str);
         }
         return new ArrayList<>();
+    }
+
+    public static void connectTiles(List<Vector2Int> connected, Random random, boolean[][] tiles, int width, int height, int x, int y, int targetCount){
+        connected.add(new Vector2Int(x, y));
+        tiles[x][y] = false;
+        targetCount--;
+
+        if(targetCount == 0) return;
+
+        List<Vector2Int> candidates = new ArrayList<>();
+        if(x > 0 && tiles[x - 1][y]) candidates.add(new Vector2Int(x - 1, y));
+        if(x < width - 1 && tiles[x + 1][y]) candidates.add(new Vector2Int(x + 1, y));
+        if(y > 0 && tiles[x][y - 1]) candidates.add(new Vector2Int(x, y - 1));
+        if(y < height - 1 && tiles[x][y + 1]) candidates.add(new Vector2Int(x, y + 1));
+
+        if(candidates.size() == 0) return;
+
+        Vector2Int selected = candidates.get(random.nextInt(candidates.size()));
+
+        connectTiles(connected, random, tiles, width, height, selected.x, selected.y, targetCount);
+    }
+
+    public static void generate(GridAreaSplitter splitter, Random random, float spawnRate){
+        GridPuzzle puzzle = splitter.getPuzzle();
+
+        List<Area> areas = new ArrayList<>(splitter.areaList);
+        Collections.shuffle(areas, random);
+
+        int filled = 0;
+
+        for(Area area : areas){
+            if((float)filled / (puzzle.getWidth() * puzzle.getHeight()) >= spawnRate) break;
+            if(area.tiles.size() <= 3) continue;
+
+            boolean[][] tiles = new boolean[puzzle.getWidth()][puzzle.getHeight()];
+
+            // Make some blocks by taking some tiles from the area
+            // Try several times to get better result
+            List<List<Vector2Int>> blocksList = new ArrayList<>();
+
+            long start = System.currentTimeMillis();
+            for(int i = 0; i < 40; i++){
+                // Init
+                List<List<Vector2Int>> blocksListCandidate = new ArrayList<>();
+                int tileCount = 0;
+                for(Tile tile : area.tiles){
+                    tiles[tile.gridPosition.x][tile.gridPosition.y] = true;
+                    tileCount++;
+                }
+
+                while(tileCount > 0){
+                    List<Vector2Int> candidates = new ArrayList<>();
+                    for(int x = 0; x < puzzle.getWidth(); x++){
+                        for(int y = 0; y < puzzle.getHeight(); y++){
+                            if(!tiles[x][y]) continue;
+                            candidates.add(new Vector2Int(x, y));
+                        }
+                    }
+
+                    Vector2Int selectedPosition = candidates.get(random.nextInt(candidates.size()));
+
+                    List<Vector2Int> blocks = new ArrayList<>();
+                    connectTiles(blocks, random, tiles, puzzle.getWidth(), puzzle.getHeight(), selectedPosition.x, selectedPosition.y, random.nextInt(2) + 3);
+
+                    tileCount -= blocks.size();
+                    blocksListCandidate.add(blocks);
+                }
+
+                if(blocksList.size() == 0 || blocksListCandidate.size() < blocksList.size()){
+                    blocksList = blocksListCandidate;
+                }
+            }
+
+            Log.i("BLOCK", "Iterations took " + (System.currentTimeMillis() - start) + "ms.");
+
+            List<BlocksRule> blocksRuleList = new ArrayList<>();
+            for(List<Vector2Int> blocks : blocksList){
+                int minX = Integer.MAX_VALUE;
+                int minY = Integer.MAX_VALUE;
+                int maxX = Integer.MIN_VALUE;
+                int maxY = Integer.MIN_VALUE;
+                for(Vector2Int v : blocks){
+                    minX = Math.min(minX, v.x);
+                    minY = Math.min(minY, v.y);
+                    maxX = Math.max(maxX, v.x);
+                    maxY = Math.max(maxY, v.y);
+                }
+
+                boolean[][] result = new boolean[maxX - minX + 1][maxY - minY + 1];
+                for(Vector2Int v : blocks){
+                    result[v.x - minX][v.y - minY] = true;
+                }
+
+                blocksRuleList.add(new BlocksRule(result, puzzle.getHeight(), false, false));
+            }
+
+            List<Tile> placing = new ArrayList<>(area.tiles);
+            Collections.shuffle(placing, random);
+
+            for(int j = 0; j < blocksRuleList.size(); j++){
+                placing.get(j).setRule(blocksRuleList.get(j));
+                filled += blocksRuleList.get(j).getBlockSize();
+            }
+        }
     }
 
 }
