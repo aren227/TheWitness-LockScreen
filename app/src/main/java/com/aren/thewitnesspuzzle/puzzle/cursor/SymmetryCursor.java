@@ -5,11 +5,19 @@ import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
 import com.aren.thewitnesspuzzle.puzzle.graph.EdgeProportion;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.rules.BrokenLineRule;
+import com.aren.thewitnesspuzzle.puzzle.rules.SymmetricColor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SymmetryCursor extends Cursor {
 
     public SymmetryCursor(GridSymmetryPuzzle puzzle, Vertex start) {
         super(puzzle, start);
+    }
+
+    public SymmetryCursor(GridSymmetryPuzzle puzzle, ArrayList<Vertex> vertices, EdgeProportion cursorEdge){
+        super(puzzle, vertices, cursorEdge);
     }
 
     @Override
@@ -31,7 +39,7 @@ public class SymmetryCursor extends Cursor {
         // Cursor self collision check
         for(int i = 0; i < visited.size() - 1; i++){
             Vertex v = visited.get(i);
-            if(edgeProportion.to() == v){
+            if(edge.containsVertex(v)){
                 float collisionProportion = puzzle.getPathWidth() / length;
                 to = Math.min(1 - collisionProportion, to);
             }
@@ -40,7 +48,7 @@ public class SymmetryCursor extends Cursor {
         // Opposite cursor collision check
         for(int i = 0; i < visited.size() - 1; i++){
             Vertex v = gridSymmetryPuzzle.getOppositeVertex(visited.get(i));
-            if(edgeProportion.to() == v){
+            if(edge.containsVertex(v)){
                 float collisionProportion = puzzle.getPathWidth() / length;
                 to = Math.min(1 - collisionProportion, to);
             }
@@ -51,7 +59,42 @@ public class SymmetryCursor extends Cursor {
             float collisionProportion = puzzle.getPathWidth() * 0.5f / length;
             to = Math.min(1 - collisionProportion, to);
         }
+        if(edge == oppositeEdge){
+            float collisionProportion = puzzle.getPathWidth() * 0.5f / length;
+            to = Math.min(0.5f - collisionProportion, to);
+        }
 
         edgeProportion.proportion = to;
+    }
+
+    public boolean hasSymmetricColor(){
+        return getPuzzle().hasSymmetricColor();
+    }
+
+    @Override
+    public boolean containsEdge(Edge edge){
+        List<Edge> edges = getFullyVisitedEdges();
+        return edges.contains(edge) || edges.contains(((GridSymmetryPuzzle)puzzle).getOppositeEdge(edge));
+    }
+
+    public SymmetricColor getSymmetricColor(Edge edge){
+        if(getFullyVisitedEdges().contains(edge)) return SymmetricColor.CYAN;
+        return SymmetricColor.YELLOW;
+    }
+
+    @Override
+    public boolean containsVertex(Vertex vertex){
+        List<Vertex> vertices = getVisitedVertices();
+        return vertices.contains(vertex) || vertices.contains(((GridSymmetryPuzzle)puzzle).getOppositeVertex(vertex));
+    }
+
+    public SymmetricColor getSymmetricColor(Vertex vertex){
+        if(getVisitedVertices().contains(vertex)) return SymmetricColor.CYAN;
+        return SymmetricColor.YELLOW;
+    }
+
+    @Override
+    public GridSymmetryPuzzle getPuzzle(){
+        return (GridSymmetryPuzzle)puzzle;
     }
 }

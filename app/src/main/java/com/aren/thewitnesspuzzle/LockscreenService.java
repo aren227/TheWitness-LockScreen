@@ -15,8 +15,11 @@ import android.view.WindowManager;
 
 import com.aren.thewitnesspuzzle.puzzle.Game;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
+import com.aren.thewitnesspuzzle.puzzle.factory.SimpleHexagonPuzzleFactory;
 import com.aren.thewitnesspuzzle.puzzle.factory.SimpleMazePuzzleFactory;
 import com.aren.thewitnesspuzzle.puzzle.factory.SimpleSquarePuzzleFactory;
+import com.aren.thewitnesspuzzle.puzzle.factory.SimpleSymmetryPuzzleFactory;
+import com.aren.thewitnesspuzzle.puzzle.factory.SymmetryHexagonPuzzleFactory;
 
 import java.util.Random;
 
@@ -94,7 +97,7 @@ public class LockscreenService extends Service {
                 Log.i("TAG", "SCREEN_OFF");
 
 
-                Puzzle puzzle = new SimpleSquarePuzzleFactory().generate(game, new Random());
+                Puzzle puzzle = new SymmetryHexagonPuzzleFactory().generate(game, new Random());
                 game.setPuzzle(puzzle);
                 //game.setPuzzle(new SlidePuzzle(game));
                 lockScreen(context);

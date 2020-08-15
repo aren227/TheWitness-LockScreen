@@ -222,6 +222,7 @@ public class Puzzle {
     protected void endTracing(){
         touching = false;
         EdgeProportion currentCursorEdge = cursor.getCurrentCursorEdge();
+        if(currentCursorEdge == null) return;
         Edge edge = currentCursorEdge.edge;
         if(currentCursorEdge.to().getRule() instanceof EndingPointRule && currentCursorEdge.proportion > 1 - getPathWidth() * 0.5f / edge.getLength()){
             final ValidationResult result = validate();
@@ -417,6 +418,11 @@ public class Puzzle {
         return rules;
     }
 
+    // For debugging
+    public void setCursor(Cursor cursor){
+        this.cursor = cursor;
+    }
+
     public class ValidationResult{
 
         public List<Rule> notOnAreaErrors = new ArrayList<>();
@@ -463,7 +469,7 @@ public class Puzzle {
         }
 
         public List<Rule> getOriginalErrors(){
-            List<Rule> rules = new ArrayList<>();
+            List<Rule> rules = new ArrayList<>(notOnAreaErrors);
             for(Area.AreaValidationResult result : areaValidationResults){
                 rules.addAll(result.originalErrors);
             }
@@ -471,7 +477,7 @@ public class Puzzle {
         }
 
         public List<Rule> getNewErrors(){
-            List<Rule> rules = new ArrayList<>();
+            List<Rule> rules = new ArrayList<>(notOnAreaErrors);
             for(Area.AreaValidationResult result : areaValidationResults){
                 if(result.eliminated) rules.addAll(result.newErrors);
                 else rules.addAll(result.originalErrors);

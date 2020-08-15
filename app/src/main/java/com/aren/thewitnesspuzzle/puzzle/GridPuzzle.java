@@ -7,6 +7,7 @@ import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
 import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.rules.EndingPointRule;
+import com.aren.thewitnesspuzzle.puzzle.rules.Rule;
 import com.aren.thewitnesspuzzle.puzzle.rules.StartingPointRule;
 
 import java.util.ArrayList;
@@ -130,6 +131,30 @@ public class GridPuzzle extends Puzzle {
         for(Area area : splitter.areaList){
             result.areaValidationResults.add(area.validate(cursor));
         }
+
+        //FIXME: Dirty code again. I think getVisitedVerticies() of SymmetryCursor should return with opposite vertices.
+        List<Rule> rules = new ArrayList<>();
+        for(Vertex vertex : cursor.getVisitedVertices()){
+            if(vertex.getRule() != null) rules.add(vertex.getRule());
+            if(this instanceof GridSymmetryPuzzle){
+                Vertex opposite = ((GridSymmetryPuzzle)this).getOppositeVertex(vertex);
+                if(opposite.getRule() != null) rules.add(opposite.getRule());
+            }
+        }
+        for(Edge edge : cursor.getFullyVisitedEdges()){
+            if(edge.getRule() != null) rules.add(edge.getRule());
+            if(this instanceof GridSymmetryPuzzle){
+                Edge opposite = ((GridSymmetryPuzzle)this).getOppositeEdge(edge);
+                if(opposite.getRule() != null) rules.add(opposite.getRule());
+            }
+        }
+
+        for(Rule rule : rules){
+            if(!rule.validateLocally(cursor)){
+                result.notOnAreaErrors.add(rule);
+            }
+        }
+
         return result;
     }
 
@@ -142,6 +167,16 @@ public class GridPuzzle extends Puzzle {
         for(int y = 1; y < height; y++){
             vertices.add(getVertexAt(0, y));
             vertices.add(getVertexAt(width, y));
+        }
+        return vertices;
+    }
+
+    public List<Vertex> getInnerVertices(){
+        List<Vertex> vertices = new ArrayList<>();
+        for(int x = 1; x < width; x++){
+            for(int y = 1; y < height; y++){
+                vertices.add(getVertexAt(x, y));
+            }
         }
         return vertices;
     }

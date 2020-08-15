@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.aren.thewitnesspuzzle.math.Vector2Int;
 import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
+import com.aren.thewitnesspuzzle.puzzle.GridSymmetryPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 
 import java.util.ArrayList;
@@ -33,18 +34,39 @@ public class RandomGridWalker {
 
     private ArrayList<Vector2Int> result;
 
+    private GridSymmetryPuzzle.SymmetryType symmetryType;
+
     private boolean walk(){
         if(x < 0 || y < 0 || x > width || y > height) return false;
 
-        if(x == endX && y == endY){
-            return true;
+        if(symmetryType == GridSymmetryPuzzle.SymmetryType.VLINE && width % 2 == 0 && width / 2 == x){
+            return false;
+        }
+
+        if(symmetryType == GridSymmetryPuzzle.SymmetryType.POINT && width % 2 == 0 && width / 2 == x && height / 2 == y){
+            return false;
         }
 
         int pos = (x + y * (width + 1));
         long bit = 1L << pos;
 
         if((hist & bit) > 0) return false;
+
+        if(x == endX && y == endY){
+            return true;
+        }
+
         hist |= bit;
+
+        long vSymBit = 0, pSymBit = 0;
+        if(symmetryType == GridSymmetryPuzzle.SymmetryType.VLINE){
+            vSymBit = 1L << ((width - x + y * (width + 1)));
+            hist |= vSymBit;
+        }
+        else if(symmetryType == GridSymmetryPuzzle.SymmetryType.POINT){
+            pSymBit = 1L << ((width - x + (height - y) * (width + 1)));
+            hist |= pSymBit;
+        }
 
         int tx = x, ty = y;
 
@@ -60,6 +82,12 @@ public class RandomGridWalker {
         }
 
         hist ^= bit;
+        if(symmetryType == GridSymmetryPuzzle.SymmetryType.VLINE){
+            hist ^= vSymBit;
+        }
+        else if(symmetryType == GridSymmetryPuzzle.SymmetryType.POINT){
+            hist ^= pSymBit;
+        }
 
         return false;
     }
@@ -76,6 +104,10 @@ public class RandomGridWalker {
         this.startY = startY;
         this.endX = endX;
         this.endY = endY;
+
+        if(gridPuzzle instanceof GridSymmetryPuzzle){
+            this.symmetryType = ((GridSymmetryPuzzle)gridPuzzle).getSymmetryType();
+        }
     }
 
     public void doWalkAsManyAsPossible(int iters){
