@@ -9,15 +9,12 @@ import com.aren.thewitnesspuzzle.puzzle.cursor.area.GridAreaSplitter;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.rules.BlocksRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.BrokenLineRule;
-import com.aren.thewitnesspuzzle.puzzle.rules.Color;
 import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridWalker;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 
-public class SimpleBlocksPuzzleFactory implements PuzzleFactory{
-
+public class RotatableBlocksPuzzleFactory implements PuzzleFactory {
     @Override
     public Puzzle generate(Game game, Random random) {
         GridPuzzle puzzle = new GridPuzzle(game, 4, 4);
@@ -35,7 +32,7 @@ public class SimpleBlocksPuzzleFactory implements PuzzleFactory{
         GridAreaSplitter splitter = new GridAreaSplitter(cursor);
 
         BrokenLineRule.generate(cursor, random, 0.2f);
-        BlocksRule.generate(splitter, random, 0.4f, 0);
+        BlocksRule.generate(splitter, random, 0.4f, 1f);
 
         puzzle.setCursor(cursor);
 
@@ -44,6 +41,6 @@ public class SimpleBlocksPuzzleFactory implements PuzzleFactory{
 
     @Override
     public Difficulty getDifficulty() {
-        return Difficulty.NORMAL;
+        return Difficulty.HARD;
     }
 }

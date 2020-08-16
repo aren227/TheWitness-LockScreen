@@ -8,14 +8,16 @@ import com.aren.thewitnesspuzzle.puzzle.cursor.area.GridAreaSplitter;
 import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-public class Sun extends Colorable {
+public class SunRule extends Colorable {
 
-    public Sun(Color color){
+    public SunRule(Color color){
         super(color);
     }
 
@@ -33,8 +35,8 @@ public class Sun extends Colorable {
     public static List<Rule> areaValidate(Area area){
         Map<Color, ArrayList<Rule>> sunColors = new HashMap<>();
         for(Tile tile : area.tiles){
-            if(tile.getRule() instanceof Sun){
-                Sun sun = (Sun)tile.getRule();
+            if(tile.getRule() instanceof SunRule){
+                SunRule sun = (SunRule)tile.getRule();
                 if(sun.eliminated) continue;
                 if(!sunColors.containsKey(sun.color)) sunColors.put(sun.color, new ArrayList<Rule>());
                 sunColors.get(sun.color).add(sun);
@@ -49,7 +51,7 @@ public class Sun extends Colorable {
             for(Tile tile : area.tiles){
                 if(tile.getRule() instanceof Colorable){
                     if(((Colorable)tile.getRule()).eliminated) continue;
-                    if(((Sun)suns.get(0)).color == ((Colorable)tile.getRule()).color){
+                    if(((SunRule)suns.get(0)).color == ((Colorable)tile.getRule()).color){
                         count++;
                         if(count > 2) break;
                     }
@@ -63,9 +65,11 @@ public class Sun extends Colorable {
         return areaErrors;
     }
 
-    public static void generate(GridAreaSplitter splitter, Random random, float applyRate){
-        /*ArrayList<Area> areas = new ArrayList<>(splitter.areaList);
-        int applyAreaCount = (int)Math.ceil(areas.size() * applyRate);
+    public static void generate(GridAreaSplitter splitter, Random random, Color[] palette, float areaApplyRate, float spawnRate){
+        List<Color> colors = new ArrayList<>(Arrays.asList(palette));
+
+        List<Area> areas = new ArrayList<>(splitter.areaList);
+        int applyAreaCount = (int)Math.ceil(areas.size() * areaApplyRate);
         Collections.shuffle(areas, random);
         for(int i = 0; i < applyAreaCount; i++){
             Area area = areas.get(i);
@@ -73,11 +77,22 @@ public class Sun extends Colorable {
             for(Tile tile : area.tiles){
                 if(tile.getRule() == null) tiles.add(tile);
             }
-            if(tiles.size() < 2) continue;
             Collections.shuffle(tiles, random);
-            tiles.get(0).setRule(new Sun(Color.BLACK));
-            tiles.get(1).setRule(new Sun(Color.BLACK));
-        }*/
+            //Collections.shuffle(colors, random);
+
+            int spawned = 0;
+            while(true){
+                // Check if we can add more
+                if(tiles.size() - spawned < 2) break;
+                if(palette.length * 2 <= spawned) break;
+                if((float)spawned / tiles.size() > spawnRate) break;
+
+                tiles.get(spawned).setRule(new SunRule(palette[spawned / 2]));
+                tiles.get(spawned + 1).setRule(new SunRule(palette[spawned / 2]));
+
+                spawned += 2;
+            }
+        }
     }
 
 }

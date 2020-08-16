@@ -84,6 +84,26 @@ public class BlocksRule extends Rule {
         return bit;
     }
 
+    public static BlocksRule rotateRule(BlocksRule rule, int rotation){
+        boolean[][] rotated;
+        if(rotation % 2 == 0) rotated = new boolean[rule.width][rule.height];
+        else rotated = new boolean[rule.height][rule.width];
+
+        for(int i = 0; i < rule.width; i++){
+            for(int j = 0; j < rule.height; j++){
+                if(!rule.blocks[i][j]) continue;
+
+                //ccw
+                if(rotation == 0) rotated[i][j] = true;
+                else if(rotation == 1) rotated[rule.height - j - 1][i] = true;
+                else if(rotation == 2) rotated[rule.width - i - 1][rule.height - j - 1] = true;
+                else rotated[j][rule.width - i - 1] = true;
+            }
+        }
+
+        return new BlocksRule(rotated, rule.puzzleHeight, rule.rotatable, rule.subtractive);
+    }
+
     public int getBlockSize(){
         return Long.bitCount(blockBits[0]);
     }
@@ -233,7 +253,7 @@ public class BlocksRule extends Rule {
         connectTiles(connected, random, tiles, width, height, selected.x, selected.y, targetCount);
     }
 
-    public static void generate(GridAreaSplitter splitter, Random random, float spawnRate){
+    public static void generate(GridAreaSplitter splitter, Random random, float spawnRate, float rotatableRate){
         GridPuzzle puzzle = splitter.getPuzzle();
 
         List<Area> areas = new ArrayList<>(splitter.areaList);
@@ -252,7 +272,7 @@ public class BlocksRule extends Rule {
             List<List<Vector2Int>> blocksList = new ArrayList<>();
 
             long start = System.currentTimeMillis();
-            for(int i = 0; i < 40; i++){
+            for(int i = 0; i < 100; i++){
                 // Init
                 List<List<Vector2Int>> blocksListCandidate = new ArrayList<>();
                 int tileCount = 0;
@@ -261,7 +281,7 @@ public class BlocksRule extends Rule {
                     tileCount++;
                 }
 
-                while(tileCount > 0){
+                while(true){
                     List<Vector2Int> candidates = new ArrayList<>();
                     for(int x = 0; x < puzzle.getWidth(); x++){
                         for(int y = 0; y < puzzle.getHeight(); y++){
@@ -269,30 +289,47 @@ public class BlocksRule extends Rule {
                             candidates.add(new Vector2Int(x, y));
                         }
                     }
+                    if(candidates.size() == 0) break;
 
                     Vector2Int selectedPosition = candidates.get(random.nextInt(candidates.size()));
 
                     List<Vector2Int> blocks = new ArrayList<>();
-                    connectTiles(blocks, random, tiles, puzzle.getWidth(), puzzle.getHeight(), selectedPosition.x, selectedPosition.y, random.nextInt(2) + 3);
+                    connectTiles(blocks, random, tiles, puzzle.getWidth(), puzzle.getHeight(), selectedPosition.x, selectedPosition.y, random.nextInt(3) + 2);
 
-                    tileCount -= blocks.size();
                     blocksListCandidate.add(blocks);
                 }
 
+                // Minimize the number of blocks
                 if(blocksList.size() == 0 || blocksListCandidate.size() < blocksList.size()){
                     blocksList = blocksListCandidate;
+                }
+
+                // Minimize variance
+                if(blocksList.size() == blocksListCandidate.size()){
+                    float m = (float)blocksList.size() / tileCount;
+                    float currentV = 0, newV = 0;
+                    for(List<Vector2Int> blocks : blocksList){
+                        currentV += (blocks.size() - m) * (blocks.size() - m);
+                    }
+                    for(List<Vector2Int> blocks : blocksListCandidate){
+                        newV += (blocks.size() - m) * (blocks.size() - m);
+                    }
+                    if(newV < currentV){
+                        blocksList = blocksListCandidate;
+                    }
                 }
             }
 
             Log.i("BLOCK", "Iterations took " + (System.currentTimeMillis() - start) + "ms.");
 
             List<BlocksRule> blocksRuleList = new ArrayList<>();
-            for(List<Vector2Int> blocks : blocksList){
+            int rotatableCount = (int)(blocksList.size() * rotatableRate);
+            for(int j = 0; j < blocksList.size(); j++){
                 int minX = Integer.MAX_VALUE;
                 int minY = Integer.MAX_VALUE;
                 int maxX = Integer.MIN_VALUE;
                 int maxY = Integer.MIN_VALUE;
-                for(Vector2Int v : blocks){
+                for(Vector2Int v : blocksList.get(j)){
                     minX = Math.min(minX, v.x);
                     minY = Math.min(minY, v.y);
                     maxX = Math.max(maxX, v.x);
@@ -300,11 +337,15 @@ public class BlocksRule extends Rule {
                 }
 
                 boolean[][] result = new boolean[maxX - minX + 1][maxY - minY + 1];
-                for(Vector2Int v : blocks){
+                for(Vector2Int v : blocksList.get(j)){
                     result[v.x - minX][v.y - minY] = true;
                 }
 
-                blocksRuleList.add(new BlocksRule(result, puzzle.getHeight(), false, false));
+                BlocksRule rule = new BlocksRule(result, puzzle.getHeight(), rotatableCount > j, false);
+                // Rotate randomly to hide original shape
+                if(rule.rotatable) rule = BlocksRule.rotateRule(rule, random.nextInt(4));
+
+                blocksRuleList.add(rule);
             }
 
             List<Tile> placing = new ArrayList<>(area.tiles);

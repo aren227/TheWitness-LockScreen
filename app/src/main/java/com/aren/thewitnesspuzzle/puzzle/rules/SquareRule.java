@@ -60,7 +60,12 @@ public class SquareRule extends Colorable {
 
     public static void generate(GridAreaSplitter splitter, Random random, float spawnRate){
         for(Area area : splitter.areaList){
-            ArrayList<Tile> tiles = new ArrayList<>(area.tiles);
+            ArrayList<Tile> tiles = new ArrayList<>();
+            for(Tile tile : area.tiles){
+                if(tile.getRule() == null) tiles.add(tile);
+            }
+            if(tiles.size() == 0) continue;
+
             int squareCount = Math.max((int)(tiles.size() * spawnRate), 1);
             Collections.shuffle(tiles, random);
             for(int j = 0; j < squareCount; j++){

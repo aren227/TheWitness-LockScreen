@@ -15,6 +15,7 @@ import android.view.WindowManager;
 
 import com.aren.thewitnesspuzzle.puzzle.Game;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
+import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactory;
 import com.aren.thewitnesspuzzle.puzzle.factory.SimpleBlocksPuzzleFactory;
 
 import java.util.Random;
@@ -92,14 +93,14 @@ public class LockscreenService extends Service {
                 screenOn = false;
                 Log.i("TAG", "SCREEN_OFF");
 
-
-                Puzzle puzzle = new SimpleBlocksPuzzleFactory().generate(game, new Random());
+                Random random = new Random();
+                Puzzle puzzle = PuzzleFactory.factories[random.nextInt(PuzzleFactory.factories.length)].generate(game, random);
                 game.setPuzzle(puzzle);
                 //game.setPuzzle(new SlidePuzzle(game));
                 lockScreen(context);
                 //game.setPuzzle(new SlidePuzzle());
             }
-            else if(intent.getAction().equals(Intent.ACTION_SCREEN_ON)){
+             else if(intent.getAction().equals(Intent.ACTION_SCREEN_ON)){
                 screenOn = true;
                 isLockScreen = true;
                 Log.i("TAG", "SCREEN_ON");

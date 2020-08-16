@@ -10,7 +10,7 @@ import com.aren.thewitnesspuzzle.puzzle.rules.Color;
 import com.aren.thewitnesspuzzle.puzzle.rules.EliminationRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.Rule;
 import com.aren.thewitnesspuzzle.puzzle.rules.SquareRule;
-import com.aren.thewitnesspuzzle.puzzle.rules.Sun;
+import com.aren.thewitnesspuzzle.puzzle.rules.SunRule;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -61,7 +61,7 @@ public class Area {
 
         List<Rule> areaErrors = new ArrayList<>();
         areaErrors.addAll(SquareRule.areaValidate(this));
-        areaErrors.addAll(Sun.areaValidate(this));
+        areaErrors.addAll(SunRule.areaValidate(this));
         areaErrors.addAll(BlocksRule.areaValidate(this));
 
         List<EliminationRule> eliminationRules = new ArrayList<>();
@@ -100,7 +100,7 @@ public class Area {
 
                     result.newErrors.clear();
                     result.newErrors.addAll(SquareRule.areaValidate(this));
-                    result.newErrors.addAll(Sun.areaValidate(this));
+                    result.newErrors.addAll(SunRule.areaValidate(this));
                     result.newErrors.addAll(BlocksRule.areaValidate(this));
 
                     if(result.newErrors.size() == 0){

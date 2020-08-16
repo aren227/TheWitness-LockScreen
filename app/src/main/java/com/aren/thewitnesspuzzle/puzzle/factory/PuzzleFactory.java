@@ -7,8 +7,11 @@ import java.util.Random;
 
 public interface PuzzleFactory {
 
+    PuzzleFactory[] factories = new PuzzleFactory[]{
+            new MultipleSunColorsPuzzleFactory(),
+    };
+
     Puzzle generate(Game game, Random random);
 
     Difficulty getDifficulty();
-
 }
