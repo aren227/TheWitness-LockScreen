@@ -35,7 +35,7 @@ public class SimpleSunSquarePuzzleFactory implements PuzzleFactory {
         GridAreaSplitter splitter = new GridAreaSplitter(cursor);
         splitter.assignAreaColorRandomly(random, Arrays.asList(Color.WHITE, Color.BLACK));
 
-        SunRule.generate(splitter, random, new Color[]{Color.ORANGE}, 1f, 1f);
+        SunRule.generate(splitter, random, new Color[]{Color.ORANGE}, 1f, 1f, 0);
         SquareRule.generate(splitter, random, 0.9f);
 
         puzzle.setCursor(cursor);

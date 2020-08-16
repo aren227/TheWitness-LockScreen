@@ -101,4 +101,8 @@ public class GridAreaSplitter {
         return puzzle;
     }
 
+    public Cursor getCursor(){
+        return cursor;
+    }
+
 }

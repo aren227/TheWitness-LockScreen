@@ -23,11 +23,14 @@ public class GraphElement {
         if(rule == null) return;
         this.rule = rule;
         rule.setGraphElement(this);
-        puzzle.getAppliedRules().add(rule.getClass());
     }
 
     public Rule getRule(){
         return rule;
+    }
+
+    public void removeRule(){
+        rule = null;
     }
 
     public Vector2 getPosition(){

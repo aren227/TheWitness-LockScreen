@@ -35,7 +35,7 @@ public class MultipleSunColorsPuzzleFactory implements PuzzleFactory {
         GridAreaSplitter splitter = new GridAreaSplitter(cursor);
 
         BrokenLineRule.generate(cursor, random, 0.2f);
-        SunRule.generate(splitter, random, new Color[]{Color.ORANGE, Color.LIME, Color.PINK}, 1f, 1f);
+        SunRule.generate(splitter, random, new Color[]{Color.ORANGE, Color.LIME, Color.PURPLE}, 1f, 1f, 0);
 
         puzzle.setCursor(cursor);
 

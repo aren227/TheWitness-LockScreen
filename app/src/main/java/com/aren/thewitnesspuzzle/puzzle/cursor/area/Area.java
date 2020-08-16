@@ -37,7 +37,7 @@ public class Area {
         vertices = new HashSet<>();
     }
 
-    public AreaValidationResult validate(Cursor cursor){
+    private void calculateEdgesAndVertices(Cursor cursor){
         for(Tile tile : tiles){
             for(Edge edge : tile.edges){
                 if(!cursor.containsEdge(edge)) edges.add(edge);
@@ -47,6 +47,10 @@ public class Area {
             if(!cursor.containsVertex(edge.from)) vertices.add(edge.from);
             if(!cursor.containsVertex(edge.to)) vertices.add(edge.to);
         }
+    }
+
+    public AreaValidationResult validate(Cursor cursor){
+        calculateEdgesAndVertices(cursor);
 
         for(Rule rule : getAllRules()){
             rule.eliminated = false;
@@ -138,6 +142,16 @@ public class Area {
             if(vertex.getRule() != null) rules.add(vertex.getRule());
         }
         return rules;
+    }
+
+    public List<Vertex> getVertices(Cursor cursor){
+        calculateEdgesAndVertices(cursor);
+        return new ArrayList<>(vertices);
+    }
+
+    public List<Edge> getEdges(Cursor cursor){
+        calculateEdgesAndVertices(cursor);
+        return new ArrayList<>(edges);
     }
 
     public class AreaValidationResult{

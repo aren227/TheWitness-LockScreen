@@ -8,7 +8,7 @@ import java.util.Random;
 public interface PuzzleFactory {
 
     PuzzleFactory[] factories = new PuzzleFactory[]{
-            new MultipleSunColorsPuzzleFactory(),
+            new SimpleSquareEliminationPuzzleFactory(),
     };
 
     Puzzle generate(Game game, Random random);

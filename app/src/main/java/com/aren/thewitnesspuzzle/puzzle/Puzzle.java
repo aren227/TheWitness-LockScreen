@@ -60,8 +60,6 @@ public class Puzzle {
     protected Edge[][] edgeTable; // Indexed by two vertices pair
     protected ArrayList<Tile> tiles = new ArrayList<>();
 
-    protected HashSet<Class<? extends Rule>> appliedRules = new HashSet<>();
-
     protected PuzzleAnimationManager animation;
 
     public Puzzle(Game game){
@@ -331,10 +329,6 @@ public class Puzzle {
             }
         }
         return result;
-    }
-
-    public HashSet<Class<? extends Rule>> getAppliedRules(){
-        return appliedRules;
     }
 
     public Vertex addVertex(Vertex vertex){
