@@ -23,7 +23,7 @@ public enum Color {
             return android.graphics.Color.rgb(0, 255, 255);
         }
         else if(this == RED){
-            return android.graphics.Color.rgb(255, 47, 0);
+            return android.graphics.Color.rgb(255, 65, 0);
         }
         return 0;
     }

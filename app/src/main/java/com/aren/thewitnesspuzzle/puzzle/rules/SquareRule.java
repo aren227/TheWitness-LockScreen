@@ -44,14 +44,16 @@ public class SquareRule extends Colorable {
 
         if(squareColors.keySet().size() <= 1) return new ArrayList<>();
 
-        int minSize = Integer.MAX_VALUE;
+        List<Integer> sizes = new ArrayList<>();
         for(Color color : squareColors.keySet()){
-            minSize = Math.min(squareColors.get(color).size(), minSize);
+            sizes.add(squareColors.get(color).size());
         }
+        Collections.sort(sizes);
+        int errorMaxSize = sizes.get(sizes.size() - 2);
 
         List<Rule> areaErrors = new ArrayList<>();
         for(Color color : squareColors.keySet()){
-            if(squareColors.get(color).size() == minSize){
+            if(squareColors.get(color).size() <= errorMaxSize){
                 areaErrors.addAll(squareColors.get(color));
             }
         }

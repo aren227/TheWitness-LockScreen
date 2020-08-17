@@ -19,7 +19,7 @@ public class SlidePuzzleFactory implements PuzzleFactory {
         ColorFactory.setRandomColor(puzzle);
 
         Vertex a = puzzle.addVertex(new Vertex(puzzle, 0, 0));
-        Vertex b = puzzle.addVertex(new Vertex(puzzle, 0, 1.5f));
+        Vertex b = puzzle.addVertex(new Vertex(puzzle, 0, 2f));
         puzzle.addEdge(new Edge(a, b));
 
         a.setRule(new StartingPointRule());

@@ -104,8 +104,6 @@ public class LockscreenService extends Service {
                 screenOn = true;
                 isLockScreen = true;
                 Log.i("TAG", "SCREEN_ON");
-
-
             }
         }
     }
