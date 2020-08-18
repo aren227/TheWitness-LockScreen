@@ -16,7 +16,7 @@ import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridWalker;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class SimpleHexagonEliminationPuzzleFactory implements PuzzleFactory {
+public class SimpleHexagonEliminationPuzzleFactory extends PuzzleFactory {
     @Override
     public Puzzle generate(Game game, Random random) {
         GridPuzzle puzzle = new GridPuzzle(game, 3, 3);
@@ -45,5 +45,10 @@ public class SimpleHexagonEliminationPuzzleFactory implements PuzzleFactory {
     @Override
     public Difficulty getDifficulty() {
         return Difficulty.EASY;
+    }
+
+    @Override
+    public String getName(){
+        return "Quarry #1";
     }
 }

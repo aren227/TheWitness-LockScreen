@@ -4,29 +4,19 @@ import com.aren.thewitnesspuzzle.puzzle.Game;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 
 import java.util.Random;
+import java.util.UUID;
 
-public interface PuzzleFactory {
+public abstract class PuzzleFactory {
 
-    PuzzleFactory[] factories = new PuzzleFactory[]{
-            new MultipleSunColorsPuzzleFactory(),
-            new RotatableBlocksPuzzleFactory(),
-            new SecondPuzzleFactory(),
-            new SimpleBlocksPuzzleFactory(),
-            new SimpleHexagonEliminationPuzzleFactory(),
-            new SimpleHexagonPuzzleFactory(),
-            new SimpleMazePuzzleFactory(),
-            new SimpleSquareEliminationPuzzleFactory(),
-            new SimpleSquarePuzzleFactory(),
-            new SimpleSunPuzzleFactory(),
-            new SimpleSunSquarePuzzleFactory(),
-            new SimpleSymmetryPuzzleFactory(),
-            new SlidePuzzleFactory(),
-            new SunPairWithSquarePuzzleFactory(),
-            new SymmetryHexagonPuzzleFactory(),
-    };
+    public abstract Puzzle generate(Game game, Random random);
 
+    public Difficulty getDifficulty(){
+        return null;
+    }
 
-    Puzzle generate(Game game, Random random);
+    public abstract String getName();
 
-    Difficulty getDifficulty();
+    public UUID getUuid(){
+        return UUID.nameUUIDFromBytes(getClass().getName().getBytes());
+    }
 }

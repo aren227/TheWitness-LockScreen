@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:padding="10dp"
+              android:id="@+id/preview_root">
+
+    <ImageView
+        android:id="@+id/puzzle_preview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/rounded_image"
+        android:layout_marginBottom="6dp"/>
+
+    <TextView
+        android:id="@+id/puzzle_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:fontFamily="serif"
+        android:textSize="20dp"
+        android:textColor="#fafafa"/>
+
+</LinearLayout>

@@ -1,5 +1,9 @@
 package com.aren.thewitnesspuzzle;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -7,6 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
+import android.os.Build;
 import android.os.IBinder;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
@@ -16,9 +21,13 @@ import android.view.WindowManager;
 import com.aren.thewitnesspuzzle.puzzle.Game;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactory;
+import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;
 import com.aren.thewitnesspuzzle.puzzle.factory.SimpleBlocksPuzzleFactory;
 
+import java.util.List;
 import java.util.Random;
+
+import androidx.core.app.NotificationCompat;
 
 public class LockscreenService extends Service {
 
@@ -26,6 +35,8 @@ public class LockscreenService extends Service {
 
     public static WindowManager mWindowManager;
     public Game game;
+
+    public PuzzleFactoryManager puzzleFactoryManager;
 
     public static boolean screenOn = true;
     public static boolean isLockScreen = false;
@@ -44,6 +55,15 @@ public class LockscreenService extends Service {
         context = this.getBaseContext();
 
         game = new Game(context);
+        game.setOnSolved(new Runnable() {
+            @Override
+            public void run() {
+                WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+                windowManager.removeView(game.getSurfaceView());
+            }
+        });
+
+        puzzleFactoryManager = new PuzzleFactoryManager(context);
 
         Log.i("TAG", "onCreate");
         super.onCreate();
@@ -71,19 +91,36 @@ public class LockscreenService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId){
-        Log.i("TAG", "onStartCommand");
-        super.onStartCommand(intent, flags, startId);
-        /*if(intent != null){
-            if(intent.getAction()==null){
-                if(mReceiver==null){
-                    mReceiver = new ScreenReceiver();
-                    IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
-                    registerReceiver(mReceiver, filter);
-                }
-            }
-        }*/
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+                this,
+                0,
+                new Intent(this, MainActivity.class),
+                PendingIntent.FLAG_UPDATE_CURRENT
+        );
 
-        return START_REDELIVER_INTENT;
+        Notification notification;
+        if (Build.VERSION.SDK_INT >= 26) {
+            NotificationChannel channel = new NotificationChannel("com.aren.thewitnesspuzzle", "MyChannel", NotificationManager.IMPORTANCE_DEFAULT);
+            ((NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE)).createNotificationChannel(channel);
+
+            notification = new Notification.Builder(this, "com.aren.thewitnesspuzzle")
+                    .setContentTitle("The Witness Lock Screen")
+                    .setContentText("Service is running")
+                    .setSmallIcon(R.drawable.ic_launcher_foreground)
+                    .setContentIntent(pendingIntent)
+                    .build();
+        }
+        else{
+            notification = new Notification.Builder(this)
+                    .setContentTitle("The Witness Lock Screen")
+                    .setContentText("Service is running")
+                    .setSmallIcon(R.drawable.ic_launcher_foreground)
+                    .setContentIntent(pendingIntent)
+                    .build();
+        }
+        startForeground(2277, notification);
+
+        return START_STICKY;
     }
 
     public class ScreenReceiver extends BroadcastReceiver {
@@ -94,11 +131,12 @@ public class LockscreenService extends Service {
                 Log.i("TAG", "SCREEN_OFF");
 
                 Random random = new Random();
-                Puzzle puzzle = PuzzleFactory.factories[random.nextInt(PuzzleFactory.factories.length)].generate(game, random);
-                game.setPuzzle(puzzle);
-                //game.setPuzzle(new SlidePuzzle(game));
-                lockScreen(context);
-                //game.setPuzzle(new SlidePuzzle());
+                List<PuzzleFactory> factories = puzzleFactoryManager.getActivatedPuzzleFactories();
+                if(factories.size() > 0){
+                    Puzzle puzzle = factories.get(random.nextInt(factories.size())).generate(game, random);
+                    game.setPuzzle(puzzle);
+                    lockScreen(context);
+                }
             }
              else if(intent.getAction().equals(Intent.ACTION_SCREEN_ON)){
                 screenOn = true;

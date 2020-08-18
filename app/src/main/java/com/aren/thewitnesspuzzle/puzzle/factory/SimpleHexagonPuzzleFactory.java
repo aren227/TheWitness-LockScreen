@@ -15,7 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-public class SimpleHexagonPuzzleFactory implements PuzzleFactory {
+public class SimpleHexagonPuzzleFactory extends PuzzleFactory {
     @Override
     public Puzzle generate(Game game, Random random) {
         GridPuzzle puzzle = new GridPuzzle(game, 4, 4);
@@ -47,5 +47,10 @@ public class SimpleHexagonPuzzleFactory implements PuzzleFactory {
     @Override
     public Difficulty getDifficulty() {
         return Difficulty.EASY;
+    }
+
+    @Override
+    public String getName(){
+        return "Green Panel";
     }
 }

@@ -1,7 +1,9 @@
 package com.aren.thewitnesspuzzle;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.opengl.GLSurfaceView;
+import android.util.Log;
 import android.view.MotionEvent;
 
 import com.aren.thewitnesspuzzle.graphics.GLRenderer;
@@ -9,11 +11,20 @@ import com.aren.thewitnesspuzzle.math.BoundingBox;
 import com.aren.thewitnesspuzzle.math.MathUtils;
 import com.aren.thewitnesspuzzle.puzzle.Game;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import javax.microedition.khronos.egl.EGL10;
+import javax.microedition.khronos.egl.EGLContext;
+import javax.microedition.khronos.opengles.GL10;
+
 public class PuzzleGLSurfaceView extends GLSurfaceView {
 
     private Game game;
 
     public GLRenderer glRenderer;
+
+    public Bitmap bitmap;
+    public boolean bitmapRendered = false;
 
     public PuzzleGLSurfaceView(Game game, Context context) {
         super(context);
@@ -40,7 +51,7 @@ public class PuzzleGLSurfaceView extends GLSurfaceView {
 
             float ratio = (float)getHeight() / getWidth();
 
-            BoundingBox frustumBB = glRenderer.getFrustumBoundingBox();
+            BoundingBox frustumBB = glRenderer.getFrustumBoundingBox(game.getPuzzle());
 
             x = MathUtils.lerp(frustumBB.min.x, frustumBB.max.x, x / getWidth());
             y = getHeight() - y; // Bottom-right should be (0, 0)
@@ -58,6 +69,34 @@ public class PuzzleGLSurfaceView extends GLSurfaceView {
         }
 
         return true;
+    }
+
+    public void capture(){
+        // Why It needs to draw several times to get a rendered result?
+        // First one or two results are always black. wtf?
+        // idk but i think it's buffer related issue.
+        for(int i = 0; i < 5; i++){
+            synchronized(glRenderer){
+                requestRender();
+                try {
+                    glRenderer.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        queueEvent(new Runnable() {
+            @Override
+            public void run() {
+                bitmap = glRenderer.captureToBitmap(0, 0, getWidth(), getHeight());
+                bitmapRendered = true;
+
+                synchronized (PuzzleGLSurfaceView.this){
+                    PuzzleGLSurfaceView.this.notifyAll();
+                }
+            }
+        });
     }
 
 }

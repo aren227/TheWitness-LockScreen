@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-public class SimpleSquareEliminationPuzzleFactory implements PuzzleFactory {
+public class SimpleSquareEliminationPuzzleFactory extends PuzzleFactory {
     @Override
     public Puzzle generate(Game game, Random random) {
         GridPuzzle puzzle = new GridPuzzle(game, 4, 4);
@@ -47,5 +47,10 @@ public class SimpleSquareEliminationPuzzleFactory implements PuzzleFactory {
     @Override
     public Difficulty getDifficulty() {
         return Difficulty.NORMAL;
+    }
+
+    @Override
+    public String getName(){
+        return "Quarry #2";
     }
 }

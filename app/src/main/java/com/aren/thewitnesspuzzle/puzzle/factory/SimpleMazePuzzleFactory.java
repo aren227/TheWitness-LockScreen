@@ -12,7 +12,7 @@ import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridWalker;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class SimpleMazePuzzleFactory implements PuzzleFactory {
+public class SimpleMazePuzzleFactory extends PuzzleFactory {
 
     @Override
     public GridPuzzle generate(Game game, Random random) {
@@ -36,5 +36,10 @@ public class SimpleMazePuzzleFactory implements PuzzleFactory {
     @Override
     public Difficulty getDifficulty() {
         return Difficulty.VERY_EASY;
+    }
+
+    @Override
+    public String getName(){
+        return "Entry Area #1";
     }
 }

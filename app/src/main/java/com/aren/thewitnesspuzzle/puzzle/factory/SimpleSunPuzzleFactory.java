@@ -15,7 +15,7 @@ import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridWalker;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class SimpleSunPuzzleFactory implements PuzzleFactory {
+public class SimpleSunPuzzleFactory extends PuzzleFactory {
     @Override
     public Puzzle generate(Game game, Random random) {
         GridPuzzle puzzle = new GridPuzzle(game, 4, 4);
@@ -43,5 +43,10 @@ public class SimpleSunPuzzleFactory implements PuzzleFactory {
     @Override
     public Difficulty getDifficulty() {
         return Difficulty.NORMAL;
+    }
+
+    @Override
+    public String getName(){
+        return "Treehouse #1";
     }
 }

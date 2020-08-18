@@ -14,7 +14,7 @@ import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridWalker;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class RotatableBlocksPuzzleFactory implements PuzzleFactory {
+public class RotatableBlocksPuzzleFactory extends PuzzleFactory {
     @Override
     public Puzzle generate(Game game, Random random) {
         GridPuzzle puzzle = new GridPuzzle(game, 4, 4);
@@ -42,5 +42,10 @@ public class RotatableBlocksPuzzleFactory implements PuzzleFactory {
     @Override
     public Difficulty getDifficulty() {
         return Difficulty.HARD;
+    }
+
+    @Override
+    public String getName(){
+        return "Swamp #2";
     }
 }

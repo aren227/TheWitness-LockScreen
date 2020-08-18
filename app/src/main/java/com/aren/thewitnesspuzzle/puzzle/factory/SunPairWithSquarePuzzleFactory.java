@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-public class SunPairWithSquarePuzzleFactory implements PuzzleFactory {
+public class SunPairWithSquarePuzzleFactory extends PuzzleFactory {
     @Override
     public Puzzle generate(Game game, Random random) {
         GridPuzzle puzzle = new GridPuzzle(game, 4, 4);
@@ -45,5 +45,10 @@ public class SunPairWithSquarePuzzleFactory implements PuzzleFactory {
     @Override
     public Difficulty getDifficulty() {
         return Difficulty.HARD;
+    }
+
+    @Override
+    public String getName(){
+        return "Treehouse #3";
     }
 }

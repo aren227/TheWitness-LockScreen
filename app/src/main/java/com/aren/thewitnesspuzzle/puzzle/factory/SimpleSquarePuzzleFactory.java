@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-public class SimpleSquarePuzzleFactory implements PuzzleFactory{
+public class SimpleSquarePuzzleFactory extends PuzzleFactory{
 
     @Override
     public Puzzle generate(Game game, Random random) {
@@ -51,5 +51,10 @@ public class SimpleSquarePuzzleFactory implements PuzzleFactory{
     @Override
     public Difficulty getDifficulty(){
         return Difficulty.VERY_EASY;
+    }
+
+    @Override
+    public String getName(){
+        return "Blue Panel";
     }
 }

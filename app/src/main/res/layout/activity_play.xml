@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PlayActivity"
+    android:background="@color/colorPrimary"
+    android:id="@+id/play_root">
+
+    <TextView
+        android:id="@+id/no_puzzle_warn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Please activate one or more puzzles in the gallery."
+        android:fontFamily="serif"
+        android:textSize="24dp"
+        android:textColor="#fafafa"
+        android:layout_centerInParent="true"
+        android:padding="16dp"
+        android:gravity="center"/>
+
+    <ImageView
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_margin="16dp"
+        android:id="@+id/next_puzzle"
+        android:src="@drawable/ic_navigate_next_black_24dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:visibility="gone"/>
+
+</RelativeLayout>

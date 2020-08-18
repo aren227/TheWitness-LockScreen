@@ -13,32 +13,22 @@ import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridWalker;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class SimpleSymmetryPuzzleFactory implements PuzzleFactory {
+public class SimpleVSymmetryPuzzleFactory extends PuzzleFactory {
 
     @Override
     public Puzzle generate(Game game, Random random) {
-        GridSymmetryPuzzle.SymmetryType symmetryType = random.nextFloat() > 0.5f ? GridSymmetryPuzzle.SymmetryType.VLINE : GridSymmetryPuzzle.SymmetryType.POINT;
+        GridSymmetryPuzzle.SymmetryType symmetryType = GridSymmetryPuzzle.SymmetryType.VLINE;
+
         GridSymmetryPuzzle symmetryPuzzle;
 
         int startX, startY, endX, endY;
 
-        if(symmetryType == GridSymmetryPuzzle.SymmetryType.VLINE){
-            symmetryPuzzle = new GridSymmetryPuzzle(game, 5, 7, symmetryType, false);
+        symmetryPuzzle = new GridSymmetryPuzzle(game, 5, 7, symmetryType, false);
 
-            startX = random.nextInt(2);
-            startY = 0;
-            endX = random.nextInt(2);
-            endY = 7;
-
-        }
-        else{
-            symmetryPuzzle = new GridSymmetryPuzzle(game, 6, 6, symmetryType, false);
-
-            startX = 0;
-            startY = 0;
-            endX = random.nextInt(6);
-            endY = 6;
-        }
+        startX = random.nextInt(2);
+        startY = 0;
+        endX = random.nextInt(2);
+        endY = 7;
 
         ColorFactory.setRandomColor(symmetryPuzzle);
 
@@ -57,6 +47,11 @@ public class SimpleSymmetryPuzzleFactory implements PuzzleFactory {
 
     @Override
     public Difficulty getDifficulty() {
-        return null;
+        return Difficulty.EASY;
+    }
+
+    @Override
+    public String getName(){
+        return "Glass Factory #1";
     }
 }

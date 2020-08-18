@@ -250,7 +250,7 @@ public class Puzzle {
                         }
                         else{
                             game.playSound(Sounds.SUCCESS);
-                            game.close();
+                            game.solved();
                         }
                     }
                 }));
@@ -265,7 +265,7 @@ public class Puzzle {
                 }
                 else{
                     game.playSound(Sounds.SUCCESS);
-                    game.close();
+                    game.solved();
                 }
             }
         }

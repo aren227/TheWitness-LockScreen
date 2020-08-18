@@ -10,7 +10,7 @@ import com.aren.thewitnesspuzzle.puzzle.rules.StartingPointRule;
 
 import java.util.Random;
 
-public class SecondPuzzleFactory implements PuzzleFactory {
+public class SecondPuzzleFactory extends PuzzleFactory {
 
     @Override
     public Puzzle generate(Game game, Random random) {
@@ -33,5 +33,10 @@ public class SecondPuzzleFactory implements PuzzleFactory {
     @Override
     public Difficulty getDifficulty() {
         return Difficulty.ALWAYS_SOLVABLE;
+    }
+
+    @Override
+    public String getName(){
+        return "Simple #2";
     }
 }

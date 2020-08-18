@@ -1,6 +1,7 @@
 package com.aren.thewitnesspuzzle.graphics;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
@@ -13,13 +14,16 @@ import com.aren.thewitnesspuzzle.math.BoundingBox;
 import com.aren.thewitnesspuzzle.math.Vector2;
 import com.aren.thewitnesspuzzle.math.Vector3;
 import com.aren.thewitnesspuzzle.puzzle.Game;
+import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -69,18 +73,28 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onDrawFrame(GL10 gl) {
-        if(game.getPuzzle().shouldUpdateAnimation()){
+        Log.i("GL", game.getPuzzle() + " Rendered");
+
+        if(game.getPuzzle() == null) {
+            GLES20.glClearColor(1, 0, 1, 1.0f);
+            GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+            return;
+        }
+
+        Puzzle puzzle = game.getPuzzle();
+
+        if(puzzle.shouldUpdateAnimation()){
             game.getSurfaceView().setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
         }
         else{
             game.getSurfaceView().setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
         }
-        game.getPuzzle().prepareForDrawing();
+        puzzle.prepareForDrawing();
 
-        game.getPuzzle().updateAnimation();
-        game.getPuzzle().updateDynamicShapes();
+        puzzle.updateAnimation();
+        puzzle.updateDynamicShapes();
 
-        BoundingBox frustumBB = getFrustumBoundingBox();
+        BoundingBox frustumBB = getFrustumBoundingBox(puzzle);
 
         Matrix.frustumM(mProjectionMatrix, 0, -frustumBB.getWidth() / 2, frustumBB.getWidth() / 2, -frustumBB.getHeight() / 2, frustumBB.getHeight() / 2, 1, 100);
 
@@ -101,21 +115,24 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 
         int COORD_PER_VERTEX = 3;
         int VERTEX_STRIDE = 3 * 4;
-        GLES20.glVertexAttribPointer(aPositionHandle, COORD_PER_VERTEX, GLES20.GL_FLOAT, false, VERTEX_STRIDE, game.getPuzzle().getVertexBuffer());
+        GLES20.glVertexAttribPointer(aPositionHandle, COORD_PER_VERTEX, GLES20.GL_FLOAT, false, VERTEX_STRIDE, puzzle.getVertexBuffer());
 
         int aColorHandle = GLES20.glGetAttribLocation(glProgram, "aColor");
 
         GLES20.glEnableVertexAttribArray(aColorHandle);
 
-        GLES20.glVertexAttribPointer(aColorHandle, COORD_PER_VERTEX, GLES20.GL_FLOAT, false, VERTEX_STRIDE, game.getPuzzle().getVertexColorBuffer());
+        GLES20.glVertexAttribPointer(aColorHandle, COORD_PER_VERTEX, GLES20.GL_FLOAT, false, VERTEX_STRIDE, puzzle.getVertexColorBuffer());
 
         int MVPMatrixHandle = GLES20.glGetUniformLocation(glProgram, "MVP");
 
         GLES20.glUniformMatrix4fv(MVPMatrixHandle, 1, false, mMVPMatrix, 0);
 
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, game.getPuzzle().getVertexCount());
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, puzzle.getVertexCount());
 
         //GLES20.glDisableVertexAttribArray(vPositionHandle);
+        synchronized(this){
+            this.notifyAll();
+        }
     }
 
     public static int loadShader(int type, String shaderCode){
@@ -127,20 +144,45 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         return shader;
     }
 
-    public float getFrustumWidth(){
-        BoundingBox boundingBox = game.getPuzzle().getBoundingBox();
+    public float getFrustumWidth(Puzzle puzzle){
+        BoundingBox boundingBox = puzzle.getBoundingBox();
 
-        float bbWidth = boundingBox.getWidth() + game.getPuzzle().getPadding() * 2;
-        float bbHeight = boundingBox.getHeight() + game.getPuzzle().getPadding() * 2;
+        float bbWidth = boundingBox.getWidth() + puzzle.getPadding() * 2;
+        float bbHeight = boundingBox.getHeight() + puzzle.getPadding() * 2;
 
         if(bbWidth * ratio > bbHeight) return bbWidth;
         return bbHeight / ratio;
     }
 
-    public BoundingBox getFrustumBoundingBox(){
+    public BoundingBox getFrustumBoundingBox(Puzzle puzzle){
         BoundingBox boundingBox = new BoundingBox();
-        boundingBox.min = new Vector2(game.getPuzzle().getBoundingBox().getCenter().x - getFrustumWidth() * 0.5f, game.getPuzzle().getBoundingBox().getCenter().y - getFrustumWidth() * ratio * 0.5f);
-        boundingBox.max = new Vector2(game.getPuzzle().getBoundingBox().getCenter().x + getFrustumWidth() * 0.5f, game.getPuzzle().getBoundingBox().getCenter().y + getFrustumWidth() * ratio * 0.5f);
+        boundingBox.min = new Vector2(puzzle.getBoundingBox().getCenter().x - getFrustumWidth(puzzle) * 0.5f, puzzle.getBoundingBox().getCenter().y - getFrustumWidth(puzzle) * ratio * 0.5f);
+        boundingBox.max = new Vector2(puzzle.getBoundingBox().getCenter().x + getFrustumWidth(puzzle) * 0.5f, puzzle.getBoundingBox().getCenter().y + getFrustumWidth(puzzle) * ratio * 0.5f);
         return boundingBox;
+    }
+
+    // https://stackoverflow.com/questions/5514149/capture-screen-of-glsurfaceview-to-bitmap
+    public Bitmap captureToBitmap(int x, int y, int w, int h){
+        int bitmapBuffer[] = new int[w * h];
+        int bitmapSource[] = new int[w * h];
+        IntBuffer intBuffer = IntBuffer.wrap(bitmapBuffer);
+        intBuffer.position(0);
+
+        GLES20.glReadPixels(x, y, w, h, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, intBuffer);
+
+        int offset1, offset2;
+        for (int i = 0; i < h; i++) {
+            offset1 = i * w;
+            offset2 = (h - i - 1) * w;
+            for (int j = 0; j < w; j++) {
+                int texturePixel = bitmapBuffer[offset1 + j];
+                int blue = (texturePixel >> 16) & 0xff;
+                int red = (texturePixel << 16) & 0x00ff0000;
+                int pixel = (texturePixel & 0xff00ff00) | red | blue;
+                bitmapSource[offset2 + j] = pixel;
+            }
+        }
+
+        return Bitmap.createBitmap(bitmapSource, w, h, Bitmap.Config.ARGB_8888);
     }
 }

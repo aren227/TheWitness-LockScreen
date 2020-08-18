@@ -20,6 +20,8 @@ public class Game {
 
     private HashMap<Integer, MediaPlayer> mediaPlayers = new HashMap<>();
 
+    private Runnable onSolved;
+
     public Game(Context context){
         this.context = context;
         surfaceView = new PuzzleGLSurfaceView(this, context);
@@ -38,9 +40,14 @@ public class Game {
         surfaceView.requestRender();
     }
 
-    public void close(){
-        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        windowManager.removeView(surfaceView);
+    public void solved(){
+        if(onSolved != null){
+            onSolved.run();
+        }
+    }
+
+    public void setOnSolved(Runnable runnable){
+        onSolved = runnable;
     }
 
     public void setPuzzle(Puzzle puzzle){

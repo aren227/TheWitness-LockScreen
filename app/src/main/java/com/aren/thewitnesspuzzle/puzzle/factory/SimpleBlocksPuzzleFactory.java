@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-public class SimpleBlocksPuzzleFactory implements PuzzleFactory{
+public class SimpleBlocksPuzzleFactory extends PuzzleFactory{
 
     @Override
     public Puzzle generate(Game game, Random random) {
@@ -45,5 +45,10 @@ public class SimpleBlocksPuzzleFactory implements PuzzleFactory{
     @Override
     public Difficulty getDifficulty() {
         return Difficulty.NORMAL;
+    }
+
+    @Override
+    public String getName(){
+        return "Swamp #1";
     }
 }

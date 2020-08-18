@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-public class SymmetryHexagonPuzzleFactory implements PuzzleFactory{
+public class SymmetryHexagonPuzzleFactory extends PuzzleFactory{
     @Override
     public Puzzle generate(Game game, Random random) {
         GridSymmetryPuzzle symmetryPuzzle = new GridSymmetryPuzzle(game, 5, 5, GridSymmetryPuzzle.SymmetryType.POINT, true);
@@ -47,5 +47,10 @@ public class SymmetryHexagonPuzzleFactory implements PuzzleFactory{
     @Override
     public Difficulty getDifficulty() {
         return Difficulty.NORMAL;
+    }
+
+    @Override
+    public String getName(){
+        return "Symmetry Island #1";
     }
 }
