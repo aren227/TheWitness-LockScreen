@@ -42,6 +42,11 @@ public class PuzzleColorPalette {
         actualCursorColor = new Value<>(this.cursor);
     }
 
+    @Override
+    public PuzzleColorPalette clone(){
+        return new PuzzleColorPalette(background, path, cursor, cursorSucceeded, cursorFailed);
+    }
+
     public int getBackgroundColor(){
         return background;
     }

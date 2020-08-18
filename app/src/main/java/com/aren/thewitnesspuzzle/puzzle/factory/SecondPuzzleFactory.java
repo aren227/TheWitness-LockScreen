@@ -35,6 +35,6 @@ public class SecondPuzzleFactory extends PuzzleFactory {
 
     @Override
     public String getName(){
-        return "Simple #2";
+        return "Lock #2";
     }
 }

@@ -19,6 +19,7 @@ public class PuzzleFactoryManager {
     public PuzzleFactoryManager(Context context){
         this.context = context;
 
+        register(new ChallengeTrianglesPuzzleFactory());
         register(new MultipleSunColorsPuzzleFactory());
         register(new RotatableBlocksPuzzleFactory());
         register(new SecondPuzzleFactory());
@@ -31,6 +32,7 @@ public class PuzzleFactoryManager {
         register(new SimpleSquarePuzzleFactory());
         register(new SimpleSunPuzzleFactory());
         register(new SimpleSunSquarePuzzleFactory());
+        register(new SimpleTrianglesPuzzleFactory());
         register(new SimpleVSymmetryPuzzleFactory());
         register(new SlidePuzzleFactory());
         register(new SunPairWithSquarePuzzleFactory());
@@ -83,7 +85,11 @@ public class PuzzleFactoryManager {
         Collections.sort(factories, new Comparator<PuzzleFactory>() {
             @Override
             public int compare(PuzzleFactory o1, PuzzleFactory o2) {
-                return Integer.compare(o1.getDifficulty().ordinal(), o2.getDifficulty().ordinal());
+                int a = -1;
+                if(o1.getDifficulty() != null) a = o1.getDifficulty().ordinal();
+                int b = -1;
+                if(o2.getDifficulty() != null) b = o2.getDifficulty().ordinal();
+                return Integer.compare(a, b);
             }
         });
     }

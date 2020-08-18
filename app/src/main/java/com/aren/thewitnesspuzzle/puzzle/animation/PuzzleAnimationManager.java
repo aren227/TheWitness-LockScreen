@@ -9,12 +9,14 @@ import java.util.List;
 public class PuzzleAnimationManager {
 
     private List<Animation> animations;
-    private List<Animation> tempQueue;
+    private List<Animation> tempAddQueue;
+    private List<Animation> tempRemoveQueue;
     private boolean lock;
 
     public PuzzleAnimationManager(Puzzle puzzle){
         animations = new ArrayList<>();
-        tempQueue = new ArrayList<>();
+        tempAddQueue = new ArrayList<>();
+        tempRemoveQueue = new ArrayList<>();
         lock = false;
     }
 
@@ -30,8 +32,11 @@ public class PuzzleAnimationManager {
         }
         lock = false;
 
-        animations.addAll(tempQueue);
-        tempQueue.clear();
+        animations.addAll(tempAddQueue);
+        tempAddQueue.clear();
+
+        animations.removeAll(tempRemoveQueue);
+        tempRemoveQueue.clear();
     }
 
     public boolean shouldUpdate(){
@@ -46,12 +51,41 @@ public class PuzzleAnimationManager {
             animation.remove();
         }
         animations.clear();
-        tempQueue.clear();
+        tempAddQueue.clear();
+        tempRemoveQueue.clear();
     }
 
     public void addAnimation(Animation animation){
-        if(lock) tempQueue.add(animation);
+        if(lock) tempAddQueue.add(animation);
         else animations.add(animation);
+    }
+
+    public boolean isPlaying(Class cls){
+        for(Animation animation : animations){
+            if(animation.getClass().equals(cls)) return true;
+        }
+        return false;
+    }
+
+    public List<Animation> getAnimations(Class cls){
+        List<Animation> result = new ArrayList<>();
+        for(Animation animation : animations){
+            if(animation.getClass().equals(cls)) result.add(animation);
+        }
+        return result;
+    }
+
+    public void stopAnimation(Animation animation){
+        animation.remove();
+        if(lock) tempRemoveQueue.add(animation);
+        else animations.remove(animation);
+    }
+
+    public void stopAnimation(Class cls){
+        List<Animation> list = getAnimations(cls);
+        for(Animation animation : animations) animation.remove();
+        if(lock) tempRemoveQueue.addAll(list);
+        else animations.removeAll(list);
     }
 
 }

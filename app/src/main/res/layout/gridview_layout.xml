@@ -11,8 +11,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:background="@drawable/rounded_image"
-        android:layout_marginBottom="6dp"/>
+        android:adjustViewBounds="true"
+        android:background="@drawable/rounded_image"/>
 
     <TextView
         android:id="@+id/puzzle_name"

@@ -10,7 +10,8 @@ public class PalettePreset {
     private Map<String, PuzzleColorPalette> presets = new HashMap<>();
 
     public PalettePreset(){
-        register("General_Slide", "#fd9700", "#8a4700", "#fffef9", "#c8bd00");
+        register("General_Slide", "#fd9700", "#8a4700", "#fffef9", "#fbe50d");
+        register("General_Panel", "#868986", "#6b5b37", "#bf8e54", "#d2720d");
         register("Entry_Second", "#ffcb00", "#a97700", "#f9e27a", "#fdfb57");
         register("Entry_1", "#e1a300", "#3c2901", "#edec9d", "#eee850");
         register("Green_1", "#00ee4a", "#006615", "#eaeabc", "#b8ff14");
@@ -19,6 +20,7 @@ public class PalettePreset {
         register("SymmetryIsland_1", "#96c2e9", "#555553", "#fafafa", "#fafafa"); // cursor color is cyan & yellow
         register("Swamp_1", "#b7c900", "#e9e370", "#f5f6ab", "#fcf31a");
         register("Swamp_2", "#e09b19", "#dbbc6b", "#f4e791", "#f2f528");
+        register("Swamp_3", "#be0802", "#ef4632", "#f1f2d2", "#fdf61a");
         register("Treehouse_1", "#505b5f", "#0f1412", "#fef7e1", "#fda20f");
         register("Treehouse_2", "#505b5f", "#0f1412", "#fef7e1", "#ac01be");
         register("Quarry_1", "#363838", "#59877c", "#ffffff", "#ffffff");
@@ -39,12 +41,8 @@ public class PalettePreset {
         presets.put(name, new PuzzleColorPalette(ColorUtils.RGB(background), ColorUtils.RGB(path), ColorUtils.RGB(cursor), ColorUtils.RGB(cursorSucceeded), ColorUtils.RGB(cursorFailed)));
     }
 
-    private static PalettePreset getInstance() {
-        return instance;
-    }
-
     public static PuzzleColorPalette get(String name){
-        if(instance.presets.containsKey(name)) return instance.presets.get(name);
+        if(instance.presets.containsKey(name)) return instance.presets.get(name).clone();
         return null;
     }
 

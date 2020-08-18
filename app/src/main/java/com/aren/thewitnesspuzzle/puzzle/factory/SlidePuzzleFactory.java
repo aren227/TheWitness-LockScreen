@@ -33,6 +33,6 @@ public class SlidePuzzleFactory extends PuzzleFactory {
 
     @Override
     public String getName(){
-        return "Simple #1";
+        return "Lock #1";
     }
 }

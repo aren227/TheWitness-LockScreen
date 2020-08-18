@@ -10,7 +10,9 @@ import com.aren.thewitnesspuzzle.math.BoundingBox;
 import com.aren.thewitnesspuzzle.math.Vector2;
 import com.aren.thewitnesspuzzle.math.Vector3;
 import com.aren.thewitnesspuzzle.puzzle.animation.Animation;
+import com.aren.thewitnesspuzzle.puzzle.animation.CursorEndingPointReachedAnimation;
 import com.aren.thewitnesspuzzle.puzzle.animation.CursorFailedAnimation;
+import com.aren.thewitnesspuzzle.puzzle.animation.CursorSucceededAnimation;
 import com.aren.thewitnesspuzzle.puzzle.animation.EliminatedAnimation;
 import com.aren.thewitnesspuzzle.puzzle.animation.EliminatorActivatedAnimation;
 import com.aren.thewitnesspuzzle.puzzle.animation.ErrorAnimation;
@@ -205,6 +207,8 @@ public class Puzzle {
         if(currentCursorEdge == null) return;
         Edge edge = currentCursorEdge.edge;
         if(currentCursorEdge.to().getRule() instanceof EndingPointRule && currentCursorEdge.proportion > 1 - getPathWidth() * 0.5f / edge.getLength()){
+            resetAnimation();
+
             final ValidationResult result = validate();
 
             if(result.hasEliminatedRule()){
@@ -231,6 +235,13 @@ public class Puzzle {
                             game.playSound(Sounds.FAILURE);
                         }
                         else{
+                            for(Rule rule : result.getEliminatedRules()){
+                                addAnimation(new EliminatedAnimation(rule));
+                            }
+                            for(Rule rule : result.getEliminators()){
+                                addAnimation(new EliminatorActivatedAnimation(rule));
+                            }
+                            addAnimation(new CursorSucceededAnimation(Puzzle.this));
                             game.playSound(Sounds.SUCCESS);
                             game.solved();
                         }
@@ -246,6 +257,7 @@ public class Puzzle {
                     game.playSound(Sounds.FAILURE);
                 }
                 else{
+                    addAnimation(new CursorSucceededAnimation(this));
                     game.playSound(Sounds.SUCCESS);
                     game.solved();
                 }
@@ -274,6 +286,16 @@ public class Puzzle {
             EdgeProportion edgeProportion = new EdgeProportion(edge);
             edgeProportion.proportion = edgeProportion.getProportionFromPointOutside(pos);
             cursor.connectTo(edgeProportion);
+
+            EdgeProportion cursorEdge = cursor.getCurrentCursorEdge();
+            if(cursorEdge.to().getRule() instanceof EndingPointRule && cursorEdge.proportion > 1 - getPathWidth() * 0.5f / edge.getLength()){
+                if(!animation.isPlaying(CursorEndingPointReachedAnimation.class)){
+                    animation.addAnimation(new CursorEndingPointReachedAnimation(this));
+                }
+            }
+            else{
+                animation.stopAnimation(CursorEndingPointReachedAnimation.class);
+            }
         }
         else if(action == MotionEvent.ACTION_UP){
             if(touching){
