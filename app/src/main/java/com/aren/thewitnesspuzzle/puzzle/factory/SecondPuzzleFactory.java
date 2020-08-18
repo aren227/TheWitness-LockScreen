@@ -1,8 +1,8 @@
 package com.aren.thewitnesspuzzle.puzzle.factory;
 
-import com.aren.thewitnesspuzzle.puzzle.ColorFactory;
 import com.aren.thewitnesspuzzle.puzzle.Game;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
+import com.aren.thewitnesspuzzle.puzzle.color.PalettePreset;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.rules.EndingPointRule;
@@ -14,9 +14,7 @@ public class SecondPuzzleFactory extends PuzzleFactory {
 
     @Override
     public Puzzle generate(Game game, Random random) {
-        Puzzle puzzle = new Puzzle(game);
-
-        ColorFactory.setRandomColor(puzzle);
+        Puzzle puzzle = new Puzzle(game, PalettePreset.get("TEST"));
 
         Vertex a = puzzle.addVertex(new Vertex(puzzle, 3, 0));
         Vertex b = puzzle.addVertex(new Vertex(puzzle, 3, 3));

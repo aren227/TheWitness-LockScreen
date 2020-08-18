@@ -1,9 +1,8 @@
 package com.aren.thewitnesspuzzle.puzzle.factory;
 
-import com.aren.thewitnesspuzzle.puzzle.ColorFactory;
 import com.aren.thewitnesspuzzle.puzzle.Game;
 import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
-import com.aren.thewitnesspuzzle.puzzle.Puzzle;
+import com.aren.thewitnesspuzzle.puzzle.color.PalettePreset;
 import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.rules.BrokenLineRule;
@@ -16,9 +15,7 @@ public class SimpleMazePuzzleFactory extends PuzzleFactory {
 
     @Override
     public GridPuzzle generate(Game game, Random random) {
-        GridPuzzle puzzle = new GridPuzzle(game, 6, 6);
-
-        ColorFactory.setRandomColor(puzzle);
+        GridPuzzle puzzle = new GridPuzzle(game, PalettePreset.get("TEST"), 6, 6);
 
         puzzle.addStartingPoint(0, 0);
         puzzle.addEndingPoint(puzzle.getWidth(), puzzle.getHeight());

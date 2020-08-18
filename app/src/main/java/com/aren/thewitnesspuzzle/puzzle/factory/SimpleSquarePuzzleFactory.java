@@ -1,13 +1,12 @@
 package com.aren.thewitnesspuzzle.puzzle.factory;
 
-import com.aren.thewitnesspuzzle.puzzle.ColorFactory;
 import com.aren.thewitnesspuzzle.puzzle.Game;
 import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
+import com.aren.thewitnesspuzzle.puzzle.color.PalettePreset;
 import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.cursor.area.GridAreaSplitter;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
-import com.aren.thewitnesspuzzle.puzzle.rules.BrokenLineRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.Color;
 import com.aren.thewitnesspuzzle.puzzle.rules.SquareRule;
 import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridWalker;
@@ -22,9 +21,7 @@ public class SimpleSquarePuzzleFactory extends PuzzleFactory{
 
     @Override
     public Puzzle generate(Game game, Random random) {
-        GridPuzzle puzzle = new GridPuzzle(game, 3, 3);
-
-        ColorFactory.setRandomColor(puzzle);
+        GridPuzzle puzzle = new GridPuzzle(game, PalettePreset.get("TEST"), 3, 3);
 
         List<Vertex> vertices = puzzle.getBorderVertices();
         Collections.shuffle(vertices, random);

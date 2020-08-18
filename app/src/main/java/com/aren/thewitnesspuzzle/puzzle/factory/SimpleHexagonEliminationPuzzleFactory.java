@@ -1,16 +1,15 @@
 package com.aren.thewitnesspuzzle.puzzle.factory;
 
-import com.aren.thewitnesspuzzle.puzzle.ColorFactory;
 import com.aren.thewitnesspuzzle.puzzle.Game;
 import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
+import com.aren.thewitnesspuzzle.puzzle.color.PalettePreset;
 import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.cursor.area.GridAreaSplitter;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.rules.BrokenLineRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.EliminationRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.HexagonRule;
-import com.aren.thewitnesspuzzle.puzzle.rules.Rule;
 import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridWalker;
 
 import java.util.ArrayList;
@@ -19,9 +18,7 @@ import java.util.Random;
 public class SimpleHexagonEliminationPuzzleFactory extends PuzzleFactory {
     @Override
     public Puzzle generate(Game game, Random random) {
-        GridPuzzle puzzle = new GridPuzzle(game, 3, 3);
-
-        ColorFactory.setRandomColor(puzzle);
+        GridPuzzle puzzle = new GridPuzzle(game, PalettePreset.get("TEST"), 3, 3);
 
         puzzle.addStartingPoint(0, 0);
         puzzle.addEndingPoint(3, 3);

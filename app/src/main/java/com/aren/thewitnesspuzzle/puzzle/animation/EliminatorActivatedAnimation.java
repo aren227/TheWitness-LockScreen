@@ -23,9 +23,9 @@ public class EliminatorActivatedAnimation extends Animation {
         int r = android.graphics.Color.red(shape.color.getOriginalValue());
         int g = android.graphics.Color.green(shape.color.getOriginalValue());
         int b = android.graphics.Color.blue(shape.color.getOriginalValue());
-        int rr = android.graphics.Color.red(puzzle.getBackgroundColor());
-        int gg = android.graphics.Color.green(puzzle.getBackgroundColor());
-        int bb = android.graphics.Color.blue(puzzle.getBackgroundColor());
+        int rr = android.graphics.Color.red(puzzle.getColorPalette().getBackgroundColor());
+        int gg = android.graphics.Color.green(puzzle.getColorPalette().getBackgroundColor());
+        int bb = android.graphics.Color.blue(puzzle.getColorPalette().getBackgroundColor());
         int c = android.graphics.Color.rgb(
                 (int)MathUtils.lerp(r, rr, s),
                 (int)MathUtils.lerp(g, gg, s),

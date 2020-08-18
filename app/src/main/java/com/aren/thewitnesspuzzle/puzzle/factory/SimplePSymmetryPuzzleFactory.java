@@ -1,10 +1,9 @@
 package com.aren.thewitnesspuzzle.puzzle.factory;
 
-import com.aren.thewitnesspuzzle.puzzle.ColorFactory;
 import com.aren.thewitnesspuzzle.puzzle.Game;
 import com.aren.thewitnesspuzzle.puzzle.GridSymmetryPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
-import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
+import com.aren.thewitnesspuzzle.puzzle.color.PalettePreset;
 import com.aren.thewitnesspuzzle.puzzle.cursor.SymmetryCursor;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.rules.BrokenLineRule;
@@ -22,14 +21,12 @@ public class SimplePSymmetryPuzzleFactory extends PuzzleFactory {
 
         int startX, startY, endX, endY;
 
-        symmetryPuzzle = new GridSymmetryPuzzle(game, 6, 6, symmetryType, false);
+        symmetryPuzzle = new GridSymmetryPuzzle(game, PalettePreset.get("TEST"), 6, 6, symmetryType, false);
 
         startX = 0;
         startY = 0;
         endX = random.nextInt(6);
         endY = 6;
-
-        ColorFactory.setRandomColor(symmetryPuzzle);
 
         symmetryPuzzle.addStartingPoint(startX, startY);
         symmetryPuzzle.addEndingPoint(endX, endY);

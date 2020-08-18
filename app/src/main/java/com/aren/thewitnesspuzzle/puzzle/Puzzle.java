@@ -16,7 +16,7 @@ import com.aren.thewitnesspuzzle.puzzle.animation.EliminatorActivatedAnimation;
 import com.aren.thewitnesspuzzle.puzzle.animation.ErrorAnimation;
 import com.aren.thewitnesspuzzle.puzzle.animation.PuzzleAnimationManager;
 import com.aren.thewitnesspuzzle.puzzle.animation.WaitForEliminationAnimation;
-import com.aren.thewitnesspuzzle.puzzle.animation.value.Value;
+import com.aren.thewitnesspuzzle.puzzle.color.PuzzleColorPalette;
 import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.cursor.area.Area;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
@@ -33,7 +33,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 public class Puzzle {
@@ -44,9 +43,7 @@ public class Puzzle {
     protected ArrayList<Shape> staticShapes = new ArrayList<>();
     protected ArrayList<Shape> dynamicShapes = new ArrayList<>();
 
-    protected int backgroundColor;
-    protected int pathColor;
-    protected Value<Integer> cursorColor = new Value<>(0);
+    protected PuzzleColorPalette color;
 
     protected float pathWidth;
 
@@ -62,8 +59,9 @@ public class Puzzle {
 
     protected PuzzleAnimationManager animation;
 
-    public Puzzle(Game game){
+    public Puzzle(Game game, PuzzleColorPalette color){
         this.game = game;
+        this.color = color;
 
         animation = new PuzzleAnimationManager(this);
     }
@@ -123,15 +121,19 @@ public class Puzzle {
         return vertexBuffer;
     }
 
+    public PuzzleColorPalette getColorPalette(){
+        return color;
+    }
+
     public void calcStaticShapes(){
         if(pathWidth == 0) pathWidth = Math.min(getBoundingBox().getWidth(), getBoundingBox().getHeight()) * 0.05f + 0.05f;
 
         for(Vertex vertex : vertices){
-            staticShapes.add(new CircleShape(new Vector3(vertex.x, vertex.y, 0), getPathWidth() * 0.5f, getPathColor()));
+            staticShapes.add(new CircleShape(new Vector3(vertex.x, vertex.y, 0), getPathWidth() * 0.5f, color.getPathColor()));
         }
 
         for(Edge edge : edges){
-            staticShapes.add(new RectangleShape(edge.getMiddlePoint().toVector3(), edge.getLength(), getPathWidth(), edge.getAngle(), getPathColor()));
+            staticShapes.add(new RectangleShape(edge.getMiddlePoint().toVector3(), edge.getLength(), getPathWidth(), edge.getAngle(), color.getPathColor()));
         }
 
         for(Vertex vertex : vertices){
@@ -163,35 +165,15 @@ public class Puzzle {
         dynamicShapes.clear();
 
         if(cursor != null){
-            dynamicShapes.add(new CircleShape(cursor.getFirstVisitedVertex().getPosition().toVector3(), ((StartingPointRule)cursor.getFirstVisitedVertex().getRule()).getRadius(), cursorColor().get()));
+            dynamicShapes.add(new CircleShape(cursor.getFirstVisitedVertex().getPosition().toVector3(), ((StartingPointRule)cursor.getFirstVisitedVertex().getRule()).getRadius(), color.getCursorColor()));
 
             ArrayList<EdgeProportion> visitedEdges = cursor.getVisitedEdgesWithProportion(true);
             if(visitedEdges.size() == 0) return;
             for(EdgeProportion edgeProportion : visitedEdges){
-                dynamicShapes.add(new CircleShape(new Vector3(edgeProportion.getProportionPoint().x, edgeProportion.getProportionPoint().y, 0), getPathWidth() * 0.5f, cursorColor().get()));
-                dynamicShapes.add(new RectangleShape(edgeProportion.getProportionMiddlePoint().toVector3(), edgeProportion.getProportionLength(), getPathWidth(), edgeProportion.edge.getAngle(), cursorColor().get()));
+                dynamicShapes.add(new CircleShape(new Vector3(edgeProportion.getProportionPoint().x, edgeProportion.getProportionPoint().y, 0), getPathWidth() * 0.5f, color.getCursorColor()));
+                dynamicShapes.add(new RectangleShape(edgeProportion.getProportionMiddlePoint().toVector3(), edgeProportion.getProportionLength(), getPathWidth(), edgeProportion.edge.getAngle(), color.getCursorColor()));
             }
         }
-    }
-
-    public void setBackgroundColor(int color){
-        backgroundColor = color;
-    }
-
-    public int getBackgroundColor(){
-        return backgroundColor;
-    }
-
-    public void setPathColor(int color){
-        pathColor = color;
-    }
-
-    public int getPathColor(){
-        return pathColor;
-    }
-
-    public Value<Integer> cursorColor(){
-        return cursorColor;
     }
 
     public BoundingBox getBoundingBox() {

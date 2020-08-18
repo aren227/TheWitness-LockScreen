@@ -1,6 +1,7 @@
 package com.aren.thewitnesspuzzle.puzzle;
 
 import com.aren.thewitnesspuzzle.math.Vector2Int;
+import com.aren.thewitnesspuzzle.puzzle.color.PuzzleColorPalette;
 import com.aren.thewitnesspuzzle.puzzle.cursor.area.Area;
 import com.aren.thewitnesspuzzle.puzzle.cursor.area.GridAreaSplitter;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
@@ -22,8 +23,8 @@ public class GridPuzzle extends Puzzle {
     protected Edge[][] gridVerticalEdges;
     protected Tile[][] gridTiles;
 
-    public GridPuzzle(Game game, int width, int height){
-        super(game);
+    public GridPuzzle(Game game, PuzzleColorPalette color, int width, int height){
+        super(game, color);
 
         this.width = width;
         this.height = height;

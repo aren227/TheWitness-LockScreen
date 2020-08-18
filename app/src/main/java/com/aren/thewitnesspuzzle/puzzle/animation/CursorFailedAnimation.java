@@ -5,8 +5,6 @@ import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 
 public class CursorFailedAnimation extends Animation {
 
-    public static final int COLOR = android.graphics.Color.parseColor("#050a0f");
-
     private Puzzle puzzle;
 
     public CursorFailedAnimation(final Puzzle puzzle){
@@ -23,16 +21,16 @@ public class CursorFailedAnimation extends Animation {
 
     @Override
     protected void update(float rate) {
-        int rr = android.graphics.Color.red(COLOR);
-        int gg = android.graphics.Color.green(COLOR);
-        int bb = android.graphics.Color.blue(COLOR);
-        int r = android.graphics.Color.red(puzzle.getPathColor());
-        int g = android.graphics.Color.green(puzzle.getPathColor());
-        int b = android.graphics.Color.blue(puzzle.getPathColor());
+        int rr = android.graphics.Color.red(puzzle.getColorPalette().getCursorFailedColor());
+        int gg = android.graphics.Color.green(puzzle.getColorPalette().getCursorFailedColor());
+        int bb = android.graphics.Color.blue(puzzle.getColorPalette().getCursorFailedColor());
+        int r = android.graphics.Color.red(puzzle.getColorPalette().getPathColor());
+        int g = android.graphics.Color.green(puzzle.getColorPalette().getPathColor());
+        int b = android.graphics.Color.blue(puzzle.getColorPalette().getPathColor());
         int c = android.graphics.Color.rgb(
                 (int) MathUtils.lerp(rr, r, rate),
                 (int)MathUtils.lerp(gg, g, rate),
                 (int)MathUtils.lerp(bb, b, rate));
-        puzzle.cursorColor().setAnimationValue(this, c);
+        puzzle.getColorPalette().actualCursorColor.setAnimationValue(this, c);
     }
 }

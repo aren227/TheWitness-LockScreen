@@ -21,7 +21,7 @@ public class BrokenLineRule extends Rule {
     public Shape generateShape(){
         if(getGraphElement() instanceof Edge){
             Edge edge = (Edge)getGraphElement();
-            return new RectangleShape(edge.getMiddlePoint().toVector3(), getSize() / edge.getLength(), edge.getPuzzle().getPathWidth(), edge.getAngle(), edge.getPuzzle().getBackgroundColor());
+            return new RectangleShape(edge.getMiddlePoint().toVector3(), getSize() / edge.getLength(), edge.getPuzzle().getPathWidth(), edge.getAngle(), edge.getPuzzle().getColorPalette().getBackgroundColor());
         }
         return null;
     }

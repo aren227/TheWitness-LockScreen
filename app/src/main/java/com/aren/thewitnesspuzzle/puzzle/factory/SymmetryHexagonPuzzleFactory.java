@@ -1,10 +1,9 @@
 package com.aren.thewitnesspuzzle.puzzle.factory;
 
-import com.aren.thewitnesspuzzle.puzzle.ColorFactory;
 import com.aren.thewitnesspuzzle.puzzle.Game;
 import com.aren.thewitnesspuzzle.puzzle.GridSymmetryPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
-import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
+import com.aren.thewitnesspuzzle.puzzle.color.PalettePreset;
 import com.aren.thewitnesspuzzle.puzzle.cursor.SymmetryCursor;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.rules.BrokenLineRule;
@@ -19,9 +18,7 @@ import java.util.Random;
 public class SymmetryHexagonPuzzleFactory extends PuzzleFactory{
     @Override
     public Puzzle generate(Game game, Random random) {
-        GridSymmetryPuzzle symmetryPuzzle = new GridSymmetryPuzzle(game, 5, 5, GridSymmetryPuzzle.SymmetryType.POINT, true);
-
-        ColorFactory.setRandomColor(symmetryPuzzle);
+        GridSymmetryPuzzle symmetryPuzzle = new GridSymmetryPuzzle(game, PalettePreset.get("TEST"), 5, 5, GridSymmetryPuzzle.SymmetryType.POINT, true);
 
         List<Vertex> borderVertices = symmetryPuzzle.getBorderVertices();
         borderVertices.remove(symmetryPuzzle.getVertexAt(0, 0));

@@ -1,9 +1,9 @@
 package com.aren.thewitnesspuzzle.puzzle.factory;
 
-import com.aren.thewitnesspuzzle.puzzle.ColorFactory;
 import com.aren.thewitnesspuzzle.puzzle.Game;
 import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
+import com.aren.thewitnesspuzzle.puzzle.color.PalettePreset;
 import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.rules.BrokenLineRule;
@@ -18,9 +18,7 @@ import java.util.Random;
 public class SimpleHexagonPuzzleFactory extends PuzzleFactory {
     @Override
     public Puzzle generate(Game game, Random random) {
-        GridPuzzle puzzle = new GridPuzzle(game, 4, 4);
-
-        ColorFactory.setRandomColor(puzzle);
+        GridPuzzle puzzle = new GridPuzzle(game, PalettePreset.get("TEST"), 4, 4);
 
         List<Vertex> borderVertices = puzzle.getBorderVertices();
         List<Vertex> innerVertices = puzzle.getInnerVertices();

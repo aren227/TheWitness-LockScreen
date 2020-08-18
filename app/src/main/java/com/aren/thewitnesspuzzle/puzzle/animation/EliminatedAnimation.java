@@ -3,16 +3,19 @@ package com.aren.thewitnesspuzzle.puzzle.animation;
 import com.aren.thewitnesspuzzle.graphics.shape.Shape;
 import com.aren.thewitnesspuzzle.math.MathUtils;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
+import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
 import com.aren.thewitnesspuzzle.puzzle.rules.EliminationRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.Rule;
 
 public class EliminatedAnimation extends Animation{
 
+    private Rule rule;
     private Shape shape;
     private Puzzle puzzle;
 
     public EliminatedAnimation(Rule rule){
         super(1000, 1, true);
+        this.rule = rule;
         shape = rule.getShape();
         puzzle = rule.getPuzzle();
     }
@@ -29,9 +32,14 @@ public class EliminatedAnimation extends Animation{
         int r = android.graphics.Color.red(shape.color.getOriginalValue());
         int g = android.graphics.Color.green(shape.color.getOriginalValue());
         int b = android.graphics.Color.blue(shape.color.getOriginalValue());
-        int rr = android.graphics.Color.red(puzzle.getBackgroundColor());
-        int gg = android.graphics.Color.green(puzzle.getBackgroundColor());
-        int bb = android.graphics.Color.blue(puzzle.getBackgroundColor());
+
+        int bgColor;
+        if(rule.getGraphElement() instanceof Tile) bgColor = puzzle.getColorPalette().getBackgroundColor();
+        else bgColor = puzzle.getColorPalette().getPathColor();
+
+        int rr = android.graphics.Color.red(bgColor);
+        int gg = android.graphics.Color.green(bgColor);
+        int bb = android.graphics.Color.blue(bgColor);
 
         int c = android.graphics.Color.rgb(
                 (int)MathUtils.lerp(sr, (r + rr) / 2f, rate),

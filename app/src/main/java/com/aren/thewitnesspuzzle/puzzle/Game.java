@@ -61,7 +61,7 @@ public class Game {
     }
 
     public int getBackgroundColor(){
-        if(puzzle != null) return puzzle.getBackgroundColor();
+        if(puzzle != null) return puzzle.getColorPalette().getBackgroundColor();
         return Color.BLACK;
     }
 

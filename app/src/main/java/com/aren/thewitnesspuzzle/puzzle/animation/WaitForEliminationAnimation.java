@@ -14,6 +14,6 @@ public class WaitForEliminationAnimation extends Animation {
 
     @Override
     protected void update(float rate) {
-        puzzle.cursorColor().setAnimationValue(this, CursorFailedAnimation.COLOR);
+        puzzle.getColorPalette().actualCursorColor.setAnimationValue(this, puzzle.getColorPalette().getCursorFailedColor());
     }
 }
