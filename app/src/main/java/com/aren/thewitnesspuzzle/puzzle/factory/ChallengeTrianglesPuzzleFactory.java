@@ -20,7 +20,7 @@ public class ChallengeTrianglesPuzzleFactory extends PuzzleFactory {
         puzzle.addStartingPoint(0, 0);
         puzzle.addEndingPoint(4, 4);
 
-        RandomGridWalker walker = new RandomGridWalker(puzzle, random, 7, 0, 0, 4, 4);
+        RandomGridWalker walker = new RandomGridWalker(puzzle, random, 5, 0, 0, 4, 4);
         ArrayList<Vertex> vertexPositions = walker.getResult();
 
         Cursor cursor = new Cursor(puzzle, vertexPositions, null);
