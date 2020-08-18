@@ -18,7 +18,7 @@ import java.util.Random;
 public class MultipleSunColorsPuzzleFactory extends PuzzleFactory {
     @Override
     public Puzzle generate(Game game, Random random) {
-        GridPuzzle puzzle = new GridPuzzle(game, PalettePreset.get("TEST"), 4, 4);
+        GridPuzzle puzzle = new GridPuzzle(game, PalettePreset.get("Treehouse_1"), 4, 4);
 
         puzzle.addStartingPoint(0, 0);
         puzzle.addEndingPoint(4, 4);
@@ -32,8 +32,6 @@ public class MultipleSunColorsPuzzleFactory extends PuzzleFactory {
 
         BrokenLineRule.generate(cursor, random, 0.2f);
         SunRule.generate(splitter, random, new Color[]{Color.ORANGE, Color.LIME, Color.PURPLE}, 1f, 1f, 0);
-
-        puzzle.setCursor(cursor);
 
         return puzzle;
     }

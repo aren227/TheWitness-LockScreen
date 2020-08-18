@@ -22,6 +22,16 @@ public class PuzzleColorPalette {
         actualCursorColor = new Value<>(this.cursor);
     }
 
+    public PuzzleColorPalette(int background, int path, int cursor, int cursorSucceeded){
+        this.background = background;
+        this.path = path;
+        this.cursor = cursor;
+        this.cursorSucceeded = cursorSucceeded;
+        this.cursorFailed = android.graphics.Color.parseColor("#050a0f");
+
+        actualCursorColor = new Value<>(this.cursor);
+    }
+
     public PuzzleColorPalette(int background, int path, int cursor, int cursorSucceeded, int cursorFailed){
         this.background = background;
         this.path = path;

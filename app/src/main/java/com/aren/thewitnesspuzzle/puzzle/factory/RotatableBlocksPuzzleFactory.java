@@ -17,7 +17,7 @@ import java.util.Random;
 public class RotatableBlocksPuzzleFactory extends PuzzleFactory {
     @Override
     public Puzzle generate(Game game, Random random) {
-        GridPuzzle puzzle = new GridPuzzle(game, PalettePreset.get("TEST"), 4, 4);
+        GridPuzzle puzzle = new GridPuzzle(game, PalettePreset.get("Swamp_2"), 4, 4);
 
         puzzle.addStartingPoint(0, 0);
         puzzle.addEndingPoint(4, 4);
@@ -31,8 +31,6 @@ public class RotatableBlocksPuzzleFactory extends PuzzleFactory {
 
         BrokenLineRule.generate(cursor, random, 0.2f);
         BlocksRule.generate(splitter, random, 0.4f, 1f);
-
-        puzzle.setCursor(cursor);
 
         return puzzle;
     }

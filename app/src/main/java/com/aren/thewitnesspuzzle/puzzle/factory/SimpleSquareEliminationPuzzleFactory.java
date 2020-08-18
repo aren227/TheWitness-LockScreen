@@ -19,7 +19,7 @@ import java.util.Random;
 public class SimpleSquareEliminationPuzzleFactory extends PuzzleFactory {
     @Override
     public Puzzle generate(Game game, Random random) {
-        GridPuzzle puzzle = new GridPuzzle(game, PalettePreset.get("TEST"), 4, 4);
+        GridPuzzle puzzle = new GridPuzzle(game, PalettePreset.get("Quarry_1"), 4, 4);
 
         puzzle.addStartingPoint(0, 0);
         puzzle.addEndingPoint(4, 4);
@@ -34,8 +34,6 @@ public class SimpleSquareEliminationPuzzleFactory extends PuzzleFactory {
 
         SquareRule.generate(splitter, random, 0.8f);
         EliminationRule.generateFakeSquare(splitter, random, Arrays.asList(Color.RED, Color.LIME, Color.CYAN));
-
-        puzzle.setCursor(cursor);
 
         return puzzle;
     }

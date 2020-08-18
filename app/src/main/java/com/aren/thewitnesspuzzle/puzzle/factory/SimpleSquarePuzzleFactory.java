@@ -21,7 +21,7 @@ public class SimpleSquarePuzzleFactory extends PuzzleFactory{
 
     @Override
     public Puzzle generate(Game game, Random random) {
-        GridPuzzle puzzle = new GridPuzzle(game, PalettePreset.get("TEST"), 3, 3);
+        GridPuzzle puzzle = new GridPuzzle(game, PalettePreset.get("Blue_1"), 3, 3);
 
         List<Vertex> vertices = puzzle.getBorderVertices();
         Collections.shuffle(vertices, random);

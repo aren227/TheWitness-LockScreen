@@ -18,7 +18,7 @@ import java.util.Random;
 public class SymmetryHexagonPuzzleFactory extends PuzzleFactory{
     @Override
     public Puzzle generate(Game game, Random random) {
-        GridSymmetryPuzzle symmetryPuzzle = new GridSymmetryPuzzle(game, PalettePreset.get("TEST"), 5, 5, GridSymmetryPuzzle.SymmetryType.POINT, true);
+        GridSymmetryPuzzle symmetryPuzzle = new GridSymmetryPuzzle(game, PalettePreset.get("SymmetryIsland_1"), 5, 5, GridSymmetryPuzzle.SymmetryType.POINT, true);
 
         List<Vertex> borderVertices = symmetryPuzzle.getBorderVertices();
         borderVertices.remove(symmetryPuzzle.getVertexAt(0, 0));

@@ -21,7 +21,7 @@ public class SimplePSymmetryPuzzleFactory extends PuzzleFactory {
 
         int startX, startY, endX, endY;
 
-        symmetryPuzzle = new GridSymmetryPuzzle(game, PalettePreset.get("TEST"), 6, 6, symmetryType, false);
+        symmetryPuzzle = new GridSymmetryPuzzle(game, PalettePreset.get("GlassFactory_1"), 6, 6, symmetryType, false);
 
         startX = 0;
         startY = 0;

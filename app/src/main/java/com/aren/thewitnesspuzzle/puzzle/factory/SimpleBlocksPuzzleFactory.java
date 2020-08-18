@@ -18,7 +18,7 @@ public class SimpleBlocksPuzzleFactory extends PuzzleFactory{
 
     @Override
     public Puzzle generate(Game game, Random random) {
-        GridPuzzle puzzle = new GridPuzzle(game, PalettePreset.get("TEST"), 4, 4);
+        GridPuzzle puzzle = new GridPuzzle(game, PalettePreset.get("Swamp_1"), 4, 4);
 
         puzzle.addStartingPoint(0, 0);
         puzzle.addEndingPoint(4, 4);
@@ -32,8 +32,6 @@ public class SimpleBlocksPuzzleFactory extends PuzzleFactory{
 
         BrokenLineRule.generate(cursor, random, 0.2f);
         BlocksRule.generate(splitter, random, 0.4f, 0);
-
-        puzzle.setCursor(cursor);
 
         return puzzle;
     }

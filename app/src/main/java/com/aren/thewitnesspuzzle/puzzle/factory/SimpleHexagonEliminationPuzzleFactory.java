@@ -18,7 +18,7 @@ import java.util.Random;
 public class SimpleHexagonEliminationPuzzleFactory extends PuzzleFactory {
     @Override
     public Puzzle generate(Game game, Random random) {
-        GridPuzzle puzzle = new GridPuzzle(game, PalettePreset.get("TEST"), 3, 3);
+        GridPuzzle puzzle = new GridPuzzle(game, PalettePreset.get("Quarry_1"), 3, 3);
 
         puzzle.addStartingPoint(0, 0);
         puzzle.addEndingPoint(3, 3);
@@ -33,8 +33,6 @@ public class SimpleHexagonEliminationPuzzleFactory extends PuzzleFactory {
         BrokenLineRule.generate(cursor, random, 0.25f);
         HexagonRule.generate(cursor, random, 0.75f);
         EliminationRule.generateFakeHexagon(splitter, random);
-
-        puzzle.setCursor(cursor);
 
         return puzzle;
     }

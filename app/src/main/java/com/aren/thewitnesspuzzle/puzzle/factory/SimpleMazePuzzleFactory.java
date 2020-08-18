@@ -15,7 +15,7 @@ public class SimpleMazePuzzleFactory extends PuzzleFactory {
 
     @Override
     public GridPuzzle generate(Game game, Random random) {
-        GridPuzzle puzzle = new GridPuzzle(game, PalettePreset.get("TEST"), 6, 6);
+        GridPuzzle puzzle = new GridPuzzle(game, PalettePreset.get("Entry_1"), 6, 6);
 
         puzzle.addStartingPoint(0, 0);
         puzzle.addEndingPoint(puzzle.getWidth(), puzzle.getHeight());

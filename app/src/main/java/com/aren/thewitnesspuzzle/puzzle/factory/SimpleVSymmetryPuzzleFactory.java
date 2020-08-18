@@ -22,7 +22,7 @@ public class SimpleVSymmetryPuzzleFactory extends PuzzleFactory {
 
         int startX, startY, endX, endY;
 
-        symmetryPuzzle = new GridSymmetryPuzzle(game, PalettePreset.get("TEST"), 5, 7, symmetryType, false);
+        symmetryPuzzle = new GridSymmetryPuzzle(game, PalettePreset.get("GlassFactory_1"), 5, 7, symmetryType, false);
 
         startX = random.nextInt(2);
         startY = 0;

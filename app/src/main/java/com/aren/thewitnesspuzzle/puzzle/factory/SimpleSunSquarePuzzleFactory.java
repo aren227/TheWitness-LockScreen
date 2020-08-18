@@ -19,7 +19,7 @@ import java.util.Random;
 public class SimpleSunSquarePuzzleFactory extends PuzzleFactory {
     @Override
     public Puzzle generate(Game game, Random random) {
-        GridPuzzle puzzle = new GridPuzzle(game, PalettePreset.get("TEST"), 4, 4);
+        GridPuzzle puzzle = new GridPuzzle(game, PalettePreset.get("Treehouse_2"), 4, 4);
 
         puzzle.addStartingPoint(0, 0);
         puzzle.addEndingPoint(4, 4);
@@ -34,8 +34,6 @@ public class SimpleSunSquarePuzzleFactory extends PuzzleFactory {
 
         SunRule.generate(splitter, random, new Color[]{Color.ORANGE}, 1f, 1f, 0);
         SquareRule.generate(splitter, random, 0.9f);
-
-        puzzle.setCursor(cursor);
 
         return puzzle;
     }

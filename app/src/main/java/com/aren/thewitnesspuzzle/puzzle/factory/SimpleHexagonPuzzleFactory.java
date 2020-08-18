@@ -18,7 +18,7 @@ import java.util.Random;
 public class SimpleHexagonPuzzleFactory extends PuzzleFactory {
     @Override
     public Puzzle generate(Game game, Random random) {
-        GridPuzzle puzzle = new GridPuzzle(game, PalettePreset.get("TEST"), 4, 4);
+        GridPuzzle puzzle = new GridPuzzle(game, PalettePreset.get("Green_1"), 4, 4);
 
         List<Vertex> borderVertices = puzzle.getBorderVertices();
         List<Vertex> innerVertices = puzzle.getInnerVertices();
