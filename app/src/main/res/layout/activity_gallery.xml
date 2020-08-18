@@ -10,10 +10,10 @@
     android:orientation="vertical"
     android:id="@+id/gallery_root">
 
-    <GridView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/gallery_grid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:numColumns="3"/>
+        android:scrollbars="vertical"/>
 
 </RelativeLayout>

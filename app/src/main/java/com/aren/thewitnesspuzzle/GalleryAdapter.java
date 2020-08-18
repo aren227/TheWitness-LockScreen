@@ -18,7 +18,10 @@ import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GalleryAdapter extends BaseAdapter {
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHolder> {
 
     private Context context;
     private LayoutInflater inflater;
@@ -37,57 +40,58 @@ public class GalleryAdapter extends BaseAdapter {
         previews.add(preview);
     }
 
+    @NonNull
     @Override
-    public int getCount() {
-        return previews.size();
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = inflater.inflate(R.layout.gridview_layout, parent, false);
+        return new ViewHolder(view);
     }
 
     @Override
-    public Object getItem(int position) {
-        return previews.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return 0;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        if (convertView == null) {
-            convertView = inflater.inflate(R.layout.gridview_layout, null);
-        }
-
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final GalleryPreview preview = previews.get(position);
 
-        ImageView imageView = convertView.findViewById(R.id.puzzle_preview);
-        imageView.setImageBitmap(preview.bitmap);
-        imageView.setClipToOutline(true);
+        holder.imageView.setImageBitmap(preview.bitmap);
+        holder.imageView.setClipToOutline(true);
 
         if(puzzleFactoryManager.isActiavted(preview.puzzleFactory)){
-            imageView.setColorFilter(null);
-            imageView.setImageAlpha(255);
+            holder.imageView.setColorFilter(null);
+            holder.imageView.setImageAlpha(255);
         }
         else{
             ColorMatrix matrix = new ColorMatrix();
             matrix.setSaturation(0);
             ColorMatrixColorFilter cf = new ColorMatrixColorFilter(matrix);
-            imageView.setColorFilter(cf);
-            imageView.setImageAlpha(128);
+            holder.imageView.setColorFilter(cf);
+            holder.imageView.setImageAlpha(128);
         }
 
-        TextView textView = convertView.findViewById(R.id.puzzle_name);
-        textView.setText(preview.name);
-        if(preview.getDifficulty() != null) textView.setTextColor(preview.getDifficulty().getColor());
+        holder.textView.setText(preview.name);
+        if(preview.getDifficulty() != null) holder.textView.setTextColor(preview.getDifficulty().getColor());
 
-        convertView.setOnClickListener(new View.OnClickListener() {
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 puzzleFactoryManager.setActivated(preview.puzzleFactory, !puzzleFactoryManager.isActiavted(preview.puzzleFactory));
                 notifyDataSetChanged();
             }
         });
+    }
 
-        return convertView;
+    @Override
+    public int getItemCount() {
+        return previews.size();
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder{
+        ImageView imageView;
+        TextView textView;
+
+        public ViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            imageView = itemView.findViewById(R.id.puzzle_preview);
+            textView = itemView.findViewById(R.id.puzzle_name);
+        }
     }
 }

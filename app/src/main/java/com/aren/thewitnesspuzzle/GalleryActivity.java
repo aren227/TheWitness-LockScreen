@@ -1,6 +1,8 @@
 package com.aren.thewitnesspuzzle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -41,8 +43,9 @@ public class GalleryActivity extends AppCompatActivity {
 
         adapter = new GalleryAdapter(this, puzzleFactoryManager);
 
-        GridView gridView = findViewById(R.id.gallery_grid);
-        gridView.setAdapter(adapter);
+        RecyclerView recyclerView = findViewById(R.id.gallery_grid);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+        recyclerView.setAdapter(adapter);
 
         root = findViewById(R.id.gallery_root);
 
