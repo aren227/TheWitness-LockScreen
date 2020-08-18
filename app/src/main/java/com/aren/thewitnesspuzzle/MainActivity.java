@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
     TextView playText;
     TextView galleryText;
     TextView settingsText;
+    TextView disclaimerText;
 
     PuzzleFactoryManager puzzleFactoryManager;
 
@@ -79,6 +80,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        disclaimerText = findViewById(R.id.disclaimer);
+        disclaimerText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, DisclaimerActivity.class);
                 startActivity(intent);
             }
         });

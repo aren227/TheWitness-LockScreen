@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".DisclaimerActivity"
+    android:background="@color/colorPrimary">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerInParent="true">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="A Tribute To The Witness"
+            android:fontFamily="serif"
+            android:textSize="28dp"
+            android:textColor="#fafafa"
+            android:gravity="center"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="This application is based on Jonathan Blow's video game, The Witness. All rights go to Jonathan Blow and Thekla, Inc."
+            android:fontFamily="serif"
+            android:textSize="24dp"
+            android:textColor="#fafafa"
+            android:gravity="center"
+            android:padding="30dp"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/github_repo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/github_repo"
+        android:fontFamily="serif"
+        android:textSize="18dp"
+        android:textColor="#fafafa"
+        android:gravity="center"
+        android:padding="30dp"
+        android:linksClickable="true"
+        android:layout_alignParentBottom="true"/>
+
+</RelativeLayout>

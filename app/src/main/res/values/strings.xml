@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TheWitnessPuzzle</string>
+    <string name="app_name">The Witness Lock Screen</string>
 
     <string name="vertex">
         uniform mat4 MVP;
@@ -23,4 +23,6 @@
             gl_FragColor = vColor;
         }
     </string>
+
+    <string name="github_repo"><a href="https://github.com/aren227/TheWitness-LockScreen">Github Repository</a></string>
 </resources>
