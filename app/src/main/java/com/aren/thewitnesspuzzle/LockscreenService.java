@@ -18,16 +18,13 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.WindowManager;
 
-import com.aren.thewitnesspuzzle.puzzle.Game;
+import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactory;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;
-import com.aren.thewitnesspuzzle.puzzle.factory.SimpleBlocksPuzzleFactory;
 
 import java.util.List;
 import java.util.Random;
-
-import androidx.core.app.NotificationCompat;
 
 public class LockscreenService extends Service {
 
@@ -45,6 +42,8 @@ public class LockscreenService extends Service {
     public static LockscreenService service;
     public static Context context;
 
+    public Puzzle puzzle;
+
     public LockscreenService() {
 
     }
@@ -60,6 +59,7 @@ public class LockscreenService extends Service {
             public void run() {
                 WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
                 windowManager.removeView(game.getSurfaceView());
+                puzzle = null;
             }
         });
 
@@ -130,10 +130,15 @@ public class LockscreenService extends Service {
                 screenOn = false;
                 Log.i("TAG", "SCREEN_OFF");
 
-                Random random = new Random();
-                List<PuzzleFactory> factories = puzzleFactoryManager.getActivatedPuzzleFactories();
-                if(factories.size() > 0){
-                    Puzzle puzzle = factories.get(random.nextInt(factories.size())).generate(game, random);
+                if(!game.getSettings().getHoldingPuzzles() || puzzle == null){
+                    Random random = new Random();
+                    List<PuzzleFactory> factories = puzzleFactoryManager.getActivatedPuzzleFactories();
+                    if(factories.size() > 0){
+                        puzzle = factories.get(random.nextInt(factories.size())).generate(game, random);
+                    }
+                }
+
+                if(puzzle != null){
                     game.setPuzzle(puzzle);
                     lockScreen(context);
                 }

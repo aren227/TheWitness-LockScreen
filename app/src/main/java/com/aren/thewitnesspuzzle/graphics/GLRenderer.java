@@ -8,22 +8,13 @@ import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.util.Log;
 
-import com.aren.thewitnesspuzzle.PuzzleGLSurfaceView;
 import com.aren.thewitnesspuzzle.R;
 import com.aren.thewitnesspuzzle.math.BoundingBox;
 import com.aren.thewitnesspuzzle.math.Vector2;
-import com.aren.thewitnesspuzzle.math.Vector3;
-import com.aren.thewitnesspuzzle.puzzle.Game;
+import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;

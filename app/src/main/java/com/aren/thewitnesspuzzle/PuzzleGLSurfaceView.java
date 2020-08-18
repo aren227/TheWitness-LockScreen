@@ -3,19 +3,12 @@ package com.aren.thewitnesspuzzle;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.opengl.GLSurfaceView;
-import android.util.Log;
 import android.view.MotionEvent;
 
 import com.aren.thewitnesspuzzle.graphics.GLRenderer;
 import com.aren.thewitnesspuzzle.math.BoundingBox;
 import com.aren.thewitnesspuzzle.math.MathUtils;
-import com.aren.thewitnesspuzzle.puzzle.Game;
-
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import javax.microedition.khronos.egl.EGL10;
-import javax.microedition.khronos.egl.EGLContext;
-import javax.microedition.khronos.opengles.GL10;
+import com.aren.thewitnesspuzzle.game.Game;
 
 public class PuzzleGLSurfaceView extends GLSurfaceView {
 

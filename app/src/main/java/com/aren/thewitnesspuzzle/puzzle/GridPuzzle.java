@@ -1,5 +1,6 @@
 package com.aren.thewitnesspuzzle.puzzle;
 
+import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.math.Vector2Int;
 import com.aren.thewitnesspuzzle.puzzle.color.PuzzleColorPalette;
 import com.aren.thewitnesspuzzle.puzzle.cursor.area.Area;

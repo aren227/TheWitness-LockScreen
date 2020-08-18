@@ -1,6 +1,6 @@
 package com.aren.thewitnesspuzzle.puzzle.factory;
 
-import com.aren.thewitnesspuzzle.puzzle.Game;
+import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.color.PalettePreset;
 import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;

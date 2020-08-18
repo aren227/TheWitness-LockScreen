@@ -18,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
     TextView lockText;
     TextView playText;
     TextView galleryText;
+    TextView settingsText;
 
     PuzzleFactoryManager puzzleFactoryManager;
 
@@ -69,6 +70,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, GalleryActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        settingsText = findViewById(R.id.settings);
+        settingsText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
                 startActivity(intent);
             }
         });

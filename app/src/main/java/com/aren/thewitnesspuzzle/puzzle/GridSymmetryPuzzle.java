@@ -1,5 +1,6 @@
 package com.aren.thewitnesspuzzle.puzzle;
 
+import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.graphics.shape.CircleShape;
 import com.aren.thewitnesspuzzle.graphics.shape.RectangleShape;
 import com.aren.thewitnesspuzzle.math.Vector3;

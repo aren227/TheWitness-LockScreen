@@ -3,6 +3,7 @@ package com.aren.thewitnesspuzzle.puzzle;
 import android.util.Log;
 import android.view.MotionEvent;
 
+import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.graphics.shape.CircleShape;
 import com.aren.thewitnesspuzzle.graphics.shape.RectangleShape;
 import com.aren.thewitnesspuzzle.graphics.shape.Shape;
