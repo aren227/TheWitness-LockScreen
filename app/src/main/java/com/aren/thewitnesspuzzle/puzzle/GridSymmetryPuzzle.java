@@ -10,6 +10,7 @@ import com.aren.thewitnesspuzzle.puzzle.cursor.SymmetryCursor;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
 import com.aren.thewitnesspuzzle.puzzle.graph.EdgeProportion;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
+import com.aren.thewitnesspuzzle.puzzle.rules.EndingPointRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.StartingPointRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.SymmetricColor;
 
@@ -149,7 +150,10 @@ public class GridSymmetryPuzzle extends GridPuzzle {
             return opposite;
         }
         else if(symmetryType == SymmetryType.POINT){
-            opposite.reverse = !opposite.reverse;
+            // If it contains ending point, the direction of two opposite edges are already symmetric
+            if(!(edgeProportion.to().getRule() instanceof EndingPointRule)){
+                opposite.reverse = !opposite.reverse;
+            }
             return opposite;
         }
         return null;
