@@ -50,7 +50,6 @@ public class Puzzle {
 
     protected float pathWidth;
 
-    protected boolean touching = false;
     protected Cursor cursor;
 
     protected BoundingBox boundingBox = new BoundingBox();
@@ -197,13 +196,11 @@ public class Puzzle {
 
     protected void startTracing(Vertex start){
         resetAnimation();
-        touching = true;
         cursor = createCursor(start);
         game.playSound(Sounds.START_TRACING);
     }
 
     protected void endTracing(){
-        touching = false;
         EdgeProportion currentCursorEdge = cursor.getCurrentCursorEdge();
         if(currentCursorEdge == null) return;
         Edge edge = currentCursorEdge.edge;
@@ -281,7 +278,7 @@ public class Puzzle {
             }
         }
         else if(action == MotionEvent.ACTION_MOVE){
-            if(!touching) return;
+            if(cursor == null) return;
 
             Edge edge = getNearestEdge(pos);
             EdgeProportion edgeProportion = new EdgeProportion(edge);
@@ -289,7 +286,7 @@ public class Puzzle {
             cursor.connectTo(edgeProportion);
 
             EdgeProportion cursorEdge = cursor.getCurrentCursorEdge();
-            if(cursorEdge.to().getRule() instanceof EndingPointRule && cursorEdge.proportion > 1 - getPathWidth() * 0.5f / edge.getLength()){
+            if(cursorEdge.to().getRule() instanceof EndingPointRule && cursorEdge.proportion > 1 - getPathWidth() * 0.5f / cursorEdge.edge.getLength()){
                 if(!animation.isPlaying(CursorEndingPointReachedAnimation.class)){
                     animation.addAnimation(new CursorEndingPointReachedAnimation(this));
                 }
@@ -299,7 +296,8 @@ public class Puzzle {
             }
         }
         else if(action == MotionEvent.ACTION_UP){
-            if(touching){
+            EdgeProportion cursorEdge = cursor.getCurrentCursorEdge();
+            if(cursorEdge.to().getRule() instanceof EndingPointRule && cursorEdge.proportion > 1 - getPathWidth() * 0.5f / cursorEdge.edge.getLength()){
                 endTracing();
             }
         }

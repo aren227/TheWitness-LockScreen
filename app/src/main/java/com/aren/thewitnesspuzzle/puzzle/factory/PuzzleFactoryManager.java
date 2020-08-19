@@ -16,10 +16,13 @@ public class PuzzleFactoryManager {
     private Context context;
     private Map<UUID, PuzzleFactory> factories = new HashMap<>();
 
+    private Runnable onUpdate;
+
     public PuzzleFactoryManager(Context context){
         this.context = context;
 
         register(new ChallengeTrianglesPuzzleFactory());
+        register(new FirstPuzzleFactory());
         register(new MultipleSunColorsPuzzleFactory());
         register(new RotatableBlocksPuzzleFactory());
         register(new SecondPuzzleFactory());
@@ -37,6 +40,10 @@ public class PuzzleFactoryManager {
         register(new SlidePuzzleFactory());
         register(new SunPairWithSquarePuzzleFactory());
         register(new SymmetryHexagonPuzzleFactory());
+    }
+
+    public void setOnUpdate(Runnable runnable){
+        onUpdate = runnable;
     }
 
     public PuzzleFactory getPuzzleFactoryByUuid(UUID uuid){
@@ -78,6 +85,8 @@ public class PuzzleFactoryManager {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(uuid.toString(), activated);
         editor.commit();
+
+        if(onUpdate != null) onUpdate.run();
     }
 
     //TODO: Sorting options

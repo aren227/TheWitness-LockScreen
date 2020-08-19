@@ -11,12 +11,11 @@ public class PalettePreset {
 
     public PalettePreset(){
         register("General_Slide", "#fd9700", "#8a4700", "#fffef9", "#fbe50d");
-        register("General_Panel", "#868986", "#6b5b37", "#bf8e54", "#d2720d");
-        register("Entry_Second", "#ffcb00", "#a97700", "#f9e27a", "#fdfb57");
-        register("Entry_1", "#e1a300", "#3c2901", "#edec9d", "#eee850");
+        register("General_Panel", "#babcb9", "#5a4d3f", "#fccf97", "#ff8326");
+        register("Entry_1", "#ffcb00", "#422c06", "#feffc5", "#fef656");
         register("Green_1", "#00ee4a", "#006615", "#eaeabc", "#b8ff14");
         register("Blue_1", "#4f4cff", "#1405a1", "#aaccf4", "#659cff");
-        register("GlassFactory_1", "#96bce5", "#374b8d", "#c5c6c3", "#18fe9d");
+        register("GlassFactory_1", "#96bce5", "#374b8d", "#e4e6e1", "#18fe9d");
         register("SymmetryIsland_1", "#96c2e9", "#555553", "#fafafa", "#fafafa"); // cursor color is cyan & yellow
         register("Swamp_1", "#b7c900", "#e9e370", "#f5f6ab", "#fcf31a");
         register("Swamp_2", "#e09b19", "#dbbc6b", "#f4e791", "#f2f528");

@@ -10,14 +10,14 @@ import com.aren.thewitnesspuzzle.puzzle.rules.StartingPointRule;
 
 import java.util.Random;
 
-public class SlidePuzzleFactory extends PuzzleFactory {
+public class FirstPuzzleFactory extends PuzzleFactory{
 
     @Override
     public Puzzle generate(Game game, Random random) {
-        Puzzle puzzle = new Puzzle(game, PalettePreset.get("General_Slide"));
+        Puzzle puzzle = new Puzzle(game, PalettePreset.get("Entry_1"));
 
         Vertex a = puzzle.addVertex(new Vertex(puzzle, 0, 0));
-        Vertex b = puzzle.addVertex(new Vertex(puzzle, 0, 2f));
+        Vertex b = puzzle.addVertex(new Vertex(puzzle, 1, 0));
         puzzle.addEdge(new Edge(a, b));
 
         a.setRule(new StartingPointRule());
@@ -33,6 +33,7 @@ public class SlidePuzzleFactory extends PuzzleFactory {
 
     @Override
     public String getName(){
-        return "Lock #3";
+        return "Lock #1";
     }
+
 }

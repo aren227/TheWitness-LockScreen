@@ -9,6 +9,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
@@ -25,6 +26,8 @@ public class GalleryActivity extends AppCompatActivity {
 
     private RelativeLayout root;
     private GalleryAdapter adapter;
+
+    private TextView status;
 
     private Game tempGame;
 
@@ -43,7 +46,20 @@ public class GalleryActivity extends AppCompatActivity {
 
         root = findViewById(R.id.gallery_root);
 
+        status = findViewById(R.id.gallery_text);
+        puzzleFactoryManager.setOnUpdate(new Runnable() {
+            @Override
+            public void run() {
+                updateStatusText();
+            }
+        });
+        updateStatusText();
+
         startRenderWorker();
+    }
+
+    public void updateStatusText(){
+        status.setText(String.format(getString(R.string.gallery_status), puzzleFactoryManager.getAllPuzzleFactories().size(), puzzleFactoryManager.getActivatedPuzzleFactories().size()));
     }
 
     private void startRenderWorker(){

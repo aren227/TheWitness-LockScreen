@@ -14,7 +14,7 @@ public class SecondPuzzleFactory extends PuzzleFactory {
 
     @Override
     public Puzzle generate(Game game, Random random) {
-        Puzzle puzzle = new Puzzle(game, PalettePreset.get("Entry_Second"));
+        Puzzle puzzle = new Puzzle(game, PalettePreset.get("Entry_1"));
 
         Vertex a = puzzle.addVertex(new Vertex(puzzle, 3, 0));
         Vertex b = puzzle.addVertex(new Vertex(puzzle, 3, 3));
