@@ -23,6 +23,7 @@
             gl_FragColor = vColor;
         }
     </string>
+    <string name="update_msg">Current: %s\nLatest: %s</string>
     <string name="gallery_status">"%d Puzzles. %d Activated."</string>
     <string name="disclaimer1">This application is based on Jonathan Blow\'s video game, The Witness. All rights go to Jonathan Blow and Thekla, Inc.</string>
     <string name="disclaimer2">This application is just for fun and <b>can\'t protect your phone!</b> For security reasons, It is recommended to use a system lock screen together. You can disable a system lock screen completely for the best experience. Use it at your own risk. <b>This lock screen will be disabled after restarting your phone.</b> So if you are in a critical situation, just reboot your phone by holding the power button.</string>

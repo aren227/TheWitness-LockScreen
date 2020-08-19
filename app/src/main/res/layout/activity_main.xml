@@ -109,8 +109,19 @@
         android:textSize="18dp"
         android:textColor="#fafafa"
         android:gravity="center"
-        android:padding="50dp"
         android:linksClickable="true"
+        android:layout_above="@id/version_name"/>
+
+    <TextView
+        android:id="@+id/version_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="serif"
+        android:textSize="18dp"
+        android:textColor="#fafafa"
+        android:gravity="center"
+        android:paddingTop="10dp"
+        android:paddingBottom="30dp"
         android:layout_alignParentBottom="true"/>
 
 </RelativeLayout>
