@@ -46,17 +46,4 @@
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/github_repo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/github_repo"
-        android:fontFamily="serif"
-        android:textSize="18dp"
-        android:textColor="#fafafa"
-        android:gravity="center"
-        android:padding="50dp"
-        android:linksClickable="true"
-        android:layout_alignParentBottom="true"/>
-
 </RelativeLayout>
