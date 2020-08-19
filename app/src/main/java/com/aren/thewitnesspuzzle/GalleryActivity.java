@@ -4,6 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.RelativeLayout;
 
@@ -12,6 +15,7 @@ import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactory;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -52,12 +56,25 @@ public class GalleryActivity extends AppCompatActivity {
 
         root.addView(tempGame.getSurfaceView(), params);
 
+        Bitmap notLoaded = Bitmap.createBitmap(512, 512, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(notLoaded);
+        canvas.drawColor(Color.GRAY);
+        canvas.drawBitmap(notLoaded, 0, 0, null);
+
+        // Lazy Loading
+        final List<GalleryPreview> previews = new ArrayList<>();
+        for(PuzzleFactory factory : puzzleFactoryManager.getAllPuzzleFactories()){
+            GalleryPreview preview = new GalleryPreview(factory, notLoaded, factory.getName());
+            previews.add(preview);
+            adapter.addPreview(preview);
+        }
+        adapter.notifyDataSetChanged();
+
         new Thread(new Runnable() {
             @Override
             public void run() {
-                List<PuzzleFactory> factories = puzzleFactoryManager.getAllPuzzleFactories();
-                for(PuzzleFactory factory : factories){
-                    Puzzle puzzle = factory.generate(tempGame, new Random());
+                for(GalleryPreview preview : previews){
+                    Puzzle puzzle = preview.puzzleFactory.generate(tempGame, new Random());
 
                     tempGame.setPuzzle(puzzle);
 
@@ -70,7 +87,7 @@ public class GalleryActivity extends AppCompatActivity {
                         }
                     }
 
-                    adapter.addPreview(new GalleryPreview(factory, tempGame.getSurfaceView().bitmap, factory.getName()));
+                    preview.bitmap = tempGame.getSurfaceView().bitmap;
 
                     runOnUiThread(new Runnable() {
                         @Override
