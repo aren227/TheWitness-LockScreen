@@ -9,6 +9,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.os.Build;
@@ -106,7 +107,7 @@ public class LockscreenService extends Service {
             notification = new Notification.Builder(this, "com.aren.thewitnesspuzzle")
                     .setContentTitle("The Witness Lock Screen")
                     .setContentText("Service is running")
-                    .setSmallIcon(R.drawable.ic_launcher_foreground)
+                    .setSmallIcon(R.drawable.ic_notification)
                     .setContentIntent(pendingIntent)
                     .build();
         }
@@ -114,7 +115,7 @@ public class LockscreenService extends Service {
             notification = new Notification.Builder(this)
                     .setContentTitle("The Witness Lock Screen")
                     .setContentText("Service is running")
-                    .setSmallIcon(R.drawable.ic_launcher_foreground)
+                    .setSmallIcon(R.drawable.ic_notification)
                     .setContentIntent(pendingIntent)
                     .build();
         }
@@ -178,7 +179,8 @@ public class LockscreenService extends Service {
                         | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
                         | WindowManager.LayoutParams.FLAG_SECURE,
                 PixelFormat.RGBA_8888);*/
-                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY, // SYSTEM_ERROR helps hide the status bar (notification) //이거때매 몇시간 삽질함
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ?
+                        WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY : WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
                         WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED |
                         WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |

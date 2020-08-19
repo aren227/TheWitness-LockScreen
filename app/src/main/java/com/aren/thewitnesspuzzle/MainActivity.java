@@ -2,10 +2,14 @@ package com.aren.thewitnesspuzzle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -14,6 +18,8 @@ import android.widget.Toast;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;
 
 public class MainActivity extends AppCompatActivity {
+
+    public static int ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE = 2323;
 
     TextView lockText;
     TextView playText;
@@ -49,8 +55,13 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "Please activate one or more puzzles in the gallery.", Toast.LENGTH_LONG).show();
                     }
                     else{
-                        startService(intent);
-                        serviceRunning = !serviceRunning;
+                        if(!checkPermission()){
+                            requestPermission();
+                        }
+                        else{
+                            startService(intent);
+                            serviceRunning = !serviceRunning;
+                        }
                     }
                 }
                 lockText.setText(serviceRunning ? "Unlock" : "Lock");
@@ -102,5 +113,16 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return false;
+    }
+
+    private boolean checkPermission(){
+        return Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.canDrawOverlays(this);
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    private void requestPermission(){
+        Uri uri = Uri.fromParts("package" , getPackageName(), null);
+        Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, uri);
+        startActivityForResult(intent, ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE);
     }
 }

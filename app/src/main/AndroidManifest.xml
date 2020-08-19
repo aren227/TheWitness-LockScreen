@@ -7,6 +7,7 @@
         android:required="true"/>
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
 
     <application
@@ -32,7 +33,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".LockscreenService"/>
+        <service android:name=".LockscreenService" android:permission="android.permission.SYSTEM_ALERT_WINDOW"/>
     </application>
 
 </manifest>
