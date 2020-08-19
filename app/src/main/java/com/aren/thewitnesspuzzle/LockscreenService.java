@@ -31,19 +31,14 @@ public class LockscreenService extends Service {
 
     public ScreenReceiver mReceiver = null;
 
-    public static WindowManager mWindowManager;
     public Game game;
 
     public PuzzleFactoryManager puzzleFactoryManager;
 
-    public static boolean screenOn = true;
-    public static boolean isLockScreen = false;
-    public static boolean isPhoneIdle = true;
-
-    public static LockscreenService service;
-    public static Context context;
-
     public Puzzle puzzle;
+
+    public int phoneState = TelephonyManager.CALL_STATE_IDLE;
+    public boolean interrupted = false;
 
     public LockscreenService() {
 
@@ -51,20 +46,16 @@ public class LockscreenService extends Service {
 
     @Override
     public void onCreate() {
-        service = this;
-        context = this.getBaseContext();
-
-        game = new Game(context);
+        game = new Game(this);
         game.setOnSolved(new Runnable() {
             @Override
             public void run() {
-                WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-                windowManager.removeView(game.getSurfaceView());
+                unlockScreen();
                 puzzle = null;
             }
         });
 
-        puzzleFactoryManager = new PuzzleFactoryManager(context);
+        puzzleFactoryManager = new PuzzleFactoryManager(this);
 
         Log.i("TAG", "onCreate");
         super.onCreate();
@@ -75,13 +66,8 @@ public class LockscreenService extends Service {
         //filter.setPriority(2147483647);
         registerReceiver(mReceiver, filter);
 
-        //UnityPlayerActivity.mUnityPlayer.start();
-        //UnityPlayerActivity.mUnityPlayer.resume();
-
         TelephonyManager telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
         telephonyManager.listen(phoneListener, PhoneStateListener.LISTEN_CALL_STATE);
-
-        //lockScreen(this);
     }
 
     @Override
@@ -128,8 +114,9 @@ public class LockscreenService extends Service {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-                screenOn = false;
                 Log.i("TAG", "SCREEN_OFF");
+
+                if(phoneState != TelephonyManager.CALL_STATE_IDLE) return;
 
                 if(!game.getSettings().getHoldingPuzzles() || puzzle == null){
                     Random random = new Random();
@@ -144,9 +131,7 @@ public class LockscreenService extends Service {
                     lockScreen(context);
                 }
             }
-             else if(intent.getAction().equals(Intent.ACTION_SCREEN_ON)){
-                screenOn = true;
-                isLockScreen = true;
+            else if(intent.getAction().equals(Intent.ACTION_SCREEN_ON)){
                 Log.i("TAG", "SCREEN_ON");
             }
         }
@@ -161,6 +146,8 @@ public class LockscreenService extends Service {
     }
 
     public void lockScreen(Context context){
+        if(isLocked()) return;
+
         WindowManager mWindowManager = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
 
         Point point = new Point();
@@ -199,29 +186,33 @@ public class LockscreenService extends Service {
     }
 
     public void unlockScreen(){
+        if(!isLocked()) return;
+
         WindowManager mWindowManager = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
         mWindowManager.removeView(game.getSurfaceView());
+    }
+
+    public boolean isLocked(){
+        return game.getSurfaceView().getParent() != null;
     }
 
     PhoneStateListener phoneListener = new PhoneStateListener(){
         @Override
         public void onCallStateChanged(int state, String incomingNumber){
-            switch(state){
-                case TelephonyManager.CALL_STATE_IDLE:
-                    Log.i("TAG", "IDLE");
-                    isPhoneIdle = true;
-                    break;
-
-                case TelephonyManager.CALL_STATE_RINGING:
-                    Log.i("TAG", "RINGING");
-                    isPhoneIdle = false;
-                    break;
-
-                case TelephonyManager.CALL_STATE_OFFHOOK:
-                    Log.i("TAG", "OFFHOOK");
-                    isPhoneIdle = false;
-                    break;
+            phoneState = state;
+            if(state == TelephonyManager.CALL_STATE_IDLE){
+                if(interrupted){
+                    lockScreen(LockscreenService.this);
+                    interrupted = false;
+                }
             }
+            else if(state == TelephonyManager.CALL_STATE_RINGING){
+                if(isLocked()){
+                    interrupted = true;
+                    unlockScreen();
+                }
+            }
+            super.onCallStateChanged(state, incomingNumber);
         }
     };
 }

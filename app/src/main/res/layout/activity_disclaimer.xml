@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:text="@string/disclaimer1"
             android:fontFamily="serif"
-            android:textSize="20dp"
+            android:textSize="18dp"
             android:textColor="#fafafa"
             android:gravity="center"
             android:padding="30dp"/>
@@ -38,9 +38,11 @@
             android:layout_height="wrap_content"
             android:text="@string/disclaimer2"
             android:fontFamily="serif"
-            android:textSize="20dp"
+            android:textSize="18dp"
             android:textColor="#fafafa"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"/>
 
     </LinearLayout>
 
@@ -50,7 +52,7 @@
         android:layout_height="wrap_content"
         android:text="@string/github_repo"
         android:fontFamily="serif"
-        android:textSize="22dp"
+        android:textSize="18dp"
         android:textColor="#fafafa"
         android:gravity="center"
         android:padding="50dp"
