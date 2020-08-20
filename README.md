@@ -16,11 +16,12 @@ Go to [Releases Tab](https://github.com/aren227/TheWitness-LockScreen/releases) 
 TODOs
 ---------------
 - [x] Implement basic puzzle panels and rules.
+- [ ] Implement Bloom effect.
 - [ ] Implement the subtractive blocks rule (i hate this rule).
 - [ ] Clearly implement the elimination rule (i have literally no idea).
 - [ ] Add more random puzzle generators.
 - [ ] Implement a puzzle that can be validated with user registered pattern.
-- [ ] Implement a puzzle editor.
+- [ ] Implement a custom puzzle editor.
 - [ ] Implement pillar puzzles.
 
 Disclaimer
