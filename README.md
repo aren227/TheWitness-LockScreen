@@ -1,7 +1,7 @@
 # TheWitness-LockScreen
 A puzzle lock screen application based on [The Witness](https://store.steampowered.com/app/210970/The_Witness/) for Android
 
-![demo](demo.gif)
+<img src="demo.gif" width="540" height="960">
 
 ### This application may contain spoilers!
 
