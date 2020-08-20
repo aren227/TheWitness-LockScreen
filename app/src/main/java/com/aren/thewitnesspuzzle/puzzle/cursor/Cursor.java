@@ -6,6 +6,7 @@ import com.aren.thewitnesspuzzle.puzzle.graph.EdgeProportion;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.rules.BrokenLineRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.EndingPointRule;
+import com.aren.thewitnesspuzzle.puzzle.rules.StartingPointRule;
 
 import java.util.ArrayList;
 
@@ -166,6 +167,7 @@ public class Cursor {
             Vertex v = visited.get(i);
             if(edge.containsVertex(v)){
                 float collisionProportion = puzzle.getPathWidth() / length;
+                if(v.getRule() instanceof StartingPointRule) collisionProportion = (((StartingPointRule)v.getRule()).getRadius() + puzzle.getPathWidth() * 0.5f) / length;
                 to = Math.min(1 - collisionProportion, to);
             }
         }

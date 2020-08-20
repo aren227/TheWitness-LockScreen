@@ -296,6 +296,8 @@ public class Puzzle {
             }
         }
         else if(action == MotionEvent.ACTION_UP){
+            if(cursor == null) return;
+
             EdgeProportion cursorEdge = cursor.getCurrentCursorEdge();
             if(cursorEdge.to().getRule() instanceof EndingPointRule && cursorEdge.proportion > 1 - getPathWidth() * 0.5f / cursorEdge.edge.getLength()){
                 endTracing();

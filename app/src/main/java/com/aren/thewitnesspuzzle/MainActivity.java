@@ -16,6 +16,7 @@ import android.provider.Settings;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -120,8 +121,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        TextView githubRepoText = findViewById(R.id.github_repo);
-        githubRepoText.setMovementMethod(LinkMovementMethod.getInstance());
+        ImageView githubRepoImage = findViewById(R.id.github_repo);
+        githubRepoImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/aren227/TheWitness-LockScreen"));
+                startActivity(browserIntent);
+            }
+        });
 
         TextView versionNameText = findViewById(R.id.version_name);
         versionNameText.setText(BuildConfig.VERSION_NAME);
