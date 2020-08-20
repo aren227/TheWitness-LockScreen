@@ -64,7 +64,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onDrawFrame(GL10 gl) {
-        Log.i("GL", game.getPuzzle() + " Rendered");
+        //Log.i("GL", game.getPuzzle() + " Rendered");
 
         if(game.getPuzzle() == null) {
             GLES20.glClearColor(1, 0, 1, 1.0f);

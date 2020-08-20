@@ -82,7 +82,7 @@ public class Puzzle {
         for(Shape shape : dynamicShapes){
             vertexCount += shape.getVertexCount();
         }
-        Log.i("PUZZLE", "Vertex Count: " + vertexCount);
+        //Log.i("PUZZLE", "Vertex Count: " + vertexCount);
         return vertexCount;
     }
 
@@ -159,6 +159,7 @@ public class Puzzle {
         if(!staticShapesCalculated){
             calcStaticShapes();
             staticShapesCalculated = true;
+            Log.i("PUZZLE", "Static shapes calculated (" + staticShapes.size() + ")");
         }
         calcDynamicShapes();
     }

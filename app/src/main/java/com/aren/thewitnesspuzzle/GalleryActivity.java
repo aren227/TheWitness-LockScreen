@@ -71,6 +71,7 @@ public class GalleryActivity extends AppCompatActivity {
         params.setMargins(-512, -512, 0, 0);
 
         root.addView(tempGame.getSurfaceView(), params);
+        tempGame.getSurfaceView().getHolder().setFixedSize(512, 512);
 
         Bitmap notLoaded = Bitmap.createBitmap(512, 512, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(notLoaded);
@@ -102,7 +103,6 @@ public class GalleryActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                     }
-
                     preview.bitmap = tempGame.getSurfaceView().bitmap;
 
                     runOnUiThread(new Runnable() {
