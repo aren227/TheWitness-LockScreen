@@ -3,6 +3,7 @@ package com.aren.thewitnesspuzzle.graphics;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.opengl.GLES20;
 import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
@@ -29,22 +30,24 @@ public class GLRenderer3 implements GLSurfaceView.Renderer {
     private Context context;
 
     private int vertexShader, fragmentShader, fragmentShaderFrameBuffer;
-    private int vertexShaderFrameBuffer, fragmentShaderFrameBuffer_boxblur_down, fragmentShaderFrameBuffer_boxblur_up, fragmentShaderFrameBuffer_additive;
+    private int vertexShaderFrameBuffer, fragmentShaderFrameBuffer_boxblur_down, fragmentShaderFrameBuffer_boxblur_down_prelift, fragmentShaderFrameBuffer_boxblur_up, fragmentShaderFrameBuffer_additive, fragmentShaderFrameBuffer_tonemapping;
     private int vertexShader_gaussian_v, vertexShader_gaussian_h, fragmentShader_gaussian;
     private int glProgram;
     private int glProgramFrameBuffer_boxblur_down;
+    private int glProgramFrameBuffer_boxblur_down_prelift;
     private int glProgramFrameBuffer_boxblur_up;
     private int glProgramFrameBuffer_additive;
     private int glProgram_gaussian_v;
     private int glProgram_gaussian_h;
     private int glProgram_draw;
+    private int glProgram_tonemapping;
 
     private int width, height;
     private int[] texWidth = new int[13], texHeight = new int[13];
 
-    private int textureIds[] = new int[13];
+    private int textureIds[] = new int[14];
 
-    private IntBuffer frameBuffer = IntBuffer.allocate(13);
+    private IntBuffer frameBuffer = IntBuffer.allocate(14);
 
     private float ratio = 1;
 
@@ -105,6 +108,7 @@ public class GLRenderer3 implements GLSurfaceView.Renderer {
         fragmentShaderFrameBuffer = loadShader(GLES30.GL_FRAGMENT_SHADER, context.getString(R.string.fragment_fb));
 
         fragmentShaderFrameBuffer_boxblur_down = loadShader(GLES30.GL_FRAGMENT_SHADER, context.getString(R.string.fragment_fb_boxblur_downscale));
+        fragmentShaderFrameBuffer_boxblur_down_prelift = loadShader(GLES30.GL_FRAGMENT_SHADER, context.getString(R.string.fragment_fb_boxblur_downscale_prelift));
         fragmentShaderFrameBuffer_boxblur_up = loadShader(GLES30.GL_FRAGMENT_SHADER, context.getString(R.string.fragment_fb_boxblur_upscale));
         fragmentShaderFrameBuffer_additive = loadShader(GLES30.GL_FRAGMENT_SHADER, context.getString(R.string.fragment_fb_additive));
 
@@ -112,11 +116,15 @@ public class GLRenderer3 implements GLSurfaceView.Renderer {
         vertexShader_gaussian_v = loadShader(GLES30.GL_VERTEX_SHADER, context.getString(R.string.vertex_fb_gaussian_v));
         fragmentShader_gaussian = loadShader(GLES30.GL_FRAGMENT_SHADER, context.getString(R.string.fragment_fb_gaussian));
 
+        fragmentShaderFrameBuffer_tonemapping = loadShader(GLES30.GL_FRAGMENT_SHADER, context.getString(R.string.fragment_fb_tonemapping));
+
         glProgram = GLES30.glCreateProgram();
         glProgramFrameBuffer_boxblur_down = GLES30.glCreateProgram();
+        glProgramFrameBuffer_boxblur_down_prelift = GLES30.glCreateProgram();
         glProgramFrameBuffer_boxblur_up = GLES30.glCreateProgram();
         glProgramFrameBuffer_additive = GLES30.glCreateProgram();
         glProgram_draw = GLES30.glCreateProgram();
+        glProgram_tonemapping = GLES30.glCreateProgram();
 
         glProgram_gaussian_h = GLES30.glCreateProgram();
         glProgram_gaussian_v = GLES30.glCreateProgram();
@@ -126,6 +134,9 @@ public class GLRenderer3 implements GLSurfaceView.Renderer {
 
         GLES30.glAttachShader(glProgramFrameBuffer_boxblur_down, vertexShaderFrameBuffer);
         GLES30.glAttachShader(glProgramFrameBuffer_boxblur_down, fragmentShaderFrameBuffer_boxblur_down);
+
+        GLES30.glAttachShader(glProgramFrameBuffer_boxblur_down_prelift, vertexShaderFrameBuffer);
+        GLES30.glAttachShader(glProgramFrameBuffer_boxblur_down_prelift, fragmentShaderFrameBuffer_boxblur_down_prelift);
 
         GLES30.glAttachShader(glProgramFrameBuffer_boxblur_up, vertexShaderFrameBuffer);
         GLES30.glAttachShader(glProgramFrameBuffer_boxblur_up, fragmentShaderFrameBuffer_boxblur_up);
@@ -142,13 +153,18 @@ public class GLRenderer3 implements GLSurfaceView.Renderer {
         GLES30.glAttachShader(glProgram_draw, vertexShaderFrameBuffer);
         GLES30.glAttachShader(glProgram_draw, fragmentShaderFrameBuffer);
 
+        GLES30.glAttachShader(glProgram_tonemapping, vertexShaderFrameBuffer);
+        GLES30.glAttachShader(glProgram_tonemapping, fragmentShaderFrameBuffer_tonemapping);
+
         GLES30.glLinkProgram(glProgram);
         GLES30.glLinkProgram(glProgramFrameBuffer_boxblur_down);
+        GLES30.glLinkProgram(glProgramFrameBuffer_boxblur_down_prelift);
         GLES30.glLinkProgram(glProgramFrameBuffer_boxblur_up);
         GLES30.glLinkProgram(glProgramFrameBuffer_additive);
         GLES30.glLinkProgram(glProgram_gaussian_h);
         GLES30.glLinkProgram(glProgram_gaussian_v);
         GLES30.glLinkProgram(glProgram_draw);
+        GLES30.glLinkProgram(glProgram_tonemapping);
 
         GLES30.glUseProgram(glProgram);
 
@@ -166,12 +182,12 @@ public class GLRenderer3 implements GLSurfaceView.Renderer {
 
     public void setupTextures(){
         if(textureIds[0] != 0) {
-            GLES30.glDeleteTextures(13, textureIds, 0);
-            GLES30.glDeleteFramebuffers(13, frameBuffer);
+            GLES30.glDeleteTextures(14, textureIds, 0);
+            GLES30.glDeleteFramebuffers(14, frameBuffer);
         }
 
-        GLES30.glGenTextures(13, textureIds, 0);
-        GLES30.glGenFramebuffers(13, frameBuffer);
+        GLES30.glGenTextures(14, textureIds, 0);
+        GLES30.glGenFramebuffers(14, frameBuffer);
 
         int w = width;
         int h = height;
@@ -195,9 +211,20 @@ public class GLRenderer3 implements GLSurfaceView.Renderer {
             GLES30.glTexParameterf(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MAG_FILTER, GLES30.GL_LINEAR);
             GLES30.glTexParameterf(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_WRAP_S, GLES30.GL_CLAMP_TO_EDGE);
             GLES30.glTexParameterf(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_WRAP_T, GLES30.GL_CLAMP_TO_EDGE);
-            GLES30.glTexImage2D(GLES30.GL_TEXTURE_2D, 0, GLES30.GL_RGBA, texWidth[i], texHeight[i], 0, GLES30.GL_RGBA, GLES30.GL_UNSIGNED_BYTE, null);
+            GLES30.glTexImage2D(GLES30.GL_TEXTURE_2D, 0, GLES30.GL_RGB16F, texWidth[i], texHeight[i], 0, GLES30.GL_RGB, GLES30.GL_FLOAT, null);
             GLES30.glFramebufferTexture2D(GLES30.GL_FRAMEBUFFER, GLES30.GL_COLOR_ATTACHMENT0, GLES30.GL_TEXTURE_2D, textureIds[i], 0);
         }
+
+        // Final
+        GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, frameBuffer.get(13));
+        GLES30.glActiveTexture(GLES30.GL_TEXTURE0 + 13);
+        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, textureIds[13]);
+        GLES30.glTexParameterf(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MIN_FILTER, GLES30.GL_LINEAR);
+        GLES30.glTexParameterf(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MAG_FILTER, GLES30.GL_LINEAR);
+        GLES30.glTexParameterf(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_WRAP_S, GLES30.GL_CLAMP_TO_EDGE);
+        GLES30.glTexParameterf(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_WRAP_T, GLES30.GL_CLAMP_TO_EDGE);
+        GLES30.glTexImage2D(GLES30.GL_TEXTURE_2D, 0, GLES30.GL_RGB16F, width, height, 0, GLES30.GL_RGB, GLES30.GL_FLOAT, null);
+        GLES30.glFramebufferTexture2D(GLES30.GL_FRAMEBUFFER, GLES30.GL_COLOR_ATTACHMENT0, GLES30.GL_TEXTURE_2D, textureIds[13], 0);
 
         GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, 0);
     }
@@ -268,7 +295,8 @@ public class GLRenderer3 implements GLSurfaceView.Renderer {
         GLES30.glDrawArrays(GLES30.GL_TRIANGLES, 0, puzzle.getVertexCount());
 
         for(int i = 1; i < 7; i++){
-            GLES30.glUseProgram(glProgramFrameBuffer_boxblur_down);
+            if(i == 1) GLES30.glUseProgram(glProgramFrameBuffer_boxblur_down_prelift);
+            else GLES30.glUseProgram(glProgramFrameBuffer_boxblur_down);
             GLES30.glViewport(0, 0, texWidth[i], texHeight[i]);
             GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, frameBuffer.get(i));
 
@@ -383,12 +411,11 @@ public class GLRenderer3 implements GLSurfaceView.Renderer {
             GLES30.glDrawElements(GLES30.GL_TRIANGLES, quadIndex.length, GLES30.GL_UNSIGNED_SHORT, quadIndexBuffer);
         }*/
 
-        // Add last result to screen
         GLES30.glUseProgram(glProgramFrameBuffer_additive);
 
         GLES30.glViewport(0, 0, width, height);
 
-        GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, 0);
+        GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, frameBuffer.get(13));
 
         aPositionHandle = GLES30.glGetAttribLocation(glProgramFrameBuffer_additive, "aPosition");
         GLES30.glEnableVertexAttribArray(aPositionHandle);
@@ -399,10 +426,30 @@ public class GLRenderer3 implements GLSurfaceView.Renderer {
         GLES30.glVertexAttribPointer(aTextureCoordHandle, 2, GLES30.GL_FLOAT, false, 2 * 4, quadUVBuffer);
 
         int bgHandle = GLES30.glGetUniformLocation(glProgramFrameBuffer_additive, "bg");
-        GLES30.glUniform1i(bgHandle, 12);
+        GLES30.glUniform1i(bgHandle, 0);
 
         int overlayHandle = GLES30.glGetUniformLocation(glProgramFrameBuffer_additive, "overlay");
         GLES30.glUniform1i(overlayHandle, 12);
+
+        GLES30.glDrawElements(GLES30.GL_TRIANGLES, quadIndex.length, GLES30.GL_UNSIGNED_SHORT, quadIndexBuffer);
+
+        // Add last result to screen
+        GLES30.glUseProgram(glProgram_tonemapping);
+
+        GLES30.glViewport(0, 0, width, height);
+
+        GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, 0);
+
+        aPositionHandle = GLES30.glGetAttribLocation(glProgram_tonemapping, "aPosition");
+        GLES30.glEnableVertexAttribArray(aPositionHandle);
+        GLES30.glVertexAttribPointer(aPositionHandle, COORD_PER_VERTEX, GLES30.GL_FLOAT, false, VERTEX_STRIDE, quadPosBuffer);
+
+        aTextureCoordHandle = GLES30.glGetAttribLocation(glProgram_tonemapping, "aTextureCoord");
+        GLES30.glEnableVertexAttribArray(aTextureCoordHandle);
+        GLES30.glVertexAttribPointer(aTextureCoordHandle, 2, GLES30.GL_FLOAT, false, 2 * 4, quadUVBuffer);
+
+        int hdrHandle = GLES30.glGetUniformLocation(glProgram_tonemapping, "hdrTex");
+        GLES30.glUniform1i(hdrHandle, 13);
 
         GLES30.glDrawElements(GLES30.GL_TRIANGLES, quadIndex.length, GLES30.GL_UNSIGNED_SHORT, quadIndexBuffer);
 
