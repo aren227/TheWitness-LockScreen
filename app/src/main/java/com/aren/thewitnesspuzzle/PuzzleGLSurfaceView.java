@@ -6,6 +6,7 @@ import android.opengl.GLSurfaceView;
 import android.view.MotionEvent;
 
 import com.aren.thewitnesspuzzle.graphics.GLRenderer;
+import com.aren.thewitnesspuzzle.graphics.GLRenderer3;
 import com.aren.thewitnesspuzzle.math.BoundingBox;
 import com.aren.thewitnesspuzzle.math.MathUtils;
 import com.aren.thewitnesspuzzle.game.Game;
@@ -14,7 +15,7 @@ public class PuzzleGLSurfaceView extends GLSurfaceView {
 
     private Game game;
 
-    public GLRenderer glRenderer;
+    public GLRenderer3 glRenderer;
 
     public Bitmap bitmap;
     public boolean bitmapRendered = false;
@@ -24,9 +25,9 @@ public class PuzzleGLSurfaceView extends GLSurfaceView {
 
         this.game = game;
 
-        setEGLContextClientVersion(2);
+        setEGLContextClientVersion(3);
 
-        glRenderer = new GLRenderer(game, context);
+        glRenderer = new GLRenderer3(game, context);
         setRenderer(glRenderer);
 
         setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);

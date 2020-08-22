@@ -34,7 +34,64 @@
             vTextureCoord = aTextureCoord;
         }
     </string>
-    <string name="fragment_fb_boxblur">
+    <string name="vertex_fb_gaussian_v">
+        attribute vec4 aPosition;
+        attribute vec2 aTextureCoord;
+
+        uniform vec2 texel;
+
+        varying vec2 vTextureCoord;
+        varying vec4 vTextureCoord1;
+        varying vec4 vTextureCoord2;
+
+        void main() {
+            gl_Position = aPosition;
+
+            vec2 offset1 = vec2(0.0, texel.y * 4.0 * 1.38461538);
+	        vec2 offset2 = vec2(0.0, texel.y * 4.0 * 3.23076923);
+
+            vTextureCoord = aTextureCoord;
+            vTextureCoord1.xy = aTextureCoord + offset1;
+            vTextureCoord1.zw = aTextureCoord - offset1;
+            vTextureCoord2.xy = aTextureCoord + offset2;
+            vTextureCoord2.zw = aTextureCoord - offset2;
+        }
+    </string>
+    <string name="vertex_fb_gaussian_h">
+        attribute vec4 aPosition;
+        attribute vec2 aTextureCoord;
+
+        uniform vec2 texel;
+
+        varying vec2 vTextureCoord;
+        varying vec4 vTextureCoord1;
+        varying vec4 vTextureCoord2;
+
+        void main() {
+            gl_Position = aPosition;
+
+            vec2 offset1 = vec2(texel.x * 4.0 * 1.38461538, 0.0);
+	        vec2 offset2 = vec2(texel.x * 4.0 * 3.23076923, 0.0);
+
+            vTextureCoord = aTextureCoord;
+            vTextureCoord1.xy = aTextureCoord + offset1;
+            vTextureCoord1.zw = aTextureCoord - offset1;
+            vTextureCoord2.xy = aTextureCoord + offset2;
+            vTextureCoord2.zw = aTextureCoord - offset2;
+        }
+    </string>
+    <string name="fragment_fb">
+        precision mediump float;
+
+        uniform sampler2D tex;
+
+        varying vec2 vTextureCoord;
+
+        void main() {
+            gl_FragColor = texture2D(tex, vTextureCoord);
+        }
+    </string>
+    <string name="fragment_fb_boxblur_downscale">
         precision mediump float;
 
         uniform sampler2D tex;
@@ -43,12 +100,57 @@
         varying vec2 vTextureCoord;
 
         void main() {
-            vec4 d = vec4(texel.x, -texel.x, texel.y, -texel.y);
-            vec4 s = texture2D(tex, vTextureCoord + d.xz)
-                + texture2D(tex, vTextureCoord + d.xw)
-                + texture2D(tex, vTextureCoord + d.yz)
-                + texture2D(tex, vTextureCoord + d.yw);
+            vec4 o = texel.xyxy * vec2(-1, 1).xxyy;
+            vec4 s = texture2D(tex, vTextureCoord + o.xy) + texture2D(tex, vTextureCoord + o.zy) +
+                texture2D(tex, vTextureCoord + o.xw) + texture2D(tex, vTextureCoord + o.zw);
             gl_FragColor = s * 0.25;
+        }
+    </string>
+    <string name="fragment_fb_boxblur_upscale">
+        precision mediump float;
+
+        uniform sampler2D source;
+        uniform sampler2D tex;
+        uniform vec2 texel;
+
+        varying vec2 vTextureCoord;
+
+        void main() {
+            vec4 o = texel.xyxy * vec2(-1, 1).xxyy;
+            vec4 s = texture2D(tex, vTextureCoord + o.xy) + texture2D(tex, vTextureCoord + o.zy) +
+                texture2D(tex, vTextureCoord + o.xw) + texture2D(tex, vTextureCoord + o.zw);
+            vec4 r = texture2D(source, vTextureCoord);
+            gl_FragColor = r + s * 0.25 * 0.5;
+        }
+    </string>
+    <string name="fragment_fb_gaussian">
+        precision mediump float;
+
+        uniform sampler2D tex;
+
+        varying vec2 vTextureCoord;
+        varying vec4 vTextureCoord1;
+        varying vec4 vTextureCoord2;
+
+        void main() {
+            vec3 sum = texture2D(tex, vTextureCoord).xyz * 0.22702702;
+            sum += texture2D(tex, vTextureCoord1.xy).xyz * 0.31621621;
+            sum += texture2D(tex, vTextureCoord1.zw).xyz * 0.31621621;
+            sum += texture2D(tex, vTextureCoord2.xy).xyz * 0.07027027;
+            sum += texture2D(tex, vTextureCoord2.zw).xyz * 0.07027027;
+            gl_FragColor = vec4(sum, 1.0);
+        }
+    </string>
+    <string name="fragment_fb_additive">
+        precision mediump float;
+
+        uniform sampler2D bg;
+        uniform sampler2D overlay;
+
+        varying vec2 vTextureCoord;
+
+        void main() {
+            gl_FragColor = texture2D(bg, vTextureCoord) + texture2D(overlay, vTextureCoord) * 0.0;
         }
     </string>
     <string name="update_msg">Current: %s\nLatest: %s</string>
