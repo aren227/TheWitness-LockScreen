@@ -3,6 +3,7 @@ package com.aren.thewitnesspuzzle.game;
 import android.content.Context;
 import android.graphics.Color;
 import android.media.MediaPlayer;
+import android.util.Log;
 import android.view.WindowManager;
 
 import com.aren.thewitnesspuzzle.PuzzleGLSurfaceView;
