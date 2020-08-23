@@ -353,8 +353,8 @@ public class GLRenderer3 implements GLSurfaceView.Renderer {
 
         }
 
-        for(int i = 5; i < 10; i++){
-            if(i == 9){
+        for(int i = 5; i < 9; i++){
+            if(i == 5){
                 GLES30.glUseProgram(glProgramFrameBuffer_boxblur_up_final);
                 GLES30.glViewport(0, 0, texWidth[i], texHeight[i]);
                 GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, frameBuffer.get(i));
@@ -368,40 +368,43 @@ public class GLRenderer3 implements GLSurfaceView.Renderer {
                 GLES30.glVertexAttribPointer(aTextureCoordHandle, 2, GLES30.GL_FLOAT, false, 2 * 4, quadUVBuffer);
 
                 int texHandle = GLES30.glGetUniformLocation(glProgramFrameBuffer_boxblur_up_final, "tex");
-                GLES30.glUniform1i(texHandle, i - 1);
+                GLES30.glUniform1i(texHandle,  i - 4);
 
                 int texHandle2 = GLES30.glGetUniformLocation(glProgramFrameBuffer_boxblur_up_final, "source");
-                GLES30.glUniform1i(texHandle2, 10 - i - 1);
+                GLES30.glUniform1i(texHandle2, 0);
 
                 int texelHandle = GLES30.glGetUniformLocation(glProgramFrameBuffer_boxblur_up_final, "texel");
                 GLES30.glUniform2f(texelHandle, 1f / texWidth[i], 1f / texHeight[i]);
 
                 int amountHandle = GLES30.glGetUniformLocation(glProgramFrameBuffer_boxblur_up_final, "amount");
-                GLES30.glUniform1f(amountHandle, 0.2f);
+                GLES30.glUniform1f(amountHandle, 0.3f);
 
                 GLES30.glDrawElements(GLES30.GL_TRIANGLES, quadIndex.length, GLES30.GL_UNSIGNED_SHORT, quadIndexBuffer);
             }
             else{
-                GLES30.glUseProgram(glProgramFrameBuffer_boxblur_up);
+                GLES30.glUseProgram(glProgramFrameBuffer_boxblur_up_final);
                 GLES30.glViewport(0, 0, texWidth[i], texHeight[i]);
                 GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, frameBuffer.get(i));
 
-                aPositionHandle = GLES30.glGetAttribLocation(glProgramFrameBuffer_boxblur_up, "aPosition");
+                aPositionHandle = GLES30.glGetAttribLocation(glProgramFrameBuffer_boxblur_up_final, "aPosition");
                 GLES30.glEnableVertexAttribArray(aPositionHandle);
                 GLES30.glVertexAttribPointer(aPositionHandle, COORD_PER_VERTEX, GLES30.GL_FLOAT, false, VERTEX_STRIDE, quadPosBuffer);
 
-                int aTextureCoordHandle = GLES30.glGetAttribLocation(glProgramFrameBuffer_boxblur_up, "aTextureCoord");
+                int aTextureCoordHandle = GLES30.glGetAttribLocation(glProgramFrameBuffer_boxblur_up_final, "aTextureCoord");
                 GLES30.glEnableVertexAttribArray(aTextureCoordHandle);
                 GLES30.glVertexAttribPointer(aTextureCoordHandle, 2, GLES30.GL_FLOAT, false, 2 * 4, quadUVBuffer);
 
-                int texHandle = GLES30.glGetUniformLocation(glProgramFrameBuffer_boxblur_up, "tex");
-                GLES30.glUniform1i(texHandle, i - 1);
+                int texHandle = GLES30.glGetUniformLocation(glProgramFrameBuffer_boxblur_up_final, "tex");
+                GLES30.glUniform1i(texHandle, i - 4);
 
-                int texHandle2 = GLES30.glGetUniformLocation(glProgramFrameBuffer_boxblur_up, "source");
-                GLES30.glUniform1i(texHandle2, 10 - i - 1);
+                int texHandle2 = GLES30.glGetUniformLocation(glProgramFrameBuffer_boxblur_up_final, "source");
+                GLES30.glUniform1i(texHandle2, i - 1);
 
-                int texelHandle = GLES30.glGetUniformLocation(glProgramFrameBuffer_boxblur_up, "texel");
+                int texelHandle = GLES30.glGetUniformLocation(glProgramFrameBuffer_boxblur_up_final, "texel");
                 GLES30.glUniform2f(texelHandle, 1f / texWidth[i], 1f / texHeight[i]);
+
+                int amountHandle = GLES30.glGetUniformLocation(glProgramFrameBuffer_boxblur_up_final, "amount");
+                GLES30.glUniform1f(amountHandle, 0.3f);
 
                 GLES30.glDrawElements(GLES30.GL_TRIANGLES, quadIndex.length, GLES30.GL_UNSIGNED_SHORT, quadIndexBuffer);
             }
@@ -515,7 +518,7 @@ public class GLRenderer3 implements GLSurfaceView.Renderer {
         GLES30.glVertexAttribPointer(aTextureCoordHandle, 2, GLES30.GL_FLOAT, false, 2 * 4, quadUVBuffer);
 
         int hdrHandle = GLES30.glGetUniformLocation(glProgram_tonemapping, "hdrTex");
-        GLES30.glUniform1i(hdrHandle, 9);
+        GLES30.glUniform1i(hdrHandle, 8);
 
         GLES30.glDrawElements(GLES30.GL_TRIANGLES, quadIndex.length, GLES30.GL_UNSIGNED_SHORT, quadIndexBuffer);
 

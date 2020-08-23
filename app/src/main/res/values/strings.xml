@@ -124,7 +124,7 @@
             const float soft_threshold = 0.2;
 
             float brightness = max(s.r, max(s.g, s.b));
-			float contribution = brightness * brightness * brightness;
+			float contribution = brightness * brightness;
 
             gl_FragColor = vec4(s.rgb * contribution, 1.0);
         }
@@ -162,7 +162,9 @@
                 texture2D(tex, vTextureCoord + o.xw).rgb + texture2D(tex, vTextureCoord + o.zw).rgb;
             s = s * 0.25;
             vec3 r = texture2D(source, vTextureCoord).rgb;
-            gl_FragColor = vec4(r + s * amount, 1.0);
+            float bri = 0.2126*r.r + 0.7152*r.g + 0.0722*r.b;
+            bri = pow(5.0, -bri);
+            gl_FragColor = vec4(r + s * amount * bri, 1.0);
         }
     </string>
     <string name="fragment_fb_gaussian">
@@ -221,7 +223,7 @@
             const float gamma = 2.2;
             vec3 hdrColor = texture2D(hdrTex, vTextureCoord).rgb;
             vec3 mapped = hdrColor * (vec3(1.0) + (hdrColor / (white * white))) / (hdrColor + vec3(1.0));
-            gl_FragColor = vec4(hdrColor * 0.5, 1.0);
+            gl_FragColor = vec4(hdrColor * 0.8, 1.0);
         }
     </string>
     <string name="update_msg">Current: %s\nLatest: %s</string>
