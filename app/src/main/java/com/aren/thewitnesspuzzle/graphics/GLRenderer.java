@@ -29,10 +29,11 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     private Context context;
 
     private int vertexShader, fragmentShader, fragmentShaderFrameBuffer;
-    private int vertexShaderFrameBuffer, fragmentShaderFrameBuffer_boxblur_down, fragmentShaderFrameBuffer_boxblur_up, fragmentShaderFrameBuffer_additive;
+    private int vertexShaderFrameBuffer, fragmentShaderFrameBuffer_boxblur_down, fragmentShaderFrameBuffer_boxblur_down_prelift, fragmentShaderFrameBuffer_boxblur_up, fragmentShaderFrameBuffer_additive;
     private int vertexShader_gaussian_v, vertexShader_gaussian_h, fragmentShader_gaussian;
     private int glProgram;
     private int glProgramFrameBuffer_boxblur_down;
+    private int glProgramFrameBuffer_boxblur_down_prelift;
     private int glProgramFrameBuffer_boxblur_up;
     private int glProgramFrameBuffer_additive;
     private int glProgram_gaussian_v;
@@ -105,6 +106,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         fragmentShaderFrameBuffer = loadShader(GLES20.GL_FRAGMENT_SHADER, context.getString(R.string.fragment_fb));
 
         fragmentShaderFrameBuffer_boxblur_down = loadShader(GLES20.GL_FRAGMENT_SHADER, context.getString(R.string.fragment_fb_boxblur_downscale));
+        fragmentShaderFrameBuffer_boxblur_down_prelift = loadShader(GLES20.GL_FRAGMENT_SHADER, context.getString(R.string.fragment_fb_boxblur_downscale_prelift));
         fragmentShaderFrameBuffer_boxblur_up = loadShader(GLES20.GL_FRAGMENT_SHADER, context.getString(R.string.fragment_fb_boxblur_upscale));
         fragmentShaderFrameBuffer_additive = loadShader(GLES20.GL_FRAGMENT_SHADER, context.getString(R.string.fragment_fb_additive));
 
@@ -114,6 +116,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 
         glProgram = GLES20.glCreateProgram();
         glProgramFrameBuffer_boxblur_down = GLES20.glCreateProgram();
+        glProgramFrameBuffer_boxblur_down_prelift = GLES20.glCreateProgram();
         glProgramFrameBuffer_boxblur_up = GLES20.glCreateProgram();
         glProgramFrameBuffer_additive = GLES20.glCreateProgram();
         glProgram_draw = GLES20.glCreateProgram();
@@ -126,6 +129,9 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 
         GLES20.glAttachShader(glProgramFrameBuffer_boxblur_down, vertexShaderFrameBuffer);
         GLES20.glAttachShader(glProgramFrameBuffer_boxblur_down, fragmentShaderFrameBuffer_boxblur_down);
+
+        GLES20.glAttachShader(glProgramFrameBuffer_boxblur_down_prelift, vertexShaderFrameBuffer);
+        GLES20.glAttachShader(glProgramFrameBuffer_boxblur_down_prelift, fragmentShaderFrameBuffer_boxblur_down_prelift);
 
         GLES20.glAttachShader(glProgramFrameBuffer_boxblur_up, vertexShaderFrameBuffer);
         GLES20.glAttachShader(glProgramFrameBuffer_boxblur_up, fragmentShaderFrameBuffer_boxblur_up);
@@ -144,6 +150,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 
         GLES20.glLinkProgram(glProgram);
         GLES20.glLinkProgram(glProgramFrameBuffer_boxblur_down);
+        GLES20.glLinkProgram(glProgramFrameBuffer_boxblur_down_prelift);
         GLES20.glLinkProgram(glProgramFrameBuffer_boxblur_up);
         GLES20.glLinkProgram(glProgramFrameBuffer_additive);
         GLES20.glLinkProgram(glProgram_gaussian_h);
@@ -175,18 +182,18 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 
         int w = width;
         int h = height;
-        for(int i = 0; i < 7; i++){
+        for(int i = 0; i < 4; i++){
             texWidth[i] = w;
             texHeight[i] = h;
             w /= 2;
             h /= 2;
         }
-        for(int i = 7; i < 13; i++){
-            texWidth[i] = texWidth[13 - i - 1];
-            texHeight[i] = texHeight[13 - i - 1];
+        for(int i = 4; i < 7; i++){
+            texWidth[i] = texWidth[7 - i - 1];
+            texHeight[i] = texHeight[7 - i - 1];
         }
 
-        for(int i = 0; i < 13; i++){
+        for(int i = 0; i < 7; i++){
             GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer.get(i));
 
             GLES20.glActiveTexture(GLES20.GL_TEXTURE0 + i);
@@ -267,29 +274,54 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 
         GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, puzzle.getVertexCount());
 
-        for(int i = 1; i < 7; i++){
-            GLES20.glUseProgram(glProgramFrameBuffer_boxblur_down);
-            GLES20.glViewport(0, 0, texWidth[i], texHeight[i]);
-            GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer.get(i));
+        for(int i = 1; i < 4; i++){
+            //GLES20.glClearColor(0, 0, 0, 0);
+            //GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+            if(i == 1){
+                GLES20.glUseProgram(glProgramFrameBuffer_boxblur_down_prelift);
+                GLES20.glViewport(0, 0, texWidth[i], texHeight[i]);
+                GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer.get(i));
 
-            aPositionHandle = GLES20.glGetAttribLocation(glProgramFrameBuffer_boxblur_down, "aPosition");
-            GLES20.glEnableVertexAttribArray(aPositionHandle);
-            GLES20.glVertexAttribPointer(aPositionHandle, COORD_PER_VERTEX, GLES20.GL_FLOAT, false, VERTEX_STRIDE, quadPosBuffer);
+                aPositionHandle = GLES20.glGetAttribLocation(glProgramFrameBuffer_boxblur_down_prelift, "aPosition");
+                GLES20.glEnableVertexAttribArray(aPositionHandle);
+                GLES20.glVertexAttribPointer(aPositionHandle, COORD_PER_VERTEX, GLES20.GL_FLOAT, false, VERTEX_STRIDE, quadPosBuffer);
 
-            int aTextureCoordHandle = GLES20.glGetAttribLocation(glProgramFrameBuffer_boxblur_down, "aTextureCoord");
-            GLES20.glEnableVertexAttribArray(aTextureCoordHandle);
-            GLES20.glVertexAttribPointer(aTextureCoordHandle, 2, GLES20.GL_FLOAT, false, 2 * 4, quadUVBuffer);
+                int aTextureCoordHandle = GLES20.glGetAttribLocation(glProgramFrameBuffer_boxblur_down_prelift, "aTextureCoord");
+                GLES20.glEnableVertexAttribArray(aTextureCoordHandle);
+                GLES20.glVertexAttribPointer(aTextureCoordHandle, 2, GLES20.GL_FLOAT, false, 2 * 4, quadUVBuffer);
 
-            int texHandle = GLES20.glGetUniformLocation(glProgramFrameBuffer_boxblur_down, "tex");
-            GLES20.glUniform1i(texHandle, i - 1);
+                int texHandle = GLES20.glGetUniformLocation(glProgramFrameBuffer_boxblur_down_prelift, "tex");
+                GLES20.glUniform1i(texHandle, i - 1);
 
-            int texelHandle = GLES20.glGetUniformLocation(glProgramFrameBuffer_boxblur_down, "texel");
-            GLES20.glUniform2f(texelHandle, 1f / texWidth[i], 1f / texHeight[i]);
+                int texelHandle = GLES20.glGetUniformLocation(glProgramFrameBuffer_boxblur_down_prelift, "texel");
+                GLES20.glUniform2f(texelHandle, 1f / texWidth[i], 1f / texHeight[i]);
+            }
+            else{
+                GLES20.glUseProgram(glProgramFrameBuffer_boxblur_down);
+                GLES20.glViewport(0, 0, texWidth[i], texHeight[i]);
+                GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer.get(i));
 
+                aPositionHandle = GLES20.glGetAttribLocation(glProgramFrameBuffer_boxblur_down, "aPosition");
+                GLES20.glEnableVertexAttribArray(aPositionHandle);
+                GLES20.glVertexAttribPointer(aPositionHandle, COORD_PER_VERTEX, GLES20.GL_FLOAT, false, VERTEX_STRIDE, quadPosBuffer);
+
+                int aTextureCoordHandle = GLES20.glGetAttribLocation(glProgramFrameBuffer_boxblur_down, "aTextureCoord");
+                GLES20.glEnableVertexAttribArray(aTextureCoordHandle);
+                GLES20.glVertexAttribPointer(aTextureCoordHandle, 2, GLES20.GL_FLOAT, false, 2 * 4, quadUVBuffer);
+
+                int texHandle = GLES20.glGetUniformLocation(glProgramFrameBuffer_boxblur_down, "tex");
+                GLES20.glUniform1i(texHandle, i - 1);
+
+                int texelHandle = GLES20.glGetUniformLocation(glProgramFrameBuffer_boxblur_down, "texel");
+                GLES20.glUniform2f(texelHandle, 1f / texWidth[i], 1f / texHeight[i]);
+            }
             GLES20.glDrawElements(GLES20.GL_TRIANGLES, quadIndex.length, GLES20.GL_UNSIGNED_SHORT, quadIndexBuffer);
         }
 
-        for(int i = 7; i < 13; i++){
+        for(int i = 4; i < 7; i++){
+            //GLES20.glClearColor(0, 0, 0, 0);
+            //GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+
             GLES20.glUseProgram(glProgramFrameBuffer_boxblur_up);
             GLES20.glViewport(0, 0, texWidth[i], texHeight[i]);
             GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer.get(i));
@@ -306,7 +338,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
             GLES20.glUniform1i(texHandle, i - 1);
 
             int texHandle2 = GLES20.glGetUniformLocation(glProgramFrameBuffer_boxblur_up, "source");
-            GLES20.glUniform1i(texHandle2, 13 - i - 1);
+            GLES20.glUniform1i(texHandle2, 5 - i - 1);
 
             int texelHandle = GLES20.glGetUniformLocation(glProgramFrameBuffer_boxblur_up, "texel");
             GLES20.glUniform2f(texelHandle, 1f / texWidth[i], 1f / texHeight[i]);
@@ -399,10 +431,10 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         GLES20.glVertexAttribPointer(aTextureCoordHandle, 2, GLES20.GL_FLOAT, false, 2 * 4, quadUVBuffer);
 
         int bgHandle = GLES20.glGetUniformLocation(glProgramFrameBuffer_additive, "bg");
-        GLES20.glUniform1i(bgHandle, 12);
+        GLES20.glUniform1i(bgHandle, 0);
 
         int overlayHandle = GLES20.glGetUniformLocation(glProgramFrameBuffer_additive, "overlay");
-        GLES20.glUniform1i(overlayHandle, 12);
+        GLES20.glUniform1i(overlayHandle, 6);
 
         GLES20.glDrawElements(GLES20.GL_TRIANGLES, quadIndex.length, GLES20.GL_UNSIGNED_SHORT, quadIndexBuffer);
 
@@ -417,6 +449,16 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 
         GLES20.glShaderSource(shader, shaderCode);
         GLES20.glCompileShader(shader);
+
+        int[] compiled = new int[1];
+        GLES20.glGetShaderiv(shader, GLES20.GL_COMPILE_STATUS, compiled, 0);
+        if (compiled[0] == 0) {
+            Log.e("GL", "Shader compile error");
+            Log.e("GL", shaderCode);
+            Log.e("GL", GLES20.glGetShaderInfoLog(shader));
+            GLES20.glDeleteShader(shader);
+            shader = 0;
+        }
 
         return shader;
     }

@@ -100,10 +100,10 @@
         varying vec2 vTextureCoord;
 
         void main() {
-            vec4 o = texel.xyxy * vec2(-1, 1).xxyy;
-            vec4 s = texture2D(tex, vTextureCoord + o.xy) + texture2D(tex, vTextureCoord + o.zy) +
-                texture2D(tex, vTextureCoord + o.xw) + texture2D(tex, vTextureCoord + o.zw);
-            gl_FragColor = s * 0.25;
+            vec4 o = texel.xyxy * vec2(-1.0, 1.0).xxyy;
+            vec3 s = texture2D(tex, vTextureCoord + o.xy).rgb + texture2D(tex, vTextureCoord + o.zy).rgb +
+                texture2D(tex, vTextureCoord + o.xw).rgb + texture2D(tex, vTextureCoord + o.zw).rgb;
+            gl_FragColor = vec4(s * 0.25, 1.0);
         }
     </string>
     <string name="fragment_fb_boxblur_downscale_prelift">
@@ -115,16 +115,22 @@
         varying vec2 vTextureCoord;
 
         void main() {
-            vec4 o = texel.xyxy * vec2(-1, 1).xxyy;
+            vec4 o = texel.xyxy * vec2(-1.0, 1.0).xxyy;
             vec4 s = texture2D(tex, vTextureCoord + o.xy) + texture2D(tex, vTextureCoord + o.zy) +
                 texture2D(tex, vTextureCoord + o.xw) + texture2D(tex, vTextureCoord + o.zw);
             s *= 0.25;
 
+            const float threshold = 1.0;
+            const float soft_threshold = 0.5;
+
             float brightness = max(s.r, max(s.g, s.b));
-			float contribution = max(0.0, brightness - 0.75);
+            float knee = threshold * soft_threshold;
+            float soft = clamp(brightness - threshold + knee, 0.0, 2.0 * knee);
+            soft = soft * soft / (4.0 * knee + 0.00001);
+			float contribution = max(soft, brightness - threshold);
 			contribution /= max(brightness, 0.00001);
 
-            gl_FragColor = s * contribution;
+            gl_FragColor = vec4(s.rgb * contribution, 1.0);
         }
     </string>
     <string name="fragment_fb_boxblur_upscale">
@@ -137,11 +143,28 @@
         varying vec2 vTextureCoord;
 
         void main() {
-            vec4 o = texel.xyxy * vec2(-1, 1).xxyy;
-            vec4 s = texture2D(tex, vTextureCoord + o.xy) + texture2D(tex, vTextureCoord + o.zy) +
-                texture2D(tex, vTextureCoord + o.xw) + texture2D(tex, vTextureCoord + o.zw);
-            vec4 r = texture2D(source, vTextureCoord);
-            gl_FragColor = r + s * 0.25;
+            vec4 o = texel.xyxy * vec2(-0.5, 0.5).xxyy;
+            vec3 s = texture2D(tex, vTextureCoord + o.xy).rgb + texture2D(tex, vTextureCoord + o.zy).rgb +
+                texture2D(tex, vTextureCoord + o.xw).rgb + texture2D(tex, vTextureCoord + o.zw).rgb;
+            vec3 r = texture2D(source, vTextureCoord).rgb;
+            gl_FragColor = vec4(r + s * 0.25, 1.0);
+        }
+    </string>
+    <string name="fragment_fb_boxblur_upscale_final">
+        precision mediump float;
+
+        uniform sampler2D source;
+        uniform sampler2D tex;
+        uniform vec2 texel;
+
+        varying vec2 vTextureCoord;
+
+        void main() {
+            vec4 o = texel.xyxy * vec2(-0.5, 0.5).xxyy;
+            vec3 s = texture2D(tex, vTextureCoord + o.xy).rgb + texture2D(tex, vTextureCoord + o.zy).rgb +
+                texture2D(tex, vTextureCoord + o.xw).rgb + texture2D(tex, vTextureCoord + o.zw).rgb;
+            vec3 r = texture2D(source, vTextureCoord).rgb;
+            gl_FragColor = vec4(r + s * 0.25 * 0.4, 1.0);
         }
     </string>
     <string name="fragment_fb_gaussian">
@@ -171,7 +194,21 @@
         varying vec2 vTextureCoord;
 
         void main() {
-            gl_FragColor = texture2D(bg, vTextureCoord) + texture2D(overlay, vTextureCoord) * 0.5;
+            vec4 b = texture2D(bg, vTextureCoord);
+            vec4 o = texture2D(overlay, vTextureCoord);
+            gl_FragColor = vec4(b.rgb * (1.0 - o.a) + o.rgb * o.a, 1.0);
+        }
+    </string>
+    <string name="fragment_fb_additive_hdr">
+        precision mediump float;
+
+        uniform sampler2D bg;
+        uniform sampler2D overlay;
+
+        varying vec2 vTextureCoord;
+
+        void main() {
+            gl_FragColor = vec4(texture2D(bg, vTextureCoord).rgb * 0.0 + texture2D(overlay, vTextureCoord).rgb * 1.0, 1.0);
         }
     </string>
     <string name="fragment_fb_tonemapping">
@@ -182,10 +219,10 @@
         varying vec2 vTextureCoord;
 
         void main() {
-            const float gamma = 0.8;
-            const float exposure = 1.0;
+            const float white = 3.0;
+            const float gamma = 2.2;
             vec3 hdrColor = texture2D(hdrTex, vTextureCoord).rgb;
-            vec3 mapped = vec3(1.0) - exp(-hdrColor * exposure);
+            vec3 mapped = hdrColor * (1 + hdrColor / (white * white)) / (hdrColor + vec3(1.0));
             mapped = pow(mapped, vec3(1.0 / gamma));
             gl_FragColor = vec4(mapped, 1.0);
         }
