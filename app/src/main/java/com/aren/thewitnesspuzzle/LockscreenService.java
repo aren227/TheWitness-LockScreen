@@ -13,6 +13,7 @@ import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
@@ -39,6 +40,10 @@ public class LockscreenService extends Service {
 
     public int phoneState = TelephonyManager.CALL_STATE_IDLE;
     public boolean interrupted = false;
+
+    public int lockToken = 0;
+
+    public final Handler handler = new Handler();
 
     public LockscreenService() {
 
@@ -118,21 +123,35 @@ public class LockscreenService extends Service {
 
                 if(phoneState != TelephonyManager.CALL_STATE_IDLE) return;
 
-                if(!game.getSettings().getHoldingPuzzles() || puzzle == null){
-                    Random random = new Random();
-                    List<PuzzleFactory> factories = puzzleFactoryManager.getActivatedPuzzleFactories();
-                    if(factories.size() > 0){
-                        puzzle = factories.get(random.nextInt(factories.size())).generate(game, random);
-                    }
-                }
+                final int currentKey = lockToken;
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        setRandomPuzzle();
 
-                if(puzzle != null){
-                    game.setPuzzle(puzzle);
-                    lockScreen(context);
-                }
+                        try {
+                            Thread.sleep(game.getSettings().getLockDelay() * 1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
+                        if(puzzle != null && currentKey == lockToken){
+                            game.setPuzzle(puzzle);
+                            // Run on Main thread
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    lockScreen();
+                                }
+                            });
+                        }
+                    }
+                }).start();
             }
             else if(intent.getAction().equals(Intent.ACTION_SCREEN_ON)){
                 Log.i("TAG", "SCREEN_ON");
+
+                lockToken++;
             }
         }
     }
@@ -145,7 +164,17 @@ public class LockscreenService extends Service {
         }
     }
 
-    public void lockScreen(Context context){
+    public void setRandomPuzzle(){
+        if(!game.getSettings().getHoldingPuzzles() || puzzle == null){
+            Random random = new Random();
+            List<PuzzleFactory> factories = puzzleFactoryManager.getActivatedPuzzleFactories();
+            if(factories.size() > 0){
+                puzzle = factories.get(random.nextInt(factories.size())).generate(game, random);
+            }
+        }
+    }
+
+    public void lockScreen(){
         if(isLocked()) return;
 
         WindowManager mWindowManager = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
@@ -202,7 +231,7 @@ public class LockscreenService extends Service {
             phoneState = state;
             if(state == TelephonyManager.CALL_STATE_IDLE){
                 if(interrupted){
-                    lockScreen(LockscreenService.this);
+                    lockScreen();
                     interrupted = false;
                 }
             }

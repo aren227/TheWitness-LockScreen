@@ -17,6 +17,9 @@ public class SettingsActivity extends AppCompatActivity {
     TextView holdingText;
     TextView shadowPanelText;
     TextView bloomText;
+    TextView lockDelayText;
+
+    private int[] lockDelays = new int[]{0, 10, 30, 60, 60 * 15};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +30,7 @@ public class SettingsActivity extends AppCompatActivity {
         holdingText = findViewById(R.id.settings_holding);
         shadowPanelText = findViewById(R.id.settings_shadow_panel);
         bloomText = findViewById(R.id.settings_bloom);
+        lockDelayText = findViewById(R.id.settings_lockdelay);
 
         game = new Game(this, false);
 
@@ -34,6 +38,7 @@ public class SettingsActivity extends AppCompatActivity {
         updateHoldingText();
         updateShadowPanelText();
         updateBloomText();
+        updateLockDelayText();
 
         soundsText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,6 +71,22 @@ public class SettingsActivity extends AppCompatActivity {
                 updateBloomText();
             }
         });
+
+        lockDelayText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int idx = 0;
+                int current = game.getSettings().getLockDelay();
+                for(int i = 0; i < lockDelays.length; i++){
+                    if(lockDelays[i] == current){
+                        idx = i;
+                        break;
+                    }
+                }
+                game.getSettings().setLockDelay(lockDelays[(idx + 1) % lockDelays.length]);
+                updateLockDelayText();
+            }
+        });
     }
 
     private void updateSoundsText(){
@@ -82,5 +103,20 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void updateBloomText(){
         bloomText.setText(game.getSettings().getBloomEnabled() ? "Yes" : "No");
+    }
+
+    private void updateLockDelayText(){
+        int delay = game.getSettings().getLockDelay();
+        String str = "";
+        if(delay == 0){
+            str = "No";
+        }
+        else if(delay < 60){
+            str = delay + "s";
+        }
+        else{
+            str = delay / 60 + "m";
+        }
+        lockDelayText.setText(str);
     }
 }

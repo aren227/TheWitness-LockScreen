@@ -51,4 +51,14 @@ public class GameSettings {
         editor.commit();
     }
 
+    public int getLockDelay(){
+        return sharedPreferences.getInt("lockdelay", 0);
+    }
+
+    public void setLockDelay(int delay){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("lockdelay", delay);
+        editor.commit();
+    }
+
 }
