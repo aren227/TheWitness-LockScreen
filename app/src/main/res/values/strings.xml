@@ -146,24 +146,38 @@
             gl_FragColor = vec4(r + s * 0.25, 1.0);
         }
     </string>
-    <string name="fragment_fb_boxblur_upscale_final">
+    <string name="fragment_fb_boxblur_upscale_init">
         precision mediump float;
 
         uniform sampler2D source;
         uniform sampler2D tex;
-        uniform vec2 texel;
         uniform float amount;
 
         varying vec2 vTextureCoord;
 
         void main() {
-            vec4 o = texel.xyxy * vec2(0.0, 0.0).xxyy;
-            vec3 s = texture2D(tex, vTextureCoord + o.xy).rgb + texture2D(tex, vTextureCoord + o.zy).rgb +
-                texture2D(tex, vTextureCoord + o.xw).rgb + texture2D(tex, vTextureCoord + o.zw).rgb;
-            s = s * 0.25;
+            vec3 s = texture2D(tex, vTextureCoord).rgb;
             vec3 r = texture2D(source, vTextureCoord).rgb;
-            float bri = 0.2126*r.r + 0.7152*r.g + 0.0722*r.b;
-            bri = pow(5.0, -bri);
+            float bri = max(max(r.r, r.g), r.b);
+            bri = 1.0 - bri;
+            r = (r + s * amount * bri) / 1.3;
+            gl_FragColor = vec4(r, 1.0);
+        }
+    </string>
+    <string name="fragment_fb_boxblur_upscale_final">
+        precision mediump float;
+
+        uniform sampler2D source;
+        uniform sampler2D tex;
+        uniform float amount;
+
+        varying vec2 vTextureCoord;
+
+        void main() {
+            vec3 s = texture2D(tex, vTextureCoord).rgb;
+            vec3 r = texture2D(source, vTextureCoord).rgb;
+            float bri = max(max(r.r, r.g), r.b);
+            bri = 1.0 - bri;
             gl_FragColor = vec4(r + s * amount * bri, 1.0);
         }
     </string>

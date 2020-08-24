@@ -15,7 +15,7 @@ public class PuzzleGLSurfaceView extends GLSurfaceView {
 
     private Game game;
 
-    public GLRenderer3 glRenderer;
+    public GLRenderer glRenderer;
 
     public Bitmap bitmap;
     public boolean bitmapRendered = false;
@@ -25,9 +25,9 @@ public class PuzzleGLSurfaceView extends GLSurfaceView {
 
         this.game = game;
 
-        setEGLContextClientVersion(3);
+        setEGLContextClientVersion(2);
 
-        glRenderer = new GLRenderer3(game, context);
+        glRenderer = new GLRenderer(game, context);
         setRenderer(glRenderer);
 
         setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
