@@ -24,6 +24,7 @@ public class PlayActivity extends AppCompatActivity {
 
     private RelativeLayout root;
     private ImageView nextImage;
+    private ImageView skipImage;
     private TextView warningText;
 
     private long seed;
@@ -35,6 +36,7 @@ public class PlayActivity extends AppCompatActivity {
 
         root = findViewById(R.id.play_root);
         nextImage = findViewById(R.id.next_puzzle);
+        skipImage = findViewById(R.id.skip_puzzle);
         warningText = findViewById(R.id.no_puzzle_warn);
 
         game = new Game(this);
@@ -45,7 +47,7 @@ public class PlayActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         nextImage.setVisibility(View.VISIBLE);
-                        nextImage.bringToFront();
+                        skipImage.setVisibility(View.GONE);
                     }
                 });
             }
@@ -54,11 +56,14 @@ public class PlayActivity extends AppCompatActivity {
         nextImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                nextSeed();
-                if(!generatePuzzle()){
-                    root.removeView(game.getSurfaceView());
-                }
-                nextImage.setVisibility(View.GONE);
+                nextPuzzle();
+            }
+        });
+
+        skipImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                nextPuzzle();
             }
         });
 
@@ -74,6 +79,12 @@ public class PlayActivity extends AppCompatActivity {
         if(generatePuzzle()){
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             root.addView(game.getSurfaceView(), params);
+
+            nextImage.setVisibility(View.GONE);
+            nextImage.bringToFront();
+
+            skipImage.setVisibility(View.VISIBLE);
+            skipImage.bringToFront();
         }
     }
 
@@ -83,8 +94,13 @@ public class PlayActivity extends AppCompatActivity {
         super.onSaveInstanceState(savedInstanceState);
     }
 
-    public void nextSeed(){
+    public void nextPuzzle(){
         seed = new Random(seed).nextLong();
+        if(!generatePuzzle()){
+            root.removeView(game.getSurfaceView());
+        }
+        nextImage.setVisibility(View.GONE);
+        skipImage.setVisibility(View.VISIBLE);
     }
 
     public boolean generatePuzzle(){
