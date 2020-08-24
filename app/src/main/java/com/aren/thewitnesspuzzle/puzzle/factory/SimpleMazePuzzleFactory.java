@@ -37,6 +37,6 @@ public class SimpleMazePuzzleFactory extends PuzzleFactory {
 
     @Override
     public String getName(){
-        return "Entry Area #1";
+        return "Entry Area #2";
     }
 }

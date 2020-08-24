@@ -20,6 +20,7 @@ public class PuzzleFactoryManager {
 
     static {
         register(new ChallengeTrianglesPuzzleFactory());
+        register(new EntryAreaMazePuzzleFactory());
         register(new FirstPuzzleFactory());
         register(new MultipleSunColorsPuzzleFactory());
         register(new RotatableBlocksPuzzleFactory());
