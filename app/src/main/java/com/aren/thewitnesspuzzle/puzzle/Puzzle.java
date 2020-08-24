@@ -300,6 +300,8 @@ public class Puzzle {
             if(cursor == null) return;
 
             EdgeProportion cursorEdge = cursor.getCurrentCursorEdge();
+            if(cursorEdge == null) return;
+
             if(cursorEdge.to().getRule() instanceof EndingPointRule && cursorEdge.proportion > 1 - getPathWidth() * 0.5f / cursorEdge.edge.getLength()){
                 endTracing();
             }
