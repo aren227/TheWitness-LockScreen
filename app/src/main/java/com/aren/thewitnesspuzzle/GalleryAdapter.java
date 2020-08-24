@@ -57,6 +57,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         if(puzzleFactoryManager.isActiavted(preview.puzzleFactory)){
             holder.imageView.setColorFilter(null);
             holder.imageView.setImageAlpha(255);
+            holder.outlineView.setVisibility(View.VISIBLE);
         }
         else{
             ColorMatrix matrix = new ColorMatrix();
@@ -64,6 +65,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
             ColorMatrixColorFilter cf = new ColorMatrixColorFilter(matrix);
             holder.imageView.setColorFilter(cf);
             holder.imageView.setImageAlpha(128);
+            holder.outlineView.setVisibility(View.INVISIBLE);
         }
 
         holder.textView.setText(preview.name);
@@ -86,12 +88,14 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     public class ViewHolder extends RecyclerView.ViewHolder{
         ImageView imageView;
         TextView textView;
+        View outlineView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             imageView = itemView.findViewById(R.id.puzzle_preview);
             textView = itemView.findViewById(R.id.puzzle_name);
+            outlineView = itemView.findViewById(R.id.puzzle_selected);
         }
     }
 }

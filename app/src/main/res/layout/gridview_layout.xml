@@ -3,16 +3,32 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:orientation="vertical"
-              android:padding="10dp"
+              android:padding="5dp"
               android:id="@+id/preview_root">
 
-    <ImageView
-        android:id="@+id/puzzle_preview"
+    <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:adjustViewBounds="true"
-        android:background="@drawable/rounded_image"/>
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/puzzle_preview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:adjustViewBounds="true"
+            android:background="@drawable/rounded_image"/>
+
+        <View
+            android:id="@+id/puzzle_selected"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_image_glowing_bg"
+            android:layout_alignTop="@id/puzzle_preview"
+            android:layout_alignBottom="@id/puzzle_preview"
+            android:layout_alignStart="@id/puzzle_preview"
+            android:layout_alignEnd="@id/puzzle_preview"/>
+
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/puzzle_name"
