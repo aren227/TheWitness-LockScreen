@@ -26,6 +26,8 @@ public class PlayActivity extends AppCompatActivity {
     private ImageView nextImage;
     private TextView warningText;
 
+    private long seed;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +54,8 @@ public class PlayActivity extends AppCompatActivity {
         nextImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!setRandomPuzzle()){
+                nextSeed();
+                if(!generatePuzzle()){
                     root.removeView(game.getSurfaceView());
                 }
                 nextImage.setVisibility(View.GONE);
@@ -61,14 +64,31 @@ public class PlayActivity extends AppCompatActivity {
 
         puzzleFactoryManager = new PuzzleFactoryManager(this);
 
-        if(setRandomPuzzle()){
+        if(savedInstanceState == null){
+            seed = new Random().nextLong();
+        }
+        else{
+            seed = savedInstanceState.getLong("seed");
+        }
+
+        if(generatePuzzle()){
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             root.addView(game.getSurfaceView(), params);
         }
     }
 
-    public boolean setRandomPuzzle(){
-        Random random = new Random();
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putLong("seed", seed);
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    public void nextSeed(){
+        seed = new Random(seed).nextLong();
+    }
+
+    public boolean generatePuzzle(){
+        Random random = new Random(seed);
         List<PuzzleFactory> factories = puzzleFactoryManager.getActivatedPuzzleFactories();
         if(factories.size() == 0) return false;
         Puzzle puzzle = factories.get(random.nextInt(factories.size())).generate(game, random);
