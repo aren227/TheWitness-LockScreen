@@ -74,6 +74,8 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     private ConcurrentLinkedQueue<Bitmap> renderResults = new ConcurrentLinkedQueue<>();
     private boolean renderMode = false;
 
+    private boolean bloom = false;
+
     public GLRenderer(Game game, Context context){
         this.game = game;
         this.context = context;
@@ -150,6 +152,8 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         GLES20.glViewport(0, 0, width, height);
 
         ratio = (float) height / width;
+
+        bloom = game.getSettings().getBloomEnabled();
     }
 
     public void setupTextures(){
@@ -158,31 +162,33 @@ public class GLRenderer implements GLSurfaceView.Renderer {
             GLES20.glDeleteFramebuffers(6, frameBuffer);
         }
 
-        GLES20.glGenTextures(6, textureIds, 0);
-        GLES20.glGenFramebuffers(6, frameBuffer);
+        if(bloom){
+            GLES20.glGenTextures(6, textureIds, 0);
+            GLES20.glGenFramebuffers(6, frameBuffer);
 
-        int w = width;
-        int h = height;
-        for(int i = 0; i < 5; i++){
-            texWidth[i] = w;
-            texHeight[i] = h;
-            w /= 2;
-            h /= 2;
-        }
-        texWidth[5] = texWidth[0];
-        texHeight[5] = texHeight[0];
+            int w = width;
+            int h = height;
+            for(int i = 0; i < 5; i++){
+                texWidth[i] = w;
+                texHeight[i] = h;
+                w /= 2;
+                h /= 2;
+            }
+            texWidth[5] = texWidth[0];
+            texHeight[5] = texHeight[0];
 
-        for(int i = 0; i < 6; i++){
-            GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer.get(i));
+            for(int i = 0; i < 6; i++){
+                GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer.get(i));
 
-            GLES20.glActiveTexture(GLES20.GL_TEXTURE0 + i);
-            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureIds[i]);
-            GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
-            GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
-            GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
-            GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
-            GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, texWidth[i], texHeight[i], 0, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, null);
-            GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0, GLES20.GL_TEXTURE_2D, textureIds[i], 0);
+                GLES20.glActiveTexture(GLES20.GL_TEXTURE0 + i);
+                GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureIds[i]);
+                GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
+                GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+                GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
+                GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
+                GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, texWidth[i], texHeight[i], 0, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, null);
+                GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0, GLES20.GL_TEXTURE_2D, textureIds[i], 0);
+            }
         }
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
     }
@@ -225,7 +231,8 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 
         // Draw the puzzle to the first frame buffer
         GLES20.glUseProgram(glProgram);
-        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer.get(0));
+        if(bloom) GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer.get(0));
+        else GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
 
         int backgroundColor = puzzle.getColorPalette().getBackgroundColor();
         GLES20.glClearColor(Color.red(backgroundColor) / 255f, Color.green(backgroundColor) / 255f, Color.blue(backgroundColor) / 255f, 1.0f);
@@ -255,200 +262,113 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 
         GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, puzzle.getVertexCount());
 
-        for(int i = 1; i < 5; i++){
-            //GLES20.glClearColor(0, 0, 0, 0);
-            //GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
-            if(i == 1){
-                GLES20.glUseProgram(glProgramFrameBuffer_boxblur_down_prelift);
-                GLES20.glViewport(0, 0, texWidth[i], texHeight[i]);
-                GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer.get(i));
+        if(bloom){
+            for(int i = 1; i < 5; i++){
+                //GLES20.glClearColor(0, 0, 0, 0);
+                //GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+                if(i == 1){
+                    GLES20.glUseProgram(glProgramFrameBuffer_boxblur_down_prelift);
+                    GLES20.glViewport(0, 0, texWidth[i], texHeight[i]);
+                    GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer.get(i));
 
-                aPositionHandle = GLES20.glGetAttribLocation(glProgramFrameBuffer_boxblur_down_prelift, "aPosition");
-                GLES20.glEnableVertexAttribArray(aPositionHandle);
-                GLES20.glVertexAttribPointer(aPositionHandle, COORD_PER_VERTEX, GLES20.GL_FLOAT, false, VERTEX_STRIDE, quadPosBuffer);
+                    aPositionHandle = GLES20.glGetAttribLocation(glProgramFrameBuffer_boxblur_down_prelift, "aPosition");
+                    GLES20.glEnableVertexAttribArray(aPositionHandle);
+                    GLES20.glVertexAttribPointer(aPositionHandle, COORD_PER_VERTEX, GLES20.GL_FLOAT, false, VERTEX_STRIDE, quadPosBuffer);
 
-                int aTextureCoordHandle = GLES20.glGetAttribLocation(glProgramFrameBuffer_boxblur_down_prelift, "aTextureCoord");
-                GLES20.glEnableVertexAttribArray(aTextureCoordHandle);
-                GLES20.glVertexAttribPointer(aTextureCoordHandle, 2, GLES20.GL_FLOAT, false, 2 * 4, quadUVBuffer);
+                    int aTextureCoordHandle = GLES20.glGetAttribLocation(glProgramFrameBuffer_boxblur_down_prelift, "aTextureCoord");
+                    GLES20.glEnableVertexAttribArray(aTextureCoordHandle);
+                    GLES20.glVertexAttribPointer(aTextureCoordHandle, 2, GLES20.GL_FLOAT, false, 2 * 4, quadUVBuffer);
 
-                int texHandle = GLES20.glGetUniformLocation(glProgramFrameBuffer_boxblur_down_prelift, "tex");
-                GLES20.glUniform1i(texHandle, i - 1);
+                    int texHandle = GLES20.glGetUniformLocation(glProgramFrameBuffer_boxblur_down_prelift, "tex");
+                    GLES20.glUniform1i(texHandle, i - 1);
 
-                int texelHandle = GLES20.glGetUniformLocation(glProgramFrameBuffer_boxblur_down_prelift, "texel");
-                GLES20.glUniform2f(texelHandle, 1f / texWidth[i], 1f / texHeight[i]);
-            }
-            else{
-                GLES20.glUseProgram(glProgramFrameBuffer_boxblur_down);
-                GLES20.glViewport(0, 0, texWidth[i], texHeight[i]);
-                GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer.get(i));
-
-                aPositionHandle = GLES20.glGetAttribLocation(glProgramFrameBuffer_boxblur_down, "aPosition");
-                GLES20.glEnableVertexAttribArray(aPositionHandle);
-                GLES20.glVertexAttribPointer(aPositionHandle, COORD_PER_VERTEX, GLES20.GL_FLOAT, false, VERTEX_STRIDE, quadPosBuffer);
-
-                int aTextureCoordHandle = GLES20.glGetAttribLocation(glProgramFrameBuffer_boxblur_down, "aTextureCoord");
-                GLES20.glEnableVertexAttribArray(aTextureCoordHandle);
-                GLES20.glVertexAttribPointer(aTextureCoordHandle, 2, GLES20.GL_FLOAT, false, 2 * 4, quadUVBuffer);
-
-                int texHandle = GLES20.glGetUniformLocation(glProgramFrameBuffer_boxblur_down, "tex");
-                GLES20.glUniform1i(texHandle, i - 1);
-
-                int texelHandle = GLES20.glGetUniformLocation(glProgramFrameBuffer_boxblur_down, "texel");
-                GLES20.glUniform2f(texelHandle, 1f / texWidth[i], 1f / texHeight[i]);
-            }
-            GLES20.glDrawElements(GLES20.GL_TRIANGLES, quadIndex.length, GLES20.GL_UNSIGNED_SHORT, quadIndexBuffer);
-        }
-
-        int lastBufferIdx = 5;
-        for(int i = 5; i < 9; i++){
-            //GLES20.glClearColor(0, 0, 0, 0);
-            //GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
-            if(i == 5){
-                GLES20.glUseProgram(glProgramFrameBuffer_boxblur_up_init);
-                GLES20.glViewport(0, 0, texWidth[lastBufferIdx], texHeight[lastBufferIdx]);
-                GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer.get(lastBufferIdx));
-
-                aPositionHandle = GLES20.glGetAttribLocation(glProgramFrameBuffer_boxblur_up_init, "aPosition");
-                GLES20.glEnableVertexAttribArray(aPositionHandle);
-                GLES20.glVertexAttribPointer(aPositionHandle, COORD_PER_VERTEX, GLES20.GL_FLOAT, false, VERTEX_STRIDE, quadPosBuffer);
-
-                int aTextureCoordHandle = GLES20.glGetAttribLocation(glProgramFrameBuffer_boxblur_up_init, "aTextureCoord");
-                GLES20.glEnableVertexAttribArray(aTextureCoordHandle);
-                GLES20.glVertexAttribPointer(aTextureCoordHandle, 2, GLES20.GL_FLOAT, false, 2 * 4, quadUVBuffer);
-
-                int texHandle = GLES20.glGetUniformLocation(glProgramFrameBuffer_boxblur_up_init, "tex");
-                GLES20.glUniform1i(texHandle, i - 4);
-
-                int texHandle2 = GLES20.glGetUniformLocation(glProgramFrameBuffer_boxblur_up_init, "source");
-                GLES20.glUniform1i(texHandle2, 0);
-
-                int amountHandle = GLES20.glGetUniformLocation(glProgramFrameBuffer_boxblur_up_init, "amount");
-                GLES20.glUniform1f(amountHandle, 0.25f);
-
-                GLES20.glDrawElements(GLES20.GL_TRIANGLES, quadIndex.length, GLES20.GL_UNSIGNED_SHORT, quadIndexBuffer);
-            }
-            else{
-                GLES20.glUseProgram(glProgramFrameBuffer_boxblur_up);
-                if(i == 8){
-                    GLES20.glViewport(0, 0, width, height);
-                    GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
+                    int texelHandle = GLES20.glGetUniformLocation(glProgramFrameBuffer_boxblur_down_prelift, "texel");
+                    GLES20.glUniform2f(texelHandle, 1f / texWidth[i], 1f / texHeight[i]);
                 }
                 else{
-                    GLES20.glViewport(0, 0, texWidth[lastBufferIdx], texHeight[lastBufferIdx]);
-                    GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer.get(lastBufferIdx));
+                    GLES20.glUseProgram(glProgramFrameBuffer_boxblur_down);
+                    GLES20.glViewport(0, 0, texWidth[i], texHeight[i]);
+                    GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer.get(i));
+
+                    aPositionHandle = GLES20.glGetAttribLocation(glProgramFrameBuffer_boxblur_down, "aPosition");
+                    GLES20.glEnableVertexAttribArray(aPositionHandle);
+                    GLES20.glVertexAttribPointer(aPositionHandle, COORD_PER_VERTEX, GLES20.GL_FLOAT, false, VERTEX_STRIDE, quadPosBuffer);
+
+                    int aTextureCoordHandle = GLES20.glGetAttribLocation(glProgramFrameBuffer_boxblur_down, "aTextureCoord");
+                    GLES20.glEnableVertexAttribArray(aTextureCoordHandle);
+                    GLES20.glVertexAttribPointer(aTextureCoordHandle, 2, GLES20.GL_FLOAT, false, 2 * 4, quadUVBuffer);
+
+                    int texHandle = GLES20.glGetUniformLocation(glProgramFrameBuffer_boxblur_down, "tex");
+                    GLES20.glUniform1i(texHandle, i - 1);
+
+                    int texelHandle = GLES20.glGetUniformLocation(glProgramFrameBuffer_boxblur_down, "texel");
+                    GLES20.glUniform2f(texelHandle, 1f / texWidth[i], 1f / texHeight[i]);
                 }
-
-                aPositionHandle = GLES20.glGetAttribLocation(glProgramFrameBuffer_boxblur_up, "aPosition");
-                GLES20.glEnableVertexAttribArray(aPositionHandle);
-                GLES20.glVertexAttribPointer(aPositionHandle, COORD_PER_VERTEX, GLES20.GL_FLOAT, false, VERTEX_STRIDE, quadPosBuffer);
-
-                int aTextureCoordHandle = GLES20.glGetAttribLocation(glProgramFrameBuffer_boxblur_up, "aTextureCoord");
-                GLES20.glEnableVertexAttribArray(aTextureCoordHandle);
-                GLES20.glVertexAttribPointer(aTextureCoordHandle, 2, GLES20.GL_FLOAT, false, 2 * 4, quadUVBuffer);
-
-                int texHandle = GLES20.glGetUniformLocation(glProgramFrameBuffer_boxblur_up, "tex");
-                GLES20.glUniform1i(texHandle, i - 4);
-
-                int texHandle2 = GLES20.glGetUniformLocation(glProgramFrameBuffer_boxblur_up, "source");
-                GLES20.glUniform1i(texHandle2, lastBufferIdx == 0 ? 5 : 0);
-
-                int amountHandle = GLES20.glGetUniformLocation(glProgramFrameBuffer_boxblur_up, "amount");
-                GLES20.glUniform1f(amountHandle, 0.25f);
-
                 GLES20.glDrawElements(GLES20.GL_TRIANGLES, quadIndex.length, GLES20.GL_UNSIGNED_SHORT, quadIndexBuffer);
             }
 
-            lastBufferIdx = lastBufferIdx == 0 ? 5 : 0;
+            int lastBufferIdx = 5;
+            for(int i = 5; i < 9; i++){
+                //GLES20.glClearColor(0, 0, 0, 0);
+                //GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+                if(i == 5){
+                    GLES20.glUseProgram(glProgramFrameBuffer_boxblur_up_init);
+                    GLES20.glViewport(0, 0, texWidth[lastBufferIdx], texHeight[lastBufferIdx]);
+                    GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer.get(lastBufferIdx));
+
+                    aPositionHandle = GLES20.glGetAttribLocation(glProgramFrameBuffer_boxblur_up_init, "aPosition");
+                    GLES20.glEnableVertexAttribArray(aPositionHandle);
+                    GLES20.glVertexAttribPointer(aPositionHandle, COORD_PER_VERTEX, GLES20.GL_FLOAT, false, VERTEX_STRIDE, quadPosBuffer);
+
+                    int aTextureCoordHandle = GLES20.glGetAttribLocation(glProgramFrameBuffer_boxblur_up_init, "aTextureCoord");
+                    GLES20.glEnableVertexAttribArray(aTextureCoordHandle);
+                    GLES20.glVertexAttribPointer(aTextureCoordHandle, 2, GLES20.GL_FLOAT, false, 2 * 4, quadUVBuffer);
+
+                    int texHandle = GLES20.glGetUniformLocation(glProgramFrameBuffer_boxblur_up_init, "tex");
+                    GLES20.glUniform1i(texHandle, i - 4);
+
+                    int texHandle2 = GLES20.glGetUniformLocation(glProgramFrameBuffer_boxblur_up_init, "source");
+                    GLES20.glUniform1i(texHandle2, 0);
+
+                    int amountHandle = GLES20.glGetUniformLocation(glProgramFrameBuffer_boxblur_up_init, "amount");
+                    GLES20.glUniform1f(amountHandle, 0.25f);
+
+                    GLES20.glDrawElements(GLES20.GL_TRIANGLES, quadIndex.length, GLES20.GL_UNSIGNED_SHORT, quadIndexBuffer);
+                }
+                else{
+                    GLES20.glUseProgram(glProgramFrameBuffer_boxblur_up);
+                    if(i == 8){
+                        GLES20.glViewport(0, 0, width, height);
+                        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
+                    }
+                    else{
+                        GLES20.glViewport(0, 0, texWidth[lastBufferIdx], texHeight[lastBufferIdx]);
+                        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer.get(lastBufferIdx));
+                    }
+
+                    aPositionHandle = GLES20.glGetAttribLocation(glProgramFrameBuffer_boxblur_up, "aPosition");
+                    GLES20.glEnableVertexAttribArray(aPositionHandle);
+                    GLES20.glVertexAttribPointer(aPositionHandle, COORD_PER_VERTEX, GLES20.GL_FLOAT, false, VERTEX_STRIDE, quadPosBuffer);
+
+                    int aTextureCoordHandle = GLES20.glGetAttribLocation(glProgramFrameBuffer_boxblur_up, "aTextureCoord");
+                    GLES20.glEnableVertexAttribArray(aTextureCoordHandle);
+                    GLES20.glVertexAttribPointer(aTextureCoordHandle, 2, GLES20.GL_FLOAT, false, 2 * 4, quadUVBuffer);
+
+                    int texHandle = GLES20.glGetUniformLocation(glProgramFrameBuffer_boxblur_up, "tex");
+                    GLES20.glUniform1i(texHandle, i - 4);
+
+                    int texHandle2 = GLES20.glGetUniformLocation(glProgramFrameBuffer_boxblur_up, "source");
+                    GLES20.glUniform1i(texHandle2, lastBufferIdx == 0 ? 5 : 0);
+
+                    int amountHandle = GLES20.glGetUniformLocation(glProgramFrameBuffer_boxblur_up, "amount");
+                    GLES20.glUniform1f(amountHandle, 0.25f);
+
+                    GLES20.glDrawElements(GLES20.GL_TRIANGLES, quadIndex.length, GLES20.GL_UNSIGNED_SHORT, quadIndexBuffer);
+                }
+
+                lastBufferIdx = lastBufferIdx == 0 ? 5 : 0;
+            }
         }
-
-        /*for(int i = 0; i < 3; i++){
-            // Gaussian Blur
-            GLES20.glUseProgram(glProgram_gaussian_h);
-            GLES20.glViewport(0, 0, texWidth[2], texHeight[2]);
-            GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer.get(2));
-
-            aPositionHandle = GLES20.glGetAttribLocation(glProgram_gaussian_h, "aPosition");
-            GLES20.glEnableVertexAttribArray(aPositionHandle);
-            GLES20.glVertexAttribPointer(aPositionHandle, COORD_PER_VERTEX, GLES20.GL_FLOAT, false, VERTEX_STRIDE, quadPosBuffer);
-
-            aTextureCoordHandle = GLES20.glGetAttribLocation(glProgram_gaussian_h, "aTextureCoord");
-            GLES20.glEnableVertexAttribArray(aTextureCoordHandle);
-            GLES20.glVertexAttribPointer(aTextureCoordHandle, 2, GLES20.GL_FLOAT, false, 2 * 4, quadUVBuffer);
-
-            texHandle = GLES20.glGetUniformLocation(glProgram_gaussian_h, "tex");
-            GLES20.glUniform1i(texHandle, 1);
-
-            int texelHandle = GLES20.glGetUniformLocation(glProgram_gaussian_h, "texel");
-            GLES20.glUniform2f(texelHandle, 1f / texWidth[1], 1f / texHeight[1]);
-
-            GLES20.glDrawElements(GLES20.GL_TRIANGLES, quadIndex.length, GLES20.GL_UNSIGNED_SHORT, quadIndexBuffer);
-
-            // Gaussian blur
-            GLES20.glUseProgram(glProgram_gaussian_v);
-            GLES20.glViewport(0, 0, texWidth[1], texHeight[1]);
-            GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer.get(1));
-
-            aPositionHandle = GLES20.glGetAttribLocation(glProgram_gaussian_v, "aPosition");
-            GLES20.glEnableVertexAttribArray(aPositionHandle);
-            GLES20.glVertexAttribPointer(aPositionHandle, COORD_PER_VERTEX, GLES20.GL_FLOAT, false, VERTEX_STRIDE, quadPosBuffer);
-
-            aTextureCoordHandle = GLES20.glGetAttribLocation(glProgram_gaussian_v, "aTextureCoord");
-            GLES20.glEnableVertexAttribArray(aTextureCoordHandle);
-            GLES20.glVertexAttribPointer(aTextureCoordHandle, 2, GLES20.GL_FLOAT, false, 2 * 4, quadUVBuffer);
-
-            texHandle = GLES20.glGetUniformLocation(glProgram_gaussian_v, "tex");
-            GLES20.glUniform1i(texHandle, 2);
-
-            texelHandle = GLES20.glGetUniformLocation(glProgram_gaussian_v, "texel");
-            GLES20.glUniform2f(texelHandle, 1f / texWidth[2], 1f / texHeight[2]);
-
-            GLES20.glDrawElements(GLES20.GL_TRIANGLES, quadIndex.length, GLES20.GL_UNSIGNED_SHORT, quadIndexBuffer);
-
-        }*/
-
-
-        // Downsampling -> Upsampling with gaussian blur
-        /*for(int i = 1; i < 4; i++){
-            GLES20.glViewport(0, 0, texWidth[i], texHeight[i]);
-
-            GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer.get(i));
-
-            aPositionHandle = GLES20.glGetAttribLocation(glProgramFrameBuffer_boxblur, "aPosition");
-            GLES20.glEnableVertexAttribArray(aPositionHandle);
-            GLES20.glVertexAttribPointer(aPositionHandle, COORD_PER_VERTEX, GLES20.GL_FLOAT, false, VERTEX_STRIDE, quadPosBuffer);
-
-            int aTextureCoordHandle = GLES20.glGetAttribLocation(glProgramFrameBuffer_boxblur, "aTextureCoord");
-            GLES20.glEnableVertexAttribArray(aTextureCoordHandle);
-            GLES20.glVertexAttribPointer(aTextureCoordHandle, 2, GLES20.GL_FLOAT, false, 2 * 4, quadUVBuffer);
-
-            int texHandle = GLES20.glGetUniformLocation(glProgramFrameBuffer_boxblur, "tex");
-            GLES20.glUniform1i(texHandle, i - 1);
-
-            int texelHandle = GLES20.glGetUniformLocation(glProgramFrameBuffer_boxblur, "texel");
-            GLES20.glUniform2f(texelHandle, 1f / texWidth[i - 1], 1f / texHeight[i - 1]);
-
-            GLES20.glDrawElements(GLES20.GL_TRIANGLES, quadIndex.length, GLES20.GL_UNSIGNED_SHORT, quadIndexBuffer);
-        }*/
-
-        // Add last result to screen
-        /*GLES20.glUseProgram(glProgramFrameBuffer_tonemapping);
-        GLES20.glViewport(0, 0, width, height);
-        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
-
-        aPositionHandle = GLES20.glGetAttribLocation(glProgramFrameBuffer_tonemapping, "aPosition");
-        GLES20.glEnableVertexAttribArray(aPositionHandle);
-        GLES20.glVertexAttribPointer(aPositionHandle, COORD_PER_VERTEX, GLES20.GL_FLOAT, false, VERTEX_STRIDE, quadPosBuffer);
-
-        int aTextureCoordHandle = GLES20.glGetAttribLocation(glProgramFrameBuffer_tonemapping, "aTextureCoord");
-        GLES20.glEnableVertexAttribArray(aTextureCoordHandle);
-        GLES20.glVertexAttribPointer(aTextureCoordHandle, 2, GLES20.GL_FLOAT, false, 2 * 4, quadUVBuffer);
-
-        int hdrHandle = GLES20.glGetUniformLocation(glProgramFrameBuffer_tonemapping, "hdrTex");
-        GLES20.glUniform1i(hdrHandle, lastBufferIdx);
-
-        GLES20.glDrawElements(GLES20.GL_TRIANGLES, quadIndex.length, GLES20.GL_UNSIGNED_SHORT, quadIndexBuffer);
-*/
-        //GLES20.glDisableVertexAttribArray(vPositionHandle);
 
         if(renderMode){
             saveToBitmap(puzzle);

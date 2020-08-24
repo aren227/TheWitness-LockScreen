@@ -16,6 +16,7 @@ public class SettingsActivity extends AppCompatActivity {
     TextView soundsText;
     TextView holdingText;
     TextView shadowPanelText;
+    TextView bloomText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,12 +26,14 @@ public class SettingsActivity extends AppCompatActivity {
         soundsText = findViewById(R.id.settings_sounds);
         holdingText = findViewById(R.id.settings_holding);
         shadowPanelText = findViewById(R.id.settings_shadow_panel);
+        bloomText = findViewById(R.id.settings_bloom);
 
         game = new Game(this, false);
 
         updateSoundsText();
         updateHoldingText();
         updateShadowPanelText();
+        updateBloomText();
 
         soundsText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,6 +58,14 @@ public class SettingsActivity extends AppCompatActivity {
                 updateShadowPanelText();
             }
         });
+
+        bloomText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                game.getSettings().setBloomEnabled(!game.getSettings().getBloomEnabled());
+                updateBloomText();
+            }
+        });
     }
 
     private void updateSoundsText(){
@@ -67,5 +78,9 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void updateShadowPanelText(){
         shadowPanelText.setText(game.getSettings().getShadowPanelEnabled() ? "Yes" : "No");
+    }
+
+    private void updateBloomText(){
+        bloomText.setText(game.getSettings().getBloomEnabled() ? "Yes" : "No");
     }
 }

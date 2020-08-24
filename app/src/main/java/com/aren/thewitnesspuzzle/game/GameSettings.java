@@ -41,4 +41,14 @@ public class GameSettings {
         editor.commit();
     }
 
+    public boolean getBloomEnabled(){
+        return sharedPreferences.getBoolean("bloom", true);
+    }
+
+    public void setBloomEnabled(boolean enabled){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("bloom", enabled);
+        editor.commit();
+    }
+
 }
