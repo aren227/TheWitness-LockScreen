@@ -45,4 +45,15 @@ public class BoundingBox {
         }
     }
 
+    public BoundingBox expand(float padding){
+        BoundingBox bb = new BoundingBox();
+        bb.min = min.add(new Vector2(-padding, -padding));
+        bb.max = max.add(new Vector2(padding, padding));
+        return bb;
+    }
+
+    public boolean test(Vector2 point){
+        return min.x <= point.x && point.x <= max.x && min.y <= point.y && point.y <= max.y;
+    }
+
 }

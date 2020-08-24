@@ -277,6 +277,9 @@ public class Puzzle {
             if(start != null){
                 startTracing(start);
             }
+            else if(!boundingBox.expand(0.5f).test(pos)){
+                cursor = null;
+            }
         }
         else if(action == MotionEvent.ACTION_MOVE){
             if(cursor == null) return;
