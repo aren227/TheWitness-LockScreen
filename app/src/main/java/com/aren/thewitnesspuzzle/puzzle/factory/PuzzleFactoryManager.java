@@ -14,13 +14,11 @@ import java.util.UUID;
 public class PuzzleFactoryManager {
 
     private Context context;
-    private Map<UUID, PuzzleFactory> factories = new HashMap<>();
+    private static Map<UUID, PuzzleFactory> factories = new HashMap<>();
 
     private Runnable onUpdate;
 
-    public PuzzleFactoryManager(Context context){
-        this.context = context;
-
+    static {
         register(new ChallengeTrianglesPuzzleFactory());
         register(new FirstPuzzleFactory());
         register(new MultipleSunColorsPuzzleFactory());
@@ -40,6 +38,10 @@ public class PuzzleFactoryManager {
         register(new SlidePuzzleFactory());
         register(new SunPairWithSquarePuzzleFactory());
         register(new SymmetryHexagonPuzzleFactory());
+    }
+
+    public PuzzleFactoryManager(Context context){
+        this.context = context;
     }
 
     public void setOnUpdate(Runnable runnable){
@@ -103,7 +105,7 @@ public class PuzzleFactoryManager {
         });
     }
 
-    public void register(PuzzleFactory puzzleFactory){
+    private static void register(PuzzleFactory puzzleFactory){
         factories.put(puzzleFactory.getUuid(), puzzleFactory);
     }
 }

@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -79,10 +80,16 @@ public class GalleryActivity extends AppCompatActivity {
         canvas.drawBitmap(notLoaded, 0, 0, null);
 
         // Lazy Loading
-        final List<GalleryPreview> previews = new ArrayList<>();
+        final List<GalleryPreview> previewsToRender = new ArrayList<>();
         for(PuzzleFactory factory : puzzleFactoryManager.getAllPuzzleFactories()){
             GalleryPreview preview = new GalleryPreview(factory, notLoaded, factory.getName());
-            previews.add(preview);
+            if(factory.getThumbnailCache() != null){
+                preview.bitmap = factory.getThumbnailCache();
+            }
+            else{
+                previewsToRender.add(preview);
+                Log.i("GalleryActivity", "To Render: " + factory.getName());
+            }
             adapter.addPreview(preview);
         }
         adapter.notifyDataSetChanged();
@@ -91,8 +98,8 @@ public class GalleryActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                for(PuzzleFactory factory : puzzleFactoryManager.getAllPuzzleFactories()){
-                    Puzzle puzzle = factory.generate(tempGame, new Random());
+                for(GalleryPreview preview : previewsToRender){
+                    Puzzle puzzle = preview.puzzleFactory.generate(tempGame, new Random());
                     tempGame.getSurfaceView().glRenderer.addRenderQueue(puzzle);
                 }
             }
@@ -102,27 +109,42 @@ public class GalleryActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                for(GalleryPreview preview : previews){
-                    while(true){
-                        tempGame.getSurfaceView().requestRender();
-                        synchronized (tempGame.getSurfaceView().glRenderer){
-                            try {
-                                tempGame.getSurfaceView().glRenderer.wait();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        if(tempGame.getSurfaceView().glRenderer.renderResults.size() > 0) break;
-                    }
-                    preview.bitmap = tempGame.getSurfaceView().glRenderer.renderResults.poll();
+                tempGame.getSurfaceView().glRenderer.setGalleryRenderMode();
+                for(GalleryPreview preview : previewsToRender){
+                    try {
+                        Log.i("GalleryActivity", "Wait For Render...");
 
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            adapter.notifyDataSetChanged();
+                        while(true){
+                            tempGame.getSurfaceView().requestRender();
+                            synchronized (tempGame.getSurfaceView().glRenderer){
+                                tempGame.getSurfaceView().glRenderer.wait();
+                            }
+                            if(tempGame.getSurfaceView().glRenderer.getRenderedResults().size() > 0) break;
                         }
-                    });
+                        Log.i("GalleryActivity", "#3");
+
+                        preview.bitmap = tempGame.getSurfaceView().glRenderer.getRenderedResults().poll();
+                        preview.puzzleFactory.setThumbnailCache(preview.bitmap);
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                adapter.notifyDataSetChanged();
+                            }
+                        });
+
+                        Log.i("GalleryActivity", preview.puzzleFactory.getName() + " Rendered.");
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        root.removeView(tempGame.getSurfaceView());
+                    }
+                });
             }
         }).start();
     }

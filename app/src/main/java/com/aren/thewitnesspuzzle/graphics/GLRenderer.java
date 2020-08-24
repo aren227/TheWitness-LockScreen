@@ -70,8 +70,9 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     private short quadIndex[] = {0, 1, 2, 0, 2, 3}; // order to draw vertices
     private ShortBuffer quadIndexBuffer;
 
-    public ConcurrentLinkedQueue<Puzzle> renderQueue = new ConcurrentLinkedQueue<>(); // only used in gallery
-    public ConcurrentLinkedQueue<Bitmap> renderResults = new ConcurrentLinkedQueue<>();
+    private ConcurrentLinkedQueue<Puzzle> renderQueue = new ConcurrentLinkedQueue<>(); // only used in gallery
+    private ConcurrentLinkedQueue<Bitmap> renderResults = new ConcurrentLinkedQueue<>();
+    private boolean renderMode = false;
 
     public GLRenderer(Game game, Context context){
         this.game = game;
@@ -190,7 +191,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     public void onDrawFrame(GL10 gl) {
         //Log.i("GL", game.getPuzzle() + " Rendered");
 
-        if(game.getPuzzle() == null && renderQueue.isEmpty()) {
+        if(!renderMode && game.getPuzzle() == null || renderMode && renderQueue.isEmpty()) {
             GLES20.glClearColor(1, 0, 1, 1.0f);
             GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
             return;
@@ -200,11 +201,9 @@ public class GLRenderer implements GLSurfaceView.Renderer {
             setupTextures();
         }
 
-        boolean renderMode = false;
         Puzzle puzzle = game.getPuzzle();
-        if(!renderQueue.isEmpty()){
+        if(renderMode){
             puzzle = renderQueue.poll();
-            renderMode = true;
         }
 
         if(puzzle.shouldUpdateAnimation() || renderMode){
@@ -523,5 +522,14 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 
     public void addRenderQueue(Puzzle puzzle){
         renderQueue.add(puzzle);
+    }
+
+    public ConcurrentLinkedQueue<Bitmap> getRenderedResults(){
+        return renderResults;
+    }
+
+    public void setGalleryRenderMode(){
+        renderMode = true;
+        game.getSurfaceView().setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
     }
 }
