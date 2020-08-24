@@ -87,23 +87,34 @@ public class GalleryActivity extends AppCompatActivity {
         }
         adapter.notifyDataSetChanged();
 
+        // Generate and Query puzzles
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for(PuzzleFactory factory : puzzleFactoryManager.getAllPuzzleFactories()){
+                    Puzzle puzzle = factory.generate(tempGame, new Random());
+                    tempGame.getSurfaceView().glRenderer.addRenderQueue(puzzle);
+                }
+            }
+        }).start();
+
+        // Receive rendered results
         new Thread(new Runnable() {
             @Override
             public void run() {
                 for(GalleryPreview preview : previews){
-                    Puzzle puzzle = preview.puzzleFactory.generate(tempGame, new Random());
-
-                    tempGame.setPuzzle(puzzle);
-
-                    synchronized (tempGame.getSurfaceView()){
-                        tempGame.getSurfaceView().capture();
-                        try {
-                            tempGame.getSurfaceView().wait();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
+                    while(true){
+                        tempGame.getSurfaceView().requestRender();
+                        synchronized (tempGame.getSurfaceView().glRenderer){
+                            try {
+                                tempGame.getSurfaceView().glRenderer.wait();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
                         }
+                        if(tempGame.getSurfaceView().glRenderer.renderResults.size() > 0) break;
                     }
-                    preview.bitmap = tempGame.getSurfaceView().bitmap;
+                    preview.bitmap = tempGame.getSurfaceView().glRenderer.renderResults.poll();
 
                     runOnUiThread(new Runnable() {
                         @Override

@@ -19,6 +19,7 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -68,6 +69,9 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 
     private short quadIndex[] = {0, 1, 2, 0, 2, 3}; // order to draw vertices
     private ShortBuffer quadIndexBuffer;
+
+    public ConcurrentLinkedQueue<Puzzle> renderQueue = new ConcurrentLinkedQueue<>(); // only used in gallery
+    public ConcurrentLinkedQueue<Bitmap> renderResults = new ConcurrentLinkedQueue<>();
 
     public GLRenderer(Game game, Context context){
         this.game = game;
@@ -186,7 +190,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     public void onDrawFrame(GL10 gl) {
         //Log.i("GL", game.getPuzzle() + " Rendered");
 
-        if(game.getPuzzle() == null) {
+        if(game.getPuzzle() == null && renderQueue.isEmpty()) {
             GLES20.glClearColor(1, 0, 1, 1.0f);
             GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
             return;
@@ -196,9 +200,14 @@ public class GLRenderer implements GLSurfaceView.Renderer {
             setupTextures();
         }
 
+        boolean renderMode = false;
         Puzzle puzzle = game.getPuzzle();
+        if(!renderQueue.isEmpty()){
+            puzzle = renderQueue.poll();
+            renderMode = true;
+        }
 
-        if(puzzle.shouldUpdateAnimation()){
+        if(puzzle.shouldUpdateAnimation() || renderMode){
             game.getSurfaceView().setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
         }
         else{
@@ -219,7 +228,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         GLES20.glUseProgram(glProgram);
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer.get(0));
 
-        int backgroundColor = game.getBackgroundColor();
+        int backgroundColor = puzzle.getColorPalette().getBackgroundColor();
         GLES20.glClearColor(Color.red(backgroundColor) / 255f, Color.green(backgroundColor) / 255f, Color.blue(backgroundColor) / 255f, 1.0f);
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
 
@@ -441,6 +450,11 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         GLES20.glDrawElements(GLES20.GL_TRIANGLES, quadIndex.length, GLES20.GL_UNSIGNED_SHORT, quadIndexBuffer);
 */
         //GLES20.glDisableVertexAttribArray(vPositionHandle);
+
+        if(renderMode){
+            saveToBitmap(puzzle);
+        }
+
         synchronized(this){
             this.notifyAll();
         }
@@ -483,19 +497,19 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     }
 
     // https://stackoverflow.com/questions/5514149/capture-screen-of-glsurfaceview-to-bitmap
-    public Bitmap captureToBitmap(int x, int y, int w, int h){
-        int bitmapBuffer[] = new int[w * h];
-        int bitmapSource[] = new int[w * h];
+    public void saveToBitmap(Puzzle puzzle){
+        int[] bitmapBuffer = new int[width * height];
+        int[] bitmapSource = new int[width * height];
         IntBuffer intBuffer = IntBuffer.wrap(bitmapBuffer);
         intBuffer.position(0);
 
-        GLES20.glReadPixels(x, y, w, h, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, intBuffer);
+        GLES20.glReadPixels(0, 0, width, height, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, intBuffer);
 
         int offset1, offset2;
-        for (int i = 0; i < h; i++) {
-            offset1 = i * w;
-            offset2 = (h - i - 1) * w;
-            for (int j = 0; j < w; j++) {
+        for (int i = 0; i < height; i++) {
+            offset1 = i * width;
+            offset2 = (height - i - 1) * width;
+            for (int j = 0; j < width; j++) {
                 int texturePixel = bitmapBuffer[offset1 + j];
                 int blue = (texturePixel >> 16) & 0xff;
                 int red = (texturePixel << 16) & 0x00ff0000;
@@ -504,6 +518,10 @@ public class GLRenderer implements GLSurfaceView.Renderer {
             }
         }
 
-        return Bitmap.createBitmap(bitmapSource, w, h, Bitmap.Config.ARGB_8888);
+        renderResults.add(Bitmap.createBitmap(bitmapSource, width, height, Bitmap.Config.ARGB_8888));
+    }
+
+    public void addRenderQueue(Puzzle puzzle){
+        renderQueue.add(puzzle);
     }
 }

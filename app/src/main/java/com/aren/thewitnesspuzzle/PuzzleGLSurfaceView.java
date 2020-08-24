@@ -10,6 +10,7 @@ import com.aren.thewitnesspuzzle.graphics.GLRenderer3;
 import com.aren.thewitnesspuzzle.math.BoundingBox;
 import com.aren.thewitnesspuzzle.math.MathUtils;
 import com.aren.thewitnesspuzzle.game.Game;
+import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 
 public class PuzzleGLSurfaceView extends GLSurfaceView {
 
@@ -65,17 +66,20 @@ public class PuzzleGLSurfaceView extends GLSurfaceView {
         return true;
     }
 
-    public void capture(){
+    public void capture(Puzzle puzzle){
         // Why It needs to draw several times to get a rendered result?
         // First one or two results are always black. wtf?
         // idk but i think it's buffer related issue.
-        for(int i = 0; i < 5; i++){
+        for(int i = 0; i < 1; i++){
             synchronized(glRenderer){
-                requestRender();
-                try {
-                    glRenderer.wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                while(true){
+                    requestRender();
+                    try {
+                        glRenderer.wait();
+                        //if(glRenderer.lastDrawn == puzzle) break;
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
@@ -83,8 +87,7 @@ public class PuzzleGLSurfaceView extends GLSurfaceView {
         queueEvent(new Runnable() {
             @Override
             public void run() {
-                bitmap = glRenderer.captureToBitmap(0, 0, getWidth(), getHeight());
-                bitmapRendered = true;
+                //bitmap = glRenderer.captureToBitmap(0, 0, getWidth(), getHeight());
 
                 synchronized (PuzzleGLSurfaceView.this){
                     PuzzleGLSurfaceView.this.notifyAll();
