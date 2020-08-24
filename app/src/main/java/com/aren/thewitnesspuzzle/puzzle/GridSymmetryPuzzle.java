@@ -90,6 +90,9 @@ public class GridSymmetryPuzzle extends GridPuzzle {
         if(cursor != null){
             dynamicShapes.add(new CircleShape(cursor.getFirstVisitedVertex().getPosition().toVector3(), ((StartingPointRule)cursor.getFirstVisitedVertex().getRule()).getRadius(), hasSymmetricColor ? SymmetricColor.CYAN.getRGB() : getColorPalette().getCursorColor()));
             dynamicShapes.add(new CircleShape(getOppositeVertex(cursor.getFirstVisitedVertex()).getPosition().toVector3(), ((StartingPointRule)getOppositeVertex(cursor.getFirstVisitedVertex()).getRule()).getRadius(), hasSymmetricColor ? SymmetricColor.YELLOW.getRGB() : getColorPalette().getCursorColor()));
+            if(shadowPanel){
+                dynamicShapes.add(new CircleShape(cursor.getFirstVisitedVertex().getPosition().toVector3().add(new Vector3(0, -originalBoundingBox.getHeight(), 0)), ((StartingPointRule)cursor.getFirstVisitedVertex().getRule()).getRadius(), color.getPathColor()));
+            }
 
             ArrayList<EdgeProportion> visitedEdges = cursor.getVisitedEdgesWithProportion(true);
             if(visitedEdges.size() == 0) return;
@@ -100,6 +103,11 @@ public class GridSymmetryPuzzle extends GridPuzzle {
                 dynamicShapes.add(new CircleShape(new Vector3(oppositeEdgeProportion.getProportionPoint().x, oppositeEdgeProportion.getProportionPoint().y, 0), getPathWidth() * 0.5f, hasSymmetricColor ? SymmetricColor.YELLOW.getRGB() : getColorPalette().getCursorColor()));
                 dynamicShapes.add(new RectangleShape(edgeProportion.getProportionMiddlePoint().toVector3(), edgeProportion.getProportionLength(), getPathWidth(), edgeProportion.edge.getAngle(), hasSymmetricColor ? SymmetricColor.CYAN.getRGB() : getColorPalette().getCursorColor()));
                 dynamicShapes.add(new RectangleShape(oppositeEdgeProportion.getProportionMiddlePoint().toVector3(), oppositeEdgeProportion.getProportionLength(), getPathWidth(), oppositeEdgeProportion.edge.getAngle(), hasSymmetricColor ? SymmetricColor.YELLOW.getRGB() : getColorPalette().getCursorColor()));
+
+                if(shadowPanel){
+                    dynamicShapes.add(new CircleShape(new Vector3(edgeProportion.getProportionPoint().x, edgeProportion.getProportionPoint().y - originalBoundingBox.getHeight(), 0), getPathWidth() * 0.5f, color.getPathColor()));
+                    dynamicShapes.add(new RectangleShape(edgeProportion.getProportionMiddlePoint().toVector3().add(new Vector3(0, -originalBoundingBox.getHeight(), 0)), edgeProportion.getProportionLength(), getPathWidth(), edgeProportion.edge.getAngle(), color.getPathColor()));
+                }
             }
         }
     }

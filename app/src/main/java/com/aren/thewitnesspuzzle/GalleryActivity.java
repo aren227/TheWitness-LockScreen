@@ -63,7 +63,7 @@ public class GalleryActivity extends AppCompatActivity {
     }
 
     private void startRenderWorker(){
-        tempGame = new Game(this);
+        tempGame = new Game(this, false);
 
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(512, 512);
         params.addRule(RelativeLayout.ALIGN_PARENT_START, 1);

@@ -42,4 +42,9 @@ public class Vector2 {
         return new Vector3(x, y, 0);
     }
 
+    @Override
+    public Vector2 clone(){
+        return new Vector2(x, y);
+    }
+
 }

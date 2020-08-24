@@ -20,6 +20,14 @@ public class BoundingBox {
         return new Vector2((min.x + max.x) / 2, (min.y + max.y) / 2);
     }
 
+    @Override
+    public BoundingBox clone(){
+        BoundingBox boundingBox = new BoundingBox();
+        boundingBox.min = min.clone();
+        boundingBox.max = max.clone();
+        return boundingBox;
+    }
+
     public void addPoint(Vector2 point){
         if(min == null || max == null){
             min = max = point;

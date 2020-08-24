@@ -53,6 +53,8 @@ public class Puzzle {
     protected Cursor cursor;
 
     protected BoundingBox boundingBox = new BoundingBox();
+    protected BoundingBox originalBoundingBox;
+    protected BoundingBox shadowBoundingBox;
 
     protected ArrayList<Vertex> vertices = new ArrayList<>();
     protected ArrayList<Edge> edges = new ArrayList<>();
@@ -61,9 +63,16 @@ public class Puzzle {
 
     protected PuzzleAnimationManager animation;
 
+    protected boolean shadowPanel;
+
     public Puzzle(Game game, PuzzleColorPalette color){
+        this(game, color, game.isPlayMode() && game.getSettings().getShadowPanelEnabled());
+    }
+
+    public Puzzle(Game game, PuzzleColorPalette color, boolean shadowPanel){
         this.game = game;
         this.color = color;
+        this.shadowPanel = shadowPanel;
 
         animation = new PuzzleAnimationManager(this);
     }
@@ -130,16 +139,40 @@ public class Puzzle {
     public void calcStaticShapes(){
         if(pathWidth == 0) pathWidth = Math.min(getBoundingBox().getWidth(), getBoundingBox().getHeight()) * 0.05f + 0.05f;
 
+        ArrayList<Shape> shadowOuter = new ArrayList<>();
+        ArrayList<Shape> shadowInner = new ArrayList<>();
+
         for(Vertex vertex : vertices){
             staticShapes.add(new CircleShape(new Vector3(vertex.x, vertex.y, 0), getPathWidth() * 0.5f, color.getPathColor()));
+            if(shadowPanel){
+                shadowOuter.add(new CircleShape(new Vector3(vertex.x, vertex.y - boundingBox.getHeight(), 0), getPathWidth() * 0.5f, color.getPathColor()));
+                shadowInner.add(new CircleShape(new Vector3(vertex.x, vertex.y - boundingBox.getHeight(), 0), getPathWidth() * 0.4f, color.getBackgroundColor()));
+            }
         }
 
         for(Edge edge : edges){
             staticShapes.add(new RectangleShape(edge.getMiddlePoint().toVector3(), edge.getLength(), getPathWidth(), edge.getAngle(), color.getPathColor()));
+            if(shadowPanel){
+                shadowOuter.add(new RectangleShape(edge.getMiddlePoint().toVector3().add(new Vector3(0, -boundingBox.getHeight(), 0)), edge.getLength(), getPathWidth(), edge.getAngle(), color.getPathColor()));
+                shadowInner.add(new RectangleShape(edge.getMiddlePoint().toVector3().add(new Vector3(0, -boundingBox.getHeight(), 0)), edge.getLength(), getPathWidth() * 0.8f, edge.getAngle(), color.getBackgroundColor()));
+            }
         }
 
         for(Vertex vertex : vertices){
-            if(vertex.getRule() != null && vertex.getRule().getShape() != null) staticShapes.add(vertex.getRule().getShape());
+            if(vertex.getRule() != null && vertex.getRule().getShape() != null){
+                staticShapes.add(vertex.getRule().getShape());
+                if(shadowPanel && vertex.getRule() instanceof StartingPointRule){
+                    Shape shape = vertex.getRule().generateShape(); // clone
+                    shape.center = shape.center.add(new Vector3(0, -boundingBox.getHeight(), 0));
+                    shadowOuter.add(shape);
+
+                    shape = vertex.getRule().generateShape();
+                    shape.center = shape.center.add(new Vector3(0, -boundingBox.getHeight(), 0));
+                    shape.scale.set(1 - pathWidth * 0.1f / ((StartingPointRule)vertex.getRule()).getRadius());
+                    shape.color.set(color.getBackgroundColor());
+                    shadowInner.add(shape);
+                }
+            }
         }
 
         for(Edge edge : edges){
@@ -148,6 +181,18 @@ public class Puzzle {
 
         for(Tile tile : tiles){
             if(tile.getRule() != null && tile.getRule().getShape() != null) staticShapes.add(tile.getRule().getShape());
+        }
+
+        if(shadowPanel){
+            originalBoundingBox = boundingBox.clone();
+
+            shadowBoundingBox = boundingBox.clone();
+            shadowBoundingBox.min.y -= boundingBox.getHeight();
+            shadowBoundingBox.max.y -= boundingBox.getHeight();
+
+            boundingBox.min.y -= boundingBox.getHeight();
+            staticShapes.addAll(shadowOuter);
+            staticShapes.addAll(shadowInner);
         }
 
         for(Shape shape : staticShapes){
@@ -169,12 +214,20 @@ public class Puzzle {
 
         if(cursor != null){
             dynamicShapes.add(new CircleShape(cursor.getFirstVisitedVertex().getPosition().toVector3(), ((StartingPointRule)cursor.getFirstVisitedVertex().getRule()).getRadius(), color.getCursorColor()));
+            if(shadowPanel){
+                dynamicShapes.add(new CircleShape(cursor.getFirstVisitedVertex().getPosition().toVector3().add(new Vector3(0, -originalBoundingBox.getHeight(), 0)), ((StartingPointRule)cursor.getFirstVisitedVertex().getRule()).getRadius(), color.getPathColor()));
+            }
 
             ArrayList<EdgeProportion> visitedEdges = cursor.getVisitedEdgesWithProportion(true);
             if(visitedEdges.size() == 0) return;
             for(EdgeProportion edgeProportion : visitedEdges){
                 dynamicShapes.add(new CircleShape(new Vector3(edgeProportion.getProportionPoint().x, edgeProportion.getProportionPoint().y, 0), getPathWidth() * 0.5f, color.getCursorColor()));
                 dynamicShapes.add(new RectangleShape(edgeProportion.getProportionMiddlePoint().toVector3(), edgeProportion.getProportionLength(), getPathWidth(), edgeProportion.edge.getAngle(), color.getCursorColor()));
+
+                if(shadowPanel){
+                    dynamicShapes.add(new CircleShape(new Vector3(edgeProportion.getProportionPoint().x, edgeProportion.getProportionPoint().y - originalBoundingBox.getHeight(), 0), getPathWidth() * 0.5f, color.getPathColor()));
+                    dynamicShapes.add(new RectangleShape(edgeProportion.getProportionMiddlePoint().toVector3().add(new Vector3(0, -originalBoundingBox.getHeight(), 0)), edgeProportion.getProportionLength(), getPathWidth(), edgeProportion.edge.getAngle(), color.getPathColor()));
+                }
             }
         }
     }
@@ -266,6 +319,10 @@ public class Puzzle {
 
     public void touchEvent(float x, float y, int action){
         Vector2 pos = new Vector2(x, y);
+        if(shadowPanel){
+            pos.y += originalBoundingBox.getHeight();
+        }
+
         if(action == MotionEvent.ACTION_DOWN){
             Vertex start = null;
             for(Vertex vertex : vertices){
@@ -277,8 +334,10 @@ public class Puzzle {
             if(start != null){
                 startTracing(start);
             }
-            else if(!boundingBox.expand(0.5f).test(pos)){
-                cursor = null;
+            else{
+                if(shadowPanel && !shadowBoundingBox.expand(0.5f).test(pos) || !shadowPanel && !boundingBox.expand(0.5f).test(pos)){
+                    cursor = null;
+                }
             }
         }
         else if(action == MotionEvent.ACTION_MOVE){
@@ -430,6 +489,10 @@ public class Puzzle {
     // For debugging
     public void setCursor(Cursor cursor){
         this.cursor = cursor;
+    }
+
+    public boolean hasShadowPanel(){
+        return shadowPanel;
     }
 
     public class ValidationResult{

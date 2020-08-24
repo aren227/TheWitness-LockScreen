@@ -39,7 +39,7 @@ public class PlayActivity extends AppCompatActivity {
         skipImage = findViewById(R.id.skip_puzzle);
         warningText = findViewById(R.id.no_puzzle_warn);
 
-        game = new Game(this);
+        game = new Game(this, true);
         game.setOnSolved(new Runnable() {
             @Override
             public void run() {

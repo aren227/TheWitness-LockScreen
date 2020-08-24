@@ -46,7 +46,7 @@ public class LockscreenService extends Service {
 
     @Override
     public void onCreate() {
-        game = new Game(this);
+        game = new Game(this, true);
         game.setOnSolved(new Runnable() {
             @Override
             public void run() {

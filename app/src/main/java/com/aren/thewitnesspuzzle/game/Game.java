@@ -16,6 +16,8 @@ public class Game {
 
     private Context context;
 
+    private boolean playMode;
+
     private GameSettings settings;
 
     private PuzzleGLSurfaceView surfaceView;
@@ -26,8 +28,9 @@ public class Game {
 
     private Runnable onSolved;
 
-    public Game(Context context){
+    public Game(Context context, boolean playMode){
         this.context = context;
+        this.playMode = playMode;
         settings = new GameSettings(context);
         surfaceView = new PuzzleGLSurfaceView(this, context);
 
@@ -96,6 +99,10 @@ public class Game {
         MediaPlayer mp = mediaPlayers.get(sound.getId());
         mp.seekTo(0);
         mp.start();
+    }
+
+    public boolean isPlayMode(){
+        return playMode;
     }
 
 }

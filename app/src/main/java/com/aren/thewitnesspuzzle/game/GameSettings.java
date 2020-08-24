@@ -31,4 +31,14 @@ public class GameSettings {
         editor.commit();
     }
 
+    public boolean getShadowPanelEnabled(){
+        return sharedPreferences.getBoolean("shadowPanel", false);
+    }
+
+    public void setShadowPanelEnabled(boolean enabled){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("shadowPanel", enabled);
+        editor.commit();
+    }
+
 }
