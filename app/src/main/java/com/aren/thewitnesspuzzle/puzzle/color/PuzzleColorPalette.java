@@ -10,41 +10,36 @@ public class PuzzleColorPalette {
     private int cursorSucceeded;
     private int cursorFailed;
 
+    private float bloomIntensity;
+
     public final Value<Integer> actualCursorColor;
 
     public PuzzleColorPalette(int background, int path, int cursor){
-        this.background = background;
-        this.path = path;
-        this.cursor = cursor;
-        this.cursorSucceeded = this.cursor;
-        this.cursorFailed = android.graphics.Color.parseColor("#050a0f");
-
-        actualCursorColor = new Value<>(this.cursor);
+        this(background, path, cursor, cursor);
     }
 
     public PuzzleColorPalette(int background, int path, int cursor, int cursorSucceeded){
-        this.background = background;
-        this.path = path;
-        this.cursor = cursor;
-        this.cursorSucceeded = cursorSucceeded;
-        this.cursorFailed = android.graphics.Color.parseColor("#050a0f");
-
-        actualCursorColor = new Value<>(this.cursor);
+        this(background, path, cursor, cursorSucceeded, ColorUtils.RGB("#050a0f"));
     }
 
     public PuzzleColorPalette(int background, int path, int cursor, int cursorSucceeded, int cursorFailed){
+        this(background, path, cursor, cursorSucceeded, cursorFailed, 1f);
+    }
+
+    public PuzzleColorPalette(int background, int path, int cursor, int cursorSucceeded, int cursorFailed, float bloomIntensity){
         this.background = background;
         this.path = path;
         this.cursor = cursor;
         this.cursorSucceeded = cursorSucceeded;
         this.cursorFailed = cursorFailed;
+        this.bloomIntensity = bloomIntensity;
 
         actualCursorColor = new Value<>(this.cursor);
     }
 
     @Override
     public PuzzleColorPalette clone(){
-        return new PuzzleColorPalette(background, path, cursor, cursorSucceeded, cursorFailed);
+        return new PuzzleColorPalette(background, path, cursor, cursorSucceeded, cursorFailed, bloomIntensity);
     }
 
     public int getBackgroundColor(){
@@ -65,6 +60,10 @@ public class PuzzleColorPalette {
 
     public int getCursorFailedColor(){
         return cursorFailed;
+    }
+
+    public float getBloomIntensity(){
+        return bloomIntensity;
     }
 
 }

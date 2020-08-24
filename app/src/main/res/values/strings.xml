@@ -120,9 +120,6 @@
                 texture2D(tex, vTextureCoord + o.xw) + texture2D(tex, vTextureCoord + o.zw);
             s *= 0.25;
 
-            const float threshold = 0.7;
-            const float soft_threshold = 0.2;
-
             float brightness = max(s.r, max(s.g, s.b));
 			float contribution = brightness * brightness;
 
@@ -152,6 +149,7 @@
         uniform sampler2D source;
         uniform sampler2D tex;
         uniform float amount;
+        uniform float division;
 
         varying vec2 vTextureCoord;
 
@@ -160,7 +158,7 @@
             vec3 r = texture2D(source, vTextureCoord).rgb;
             float bri = max(max(r.r, r.g), r.b);
             bri = 1.0 - bri;
-            r = (r + s * amount * bri) / 1.2;
+            r = (r + s * amount * bri) / division;
             gl_FragColor = vec4(r, 1.0);
         }
     </string>

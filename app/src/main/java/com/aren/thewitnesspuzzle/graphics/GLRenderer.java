@@ -331,7 +331,10 @@ public class GLRenderer implements GLSurfaceView.Renderer {
                     GLES20.glUniform1i(texHandle2, 0);
 
                     int amountHandle = GLES20.glGetUniformLocation(glProgramFrameBuffer_boxblur_up_init, "amount");
-                    GLES20.glUniform1f(amountHandle, 0.25f);
+                    GLES20.glUniform1f(amountHandle, puzzle.getColorPalette().getBloomIntensity() * 0.25f);
+
+                    int divisionHandle = GLES20.glGetUniformLocation(glProgramFrameBuffer_boxblur_up_init, "division");
+                    GLES20.glUniform1f(divisionHandle, 1.0f);
 
                     GLES20.glDrawElements(GLES20.GL_TRIANGLES, quadIndex.length, GLES20.GL_UNSIGNED_SHORT, quadIndexBuffer);
                 }
@@ -361,7 +364,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
                     GLES20.glUniform1i(texHandle2, lastBufferIdx == 0 ? 5 : 0);
 
                     int amountHandle = GLES20.glGetUniformLocation(glProgramFrameBuffer_boxblur_up, "amount");
-                    GLES20.glUniform1f(amountHandle, 0.25f);
+                    GLES20.glUniform1f(amountHandle, puzzle.getColorPalette().getBloomIntensity() * 0.25f);
 
                     GLES20.glDrawElements(GLES20.GL_TRIANGLES, quadIndex.length, GLES20.GL_UNSIGNED_SHORT, quadIndexBuffer);
                 }
