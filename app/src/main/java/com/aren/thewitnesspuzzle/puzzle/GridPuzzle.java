@@ -106,16 +106,16 @@ public class GridPuzzle extends Puzzle {
     public Edge addEndingPoint(int x, int y){
         Vertex vertex = null;
         if(y == 0){
-            vertex = addVertex(new Vertex(this, x, y - getPathWidth()));
+            vertex = addVertex(new Vertex(this, x, y - getPathWidth()), true);
         }
         else if(y == height){
-            vertex = addVertex(new Vertex(this, x, y + getPathWidth()));
+            vertex = addVertex(new Vertex(this, x, y + getPathWidth()), true);
         }
         else if(x == 0){
-            vertex = addVertex(new Vertex(this, x - getPathWidth(), y));
+            vertex = addVertex(new Vertex(this, x - getPathWidth(), y), true);
         }
         else if(x == width){
-            vertex = addVertex(new Vertex(this, x + getPathWidth(), y));
+            vertex = addVertex(new Vertex(this, x + getPathWidth(), y), true);
         }
 
         if(vertex != null){

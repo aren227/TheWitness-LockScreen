@@ -116,30 +116,28 @@ public class RandomGridWalker {
         int i = 0;
         long start = System.currentTimeMillis();
         for(i = 0; i < iters; i++){
-            if(stopWalk) break;
-
             hist = deltaUpperBit = deltaLowerBit = 0;
             x = startX;
             y = startY;
 
             if(!walk()) break; //음
 
-            if(Long.bitCount(hist) < minimumVerticies) continue;
+            if(Long.bitCount(hist) > minimumVerticies){
+                minimumVerticies = Long.bitCount(hist); //최고 정점 개수 갱신
 
-            minimumVerticies = Long.bitCount(hist); //최고 정점 개수 갱신
-
-            result = new ArrayList<>();
-            int x = startX, y = startY;
-            while(x != endX || y != endY){
-                result.add(new Vector2Int(x, y));
-                int pos = (x + y * (width + 1));
-                int dir = (int)((((deltaUpperBit >> pos) & 1) << 1) | ((deltaLowerBit >> pos) & 1));
-                x += delta[dir][0];
-                y += delta[dir][1];
+                result = new ArrayList<>();
+                int x = startX, y = startY;
+                while(x != endX || y != endY){
+                    result.add(new Vector2Int(x, y));
+                    int pos = (x + y * (width + 1));
+                    int dir = (int)((((deltaUpperBit >> pos) & 1) << 1) | ((deltaLowerBit >> pos) & 1));
+                    x += delta[dir][0];
+                    y += delta[dir][1];
+                }
+                result.add(new Vector2Int(endX, endY));
             }
-            result.add(new Vector2Int(endX, endY));
 
-            Log.i("WALKER", "" + (minimumVerticies + 1));
+            if(stopWalk) break;
         }
         Log.i("WALKER", i + " iters in " + (System.currentTimeMillis() - start) + "ms");
         Log.i("WALKER", "Touch count is " + touch);

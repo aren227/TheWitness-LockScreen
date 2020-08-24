@@ -8,7 +8,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -88,7 +87,6 @@ public class GalleryActivity extends AppCompatActivity {
             }
             else{
                 previewsToRender.add(preview);
-                Log.i("GalleryActivity", "To Render: " + factory.getName());
             }
             adapter.addPreview(preview);
         }
@@ -112,8 +110,6 @@ public class GalleryActivity extends AppCompatActivity {
                 tempGame.getSurfaceView().glRenderer.setGalleryRenderMode();
                 for(GalleryPreview preview : previewsToRender){
                     try {
-                        Log.i("GalleryActivity", "Wait For Render...");
-
                         while(true){
                             tempGame.getSurfaceView().requestRender();
                             synchronized (tempGame.getSurfaceView().glRenderer){
@@ -121,7 +117,6 @@ public class GalleryActivity extends AppCompatActivity {
                             }
                             if(tempGame.getSurfaceView().glRenderer.getRenderedResults().size() > 0) break;
                         }
-                        Log.i("GalleryActivity", "#3");
 
                         preview.bitmap = tempGame.getSurfaceView().glRenderer.getRenderedResults().poll();
                         preview.puzzleFactory.setThumbnailCache(preview.bitmap);
@@ -132,8 +127,6 @@ public class GalleryActivity extends AppCompatActivity {
                                 adapter.notifyDataSetChanged();
                             }
                         });
-
-                        Log.i("GalleryActivity", preview.puzzleFactory.getName() + " Rendered.");
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

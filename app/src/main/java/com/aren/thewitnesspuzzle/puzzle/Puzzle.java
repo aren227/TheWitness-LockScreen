@@ -340,9 +340,13 @@ public class Puzzle {
     }
 
     public Vertex addVertex(Vertex vertex){
+        return addVertex(vertex, false);
+    }
+
+    public Vertex addVertex(Vertex vertex, boolean bypassBoundingBox){
         vertex.index = vertices.size();
         vertices.add(vertex);
-        boundingBox.addCircle(new Vector2(vertex.x, vertex.y), 0.5f);
+        if(!bypassBoundingBox) boundingBox.addCircle(new Vector2(vertex.x, vertex.y), 0.5f);
         return vertex;
     }
 
