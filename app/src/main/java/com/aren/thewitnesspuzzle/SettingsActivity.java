@@ -109,7 +109,7 @@ public class SettingsActivity extends AppCompatActivity {
         int delay = game.getSettings().getLockDelay();
         String str = "";
         if(delay == 0){
-            str = "No";
+            str = "Instantly";
         }
         else if(delay < 60){
             str = delay + "s";
