@@ -32,7 +32,11 @@ public class SymmetryCursor extends Cursor {
 
         // Broken edge collision check
         if(edge.getRule() instanceof BrokenLineRule || oppositeEdge.getRule() instanceof BrokenLineRule){
-            float collisionProportion = ((BrokenLineRule)edge.getRule()).getCollisionCircleRadius() + puzzle.getPathWidth() * 0.5f / length;
+            float radius;
+            if(edge.getRule() instanceof BrokenLineRule) radius = ((BrokenLineRule)edge.getRule()).getCollisionCircleRadius();
+            else radius = ((BrokenLineRule)oppositeEdge.getRule()).getCollisionCircleRadius();
+
+            float collisionProportion = radius + puzzle.getPathWidth() * 0.5f / length;
             if(from <= 0.5f) to = Math.min(0.5f - collisionProportion, to);
             else to = Math.max(0.5f + collisionProportion, to);
         }
