@@ -336,8 +336,8 @@ public class Puzzle {
             }
             else if(cursor != null){
                 float padding = game.getDPScale(48);
-                if(shadowPanel && !originalBoundingBox.expand(padding).test(pos) && (cursor.getCurrentCursorEdge() == null || cursor.getCurrentCursorEdge().getProportionPoint().distance(pos) > padding * 2)
-                        || !shadowPanel && !boundingBox.expand(padding).test(pos) && (cursor.getCurrentCursorEdge() == null || cursor.getCurrentCursorEdge().getProportionPoint().distance(pos) > padding * 2)){
+                if(shadowPanel && !originalBoundingBox.test(pos) && (cursor.getCurrentCursorEdge() == null || cursor.getCurrentCursorEdge().getProportionPoint().distance(pos) > padding * 2)
+                        || !shadowPanel && !boundingBox.test(pos) && (cursor.getCurrentCursorEdge() == null || cursor.getCurrentCursorEdge().getProportionPoint().distance(pos) > padding * 2)){
                     cursor = null;
                 }
             }
