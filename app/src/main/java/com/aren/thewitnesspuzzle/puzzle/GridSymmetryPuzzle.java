@@ -4,6 +4,7 @@ import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.graphics.shape.CircleShape;
 import com.aren.thewitnesspuzzle.graphics.shape.RectangleShape;
 import com.aren.thewitnesspuzzle.math.Vector3;
+import com.aren.thewitnesspuzzle.puzzle.color.ColorUtils;
 import com.aren.thewitnesspuzzle.puzzle.color.PuzzleColorPalette;
 import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.cursor.SymmetryCursor;
@@ -87,11 +88,12 @@ public class GridSymmetryPuzzle extends GridPuzzle {
     public void calcDynamicShapes(){
         dynamicShapes.clear();
 
+        int shadowCursorColor = ColorUtils.lerp(ColorUtils.lerp(color.getBackgroundColor(), color.getPathColor(), 0.4f), color.getCursorColor(), 0.4f);
         if(cursor != null){
             dynamicShapes.add(new CircleShape(cursor.getFirstVisitedVertex().getPosition().toVector3(), ((StartingPointRule)cursor.getFirstVisitedVertex().getRule()).getRadius(), hasSymmetricColor ? SymmetricColor.CYAN.getRGB() : getColorPalette().getCursorColor()));
             dynamicShapes.add(new CircleShape(getOppositeVertex(cursor.getFirstVisitedVertex()).getPosition().toVector3(), ((StartingPointRule)getOppositeVertex(cursor.getFirstVisitedVertex()).getRule()).getRadius(), hasSymmetricColor ? SymmetricColor.YELLOW.getRGB() : getColorPalette().getCursorColor()));
             if(shadowPanel){
-                dynamicShapes.add(new CircleShape(cursor.getFirstVisitedVertex().getPosition().toVector3().add(new Vector3(0, -originalBoundingBox.getHeight(), 0)), ((StartingPointRule)cursor.getFirstVisitedVertex().getRule()).getRadius(), color.getPathColor()));
+                dynamicShapes.add(new CircleShape(cursor.getFirstVisitedVertex().getPosition().toVector3().add(new Vector3(0, -originalBoundingBox.getHeight(), 0)), ((StartingPointRule)cursor.getFirstVisitedVertex().getRule()).getRadius(), shadowCursorColor));
             }
 
             ArrayList<EdgeProportion> visitedEdges = cursor.getVisitedEdgesWithProportion(true);
@@ -105,8 +107,8 @@ public class GridSymmetryPuzzle extends GridPuzzle {
                 dynamicShapes.add(new RectangleShape(oppositeEdgeProportion.getProportionMiddlePoint().toVector3(), oppositeEdgeProportion.getProportionLength(), getPathWidth(), oppositeEdgeProportion.edge.getAngle(), hasSymmetricColor ? SymmetricColor.YELLOW.getRGB() : getColorPalette().getCursorColor()));
 
                 if(shadowPanel){
-                    dynamicShapes.add(new CircleShape(new Vector3(edgeProportion.getProportionPoint().x, edgeProportion.getProportionPoint().y - originalBoundingBox.getHeight(), 0), getPathWidth() * 0.5f, color.getPathColor()));
-                    dynamicShapes.add(new RectangleShape(edgeProportion.getProportionMiddlePoint().toVector3().add(new Vector3(0, -originalBoundingBox.getHeight(), 0)), edgeProportion.getProportionLength(), getPathWidth(), edgeProportion.edge.getAngle(), color.getPathColor()));
+                    dynamicShapes.add(new CircleShape(new Vector3(edgeProportion.getProportionPoint().x, edgeProportion.getProportionPoint().y - originalBoundingBox.getHeight(), 0), getPathWidth() * 0.5f, shadowCursorColor));
+                    dynamicShapes.add(new RectangleShape(edgeProportion.getProportionMiddlePoint().toVector3().add(new Vector3(0, -originalBoundingBox.getHeight(), 0)), edgeProportion.getProportionLength(), getPathWidth(), edgeProportion.edge.getAngle(), shadowCursorColor));
                 }
             }
         }
