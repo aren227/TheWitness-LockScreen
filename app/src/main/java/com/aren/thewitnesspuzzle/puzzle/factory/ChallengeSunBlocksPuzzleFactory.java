@@ -9,6 +9,7 @@ import com.aren.thewitnesspuzzle.puzzle.color.PalettePreset;
 import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.cursor.area.Area;
 import com.aren.thewitnesspuzzle.puzzle.cursor.area.GridAreaSplitter;
+import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
 import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.rules.BlocksRule;
@@ -38,7 +39,18 @@ public class ChallengeSunBlocksPuzzleFactory extends PuzzleFactory {
 
         GridAreaSplitter splitter = new GridAreaSplitter(cursor);
 
-        BrokenLineRule.generate(cursor, random, 0.2f);
+        BrokenLineRule.generate(cursor, random, 1.0f);
+        // Make sure that only 8 broken lines exist
+        List<Edge> brokenLines = new ArrayList<>();
+        for(Edge edge : puzzle.getEdges()){
+            if(edge.getRule() instanceof BrokenLineRule) brokenLines.add(edge);
+        }
+        Collections.shuffle(brokenLines, random);
+        int removeCount = brokenLines.size() - Math.min(brokenLines.size(), 8);
+        for(int i = 0; i < removeCount; i++){
+            brokenLines.get(i).removeRule();
+        }
+
         SunRule.generate(splitter, random, new Color[]{Color.PURPLE}, 1f, 1f, 0);
         // Make sure that only 2 suns exist
         List<Area> sunApplied = new ArrayList<>();
@@ -50,7 +62,7 @@ public class ChallengeSunBlocksPuzzleFactory extends PuzzleFactory {
                 }
             }
         }
-        int removeCount = sunApplied.size() - Math.min(sunApplied.size(), 1);
+        removeCount = sunApplied.size() - Math.min(sunApplied.size(), 1);
         Collections.shuffle(sunApplied, random);
         for(int i = 0; i < removeCount; i++){
             Area area = sunApplied.get(i);
