@@ -15,7 +15,7 @@ public class StartingPointRule extends Rule {
     }
 
     public float getRadius(){
-        return getGraphElement().getPuzzle().getPathWidth() * 1.2f;
+        return getGraphElement().getPuzzle().getPathWidth() * 1.1f;
     }
 
 }

@@ -21,13 +21,9 @@ public class BrokenLineRule extends Rule {
     public Shape generateShape(){
         if(getGraphElement() instanceof Edge){
             Edge edge = (Edge)getGraphElement();
-            return new RectangleShape(edge.getMiddlePoint().toVector3(), getSize() / edge.getLength(), edge.getPuzzle().getPathWidth(), edge.getAngle(), edge.getPuzzle().getColorPalette().getBackgroundColor());
+            return new RectangleShape(edge.getMiddlePoint().toVector3(), getCollisionCircleRadius() * 2f / edge.getLength(), edge.getPuzzle().getPathWidth(), edge.getAngle(), edge.getPuzzle().getColorPalette().getBackgroundColor());
         }
         return null;
-    }
-
-    public static float getSize(){
-        return 0.3f;
     }
 
     public static void generate(Cursor solution, Random random, float blockRate){
@@ -48,8 +44,8 @@ public class BrokenLineRule extends Rule {
         }
     }
 
-    public static float getCollisionCircleRadius(){
-        return getSize() / 2f;
+    public float getCollisionCircleRadius(){
+        return 0.07f / getGraphElement().getPuzzle().getPathWidth() * 0.5f;
     }
 
 }
