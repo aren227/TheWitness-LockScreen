@@ -39,6 +39,6 @@ public class SimpleTrianglesPuzzleFactory extends PuzzleFactory {
 
     @Override
     public String getName() {
-        return "Triangles #1";
+        return "Triangles";
     }
 }

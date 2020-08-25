@@ -19,6 +19,10 @@ public class PuzzleFactoryManager {
     private Runnable onUpdate;
 
     static {
+        register(new BlocksEliminationPuzzleFactory());
+        register(new BlocksRotatableBlocksPuzzleFactory());
+        register(new ChallengeSunBlocksPuzzleFactory());
+        register(new ChallengeSunHexagonPuzzleFactory());
         register(new ChallengeTrianglesPuzzleFactory());
         register(new EntryAreaMazePuzzleFactory());
         register(new FirstPuzzleFactory());
@@ -38,6 +42,7 @@ public class PuzzleFactoryManager {
         register(new SimpleVSymmetryPuzzleFactory());
         register(new SlidePuzzleFactory());
         register(new SunBlockPuzzleFactory());
+        register(new SunEliminationPuzzleFactory());
         register(new SunPairWithSquarePuzzleFactory());
         register(new SymmetryHexagonPuzzleFactory());
     }

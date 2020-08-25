@@ -24,9 +24,8 @@ public class PalettePreset {
         register("Treehouse_2", "#505b5f", "#0f1412", "#fef7e1", "#ac01be", "#050a0f", 0.0f);
         register("Treehouse_3", "#505b5f", "#0f1412", "#fef7e1", "#00fa00", "#050a0f", 0.0f);
         register("Quarry_1", "#363838", "#59877c", "#ffffff", "#ffffff", "#050a0f", 1.0f);
-        register("Challenge_1", "#00bc58", "#385641", "#f5bd95", "#f5c388", "#050a0f", 1.0f);
-        register("Challenge_2", "#00a382", "#102931", "#dee0df", "#dce1de", "#050a0f", 1.0f);
-        register("Challenge_3", "#000000", "#79600e", "#ffd585", "#fe9f00", "#050a0f", 1.0f);
+        register("Challenge_1", "#38d185", "#535c53", "#fad8ca", "#ffd49c", "#050a0f", 0.2f);
+        register("Challenge_2", "#000000", "#79600e", "#ffd585", "#fe9f00", "#050a0f", 1.0f);
     }
 
     private void register(String name, String background, String path, String cursor, String cursorSucceeded, String cursorFailed, float bloomIntensity){

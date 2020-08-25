@@ -369,4 +369,22 @@ public class BlocksRule extends Colorable {
         }
     }
 
+    public static boolean[][] listToGridArray(List<Vector2Int> blocks){
+        int minX = Integer.MAX_VALUE;
+        int minY = Integer.MAX_VALUE;
+        int maxX = Integer.MIN_VALUE;
+        int maxY = Integer.MIN_VALUE;
+        for (Vector2Int v : blocks) {
+            minX = Math.min(minX, v.x);
+            minY = Math.min(minY, v.y);
+            maxX = Math.max(maxX, v.x);
+            maxY = Math.max(maxY, v.y);
+        }
+        boolean[][] grid = new boolean[maxX - minX + 1][maxY - minY + 1];
+        for (Vector2Int v : blocks) {
+            grid[v.x - minX][v.y - minY] = true;
+        }
+        return grid;
+    }
+
 }

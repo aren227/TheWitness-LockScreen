@@ -2,6 +2,7 @@ package com.aren.thewitnesspuzzle.puzzle.rules;
 
 import com.aren.thewitnesspuzzle.graphics.shape.EliminatorShape;
 import com.aren.thewitnesspuzzle.graphics.shape.Shape;
+import com.aren.thewitnesspuzzle.math.Vector2Int;
 import com.aren.thewitnesspuzzle.math.Vector3;
 import com.aren.thewitnesspuzzle.puzzle.cursor.area.Area;
 import com.aren.thewitnesspuzzle.puzzle.cursor.area.GridAreaSplitter;
@@ -36,7 +37,9 @@ public class EliminationRule extends Rule {
     }
 
     public static void generateFakeHexagon(GridAreaSplitter splitter, Random random){
-        for(Area area : splitter.areaList){
+        List<Area> areas = new ArrayList<>(splitter.areaList);
+        Collections.shuffle(areas, random);
+        for(Area area : areas){
             List<Tile> tiles = new ArrayList<>();
             for(Tile tile : area.tiles){
                 if(tile.getRule() == null) tiles.add(tile);
@@ -56,6 +59,8 @@ public class EliminationRule extends Rule {
     }
 
     public static void generateFakeSquare(GridAreaSplitter splitter, Random random, List<Color> colors){
+        List<Area> areas = new ArrayList<>(splitter.areaList);
+        Collections.shuffle(areas, random);
         for(Area area : splitter.areaList){
             List<Tile> tiles = new ArrayList<>();
             List<Tile> squareTiles = new ArrayList<>();
@@ -68,9 +73,9 @@ public class EliminationRule extends Rule {
                     squareTiles.add(tile);
                     availableColors.remove(((SquareRule)tile.getRule()).color);
                 }
-                else if(tile.getRule() instanceof SunRule){
+                /*else if(tile.getRule() instanceof SunRule){
                     availableColors.remove(((SunRule)tile.getRule()).color);
-                }
+                }*/
             }
             if(squareTiles.size() < 1 || tiles.size() + squareTiles.size() < 3) continue;
             if(availableColors.size() == 0) continue;
@@ -87,6 +92,94 @@ public class EliminationRule extends Rule {
             wholeTiles.get(0).setRule(new EliminationRule());
             wholeTiles.get(1).setRule(new SquareRule(availableColorList.get(random.nextInt(availableColorList.size()))));
             break;
+        }
+    }
+
+    public static void generateFakeBlocks(GridAreaSplitter splitter, Random random, List<Color> colors, float rotatableProb){
+        List<Area> areas = new ArrayList<>(splitter.areaList);
+        Collections.shuffle(areas, random);
+        for(Area area : splitter.areaList) {
+            List<Tile> tiles = new ArrayList<>();
+            for (Tile tile : area.tiles) {
+                if (tile.getRule() == null) {
+                    tiles.add(tile);
+                }
+            }
+
+            if(tiles.size() < 2) continue;
+
+            boolean[][] grid = new boolean[4][4];
+            for (int i = 0; i < 4; i++) {
+                for (int j = 0; j < 4; j++) {
+                    grid[i][j] = true;
+                }
+            }
+            List<Vector2Int> result = new ArrayList<>();
+            BlocksRule.connectTiles(result, random, grid, 4, 4, 0, 0, random.nextInt(3) + 2);
+
+            boolean rotatable = random.nextFloat() < rotatableProb;
+            BlocksRule rule = new BlocksRule(BlocksRule.listToGridArray(result), splitter.getPuzzle().getHeight(), rotatable, false);
+
+            // Check if this one block matches with the area
+            List<Vector2Int> areaList = new ArrayList<>();
+            for(Tile tile : area.tiles){
+                areaList.add(tile.gridPosition);
+            }
+            BlocksRule areaRule = new BlocksRule(BlocksRule.listToGridArray(areaList), splitter.getPuzzle().getHeight(), false, false);
+            boolean pass = true;
+            if(rotatable){
+                for(int i = 0; i < 4; i++){
+                    if(rule.blockBits == areaRule.blockBits){
+                        pass = false;
+                    }
+                    rule = BlocksRule.rotateRule(rule, 1);
+                }
+            }
+            else if(rule.blockBits == areaRule.blockBits){
+                pass = false;
+            }
+
+            if(!pass) continue;
+
+            Collections.shuffle(tiles, random);
+
+            tiles.get(0).setRule(new EliminationRule());
+            tiles.get(1).setRule(rule);
+            break;
+        }
+    }
+
+    public static void generateFakeSun(GridAreaSplitter splitter, Random random, List<Color> colors) {
+        List<Area> areas = new ArrayList<>(splitter.areaList);
+        Collections.shuffle(areas, random);
+        for (Area area : splitter.areaList) {
+            List<Tile> tiles = new ArrayList<>();
+            for (Tile tile : area.tiles) {
+                if (tile.getRule() == null) {
+                    tiles.add(tile);
+                }
+            }
+            if (tiles.size() < 2) continue;
+            List<Color> colorList = new ArrayList<>(colors);
+            Collections.shuffle(colorList, random);
+            boolean placed = false;
+            for (Color color : colorList) {
+                int count = 0;
+                for (Tile tile : area.tiles) {
+                    if (tile.getRule() instanceof Colorable && ((Colorable) tile.getRule()).color == color) {
+                        count++;
+                    }
+                }
+                // Can be paired with this one
+                if (count == 1) continue;
+
+                Collections.shuffle(tiles, random);
+                tiles.get(0).setRule(new EliminationRule());
+                tiles.get(1).setRule(new SunRule(color));
+                placed = true;
+                break;
+            }
+            if (placed) break;
         }
     }
 }

@@ -349,6 +349,7 @@ public class Puzzle {
             cursor.connectTo(edgeProportion);
 
             EdgeProportion cursorEdge = cursor.getCurrentCursorEdge();
+            if(cursorEdge == null) return;
             if(cursorEdge.to().getRule() instanceof EndingPointRule && cursorEdge.proportion > 1 - getPathWidth() * 0.5f / cursorEdge.edge.getLength()){
                 if(!animation.isPlaying(CursorEndingPointReachedAnimation.class)){
                     animation.addAnimation(new CursorEndingPointReachedAnimation(this));
