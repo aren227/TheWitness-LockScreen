@@ -38,7 +38,7 @@ public class SimpleSunPuzzleFactory extends PuzzleFactory {
 
     @Override
     public Difficulty getDifficulty() {
-        return Difficulty.NORMAL;
+        return Difficulty.EASY;
     }
 
     @Override

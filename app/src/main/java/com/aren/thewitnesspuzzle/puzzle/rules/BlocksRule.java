@@ -18,9 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-public class BlocksRule extends Rule {
-
-    public static final int COLOR = android.graphics.Color.parseColor("#ffe000");
+public class BlocksRule extends Colorable {
 
     public boolean[][] blocks;
     public long[] blockBits;
@@ -34,6 +32,12 @@ public class BlocksRule extends Rule {
     public boolean subtractive;
 
     public BlocksRule(boolean[][] blocks, int puzzleHeight, boolean rotatable, boolean subtractive){
+        this(blocks, puzzleHeight, rotatable, subtractive, Color.YELLOW);
+    }
+
+    public BlocksRule(boolean[][] blocks, int puzzleHeight, boolean rotatable, boolean subtractive, Color color){
+        super(color);
+
         this.blocks = blocks;
         width = blocks.length;
         height = blocks[0].length;
@@ -122,7 +126,7 @@ public class BlocksRule extends Rule {
 
     @Override
     public Shape generateShape(){
-        return new BlocksShape(blocks, rotatable, new Vector3(getGraphElement().x, getGraphElement().y, 0), COLOR);
+        return new BlocksShape(blocks, rotatable, new Vector3(getGraphElement().x, getGraphElement().y, 0), color.getRGB());
     }
 
     @Override
@@ -348,7 +352,14 @@ public class BlocksRule extends Rule {
                 blocksRuleList.add(rule);
             }
 
-            List<Tile> placing = new ArrayList<>(area.tiles);
+            List<Tile> placing = new ArrayList<>();
+            for(Tile tile : area.tiles){
+                if(tile.getRule() == null) placing.add(tile);
+            }
+
+            // Can't place all these blocks
+            if(placing.size() < blocksRuleList.size()) return;
+
             Collections.shuffle(placing, random);
 
             for(int j = 0; j < blocksRuleList.size(); j++){

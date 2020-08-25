@@ -37,6 +37,7 @@ public class PuzzleFactoryManager {
         register(new SimpleTrianglesPuzzleFactory());
         register(new SimpleVSymmetryPuzzleFactory());
         register(new SlidePuzzleFactory());
+        register(new SunBlockPuzzleFactory());
         register(new SunPairWithSquarePuzzleFactory());
         register(new SymmetryHexagonPuzzleFactory());
     }

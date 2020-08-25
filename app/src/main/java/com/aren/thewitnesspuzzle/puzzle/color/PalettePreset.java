@@ -22,6 +22,7 @@ public class PalettePreset {
         register("Swamp_3", "#be0802", "#ef4632", "#f1f2d2", "#fdf61a", "#050a0f", 0.0f);
         register("Treehouse_1", "#505b5f", "#0f1412", "#fef7e1", "#fda20f", "#050a0f", 0.0f);
         register("Treehouse_2", "#505b5f", "#0f1412", "#fef7e1", "#ac01be", "#050a0f", 0.0f);
+        register("Treehouse_3", "#505b5f", "#0f1412", "#fef7e1", "#00fa00", "#050a0f", 0.0f);
         register("Quarry_1", "#363838", "#59877c", "#ffffff", "#ffffff", "#050a0f", 1.0f);
         register("Challenge_1", "#00bc58", "#385641", "#f5bd95", "#f5c388", "#050a0f", 1.0f);
         register("Challenge_2", "#00a382", "#102931", "#dee0df", "#dce1de", "#050a0f", 1.0f);

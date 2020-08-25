@@ -101,12 +101,13 @@ public class SunRule extends Colorable {
         Collections.shuffle(areas, random);
         for(int i = 0; i < applyAreaCount2; i++){
             // Pick a random color to pair
+            ArrayList<Color> availableColors = new ArrayList<>(Arrays.asList(palette));
             ArrayList<Tile> tiles = new ArrayList<>();
             HashSet<Color> colorSet = new HashSet<>();
             Area area = areas.get(i);
             for(Tile tile : area.tiles){
                 if(tile.getRule() == null) tiles.add(tile);
-                else if(tile.getRule() instanceof Colorable && !(tile.getRule() instanceof SunRule)){
+                else if(tile.getRule() instanceof Colorable && !(tile.getRule() instanceof SunRule) && availableColors.contains(((Colorable)tile.getRule()).color)){
                     colorSet.add(((Colorable)tile.getRule()).color);
                 }
             }

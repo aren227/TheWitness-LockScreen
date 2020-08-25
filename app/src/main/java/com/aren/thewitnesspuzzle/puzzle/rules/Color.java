@@ -1,7 +1,7 @@
 package com.aren.thewitnesspuzzle.puzzle.rules;
 
 public enum Color {
-    BLACK, WHITE, ORANGE, LIME, PURPLE, CYAN, RED;
+    BLACK, WHITE, ORANGE, LIME, PURPLE, CYAN, RED, YELLOW;
 
     public int getRGB(){
         if(this == BLACK){
@@ -24,6 +24,9 @@ public enum Color {
         }
         else if(this == RED){
             return android.graphics.Color.rgb(255, 65, 0);
+        }
+        else if(this == YELLOW){
+            return android.graphics.Color.rgb(255, 225, 0);
         }
         return 0;
     }
