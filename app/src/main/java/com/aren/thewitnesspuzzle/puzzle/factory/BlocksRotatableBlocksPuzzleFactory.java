@@ -37,7 +37,7 @@ public class BlocksRotatableBlocksPuzzleFactory extends PuzzleFactory {
 
     @Override
     public Difficulty getDifficulty() {
-        return Difficulty.HARD;
+        return Difficulty.VERY_HARD;
     }
 
     @Override

@@ -334,8 +334,10 @@ public class Puzzle {
             if(start != null){
                 startTracing(start);
             }
-            else{
-                if(shadowPanel && !shadowBoundingBox.expand(0.5f).test(pos) || !shadowPanel && !boundingBox.expand(0.5f).test(pos)){
+            else if(cursor != null){
+                float padding = game.getDPScale(48);
+                if(shadowPanel && !originalBoundingBox.expand(padding).test(pos) && (cursor.getCurrentCursorEdge() == null || cursor.getCurrentCursorEdge().getProportionPoint().distance(pos) > padding * 2)
+                        || !shadowPanel && !boundingBox.expand(padding).test(pos) && (cursor.getCurrentCursorEdge() == null || cursor.getCurrentCursorEdge().getProportionPoint().distance(pos) > padding * 2)){
                     cursor = null;
                 }
             }
