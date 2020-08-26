@@ -54,6 +54,21 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         holder.imageView.setImageBitmap(preview.bitmap);
         holder.imageView.setClipToOutline(true);
 
+        if(preview.isForAddBtn){
+            holder.textView.setText("");
+            holder.imageView.setColorFilter(null);
+            holder.imageView.setImageAlpha(255);
+            holder.outlineView.setVisibility(View.INVISIBLE);
+            holder.imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    NewPuzzleDialog dialog = new NewPuzzleDialog(context);
+                    dialog.show();
+                }
+            });
+            return;
+        }
+
         if(puzzleFactoryManager.isActiavted(preview.puzzleFactory)){
             holder.imageView.setColorFilter(null);
             holder.imageView.setImageAlpha(255);

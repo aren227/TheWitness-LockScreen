@@ -1,6 +1,8 @@
 package com.aren.thewitnesspuzzle.puzzle.color;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class PalettePreset {
@@ -35,6 +37,10 @@ public class PalettePreset {
     public static PuzzleColorPalette get(String name){
         if(instance.presets.containsKey(name)) return instance.presets.get(name).clone();
         return null;
+    }
+
+    public static List<PuzzleColorPalette> getAll(){
+        return new ArrayList<>(instance.presets.values());
     }
 
 }

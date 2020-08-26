@@ -493,6 +493,10 @@ public class Puzzle {
         return shadowPanel;
     }
 
+    public void setColorPalette(PuzzleColorPalette color){
+        this.color = color;
+    }
+
     public class ValidationResult{
 
         public List<Rule> notOnAreaErrors = new ArrayList<>();

@@ -90,6 +90,10 @@ public class GalleryActivity extends AppCompatActivity {
             }
             adapter.addPreview(preview);
         }
+
+        // A button for adding new puzzle
+        adapter.addPreview(GalleryPreview.addButton());
+
         adapter.notifyDataSetChanged();
 
         // Generate and Query puzzles

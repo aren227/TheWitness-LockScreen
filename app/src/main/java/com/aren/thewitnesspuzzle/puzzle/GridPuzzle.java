@@ -25,7 +25,11 @@ public class GridPuzzle extends Puzzle {
     protected Tile[][] gridTiles;
 
     public GridPuzzle(Game game, PuzzleColorPalette color, int width, int height){
-        super(game, color);
+        this(game, color, width, height, game.isPlayMode() && game.getSettings().getShadowPanelEnabled());
+    }
+
+    public GridPuzzle(Game game, PuzzleColorPalette color, int width, int height, boolean shadowPanel){
+        super(game, color, shadowPanel);
 
         this.width = width;
         this.height = height;
