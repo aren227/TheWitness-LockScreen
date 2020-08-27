@@ -2,9 +2,11 @@ package com.aren.thewitnesspuzzle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -13,6 +15,8 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
@@ -20,120 +24,138 @@ import com.aren.thewitnesspuzzle.puzzle.HexagonPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 import com.aren.thewitnesspuzzle.puzzle.color.PalettePreset;
 import com.aren.thewitnesspuzzle.puzzle.color.PuzzleColorPalette;
+import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.rules.EndingPointRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.StartingPointRule;
 
-public class CreatePatternActivity extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.List;
 
-    Game game;
-    Puzzle puzzle;
+public class CreatePatternActivity extends PuzzleEditorActivity {
 
-    boolean isGridPuzzle = true;
-    PuzzleColorPalette palette;
+    TextView instructionTextView;
+    ImageView deleteImageView;
+    ImageView nextImageView;
+    boolean viewInit = false;
 
-    EditText nameEditText;
-    RadioGroup puzzleTypeRadioGroup;
-    RadioButton gridPuzzleRadioButton;
-    RadioButton hexagonPuzzleRadioButton;
-    ColorPaletteView paletteView;
-    LinearLayout gridSizeView;
-    EditText widthEditText;
-    EditText heightEditText;
-    ImageView sizeRefreshImageView;
-    RelativeLayout root;
+    enum State {INIT, FIRST_DRAWN, VALIDATE, DONE}
+    State state = State.INIT;
+    List<Integer> pattern = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_pattern);
 
-        palette = PalettePreset.get("Entry_1");
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.activity_create_pattern, root, true);
 
-        nameEditText = findViewById(R.id.name);
-        puzzleTypeRadioGroup = findViewById(R.id.puzzle_type);
-        gridPuzzleRadioButton = findViewById(R.id.grid_puzzle);
-        hexagonPuzzleRadioButton = findViewById(R.id.hexagon_puzzle);
-        paletteView = findViewById(R.id.palette);
-        gridSizeView = findViewById(R.id.grid_size);
-        widthEditText = findViewById(R.id.width);
-        heightEditText = findViewById(R.id.height);
-        sizeRefreshImageView = findViewById(R.id.size_refresh);
-        root = findViewById(R.id.puzzle_view);
+        instructionTextView = view.findViewById(R.id.instruction);
+        deleteImageView = view.findViewById(R.id.delete);
+        nextImageView = view.findViewById(R.id.next);
+        viewInit = true;
 
-        puzzleTypeRadioGroup.check(R.id.grid_puzzle);
-        gridPuzzleRadioButton.setOnClickListener(new View.OnClickListener() {
+        deleteImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isGridPuzzle = true;
-                resetPuzzle();
-                updateUI();
+                deletePattern();
             }
         });
 
-        hexagonPuzzleRadioButton.setOnClickListener(new View.OnClickListener() {
+        nextImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isGridPuzzle = false;
-                resetPuzzle();
-                updateUI();
+                if(state == State.FIRST_DRAWN){
+                    puzzle.setCustomPattern(pattern);
+                    puzzle.setCursor(null);
+                    game.update();
+
+                    state = State.VALIDATE;
+                    updateUI();
+                }
+                else if(state == State.DONE){
+                    // Save and exit
+                }
             }
         });
 
-        paletteView.setPalette(palette);
+        state = State.INIT;
 
-        paletteView.setOnClickListener(new View.OnClickListener() {
+        game.setOnSolved(new Runnable() {
             @Override
-            public void onClick(View v) {
-                ColorPaletteDialog dialog = new ColorPaletteDialog(CreatePatternActivity.this, palette);
-                dialog.show();
+            public void run() {
+                if(puzzle.getCustomPattern() != null){
+                    state = State.DONE;
+                }
+                else{
+                    pattern = puzzle.getCursor().getVisitedVertexIndices();
+                    state = State.FIRST_DRAWN;
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        updateUI();
+                    }
+                });
             }
         });
-
-        sizeRefreshImageView.setOnClickListener(new View.OnClickListener() {
+        game.setOnPreTouched(new Runnable() {
             @Override
-            public void onClick(View v) {
-                int w = getWidth();
-                int h = getHeight();
-                widthEditText.setText(Integer.toString(w));
-                heightEditText.setText(Integer.toString(h));
-
-                resetPuzzle();
+            public void run() {
+                if(state == State.FIRST_DRAWN){
+                    state = State.INIT;
+                }
+                else if(state == State.DONE){
+                    state = State.VALIDATE;
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        updateUI();
+                    }
+                });
             }
         });
-
-        game = new Game(this, true);
-        resetPuzzle();
         updateUI();
-
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        root.addView(game.getSurfaceView(), params);
     }
 
-    public void resetPuzzle(){
-        if(isGridPuzzle){
-            puzzle = new GridPuzzle(game, palette, getWidth(), getHeight(), false);
-            ((GridPuzzle)puzzle).addStartingPoint(0, 0);
-            ((GridPuzzle)puzzle).addEndingPoint(getWidth(), getHeight());
+    protected void updateUI(){
+        if(!viewInit) return;
+        if(state == State.INIT){
+            instructionTextView.setText(R.string.create_pattern_draw);
+            deleteImageView.setVisibility(View.INVISIBLE);
+            nextImageView.setVisibility(View.INVISIBLE);
         }
-        else puzzle = new HexagonPuzzle(game, palette, false);
-        game.setPuzzle(puzzle);
+        else if(state == State.FIRST_DRAWN){
+            deleteImageView.setVisibility(View.INVISIBLE);
+            nextImageView.setImageResource(R.drawable.ic_navigate_next_black_24dp);
+            nextImageView.setVisibility(View.VISIBLE);
+        }
+        else if(state == State.VALIDATE){
+            instructionTextView.setText(R.string.create_pattern_validate);
+            deleteImageView.setVisibility(View.VISIBLE);
+            nextImageView.setVisibility(View.INVISIBLE);
+        }
+        else{
+            nextImageView.setImageResource(R.drawable.ic_baseline_check_24);
+            deleteImageView.setVisibility(View.VISIBLE);
+            nextImageView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    protected void deletePattern(){
+        puzzle.setCustomPattern(null);
+        puzzle.setCursor(null);
         game.update();
+
+        state = State.INIT;
+        updateUI();
     }
 
-    public void updateUI(){
-        if(isGridPuzzle) gridSizeView.setVisibility(View.VISIBLE);
-        else gridSizeView.setVisibility(View.GONE);
+    @Override
+    protected void resetPuzzle(){
+        super.resetPuzzle();
+        deletePattern();
     }
 
-    public int getWidth(){
-        if(widthEditText.getText().length() == 0) return 4;
-        int w = Integer.parseInt(widthEditText.getText().toString());
-        return Math.min(Math.max(w, 1), 7);
-    }
 
-    public int getHeight(){
-        if(heightEditText.getText().length() == 0) return 4;
-        int h = Integer.parseInt(heightEditText.getText().toString());
-        return Math.min(Math.max(h, 1), 7);
-    }
 }

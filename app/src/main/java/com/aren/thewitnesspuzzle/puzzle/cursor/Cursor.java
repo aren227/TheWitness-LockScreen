@@ -70,6 +70,14 @@ public class Cursor {
         return visited;
     }
 
+    public ArrayList<Integer> getVisitedVertexIndices(){
+        ArrayList<Integer> list = new ArrayList<>();
+        for(Vertex vertex : getVisitedVertices()){
+            list.add(vertex.index);
+        }
+        return list;
+    }
+
     public ArrayList<Edge> getFullyVisitedEdges(){
         return visitedEdges;
     }

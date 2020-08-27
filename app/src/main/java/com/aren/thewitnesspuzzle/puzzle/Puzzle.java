@@ -23,6 +23,7 @@ import com.aren.thewitnesspuzzle.puzzle.color.ColorUtils;
 import com.aren.thewitnesspuzzle.puzzle.color.PuzzleColorPalette;
 import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.cursor.area.Area;
+import com.aren.thewitnesspuzzle.puzzle.cursor.area.GridAreaSplitter;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
 import com.aren.thewitnesspuzzle.puzzle.graph.EdgeProportion;
 import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
@@ -65,6 +66,8 @@ public class Puzzle {
     protected PuzzleAnimationManager animation;
 
     protected boolean shadowPanel;
+
+    protected List<Integer> customPattern;
 
     public Puzzle(Game game, PuzzleColorPalette color){
         this(game, color, game.isPlayMode() && game.getSettings().getShadowPanelEnabled());
@@ -388,15 +391,69 @@ public class Puzzle {
         cursor = null;
     }
 
+    public Cursor getCursor(){
+        return cursor;
+    }
+
     public ValidationResult validate(){
-        ValidationResult result = new ValidationResult();
-        //TODO: Support area validation
-        for(Rule rule : getAllRules()){
-            if(!rule.validateLocally(cursor)){
-                result.notOnAreaErrors.add(rule);
+        if(customPattern != null && customPattern.size() > 0){
+            ValidationResult result = new ValidationResult();
+            result.forceFail = true;
+            List<Integer> visited = cursor.getVisitedVertexIndices();
+            if(customPattern.size() != visited.size()){
+                return result;
             }
+            for(int i = 0; i < customPattern.size(); i++){
+                if(!customPattern.get(i).equals(visited.get(i))){
+                    return result;
+                }
+            }
+            result.forceFail = false;
+            return result;
         }
-        return result;
+
+        if(this instanceof GridPuzzle){
+            GridAreaSplitter splitter = new GridAreaSplitter(cursor);
+            ValidationResult result = new ValidationResult();
+            for(Area area : splitter.areaList){
+                result.areaValidationResults.add(area.validate(cursor));
+            }
+
+            //FIXME: Dirty code again. I think getVisitedVerticies() of SymmetryCursor should return with opposite vertices.
+            List<Rule> rules = new ArrayList<>();
+            for(Vertex vertex : cursor.getVisitedVertices()){
+                if(vertex.getRule() != null) rules.add(vertex.getRule());
+                if(this instanceof GridSymmetryPuzzle){
+                    Vertex opposite = ((GridSymmetryPuzzle)this).getOppositeVertex(vertex);
+                    if(opposite.getRule() != null) rules.add(opposite.getRule());
+                }
+            }
+            for(Edge edge : cursor.getFullyVisitedEdges()){
+                if(edge.getRule() != null) rules.add(edge.getRule());
+                if(this instanceof GridSymmetryPuzzle){
+                    Edge opposite = ((GridSymmetryPuzzle)this).getOppositeEdge(edge);
+                    if(opposite.getRule() != null) rules.add(opposite.getRule());
+                }
+            }
+
+            for(Rule rule : rules){
+                if(!rule.validateLocally(cursor)){
+                    result.notOnAreaErrors.add(rule);
+                }
+            }
+
+            return result;
+        }
+        else{
+            ValidationResult result = new ValidationResult();
+            //TODO: Support area validation
+            for(Rule rule : getAllRules()){
+                if(!rule.validateLocally(cursor)){
+                    result.notOnAreaErrors.add(rule);
+                }
+            }
+            return result;
+        }
     }
 
     public Vertex addVertex(Vertex vertex){
@@ -497,12 +554,22 @@ public class Puzzle {
         this.color = color;
     }
 
+    public void setCustomPattern(List<Integer> customPattern){
+        this.customPattern = customPattern;
+    }
+
+    public List<Integer> getCustomPattern(){
+        return customPattern;
+    }
+
     public class ValidationResult{
 
         public List<Rule> notOnAreaErrors = new ArrayList<>();
         public List<Area.AreaValidationResult> areaValidationResults = new ArrayList<>();
+        public boolean forceFail = false;
 
         public boolean failed(){
+            if(forceFail) return true;
             if(notOnAreaErrors.size() > 0) return true;
             for(Area.AreaValidationResult result : areaValidationResults){
                 if(!result.eliminated && result.originalErrors.size() > 0) return true;

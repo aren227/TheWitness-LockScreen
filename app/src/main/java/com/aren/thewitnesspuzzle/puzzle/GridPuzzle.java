@@ -130,7 +130,7 @@ public class GridPuzzle extends Puzzle {
         return null;
     }
 
-    @Override
+    /*@Override
     public ValidationResult validate(){
         GridAreaSplitter splitter = new GridAreaSplitter(cursor);
         ValidationResult result = new ValidationResult();
@@ -162,7 +162,7 @@ public class GridPuzzle extends Puzzle {
         }
 
         return result;
-    }
+    }*/
 
     public List<Vertex> getBorderVertices(){
         List<Vertex> vertices = new ArrayList<>();

@@ -1,183 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".CreatePatternActivity"
-    android:background="@color/colorPrimary"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/instruction"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="8dp">
+        android:gravity="center"
+        android:textColor="#FAFAFA"
+        android:fontFamily="serif"
+        android:textSize="20dp"
+        android:layout_margin="8dp"
+        android:layout_alignParentTop="true"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="8dp">
+    <ImageView
+        android:id="@+id/delete"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:src="@drawable/ic_baseline_delete_24"
+        android:layout_margin="8dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:text="Name: "
-                android:textColor="@color/colorAccent"
-                android:fontFamily="serif"
-                android:textSize="20dp"
-                android:layout_marginRight="8dp"/>
+    <ImageView
+        android:id="@+id/next"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:src="@drawable/ic_navigate_next_black_24dp"
+        android:layout_margin="8dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"/>
 
-            <EditText
-                android:id="@+id/name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="New Pattern"
-                android:textSize="20dp"
-                android:textStyle="italic"
-                android:layout_weight="1"
-                android:textColor="@color/colorAccent"
-                android:theme="@style/EditTheme"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="8dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:text="Type: "
-                android:textColor="@color/colorAccent"
-                android:fontFamily="serif"
-                android:textSize="20dp"
-                android:layout_marginRight="8dp"/>
-
-            <RadioGroup
-                android:id="@+id/puzzle_type"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <RadioButton
-                    android:id="@+id/grid_puzzle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/colorAccent"
-                    android:buttonTint="@color/colorAccent"
-                    android:textSize="20dp"
-                    android:text="Grid"/>
-
-                <RadioButton
-                    android:id="@+id/hexagon_puzzle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/colorAccent"
-                    android:buttonTint="@color/colorAccent"
-                    android:textSize="20dp"
-                    android:text="Hexagon"/>
-
-            </RadioGroup>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="8dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:text="Colors: "
-                android:textColor="@color/colorAccent"
-                android:fontFamily="serif"
-                android:textSize="20dp"
-                android:layout_marginRight="8dp"/>
-
-            <com.aren.thewitnesspuzzle.ColorPaletteView
-                android:id="@+id/palette"
-                android:layout_width="80dp"
-                android:layout_height="24dp"
-                android:layout_gravity="center"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/grid_size"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="8dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:text="Size: "
-                android:textColor="@color/colorAccent"
-                android:fontFamily="serif"
-                android:textSize="20dp"
-                android:layout_marginRight="8dp"/>
-
-            <EditText
-                android:id="@+id/width"
-                android:layout_width="30dp"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:text="4"
-                android:textSize="20dp"
-                android:textStyle="italic"
-                android:inputType="number"
-                android:textColor="@color/colorAccent"
-                android:theme="@style/EditTheme"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:text=" x "
-                android:textColor="@color/colorAccent"
-                android:textSize="20dp"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"/>
-
-            <EditText
-                android:id="@+id/height"
-                android:layout_width="30dp"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:text="4"
-                android:textSize="20dp"
-                android:textStyle="italic"
-                android:inputType="number"
-                android:textColor="@color/colorAccent"
-                android:theme="@style/EditTheme"/>
-
-            <ImageView
-                android:id="@+id/size_refresh"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_baseline_refresh_24"
-                android:layout_gravity="center"
-                android:layout_marginLeft="8dp"/>
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <RelativeLayout
-        android:id="@+id/puzzle_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </RelativeLayout>
-
-</LinearLayout>
+</RelativeLayout>

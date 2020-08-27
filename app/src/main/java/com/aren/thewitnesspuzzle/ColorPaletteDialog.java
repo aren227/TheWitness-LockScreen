@@ -50,6 +50,14 @@ public class ColorPaletteDialog extends Dialog {
         successColorView.setBackgroundColor(palette.getCursorSucceededColor());
         failureColorView.setBackgroundColor(palette.getCursorFailedColor());
 
+        backgroundColorView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ColorPickerDialog dialog = new ColorPickerDialog(getContext(), palette.getBackgroundColor());
+                dialog.show();
+            }
+        });
+
         for(PuzzleColorPalette palette : PalettePreset.getAll()){
             ColorPaletteView colorPaletteView = new ColorPaletteView(getContext());
             colorPaletteView.setPalette(palette);

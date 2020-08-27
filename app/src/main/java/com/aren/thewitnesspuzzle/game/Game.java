@@ -28,6 +28,7 @@ public class Game {
     private HashMap<Integer, MediaPlayer> mediaPlayers = new HashMap<>();
 
     private Runnable onSolved;
+    private Runnable onPreTouched;
 
     public Game(Context context, boolean playMode){
         this.context = context;
@@ -45,6 +46,7 @@ public class Game {
     }
 
     public void touchEvent(float x, float y, int action){
+        if(onPreTouched != null) onPreTouched.run();
         puzzle.touchEvent(x, y, action);
         update();
     }
@@ -65,6 +67,10 @@ public class Game {
 
     public void setOnSolved(Runnable runnable){
         onSolved = runnable;
+    }
+
+    public void setOnPreTouched(Runnable runnable){
+        onPreTouched = runnable;
     }
 
     public void setPuzzle(Puzzle puzzle){
