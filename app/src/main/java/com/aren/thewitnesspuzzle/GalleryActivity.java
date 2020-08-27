@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
+import com.aren.thewitnesspuzzle.puzzle.factory.CustomPatternPuzzleFactory;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactory;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;
 
@@ -81,6 +82,11 @@ public class GalleryActivity extends AppCompatActivity {
         // Lazy Loading
         final List<GalleryPreview> previewsToRender = new ArrayList<>();
         for(PuzzleFactory factory : puzzleFactoryManager.getAllPuzzleFactories()){
+            // Check error
+            if(factory instanceof CustomPatternPuzzleFactory && factory.generate(tempGame, new Random()) == null){
+                continue;
+            }
+
             GalleryPreview preview = new GalleryPreview(factory, notLoaded, factory.getName());
             if(factory.getThumbnailCache() != null){
                 preview.bitmap = factory.getThumbnailCache();

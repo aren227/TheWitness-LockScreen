@@ -13,42 +13,17 @@ import java.util.UUID;
 
 public class PuzzleFactoryManager {
 
+    public static final String sharedPreferenceConfigKey = "com.aren.thewitnesspuzzle.puzzle.factory.config";
+
     private Context context;
-    private static Map<UUID, PuzzleFactory> factories = new HashMap<>();
+    private Map<UUID, PuzzleFactory> factories = new HashMap<>();
 
     private Runnable onUpdate;
 
-    static {
-        register(new BlocksEliminationPuzzleFactory());
-        register(new BlocksRotatableBlocksPuzzleFactory());
-        register(new ChallengeSunBlocksPuzzleFactory());
-        register(new ChallengeSunHexagonPuzzleFactory());
-        register(new ChallengeTrianglesPuzzleFactory());
-        register(new EntryAreaMazePuzzleFactory());
-        register(new FirstPuzzleFactory());
-        register(new MultipleSunColorsPuzzleFactory());
-        register(new RotatableBlocksPuzzleFactory());
-        register(new SecondPuzzleFactory());
-        register(new SimpleBlocksPuzzleFactory());
-        register(new SimpleHexagonEliminationPuzzleFactory());
-        register(new SimpleHexagonPuzzleFactory());
-        register(new SimpleMazePuzzleFactory());
-        register(new SimplePSymmetryPuzzleFactory());
-        register(new SimpleSquareEliminationPuzzleFactory());
-        register(new SimpleSquarePuzzleFactory());
-        register(new SimpleSunPuzzleFactory());
-        register(new SimpleSunSquarePuzzleFactory());
-        register(new SimpleTrianglesPuzzleFactory());
-        register(new SimpleVSymmetryPuzzleFactory());
-        register(new SlidePuzzleFactory());
-        register(new SunBlockPuzzleFactory());
-        register(new SunEliminationPuzzleFactory());
-        register(new SunPairWithSquarePuzzleFactory());
-        register(new SymmetryHexagonPuzzleFactory());
-    }
-
     public PuzzleFactoryManager(Context context){
         this.context = context;
+        registerBuiltInFactories();
+        registerUserDefinedFactories();
     }
 
     public void setOnUpdate(Runnable runnable){
@@ -103,6 +78,10 @@ public class PuzzleFactoryManager {
         Collections.sort(factories, new Comparator<PuzzleFactory>() {
             @Override
             public int compare(PuzzleFactory o1, PuzzleFactory o2) {
+                if(o1.isCreatedByUser() != o2.isCreatedByUser()){
+                    return Integer.compare(o1.isCreatedByUser() ? 0 : 1, o2.isCreatedByUser() ? 0 : 1);
+                }
+
                 int a = -1;
                 if(o1.getDifficulty() != null) a = o1.getDifficulty().ordinal();
                 int b = -1;
@@ -112,7 +91,63 @@ public class PuzzleFactoryManager {
         });
     }
 
-    private static void register(PuzzleFactory puzzleFactory){
+    private void registerBuiltInFactories(){
+        register(new BlocksEliminationPuzzleFactory(context));
+        register(new BlocksRotatableBlocksPuzzleFactory(context));
+        register(new ChallengeSunBlocksPuzzleFactory(context));
+        register(new ChallengeSunHexagonPuzzleFactory(context));
+        register(new ChallengeTrianglesPuzzleFactory(context));
+        register(new EntryAreaMazePuzzleFactory(context));
+        register(new FirstPuzzleFactory(context));
+        register(new MultipleSunColorsPuzzleFactory(context));
+        register(new RotatableBlocksPuzzleFactory(context));
+        register(new SecondPuzzleFactory(context));
+        register(new SimpleBlocksPuzzleFactory(context));
+        register(new SimpleHexagonEliminationPuzzleFactory(context));
+        register(new SimpleHexagonPuzzleFactory(context));
+        register(new SimpleMazePuzzleFactory(context));
+        register(new SimplePSymmetryPuzzleFactory(context));
+        register(new SimpleSquareEliminationPuzzleFactory(context));
+        register(new SimpleSquarePuzzleFactory(context));
+        register(new SimpleSunPuzzleFactory(context));
+        register(new SimpleSunSquarePuzzleFactory(context));
+        register(new SimpleTrianglesPuzzleFactory(context));
+        register(new SimpleVSymmetryPuzzleFactory(context));
+        register(new SlidePuzzleFactory(context));
+        register(new SunBlockPuzzleFactory(context));
+        register(new SunEliminationPuzzleFactory(context));
+        register(new SunPairWithSquarePuzzleFactory(context));
+        register(new SymmetryHexagonPuzzleFactory(context));
+    }
+
+    private void registerUserDefinedFactories(){
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PuzzleFactoryManager.sharedPreferenceConfigKey, Context.MODE_PRIVATE);
+        List<String> factoryUuidStrList = new ArrayList<>(sharedPreferences.getAll().keySet());
+
+        for(String uuidStr : factoryUuidStrList){
+            try{
+                UUID uuid = UUID.fromString(uuidStr);
+                PuzzleFactoryConfig config = new PuzzleFactoryConfig(context, uuid);
+
+                if(config.getFactoryType().equals("pattern")){
+                    CustomPatternPuzzleFactory factory = new CustomPatternPuzzleFactory(context, uuid);
+                    register(factory);
+                }
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void register(PuzzleFactory puzzleFactory){
         factories.put(puzzleFactory.getUuid(), puzzleFactory);
+    }
+
+    public PuzzleFactory getPuzzleFactoryByName(String name){
+        for(PuzzleFactory factory : factories.values()){
+            if(factory.getName().equals(name)) return factory;
+        }
+        return null;
     }
 }

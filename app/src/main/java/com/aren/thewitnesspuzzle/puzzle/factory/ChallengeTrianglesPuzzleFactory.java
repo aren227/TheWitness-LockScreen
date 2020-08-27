@@ -1,5 +1,7 @@
 package com.aren.thewitnesspuzzle.puzzle.factory;
 
+import android.content.Context;
+
 import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
@@ -13,6 +15,10 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class ChallengeTrianglesPuzzleFactory extends PuzzleFactory {
+    public ChallengeTrianglesPuzzleFactory(Context context) {
+        super(context);
+    }
+
     @Override
     public Puzzle generate(Game game, Random random) {
         GridPuzzle puzzle = new GridPuzzle(game, PalettePreset.get("Challenge_2"), 4, 4);

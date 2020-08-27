@@ -1,5 +1,7 @@
 package com.aren.thewitnesspuzzle.puzzle.factory;
 
+import android.content.Context;
+
 import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
@@ -18,6 +20,10 @@ import java.util.List;
 import java.util.Random;
 
 public class SimpleSquarePuzzleFactory extends PuzzleFactory{
+
+    public SimpleSquarePuzzleFactory(Context context) {
+        super(context);
+    }
 
     @Override
     public Puzzle generate(Game game, Random random) {

@@ -1,5 +1,7 @@
 package com.aren.thewitnesspuzzle.puzzle.factory;
 
+import android.content.Context;
+
 import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.puzzle.GridSymmetryPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
@@ -16,6 +18,10 @@ import java.util.List;
 import java.util.Random;
 
 public class SymmetryHexagonPuzzleFactory extends PuzzleFactory{
+    public SymmetryHexagonPuzzleFactory(Context context) {
+        super(context);
+    }
+
     @Override
     public Puzzle generate(Game game, Random random) {
         GridSymmetryPuzzle symmetryPuzzle = new GridSymmetryPuzzle(game, PalettePreset.get("SymmetryIsland_1"), 5, 5, GridSymmetryPuzzle.SymmetryType.POINT, true);

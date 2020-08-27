@@ -1,181 +1,238 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="12dp"
-    android:orientation="vertical">
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="left"
-        android:text="Select Colors"
-        android:textColor="@color/colorPrimary"
-        android:fontFamily="serif"
-        android:textSize="24dp"
-        android:layout_marginBottom="8dp"/>
+    android:padding="12dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginBottom="16dp">
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:text="Select Colors"
+            android:textColor="@color/colorPrimary"
+            android:fontFamily="serif"
+            android:textSize="24dp"
+            android:layout_marginBottom="8dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="8dp">
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:text="Background: "
-                android:textColor="@color/colorPrimary"
-                android:fontFamily="serif"
-                android:textSize="20dp"
-                android:layout_marginRight="8dp"/>
-
-            <View
-                android:id="@+id/background_color"
-                android:layout_width="80dp"
-                android:layout_height="24dp"
-                android:background="@color/colorPrimary"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="8dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:text="Path: "
-                android:textColor="@color/colorPrimary"
-                android:fontFamily="serif"
-                android:textSize="20dp"
-                android:layout_marginRight="8dp"/>
-
-            <View
-                android:id="@+id/path_color"
-                android:layout_width="80dp"
-                android:layout_height="24dp"
-                android:background="@color/colorPrimary"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="8dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:text="Line: "
-                android:textColor="@color/colorPrimary"
-                android:fontFamily="serif"
-                android:textSize="20dp"
-                android:layout_marginRight="8dp"/>
-
-            <View
-                android:id="@+id/line_color"
-                android:layout_width="80dp"
-                android:layout_height="24dp"
-                android:background="@color/colorPrimary"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="8dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:text="Success: "
-                android:textColor="@color/colorPrimary"
-                android:fontFamily="serif"
-                android:textSize="20dp"
-                android:layout_marginRight="8dp"/>
-
-            <View
-                android:id="@+id/success_color"
-                android:layout_width="80dp"
-                android:layout_height="24dp"
-                android:background="@color/colorPrimary"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="8dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:text="Failure: "
-                android:textColor="@color/colorPrimary"
-                android:fontFamily="serif"
-                android:textSize="20dp"
-                android:layout_marginRight="8dp"/>
-
-            <View
-                android:id="@+id/failure_color"
-                android:layout_width="80dp"
-                android:layout_height="24dp"
-                android:background="@color/colorPrimary"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="8dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:text="Bloom: "
-                android:textColor="@color/colorPrimary"
-                android:fontFamily="serif"
-                android:textSize="20dp"
-                android:layout_marginRight="8dp"/>
-
-            <SeekBar
-                android:id="@+id/bloom_intensity"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"/>
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp"
+                android:weightSum="2">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:text="Background:"
+                    android:textColor="@color/colorPrimary"
+                    android:fontFamily="serif"
+                    android:textSize="20dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_weight="1"/>
+
+                <View
+                    android:id="@+id/background_color"
+                    android:layout_width="0dp"
+                    android:layout_height="24dp"
+                    android:background="@color/colorPrimary"
+                    android:layout_weight="1"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp"
+                android:weightSum="2">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:text="Path:"
+                    android:textColor="@color/colorPrimary"
+                    android:fontFamily="serif"
+                    android:textSize="20dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_weight="1"/>
+
+                <View
+                    android:id="@+id/path_color"
+                    android:layout_width="0dp"
+                    android:layout_height="24dp"
+                    android:background="@color/colorPrimary"
+                    android:layout_weight="1"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp"
+                android:weightSum="2">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:text="Line:"
+                    android:textColor="@color/colorPrimary"
+                    android:fontFamily="serif"
+                    android:textSize="20dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_weight="1"/>
+
+                <View
+                    android:id="@+id/line_color"
+                    android:layout_width="0dp"
+                    android:layout_height="24dp"
+                    android:background="@color/colorPrimary"
+                    android:layout_weight="1"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp"
+                android:weightSum="2">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:text="Success:"
+                    android:textColor="@color/colorPrimary"
+                    android:fontFamily="serif"
+                    android:textSize="20dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_weight="1"/>
+
+                <View
+                    android:id="@+id/success_color"
+                    android:layout_width="0dp"
+                    android:layout_height="24dp"
+                    android:background="@color/colorPrimary"
+                    android:layout_weight="1"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp"
+                android:weightSum="2">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:text="Failure:"
+                    android:textColor="@color/colorPrimary"
+                    android:fontFamily="serif"
+                    android:textSize="20dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_weight="1"/>
+
+                <View
+                    android:id="@+id/failure_color"
+                    android:layout_width="0dp"
+                    android:layout_height="24dp"
+                    android:background="@color/colorPrimary"
+                    android:layout_weight="1"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp"
+                android:weightSum="2">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:text="Bloom: "
+                    android:textColor="@color/colorPrimary"
+                    android:fontFamily="serif"
+                    android:textSize="20dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_weight="1"/>
+
+                <SeekBar
+                    android:id="@+id/bloom_intensity"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="240dp">
+
+            <GridLayout
+                android:id="@+id/presets"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:orientation="horizontal"
+                android:columnCount="2">
+
+            </GridLayout>
+
+        </ScrollView>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginTop="16dp">
+
+            <TextView
+                android:id="@+id/cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Cancel"
+                android:textSize="20dp"
+                android:textColor="@color/colorPrimary"
+                android:layout_marginRight="36dp"/>
+
+            <TextView
+                android:id="@+id/apply"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Apply"
+                android:textSize="20dp"
+                android:textColor="@color/colorPrimary"/>
 
         </LinearLayout>
 
     </LinearLayout>
 
-    <GridLayout
-        android:id="@+id/presets"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:orientation="horizontal"
-        android:columnCount="2">
-
-    </GridLayout>
-
-</LinearLayout>
+</RelativeLayout>

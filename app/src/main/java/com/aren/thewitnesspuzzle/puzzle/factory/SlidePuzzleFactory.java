@@ -1,5 +1,7 @@
 package com.aren.thewitnesspuzzle.puzzle.factory;
 
+import android.content.Context;
+
 import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 import com.aren.thewitnesspuzzle.puzzle.color.PalettePreset;
@@ -11,6 +13,10 @@ import com.aren.thewitnesspuzzle.puzzle.rules.StartingPointRule;
 import java.util.Random;
 
 public class SlidePuzzleFactory extends PuzzleFactory {
+
+    public SlidePuzzleFactory(Context context) {
+        super(context);
+    }
 
     @Override
     public Puzzle generate(Game game, Random random) {

@@ -2,6 +2,7 @@ package com.aren.thewitnesspuzzle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
@@ -24,12 +25,15 @@ import com.aren.thewitnesspuzzle.puzzle.HexagonPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 import com.aren.thewitnesspuzzle.puzzle.color.PalettePreset;
 import com.aren.thewitnesspuzzle.puzzle.color.PuzzleColorPalette;
+import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryConfig;
+import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.rules.EndingPointRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.StartingPointRule;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class CreatePatternActivity extends PuzzleEditorActivity {
 
@@ -73,7 +77,7 @@ public class CreatePatternActivity extends PuzzleEditorActivity {
                     updateUI();
                 }
                 else if(state == State.DONE){
-                    // Save and exit
+                    savePattern();
                 }
             }
         });
@@ -149,6 +153,44 @@ public class CreatePatternActivity extends PuzzleEditorActivity {
 
         state = State.INIT;
         updateUI();
+    }
+
+    protected void savePattern(){
+        PuzzleFactoryManager manager = new PuzzleFactoryManager(this);
+
+        // Check name
+        String name = nameEditText.getText().toString().trim();
+        if(name.length() == 0){
+            new AlertDialog.Builder(this)
+                    .setTitle("Error")
+                    .setMessage(String.format("Please enter a name", name))
+                    .setNegativeButton("OK", null)
+                    .show();
+            return;
+        }
+
+        if(manager.getPuzzleFactoryByName(name) != null){
+            new AlertDialog.Builder(this)
+                    .setTitle("Error")
+                    .setMessage(String.format("Name '%s' already exists.", name))
+                    .setNegativeButton("OK", null)
+                    .show();
+            return;
+        }
+
+        PuzzleFactoryConfig config = new PuzzleFactoryConfig(this, UUID.randomUUID());
+        config.setFactoryType("pattern");
+        config.setString("name", name);
+        config.setColorPalette("color", palette);
+        config.setString("puzzleType", (puzzle instanceof GridPuzzle) ? "grid" : "hexagon");
+        if(puzzle instanceof GridPuzzle){
+            config.setInt("width", getWidth());
+            config.setInt("height", getHeight());
+        }
+        config.setIntList("pattern", pattern);
+        config.save();
+
+        finish();
     }
 
     @Override

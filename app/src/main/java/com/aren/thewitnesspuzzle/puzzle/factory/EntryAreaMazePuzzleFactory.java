@@ -1,5 +1,6 @@
 package com.aren.thewitnesspuzzle.puzzle.factory;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.aren.thewitnesspuzzle.game.Game;
@@ -25,6 +26,10 @@ import java.util.List;
 import java.util.Random;
 
 public class EntryAreaMazePuzzleFactory extends PuzzleFactory {
+    public EntryAreaMazePuzzleFactory(Context context) {
+        super(context);
+    }
+
     @Override
     public Puzzle generate(Game game, Random random) {
         Puzzle puzzle = new Puzzle(game, PalettePreset.get("Entry_1"));
