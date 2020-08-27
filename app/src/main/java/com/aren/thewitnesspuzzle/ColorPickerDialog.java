@@ -39,6 +39,8 @@ public class ColorPickerDialog extends Dialog {
 
     int[] rgbRef;
 
+    Runnable onExit;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +54,8 @@ public class ColorPickerDialog extends Dialog {
 
         svImageView = findViewById(R.id.sv);
         hImageView = findViewById(R.id.h);
+        cancelText = findViewById(R.id.cancel);
+        applyText = findViewById(R.id.apply);
         svColorInner = findViewById(R.id.sv_color_inner);
         svColorOuter = findViewById(R.id.sv_color_outer);
         hColorInner = findViewById(R.id.h_color_inner);
@@ -132,6 +136,7 @@ public class ColorPickerDialog extends Dialog {
             public void onClick(View v) {
                 dismiss();
                 rgbRef[0] = Color.HSVToColor(hsv);
+                if(onExit != null) onExit.run();
             }
         });
 
@@ -141,10 +146,11 @@ public class ColorPickerDialog extends Dialog {
         handler = new Handler();
     }
 
-    public ColorPickerDialog(@NonNull Context context, int[] rgbRef) {
+    public ColorPickerDialog(@NonNull Context context, int[] rgbRef, Runnable onExit) {
         super(context);
         hsv = new float[3];
         this.rgbRef = rgbRef;
+        this.onExit = onExit;
         Color.RGBToHSV(Color.red(rgbRef[0]), Color.green(rgbRef[0]), Color.blue(rgbRef[0]), hsv);
     }
 

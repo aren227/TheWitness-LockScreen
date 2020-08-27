@@ -46,24 +46,48 @@ public class PuzzleColorPalette {
         return background;
     }
 
+    public void setBackgroundColor(int color){
+        background = color;
+    }
+
     public int getPathColor(){
         return path;
+    }
+
+    public void setPathColor(int color){
+        path = color;
     }
 
     public int getCursorColor(){
         return actualCursorColor.get();
     }
 
+    public void setCursorColor(int color){
+        actualCursorColor.set(color);
+    }
+
     public int getCursorSucceededColor(){
         return cursorSucceeded;
+    }
+
+    public void setCursorSucceededColor(int color){
+        cursorSucceeded = color;
     }
 
     public int getCursorFailedColor(){
         return cursorFailed;
     }
 
+    public void setCursorFailedColor(int color){
+        cursorFailed = color;
+    }
+
     public float getBloomIntensity(){
         return bloomIntensity;
+    }
+
+    public void setBloomIntensity(float intensity){
+        bloomIntensity = intensity;
     }
 
 }

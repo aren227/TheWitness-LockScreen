@@ -20,8 +20,8 @@ public class HexagonPuzzle extends Puzzle {
         Vertex[] innerVertices = new Vertex[6];
         Vertex[] outerVertices = new Vertex[6];
         for(int i = 0; i < 6; i++){
-            innerVertices[i] = addVertex(new Vertex(this, -(float)Math.sin(i / 6f * Math.PI * 2) * 5f, (float)Math.cos(i / 6f * Math.PI * 2) * 5f));
-            outerVertices[i] = addVertex(new Vertex(this, -(float)Math.sin(i / 6f * Math.PI * 2) * 6f, (float)Math.cos(i / 6f * Math.PI * 2) * 6f));
+            innerVertices[i] = addVertex(new Vertex(this, -(float)Math.sin(i / 6f * Math.PI * 2) * 6f, (float)Math.cos(i / 6f * Math.PI * 2) * 6f));
+            outerVertices[i] = addVertex(new Vertex(this, -(float)Math.sin(i / 6f * Math.PI * 2) * 7.5f, (float)Math.cos(i / 6f * Math.PI * 2) * 7.5f));
         }
 
         for(int i = 0; i < 6; i++){

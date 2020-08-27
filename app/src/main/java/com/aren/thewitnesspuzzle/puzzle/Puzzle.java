@@ -141,6 +141,8 @@ public class Puzzle {
     }
 
     public void calcStaticShapes(){
+        staticShapes.clear();
+
         if(pathWidth == 0) pathWidth = Math.min(getBoundingBox().getWidth(), getBoundingBox().getHeight()) * 0.05f + 0.05f;
 
         ArrayList<Shape> shadow = new ArrayList<>();
@@ -162,7 +164,8 @@ public class Puzzle {
 
         for(Vertex vertex : vertices){
             if(vertex.getRule() != null && vertex.getRule().getShape() != null){
-                staticShapes.add(vertex.getRule().getShape());
+                // getShape() reads from cache, but some rules need to be updated when changing colors. (ex, StartingPoint, BrokenLine)
+                staticShapes.add(vertex.getRule().generateShape());
                 if(shadowPanel && vertex.getRule() instanceof StartingPointRule){
                     Shape shape = vertex.getRule().generateShape(); // clone
                     shape.center = shape.center.add(new Vector3(0, -boundingBox.getHeight(), 0));
@@ -173,7 +176,8 @@ public class Puzzle {
         }
 
         for(Edge edge : edges){
-            if(edge.getRule() != null && edge.getRule().getShape() != null) staticShapes.add(edge.getRule().getShape());
+            // BrokenLine
+            if(edge.getRule() != null && edge.getRule().getShape() != null) staticShapes.add(edge.getRule().generateShape());
         }
 
         for(Tile tile : tiles){
@@ -560,6 +564,10 @@ public class Puzzle {
 
     public List<Integer> getCustomPattern(){
         return customPattern;
+    }
+
+    public void shouldUpdateStaticShapes(){
+        staticShapesCalculated = false;
     }
 
     public class ValidationResult{

@@ -84,7 +84,14 @@ public class PuzzleEditorActivity extends AppCompatActivity {
         paletteView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ColorPaletteDialog dialog = new ColorPaletteDialog(PuzzleEditorActivity.this, palette);
+                ColorPaletteDialog dialog = new ColorPaletteDialog(PuzzleEditorActivity.this, palette, new Runnable() {
+                    @Override
+                    public void run() {
+                        paletteView.invalidate();
+                        puzzle.shouldUpdateStaticShapes();
+                        game.update();
+                    }
+                });
                 dialog.show();
             }
         });

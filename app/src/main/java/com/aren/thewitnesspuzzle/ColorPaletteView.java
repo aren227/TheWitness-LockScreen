@@ -17,7 +17,6 @@ public class ColorPaletteView extends androidx.appcompat.widget.AppCompatImageVi
     Bitmap bitmap;
 
     PuzzleColorPalette palette;
-    int[] colors;
 
     public ColorPaletteView(Context context) {
         this(context, null);
@@ -36,6 +35,7 @@ public class ColorPaletteView extends androidx.appcompat.widget.AppCompatImageVi
     protected void onDraw(Canvas canvas){
         canvas.drawColor(Color.BLACK);
         if(palette != null){
+            int[] colors = new int[]{palette.getBackgroundColor(), palette.getPathColor(), palette.actualCursorColor.getOriginalValue(), palette.getCursorSucceededColor(), palette.getCursorFailedColor()};
             paint.setStyle(Paint.Style.FILL);
             for(int i = 0; i < 5; i++){
                 paint.setColor(colors[i]);
@@ -51,6 +51,5 @@ public class ColorPaletteView extends androidx.appcompat.widget.AppCompatImageVi
 
     public void setPalette(PuzzleColorPalette palette){
         this.palette = palette;
-        colors = new int[]{palette.getBackgroundColor(), palette.getPathColor(), palette.actualCursorColor.getOriginalValue(), palette.getCursorSucceededColor(), palette.getCursorFailedColor()};
     }
 }
