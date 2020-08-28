@@ -11,6 +11,7 @@
         android:theme="@style/AppTheme">
         <activity android:name=".PuzzleEditorActivity"></activity>
         <activity android:name=".CreatePatternActivity" />
+        <activity android:name=".CreateRandomPuzzleActivity" />
         <activity android:name=".DisclaimerActivity" />
         <activity android:name=".SettingsActivity" />
         <activity android:name=".PlayActivity" />

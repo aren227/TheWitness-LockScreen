@@ -36,7 +36,7 @@ public class NewPuzzleDialog extends Dialog {
             @Override
             public void onClick(View v) {
                 dismiss();
-                Intent intent = new Intent(getContext(), CreatePatternActivity.class);
+                Intent intent = new Intent(getContext(), CreateRandomPuzzleActivity.class);
                 getContext().startActivity(intent);
             }
         });

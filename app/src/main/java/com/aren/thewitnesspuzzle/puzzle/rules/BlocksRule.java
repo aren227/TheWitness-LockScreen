@@ -265,6 +265,8 @@ public class BlocksRule extends Colorable {
 
         int filled = 0;
 
+        Random rotatableRandom = new Random(random.nextInt()); // Just for consistency in editor
+
         for(Area area : areas){
             if((float)filled / (puzzle.getWidth() * puzzle.getHeight()) >= spawnRate) break;
             if(area.tiles.size() <= 3) continue;
@@ -347,7 +349,7 @@ public class BlocksRule extends Colorable {
 
                 BlocksRule rule = new BlocksRule(result, puzzle.getHeight(), rotatableCount > j, false);
                 // Rotate randomly to hide original shape
-                if(rule.rotatable) rule = BlocksRule.rotateRule(rule, random.nextInt(4));
+                if(rule.rotatable) rule = BlocksRule.rotateRule(rule, rotatableRandom.nextInt(4));
 
                 blocksRuleList.add(rule);
             }

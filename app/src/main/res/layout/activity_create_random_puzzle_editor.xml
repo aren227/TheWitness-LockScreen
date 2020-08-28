@@ -1,0 +1,541 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <CheckBox
+        android:id="@+id/broken_line_check_box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Broken Line"
+        android:textSize="24dp"
+        android:fontFamily="serif"
+        android:textColor="@color/colorAccent"
+        android:buttonTint="@color/colorAccent"/>
+
+    <LinearLayout
+        android:id="@+id/broken_line_settings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp"
+            android:weightSum="2">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:text="Spawn Rate: "
+                android:textColor="@color/colorAccent"
+                android:fontFamily="serif"
+                android:textSize="20dp"
+                android:layout_marginRight="8dp"
+                android:layout_weight="1"/>
+
+            <SeekBar
+                android:id="@+id/broken_line_rate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:progressTint="@color/colorAccent"
+                android:progressBackgroundTint="#7f7f7f"
+                android:thumbTint="@color/colorAccent"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <CheckBox
+        android:id="@+id/hexagon_check_box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hexagon"
+        android:textSize="24dp"
+        android:fontFamily="serif"
+        android:textColor="@color/colorAccent"
+        android:buttonTint="@color/colorAccent"/>
+
+    <LinearLayout
+        android:id="@+id/hexagon_settings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp"
+            android:weightSum="2">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:text="Spawn Rate: "
+                android:textColor="@color/colorAccent"
+                android:fontFamily="serif"
+                android:textSize="20dp"
+                android:layout_marginRight="8dp"
+                android:layout_weight="1"/>
+
+            <SeekBar
+                android:id="@+id/hexagon_rate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:progressTint="@color/colorAccent"
+                android:progressBackgroundTint="#7f7f7f"
+                android:thumbTint="@color/colorAccent"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <CheckBox
+        android:id="@+id/square_check_box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Square"
+        android:textSize="24dp"
+        android:fontFamily="serif"
+        android:textColor="@color/colorAccent"
+        android:buttonTint="@color/colorAccent"/>
+
+    <LinearLayout
+        android:id="@+id/square_settings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp"
+            android:weightSum="2">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="left|top"
+                android:text="Colors:"
+                android:textColor="@color/colorAccent"
+                android:fontFamily="serif"
+                android:textSize="20dp"
+                android:layout_marginRight="8dp"
+                android:layout_weight="1"/>
+
+            <LinearLayout
+                android:id="@+id/square_colors_root"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp"
+            android:weightSum="2">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:text="Spawn Rate: "
+                android:textColor="@color/colorAccent"
+                android:fontFamily="serif"
+                android:textSize="20dp"
+                android:layout_marginRight="8dp"
+                android:layout_weight="1"/>
+
+            <SeekBar
+                android:id="@+id/square_rate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:progressTint="@color/colorAccent"
+                android:progressBackgroundTint="#7f7f7f"
+                android:thumbTint="@color/colorAccent"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <CheckBox
+        android:id="@+id/blocks_check_box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Blocks"
+        android:textSize="24dp"
+        android:fontFamily="serif"
+        android:textColor="@color/colorAccent"
+        android:buttonTint="@color/colorAccent"/>
+
+    <LinearLayout
+        android:id="@+id/blocks_settings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp"
+            android:weightSum="2">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="left|top"
+                android:text="Color:"
+                android:textColor="@color/colorAccent"
+                android:fontFamily="serif"
+                android:textSize="20dp"
+                android:layout_marginRight="8dp"
+                android:layout_weight="1"/>
+
+            <RadioGroup
+                android:id="@+id/blocks_color_radio_group"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:layout_weight="1"
+                android:orientation="vertical"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp"
+            android:weightSum="2">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:text="Spawn Rate: "
+                android:textColor="@color/colorAccent"
+                android:fontFamily="serif"
+                android:textSize="20dp"
+                android:layout_marginRight="8dp"
+                android:layout_weight="1"/>
+
+            <SeekBar
+                android:id="@+id/blocks_rate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:progressTint="@color/colorAccent"
+                android:progressBackgroundTint="#7f7f7f"
+                android:thumbTint="@color/colorAccent"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp"
+            android:weightSum="2">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:text="Rotatable: "
+                android:textColor="@color/colorAccent"
+                android:fontFamily="serif"
+                android:textSize="20dp"
+                android:layout_marginRight="8dp"
+                android:layout_weight="1"/>
+
+            <SeekBar
+                android:id="@+id/blocks_rotatable_rate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:progressTint="@color/colorAccent"
+                android:progressBackgroundTint="#7f7f7f"
+                android:thumbTint="@color/colorAccent"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <CheckBox
+        android:id="@+id/sun_check_box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sun"
+        android:textSize="24dp"
+        android:fontFamily="serif"
+        android:textColor="@color/colorAccent"
+        android:buttonTint="@color/colorAccent"/>
+
+    <LinearLayout
+        android:id="@+id/sun_settings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp"
+            android:weightSum="2">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="left|top"
+                android:text="Colors:"
+                android:textColor="@color/colorAccent"
+                android:fontFamily="serif"
+                android:textSize="20dp"
+                android:layout_marginRight="8dp"
+                android:layout_weight="1"/>
+
+            <LinearLayout
+                android:id="@+id/sun_colors_root"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp"
+            android:weightSum="2">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:text="Area Rate: "
+                android:textColor="@color/colorAccent"
+                android:fontFamily="serif"
+                android:textSize="20dp"
+                android:layout_marginRight="8dp"
+                android:layout_weight="1"/>
+
+            <SeekBar
+                android:id="@+id/sun_area_rate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:progressTint="@color/colorAccent"
+                android:progressBackgroundTint="#7f7f7f"
+                android:thumbTint="@color/colorAccent"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp"
+            android:weightSum="2">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:text="Spawn Rate: "
+                android:textColor="@color/colorAccent"
+                android:fontFamily="serif"
+                android:textSize="20dp"
+                android:layout_marginRight="8dp"
+                android:layout_weight="1"/>
+
+            <SeekBar
+                android:id="@+id/sun_spawn_rate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:progressTint="@color/colorAccent"
+                android:progressBackgroundTint="#7f7f7f"
+                android:thumbTint="@color/colorAccent"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp"
+            android:weightSum="2">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:text="Pair With Square: "
+                android:textColor="@color/colorAccent"
+                android:fontFamily="serif"
+                android:textSize="20dp"
+                android:layout_marginRight="8dp"
+                android:layout_weight="1"/>
+
+            <SeekBar
+                android:id="@+id/sun_pair_with_square_rate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:progressTint="@color/colorAccent"
+                android:progressBackgroundTint="#7f7f7f"
+                android:thumbTint="@color/colorAccent"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <CheckBox
+        android:id="@+id/triangles_check_box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Triangles"
+        android:textSize="24dp"
+        android:fontFamily="serif"
+        android:textColor="@color/colorAccent"
+        android:buttonTint="@color/colorAccent"/>
+
+    <LinearLayout
+        android:id="@+id/triangles_settings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp"
+            android:weightSum="2">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:text="Spawn Rate: "
+                android:textColor="@color/colorAccent"
+                android:fontFamily="serif"
+                android:textSize="20dp"
+                android:layout_marginRight="8dp"
+                android:layout_weight="1"/>
+
+            <SeekBar
+                android:id="@+id/triangles_rate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:progressTint="@color/colorAccent"
+                android:progressBackgroundTint="#7f7f7f"
+                android:thumbTint="@color/colorAccent"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <CheckBox
+        android:id="@+id/elimination_check_box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Elimination"
+        android:textSize="24dp"
+        android:fontFamily="serif"
+        android:textColor="@color/colorAccent"
+        android:buttonTint="@color/colorAccent"/>
+
+    <LinearLayout
+        android:id="@+id/elimination_settings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp"
+            android:weightSum="2">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:text="Fake: "
+                android:textColor="@color/colorAccent"
+                android:fontFamily="serif"
+                android:textSize="20dp"
+                android:layout_marginRight="8dp"
+                android:layout_weight="1"/>
+
+            <RadioGroup
+                android:id="@+id/elimination_radio_group"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:layout_weight="1"
+                android:orientation="vertical"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

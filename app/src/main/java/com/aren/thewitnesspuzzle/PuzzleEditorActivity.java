@@ -31,6 +31,7 @@ public class PuzzleEditorActivity extends AppCompatActivity {
     boolean isGridPuzzle = true;
     PuzzleColorPalette palette;
 
+    LinearLayout editorWindow;
     EditText nameEditText;
     RadioGroup puzzleTypeRadioGroup;
     RadioButton gridPuzzleRadioButton;
@@ -49,6 +50,7 @@ public class PuzzleEditorActivity extends AppCompatActivity {
 
         palette = PalettePreset.get("Entry_1");
 
+        editorWindow = findViewById(R.id.editor_window);
         nameEditText = findViewById(R.id.name);
         puzzleTypeRadioGroup = findViewById(R.id.puzzle_type);
         gridPuzzleRadioButton = findViewById(R.id.grid_puzzle);
