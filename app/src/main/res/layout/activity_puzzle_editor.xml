@@ -40,7 +40,7 @@
                     android:id="@+id/name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="New Pattern"
+                    android:text=""
                     android:textSize="20dp"
                     android:textStyle="italic"
                     android:layout_weight="1"

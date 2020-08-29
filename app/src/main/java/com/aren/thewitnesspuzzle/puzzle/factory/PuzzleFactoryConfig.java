@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.aren.thewitnesspuzzle.puzzle.color.PuzzleColorPalette;
+import com.aren.thewitnesspuzzle.puzzle.rules.Color;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -79,6 +80,23 @@ public class PuzzleFactoryConfig {
         return def;
     }
 
+    public void setBoolean(String key, boolean val){
+        try {
+            jsonObject.put(key, val);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean getBoolean(String key, boolean def){
+        try {
+            return jsonObject.getBoolean(key);
+        } catch (JSONException ignored) {
+
+        }
+        return def;
+    }
+
     public void setFloat(String key, float val){
         try {
             jsonObject.put(key, val);
@@ -111,6 +129,32 @@ public class PuzzleFactoryConfig {
             List<Integer> result = new ArrayList<>();
             for(int i = 0; i < array.length(); i++){
                 result.add(array.getInt(i));
+            }
+            return result;
+        } catch (JSONException ignored) {
+
+        }
+        return def;
+    }
+
+    public void setColorList(String key, List<Color> val){
+        try {
+            List<String> strList = new ArrayList<>();
+            for(Color color : val) strList.add(color.toString());
+            JSONArray arr = new JSONArray(strList.toArray());
+            jsonObject.put(key, arr);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<Color> getColorList(String key, List<Color> def){
+        try {
+            JSONArray array = jsonObject.getJSONArray(key);
+            List<Color> result = new ArrayList<>();
+            for(int i = 0; i < array.length(); i++){
+                Color color = Color.fromString(array.getString(i));
+                if(color != null) result.add(color);
             }
             return result;
         } catch (JSONException ignored) {

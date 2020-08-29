@@ -257,7 +257,7 @@ public class BlocksRule extends Colorable {
         connectTiles(connected, random, tiles, width, height, selected.x, selected.y, targetCount);
     }
 
-    public static void generate(GridAreaSplitter splitter, Random random, float spawnRate, float rotatableRate){
+    public static void generate(GridAreaSplitter splitter, Random random, Color color, float spawnRate, float rotatableRate){
         GridPuzzle puzzle = splitter.getPuzzle();
 
         List<Area> areas = new ArrayList<>(splitter.areaList);
@@ -347,7 +347,7 @@ public class BlocksRule extends Colorable {
                     result[v.x - minX][v.y - minY] = true;
                 }
 
-                BlocksRule rule = new BlocksRule(result, puzzle.getHeight(), rotatableCount > j, false);
+                BlocksRule rule = new BlocksRule(result, puzzle.getHeight(), rotatableCount > j, false, color);
                 // Rotate randomly to hide original shape
                 if(rule.rotatable) rule = BlocksRule.rotateRule(rule, rotatableRandom.nextInt(4));
 

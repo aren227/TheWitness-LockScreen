@@ -38,7 +38,7 @@ public class SunEliminationPuzzleFactory extends PuzzleFactory {
 
         GridAreaSplitter splitter = new GridAreaSplitter(cursor);
 
-        SunRule.generate(splitter, random, new Color[]{Color.ORANGE, Color.PURPLE}, 1f, 1f, 0);
+        SunRule.generate(splitter, random, Arrays.asList(Color.ORANGE, Color.PURPLE), 1f, 1f, 0);
         EliminationRule.generateFakeSun(splitter, random, Arrays.asList(Color.ORANGE, Color.PURPLE));
 
         return puzzle;

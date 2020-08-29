@@ -11,6 +11,7 @@ import com.aren.thewitnesspuzzle.puzzle.cursor.area.GridAreaSplitter;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.rules.BlocksRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.BrokenLineRule;
+import com.aren.thewitnesspuzzle.puzzle.rules.Color;
 import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridWalker;
 
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class BlocksRotatableBlocksPuzzleFactory extends PuzzleFactory {
         GridAreaSplitter splitter = new GridAreaSplitter(cursor);
 
         BrokenLineRule.generate(cursor, random, 0.2f);
-        BlocksRule.generate(splitter, random, 0.4f, 0.5f);
+        BlocksRule.generate(splitter, random, Color.YELLOW, 0.4f, 0.5f);
 
         return puzzle;
     }

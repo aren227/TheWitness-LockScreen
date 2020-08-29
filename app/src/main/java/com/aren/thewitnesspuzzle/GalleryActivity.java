@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 import com.aren.thewitnesspuzzle.puzzle.factory.CustomPatternPuzzleFactory;
+import com.aren.thewitnesspuzzle.puzzle.factory.CustomRandomPuzzleFactory;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactory;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;
 
@@ -84,6 +85,9 @@ public class GalleryActivity extends AppCompatActivity {
         for(PuzzleFactory factory : puzzleFactoryManager.getAllPuzzleFactories()){
             // Check error
             if(factory instanceof CustomPatternPuzzleFactory && factory.generate(tempGame, new Random()) == null){
+                continue;
+            }
+            if(factory instanceof CustomRandomPuzzleFactory && factory.generate(tempGame, new Random()) == null){
                 continue;
             }
 

@@ -15,6 +15,7 @@ import com.aren.thewitnesspuzzle.puzzle.rules.SunRule;
 import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridWalker;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 public class MultipleSunColorsPuzzleFactory extends PuzzleFactory {
@@ -37,7 +38,7 @@ public class MultipleSunColorsPuzzleFactory extends PuzzleFactory {
         GridAreaSplitter splitter = new GridAreaSplitter(cursor);
 
         BrokenLineRule.generate(cursor, random, 0.2f);
-        SunRule.generate(splitter, random, new Color[]{Color.ORANGE, Color.LIME, Color.PURPLE}, 1f, 1f, 0);
+        SunRule.generate(splitter, random, Arrays.asList(Color.ORANGE, Color.LIME, Color.PURPLE), 1f, 1f, 0);
 
         return puzzle;
     }

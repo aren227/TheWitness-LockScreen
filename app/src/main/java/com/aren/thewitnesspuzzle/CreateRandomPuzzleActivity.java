@@ -1,5 +1,6 @@
 package com.aren.thewitnesspuzzle;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,6 +18,8 @@ import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.HexagonPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.cursor.area.GridAreaSplitter;
+import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryConfig;
+import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
 import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
@@ -38,6 +41,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 
 public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
 
@@ -82,11 +86,28 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
 
         super.onCreate(savedInstanceState);
 
+        nameEditText.setText("New Randomized Puzzle");
+
         // Disable hexagon puzzle
         hexagonPuzzleRadioButton.setVisibility(View.GONE);
 
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.activity_create_random_puzzle_overlay, root, true);
+
+        findViewById(R.id.refresh).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetPuzzle();
+                generateRules();
+            }
+        });
+
+        findViewById(R.id.done).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                savePuzzle();
+            }
+        });
 
         View editorView = inflater.inflate(R.layout.activity_create_random_puzzle_editor, editorWindow, true);
 
@@ -161,7 +182,7 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
         eliminationLayout = findViewById(R.id.elimination_settings);
         eliminationRadioGroup = findViewById(R.id.elimination_radio_group);
         eliminationRadioButtons = new HashMap<>();
-        String[] ruleNames = new String[]{"Hexagon", "Square", "Blocks", "Sun"};
+        String[] ruleNames = new String[]{"hexagon", "square", "blocks", "sun"};
         for(String ruleName : ruleNames){
             RadioButton button = new RadioButton(this);
             button.setText(ruleName);
@@ -414,10 +435,10 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
         eliminationRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(final RadioGroup group, int checkedId) {
-                if(checkedId == eliminationRadioButtons.get("Hexagon").getId()){
+                if(checkedId == eliminationRadioButtons.get("hexagon").getId()){
 
                 }
-                else if(checkedId == eliminationRadioButtons.get("Square").getId()){
+                else if(checkedId == eliminationRadioButtons.get("square").getId()){
                     if(!isSquareUsed()){
                         handler.post(new Runnable() {
                             @Override
@@ -428,10 +449,10 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
                         Toast.makeText(CreateRandomPuzzleActivity.this, "Enable Square Rule first.", Toast.LENGTH_LONG).show();
                     }
                 }
-                else if(checkedId == eliminationRadioButtons.get("Blocks").getId()){
+                else if(checkedId == eliminationRadioButtons.get("blocks").getId()){
 
                 }
-                else if(checkedId == eliminationRadioButtons.get("Sun").getId()){
+                else if(checkedId == eliminationRadioButtons.get("sun").getId()){
                     if(!isSunUsed()){
                         handler.post(new Runnable() {
                             @Override
@@ -586,12 +607,12 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
 
         // Blocks
         if(isBlocksUsed()){
-            BlocksRule.generate(splitter, new Random(blocksSeed), getBlocksSpawnRate(), getBlocksRotatableRate());
+            BlocksRule.generate(splitter, new Random(blocksSeed), getBlocksColor(), getBlocksSpawnRate(), getBlocksRotatableRate());
         }
 
         // Sun
         if(isSunUsed()){
-            SunRule.generate(splitter, new Random(sunSeed), getSunColors().toArray(new Color[]{}), getSunAreaRate(), getSunSpawnRate(), getSunPairWithSquareRate());
+            SunRule.generate(splitter, new Random(sunSeed), getSunColors(), getSunAreaRate(), getSunSpawnRate(), getSunPairWithSquareRate());
         }
 
         // Triangles
@@ -603,16 +624,16 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
         if(isEliminationUsed()){
             String fake = getEliminationFakeRule();
             if(fake != null){
-                if(fake.equals("Hexagon")){
+                if(fake.equals("hexagon")){
                     EliminationRule.generateFakeHexagon(splitter, new Random(eliminationSeed));
                 }
-                else if(fake.equals("Square") && isSquareUsed()){
+                else if(fake.equals("square") && isSquareUsed()){
                     EliminationRule.generateFakeSquare(splitter, new Random(eliminationSeed), getSquareColors());
                 }
-                else if(fake.equals("Blocks")){
+                else if(fake.equals("blocks")){
                     EliminationRule.generateFakeBlocks(splitter, new Random(eliminationSeed), null, 0f);
                 }
-                else if(fake.equals("Sun") && isSunUsed()){
+                else if(fake.equals("sun") && isSunUsed()){
                     EliminationRule.generateFakeSun(splitter, new Random(eliminationSeed), getSunColors());
                 }
             }
@@ -635,6 +656,7 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
         blocksSeed = random.nextLong();
         sunSeed = random.nextLong();
         trianglesSeed = random.nextLong();
+        eliminationSeed = random.nextLong();
 
         RandomGridWalker walker = new RandomGridWalker((GridPuzzle)puzzle, random, 5, 0, 0, getWidth(), getHeight());
         ArrayList<Vertex> vertexPositions = walker.getResult();
@@ -643,5 +665,82 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
         puzzle.setCursor(cursor);
 
         game.update();
+    }
+
+    protected void savePuzzle(){
+        PuzzleFactoryManager manager = new PuzzleFactoryManager(this);
+
+        // Check name
+        String name = nameEditText.getText().toString().trim();
+        if(name.length() == 0){
+            new AlertDialog.Builder(this)
+                    .setTitle("Error")
+                    .setMessage(String.format("Please enter a name", name))
+                    .setNegativeButton("OK", null)
+                    .show();
+            return;
+        }
+
+        if(manager.getPuzzleFactoryByName(name) != null){
+            new AlertDialog.Builder(this)
+                    .setTitle("Error")
+                    .setMessage(String.format("Name '%s' already exists.", name))
+                    .setNegativeButton("OK", null)
+                    .show();
+            return;
+        }
+
+        PuzzleFactoryConfig config = new PuzzleFactoryConfig(this, UUID.randomUUID());
+        config.setFactoryType("random");
+        config.setString("name", name);
+        config.setColorPalette("color", palette);
+        config.setString("puzzleType", "grid");
+        config.setInt("width", getWidth());
+        config.setInt("height", getHeight());
+
+        config.setBoolean("brokenline", isBrokenLineUsed());
+        if(isBrokenLineUsed()){
+            config.setFloat("brokenline_spawnrate", getBrokenLineSpawnRate());
+        }
+
+        config.setBoolean("hexagon", isHexagonUsed());
+        if(isHexagonUsed()){
+            config.setFloat("hexagon_spawnrate", getHexagonSpawnRate());
+        }
+
+        config.setBoolean("square", isSquareUsed());
+        if(isSquareUsed()){
+            config.setColorList("square_colors", getSquareColors());
+            config.setFloat("square_spawnrate", getSquareSpawnRate());
+        }
+
+        config.setBoolean("blocks", isBlocksUsed());
+        if(isBlocksUsed()){
+            config.setColorList("blocks_colors", Arrays.asList(getBlocksColor()));
+            config.setFloat("blocks_spawnrate", getBlocksSpawnRate());
+            config.setFloat("blocks_rotatablerate", getBlocksRotatableRate());
+        }
+
+        config.setBoolean("sun", isSunUsed());
+        if(isSunUsed()){
+            config.setColorList("sun_colors", getSunColors());
+            config.setFloat("sun_arearate", getSunAreaRate());
+            config.setFloat("sun_spawnrate", getSunSpawnRate());
+            config.setFloat("sun_pairwithsquare", getSunPairWithSquareRate());
+        }
+
+        config.setBoolean("triangles", isTrianglesUsed());
+        if(isTrianglesUsed()){
+            config.setFloat("triangles_spawnrate", getTrianglesSpawnRate());
+        }
+
+        config.setBoolean("elimination", isEliminationUsed());
+        if(isEliminationUsed()){
+            config.setString("elimination_fakerule", getEliminationFakeRule());
+        }
+
+        config.save();
+
+        finish();
     }
 }

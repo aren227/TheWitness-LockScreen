@@ -50,6 +50,8 @@ public class CreatePatternActivity extends PuzzleEditorActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        nameEditText.setText("New Pattern");
+
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.activity_create_pattern, root, true);
 

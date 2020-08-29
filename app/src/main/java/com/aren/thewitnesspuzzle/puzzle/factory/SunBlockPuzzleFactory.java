@@ -41,12 +41,11 @@ public class SunBlockPuzzleFactory extends PuzzleFactory {
 
         GridAreaSplitter splitter = new GridAreaSplitter(cursor);
 
-        BlocksRule.generate(splitter, random, 0.3f, 0.5f);
+        BlocksRule.generate(splitter, random, Color.ORANGE, 0.3f, 0.5f);
         List<BlocksRule> blocks = new ArrayList<>();
         for(Area area : splitter.areaList){
             for(Tile tile : area.tiles){
                 if(tile.getRule() instanceof BlocksRule){
-                    ((BlocksRule)tile.getRule()).color = Color.ORANGE;
                     blocks.add((BlocksRule)tile.getRule());
                 }
             }
@@ -57,7 +56,7 @@ public class SunBlockPuzzleFactory extends PuzzleFactory {
             blocks.get(random.nextInt(blocks.size())).color = Color.PURPLE;
         }
 
-        SunRule.generate(splitter, random, new Color[]{Color.PURPLE}, 1f, 0.8f, 1.0f);
+        SunRule.generate(splitter, random, Arrays.asList(Color.PURPLE), 1f, 0.8f, 1.0f);
 
         return puzzle;
     }

@@ -133,6 +133,10 @@ public class PuzzleFactoryManager {
                     CustomPatternPuzzleFactory factory = new CustomPatternPuzzleFactory(context, uuid);
                     register(factory);
                 }
+                else if(config.getFactoryType().equals("random")){
+                    CustomRandomPuzzleFactory factory = new CustomRandomPuzzleFactory(context, uuid);
+                    register(factory);
+                }
             }
             catch (Exception e){
                 e.printStackTrace();

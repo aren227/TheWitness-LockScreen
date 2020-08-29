@@ -39,8 +39,8 @@ public class BlocksEliminationPuzzleFactory extends PuzzleFactory {
 
         GridAreaSplitter splitter = new GridAreaSplitter(cursor);
 
-        BlocksRule.generate(splitter, random, 0.3f, 0);
-        EliminationRule.generateFakeBlocks(splitter, random, Arrays.asList(Color.YELLOW), 0f);
+        BlocksRule.generate(splitter, random, Color.YELLOW, 0.3f, 0);
+        EliminationRule.generateFakeBlocks(splitter, random, Color.YELLOW, 0f);
 
         return puzzle;
     }

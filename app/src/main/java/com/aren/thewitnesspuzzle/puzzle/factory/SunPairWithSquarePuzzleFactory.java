@@ -39,7 +39,7 @@ public class SunPairWithSquarePuzzleFactory extends PuzzleFactory {
         splitter.assignAreaColorRandomly(random, Arrays.asList(Color.WHITE, Color.BLACK));
 
         SquareRule.generate(splitter, random, 0.5f);
-        SunRule.generate(splitter, random, new Color[]{Color.WHITE, Color.BLACK}, 1f, 0.8f, 0.2f);
+        SunRule.generate(splitter, random, Arrays.asList(Color.WHITE, Color.BLACK), 1f, 0.8f, 0.2f);
 
         return puzzle;
     }

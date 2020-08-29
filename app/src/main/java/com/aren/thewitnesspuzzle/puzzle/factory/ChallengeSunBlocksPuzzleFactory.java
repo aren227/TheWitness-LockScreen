@@ -21,6 +21,7 @@ import com.aren.thewitnesspuzzle.puzzle.rules.SunRule;
 import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridWalker;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -56,7 +57,7 @@ public class ChallengeSunBlocksPuzzleFactory extends PuzzleFactory {
             brokenLines.get(i).removeRule();
         }
 
-        SunRule.generate(splitter, random, new Color[]{Color.PURPLE}, 1f, 1f, 0);
+        SunRule.generate(splitter, random, Arrays.asList(Color.PURPLE), 1f, 1f, 0);
         // Make sure that only 2 suns exist
         List<Area> sunApplied = new ArrayList<>();
         for(Area area : splitter.areaList){
@@ -78,7 +79,7 @@ public class ChallengeSunBlocksPuzzleFactory extends PuzzleFactory {
             }
         }
 
-        BlocksRule.generate(splitter, random, 0.1f, 0f);
+        BlocksRule.generate(splitter, random, Color.YELLOW, 0.1f, 0f);
 
         return puzzle;
     }

@@ -30,4 +30,13 @@ public enum Color {
         }
         return 0;
     }
+
+    public static Color fromString(String str) {
+        for (Color color : Color.values()) {
+            if (color.toString().equalsIgnoreCase(str)){
+                return color;
+            }
+        }
+        return null;
+    }
 }

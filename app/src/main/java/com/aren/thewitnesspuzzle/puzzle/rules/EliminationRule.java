@@ -95,7 +95,7 @@ public class EliminationRule extends Rule {
         }
     }
 
-    public static void generateFakeBlocks(GridAreaSplitter splitter, Random random, List<Color> colors, float rotatableProb){
+    public static void generateFakeBlocks(GridAreaSplitter splitter, Random random, Color color, float rotatableProb){
         List<Area> areas = new ArrayList<>(splitter.areaList);
         Collections.shuffle(areas, random);
         for(Area area : splitter.areaList) {
@@ -118,7 +118,7 @@ public class EliminationRule extends Rule {
             BlocksRule.connectTiles(result, random, grid, 4, 4, 0, 0, random.nextInt(3) + 2);
 
             boolean rotatable = random.nextFloat() < rotatableProb;
-            BlocksRule rule = new BlocksRule(BlocksRule.listToGridArray(result), splitter.getPuzzle().getHeight(), rotatable, false);
+            BlocksRule rule = new BlocksRule(BlocksRule.listToGridArray(result), splitter.getPuzzle().getHeight(), rotatable, false, color);
 
             // Check if this one block matches with the area
             List<Vector2Int> areaList = new ArrayList<>();

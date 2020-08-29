@@ -66,14 +66,14 @@ public class SunRule extends Colorable {
         return areaErrors;
     }
 
-    public static void generate(GridAreaSplitter splitter, Random random, Color[] palette, float areaApplyRate, float spawnRate, float pairWithAnotherRate){
+    public static void generate(GridAreaSplitter splitter, Random random, List<Color> palette, float areaApplyRate, float spawnRate, float pairWithAnotherRate){
         List<Area> areas = new ArrayList<>(splitter.areaList);
         int applyAreaCount = (int)Math.ceil(areas.size() * areaApplyRate);
         Collections.shuffle(areas, random);
         for(int i = 0; i < applyAreaCount; i++){
             Area area = areas.get(i);
             ArrayList<Tile> tiles = new ArrayList<>();
-            ArrayList<Color> availableColors = new ArrayList<>(Arrays.asList(palette));
+            ArrayList<Color> availableColors = new ArrayList<>(palette);
             for(Tile tile : area.tiles){
                 if(tile.getRule() == null) tiles.add(tile);
                 else if(tile.getRule() instanceof Colorable){
@@ -101,7 +101,7 @@ public class SunRule extends Colorable {
         Collections.shuffle(areas, random);
         for(int i = 0; i < applyAreaCount2; i++){
             // Pick a random color to pair
-            ArrayList<Color> availableColors = new ArrayList<>(Arrays.asList(palette));
+            ArrayList<Color> availableColors = new ArrayList<>(palette);
             ArrayList<Tile> tiles = new ArrayList<>();
             HashSet<Color> colorSet = new HashSet<>();
             Area area = areas.get(i);
