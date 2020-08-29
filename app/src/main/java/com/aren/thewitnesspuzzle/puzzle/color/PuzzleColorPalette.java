@@ -6,7 +6,6 @@ public class PuzzleColorPalette {
 
     private int background;
     private int path;
-    private int cursor;
     private int cursorSucceeded;
     private int cursorFailed;
 
@@ -29,17 +28,16 @@ public class PuzzleColorPalette {
     public PuzzleColorPalette(int background, int path, int cursor, int cursorSucceeded, int cursorFailed, float bloomIntensity){
         this.background = background;
         this.path = path;
-        this.cursor = cursor;
         this.cursorSucceeded = cursorSucceeded;
         this.cursorFailed = cursorFailed;
         this.bloomIntensity = bloomIntensity;
 
-        actualCursorColor = new Value<>(this.cursor);
+        actualCursorColor = new Value<>(cursor);
     }
 
     @Override
     public PuzzleColorPalette clone(){
-        return new PuzzleColorPalette(background, path, cursor, cursorSucceeded, cursorFailed, bloomIntensity);
+        return new PuzzleColorPalette(background, path, actualCursorColor.getOriginalValue(), cursorSucceeded, cursorFailed, bloomIntensity);
     }
 
     public int getBackgroundColor(){
@@ -88,6 +86,14 @@ public class PuzzleColorPalette {
 
     public void setBloomIntensity(float intensity){
         bloomIntensity = intensity;
+    }
+
+    public void set(PuzzleColorPalette palette){
+        background = palette.getBackgroundColor();
+        path = palette.getPathColor();
+        actualCursorColor.set(palette.actualCursorColor.getOriginalValue());
+        cursorSucceeded = palette.getCursorSucceededColor();
+        cursorFailed = palette.getCursorFailedColor();
     }
 
 }

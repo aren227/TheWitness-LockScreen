@@ -471,6 +471,26 @@ public class Puzzle {
         return vertex;
     }
 
+    public Vertex getVertex(int index){
+        for(Vertex vertex : vertices){
+            if(vertex.index == index) return vertex;
+        }
+        return null;
+    }
+
+    public List<Vertex> getConnectedVertices(Vertex vertex){
+        List<Vertex> result = new ArrayList<>();
+        for(Edge edge : getEdges()){
+            if(edge.from == vertex){
+                result.add(edge.to);
+            }
+            else if(edge.to == vertex){
+                result.add(edge.from);
+            }
+        }
+        return result;
+    }
+
     public Edge addEdge(Edge edge){
         edge.index = edges.size();
         edges.add(edge);

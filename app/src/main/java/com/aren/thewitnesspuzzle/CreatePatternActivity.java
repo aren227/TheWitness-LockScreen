@@ -50,7 +50,22 @@ public class CreatePatternActivity extends PuzzleEditorActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        nameEditText.setText("New Pattern");
+        // Restore from config
+        nameEditText.setText(config.getString("name", "New Pattern"));
+
+        palette.set(config.getColorPalette("color", PalettePreset.get("Entry_1")));
+        paletteView.invalidate();
+
+        isGridPuzzle = config.getString("puzzleType", "grid").equals("grid");
+        if(isGridPuzzle){
+            gridPuzzleRadioButton.setChecked(true);
+            widthEditText.setText(config.getInt("width", 4) + "");
+            heightEditText.setText(config.getInt("height", 4) + "");
+        }
+        else{
+            hexagonPuzzleRadioButton.setChecked(true);
+        }
+        updateGridSizeUI();
 
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.activity_create_pattern, root, true);
@@ -122,6 +137,7 @@ public class CreatePatternActivity extends PuzzleEditorActivity {
             }
         });
         updateUI();
+        resetPuzzle();
     }
 
     protected void updateUI(){
@@ -171,16 +187,6 @@ public class CreatePatternActivity extends PuzzleEditorActivity {
             return;
         }
 
-        if(manager.getPuzzleFactoryByName(name) != null){
-            new AlertDialog.Builder(this)
-                    .setTitle("Error")
-                    .setMessage(String.format("Name '%s' already exists.", name))
-                    .setNegativeButton("OK", null)
-                    .show();
-            return;
-        }
-
-        PuzzleFactoryConfig config = new PuzzleFactoryConfig(this, UUID.randomUUID());
         config.setFactoryType("pattern");
         config.setString("name", name);
         config.setColorPalette("color", palette);

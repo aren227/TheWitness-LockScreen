@@ -93,6 +93,15 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
                 notifyDataSetChanged();
             }
         });
+
+        holder.imageView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                PuzzleFactoryDialog dialog = new PuzzleFactoryDialog(context, preview.puzzleFactory);
+                dialog.show();
+                return true;
+            }
+        });
     }
 
     @Override

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -23,6 +24,9 @@ public class NewPuzzleDialog extends Dialog {
 
         setContentView(R.layout.new_puzzle_dialog);
 
+        final RadioButton patternRadioButton = findViewById(R.id.new_puzzle_radio_pattern);
+        final RadioButton randomRadioButton = findViewById(R.id.new_puzzle_random);
+
         TextView cancelText = findViewById(R.id.new_puzzle_cancel);
         cancelText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -35,9 +39,16 @@ public class NewPuzzleDialog extends Dialog {
         createText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dismiss();
-                Intent intent = new Intent(getContext(), CreateRandomPuzzleActivity.class);
-                getContext().startActivity(intent);
+                if(patternRadioButton.isChecked()){
+                    dismiss();
+                    Intent intent = new Intent(getContext(), CreatePatternActivity.class);
+                    getContext().startActivity(intent);
+                }
+                else if(randomRadioButton.isChecked()){
+                    dismiss();
+                    Intent intent = new Intent(getContext(), CreateRandomPuzzleActivity.class);
+                    getContext().startActivity(intent);
+                }
             }
         });
     }

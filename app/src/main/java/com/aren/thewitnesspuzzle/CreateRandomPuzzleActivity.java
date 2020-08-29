@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.HexagonPuzzle;
+import com.aren.thewitnesspuzzle.puzzle.color.PalettePreset;
 import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.cursor.area.GridAreaSplitter;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryConfig;
@@ -86,7 +87,14 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
 
         super.onCreate(savedInstanceState);
 
-        nameEditText.setText("New Randomized Puzzle");
+        // Restore from config
+        nameEditText.setText(config.getString("name", "New Randomized Puzzle"));
+
+        palette.set(config.getColorPalette("color", PalettePreset.get("Entry_1")));
+        paletteView.invalidate();
+
+        widthEditText.setText(config.getInt("width", 4) + "");
+        heightEditText.setText(config.getInt("height", 4) + "");
 
         // Disable hexagon puzzle
         hexagonPuzzleRadioButton.setVisibility(View.GONE);
@@ -207,6 +215,8 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
             }
         });
 
+        brokenLineCheckBox.setChecked(config.getBoolean("brokenline", false));
+
         brokenLineRateSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -224,6 +234,8 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
             }
         });
 
+        brokenLineRateSeekBar.setProgress((int)(config.getFloat("brokenline_spawnrate", 0f) * brokenLineRateSeekBar.getMax()));
+
         hexagonCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -231,6 +243,8 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
                 generateRules();
             }
         });
+
+        hexagonCheckBox.setChecked(config.getBoolean("hexagon", false));
 
         hexagonRateSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -249,6 +263,8 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
             }
         });
 
+        hexagonRateSeekBar.setProgress((int)(config.getFloat("hexagon_spawnrate", 0) * hexagonRateSeekBar.getMax()));
+
         squareCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -257,13 +273,17 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
             }
         });
 
-        for(CheckBox checkBox : squareColorCheckBoxes.values()){
-            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        squareCheckBox.setChecked(config.getBoolean("square", false));
+
+        List<Color> squareSavedColors = config.getColorList("square_colors", new ArrayList<Color>());
+        for(Color color : squareColorCheckBoxes.keySet()){
+            squareColorCheckBoxes.get(color).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     generateRules();
                 }
             });
+            squareCheckBox.setChecked(squareSavedColors.contains(color));
         }
 
         squareRateSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -283,6 +303,8 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
             }
         });
 
+        squareRateSeekBar.setProgress((int)(config.getFloat("square_spawnrate", 0f) * squareRateSeekBar.getMax()));
+
         blocksCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -291,12 +313,22 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
             }
         });
 
+        blocksCheckBox.setChecked(config.getBoolean("blocks", false));
+
         blocksColorRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 generateRules();
             }
         });
+
+        Color blocksSavedColor = config.getColorList("blocks_colors", Arrays.asList(Color.YELLOW)).get(0);
+        for(Color color : blocksColorRatioButtons.keySet()){
+            if(color.equals(blocksSavedColor)){
+                blocksColorRatioButtons.get(color).setChecked(true);
+                break;
+            }
+        }
 
         blocksRateSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -315,6 +347,8 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
             }
         });
 
+        blocksRateSeekBar.setProgress((int)(config.getFloat("blocks_spawnrate", 0f) * blocksRateSeekBar.getMax()));
+
         blocksRotatableRateSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -332,6 +366,8 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
             }
         });
 
+        blocksRotatableRateSeekBar.setProgress((int)(config.getFloat("blocks_rotatablerate", 0f) * blocksRotatableRateSeekBar.getMax()));
+
         sunCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -340,13 +376,19 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
             }
         });
 
-        for(CheckBox checkBox : sunColorCheckBoxes.values()){
-            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        sunCheckBox.setChecked(config.getBoolean("sun", false));
+
+        List<Color> sunSavedColors = config.getColorList("sun_colors", new ArrayList<Color>());
+        for(Color color : sunColorCheckBoxes.keySet()){
+            sunColorCheckBoxes.get(color).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     generateRules();
                 }
             });
+            if(sunSavedColors.contains(color)){
+                sunColorCheckBoxes.get(color).setChecked(true);
+            }
         }
 
         sunAreaRateSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -366,6 +408,8 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
             }
         });
 
+        sunAreaRateSeekBar.setProgress((int)(config.getFloat("sun_arearate", 0f) * sunAreaRateSeekBar.getMax()));
+
         sunSpawnRateSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -382,6 +426,8 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
                 generateRules();
             }
         });
+
+        sunSpawnRateSeekBar.setProgress((int)(config.getFloat("sun_spawnrate", 0f) * sunSpawnRateSeekBar.getMax()));
 
         sunPairWithSqaureRateSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -400,6 +446,8 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
             }
         });
 
+        sunPairWithSqaureRateSeekBar.setProgress((int)(config.getFloat("sun_pairwithsquare", 0f) * sunPairWithSqaureRateSeekBar.getMax()));
+
         trianglesCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -407,6 +455,8 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
                 generateRules();
             }
         });
+
+        trianglesCheckBox.setChecked(config.getBoolean("triangles", false));
 
         trianglesRateSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -425,6 +475,8 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
             }
         });
 
+        trianglesRateSeekBar.setProgress((int)(config.getFloat("triangles_spawnrate", 0f) * trianglesRateSeekBar.getMax()));
+
         eliminationCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -432,6 +484,9 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
                 generateRules();
             }
         });
+
+        eliminationCheckBox.setChecked(config.getBoolean("elimination", false));
+
         eliminationRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(final RadioGroup group, int checkedId) {
@@ -467,8 +522,13 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
             }
         });
 
+        if(config.getString("elimination_fakerule", null) != null && eliminationRadioButtons.containsKey(config.getString("elimination_fakerule", null))){
+            eliminationRadioButtons.get(config.getString("elimination_fakerule", null)).setChecked(true);
+        }
+
         handler = new Handler();
 
+        resetPuzzle();
         generateRules();
     }
 
@@ -631,7 +691,7 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
                     EliminationRule.generateFakeSquare(splitter, new Random(eliminationSeed), getSquareColors());
                 }
                 else if(fake.equals("blocks")){
-                    EliminationRule.generateFakeBlocks(splitter, new Random(eliminationSeed), null, 0f);
+                    EliminationRule.generateFakeBlocks(splitter, new Random(eliminationSeed), getBlocksColor(), 0f);
                 }
                 else if(fake.equals("sun") && isSunUsed()){
                     EliminationRule.generateFakeSun(splitter, new Random(eliminationSeed), getSunColors());
@@ -681,16 +741,6 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
             return;
         }
 
-        if(manager.getPuzzleFactoryByName(name) != null){
-            new AlertDialog.Builder(this)
-                    .setTitle("Error")
-                    .setMessage(String.format("Name '%s' already exists.", name))
-                    .setNegativeButton("OK", null)
-                    .show();
-            return;
-        }
-
-        PuzzleFactoryConfig config = new PuzzleFactoryConfig(this, UUID.randomUUID());
         config.setFactoryType("random");
         config.setString("name", name);
         config.setColorPalette("color", palette);

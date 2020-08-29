@@ -20,8 +20,12 @@ import com.aren.thewitnesspuzzle.puzzle.HexagonPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 import com.aren.thewitnesspuzzle.puzzle.color.PalettePreset;
 import com.aren.thewitnesspuzzle.puzzle.color.PuzzleColorPalette;
+import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryConfig;
+import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;
 import com.aren.thewitnesspuzzle.puzzle.rules.EndingPointRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.StartingPointRule;
+
+import java.util.UUID;
 
 public class PuzzleEditorActivity extends AppCompatActivity {
 
@@ -43,10 +47,18 @@ public class PuzzleEditorActivity extends AppCompatActivity {
     ImageView sizeRefreshImageView;
     RelativeLayout root;
 
+    PuzzleFactoryConfig config;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_puzzle_editor);
+
+        UUID uuid = UUID.randomUUID();
+        if(getIntent().getExtras() != null && getIntent().getExtras().getSerializable("uuid") != null){
+            uuid = (UUID)getIntent().getExtras().getSerializable("uuid");
+        }
+        config = new PuzzleFactoryConfig(this, uuid);
 
         palette = PalettePreset.get("Entry_1");
 

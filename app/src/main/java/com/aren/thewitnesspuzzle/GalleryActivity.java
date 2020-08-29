@@ -111,7 +111,9 @@ public class GalleryActivity extends AppCompatActivity {
             @Override
             public void run() {
                 for(GalleryPreview preview : previewsToRender){
-                    Puzzle puzzle = preview.puzzleFactory.generate(tempGame, new Random());
+                    Puzzle puzzle;
+                    if(preview.puzzleFactory instanceof CustomPatternPuzzleFactory) puzzle = ((CustomPatternPuzzleFactory)preview.puzzleFactory).generateWithPattern(tempGame, new Random(), true);
+                    else puzzle = preview.puzzleFactory.generate(tempGame, new Random());
                     tempGame.getSurfaceView().glRenderer.addRenderQueue(puzzle);
                 }
             }

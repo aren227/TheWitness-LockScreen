@@ -148,6 +148,16 @@ public class PuzzleFactoryManager {
         factories.put(puzzleFactory.getUuid(), puzzleFactory);
     }
 
+    public void remove(PuzzleFactory puzzleFactory){
+        if(!puzzleFactory.isCreatedByUser()) return;
+        factories.remove(puzzleFactory.getUuid());
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PuzzleFactoryManager.sharedPreferenceConfigKey, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove(puzzleFactory.getUuid().toString());
+        editor.commit();
+    }
+
     public PuzzleFactory getPuzzleFactoryByName(String name){
         for(PuzzleFactory factory : factories.values()){
             if(factory.getName().equals(name)) return factory;

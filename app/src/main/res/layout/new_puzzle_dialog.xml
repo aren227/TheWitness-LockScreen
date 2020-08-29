@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="12dp">
 
     <TextView
+        android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="left"
@@ -13,28 +14,39 @@
         android:textColor="@color/colorPrimary"
         android:fontFamily="serif"
         android:textSize="24dp"
-        android:layout_marginBottom="8dp"/>
+        android:paddingBottom="16dp"/>
 
     <RadioGroup
         android:id="@+id/new_puzzle_radiogroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp">
+        android:layout_below="@id/title"
+        android:paddingBottom="16dp"
+        android:orientation="vertical">
 
         <RadioButton
             android:id="@+id/new_puzzle_radio_pattern"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="serif"
-            android:textSize="18dp"
+            android:textSize="20dp"
             android:text="Custom Pattern"/>
+
+        <RadioButton
+            android:id="@+id/new_puzzle_random"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="serif"
+            android:textSize="20dp"
+            android:text="Custom Randomized Puzzle"/>
 
     </RadioGroup>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_below="@id/new_puzzle_radiogroup">
 
         <TextView
             android:id="@+id/new_puzzle_cancel"
@@ -60,4 +72,4 @@
 
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

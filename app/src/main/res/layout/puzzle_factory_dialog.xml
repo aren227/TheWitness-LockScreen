@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="12dp">
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:textColor="@color/colorPrimary"
+        android:drawableTint="@color/colorPrimary"
+        android:drawablePadding="4dp"
+        android:fontFamily="serif"
+        android:textSize="24dp"/>
+
+    <ImageView
+        android:id="@+id/thumbnail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        android:layout_below="@id/name"/>
+
+    <TextView
+        android:id="@+id/puzzle_cant_be_removed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+        android:text="This puzzle cannot be modified or removed."
+        android:textColor="@color/colorPrimary"
+        android:textStyle="italic"
+        android:fontFamily="serif"
+        android:textSize="20dp"
+        android:layout_below="@id/thumbnail"
+        android:paddingTop="16dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@id/thumbnail"
+        android:paddingTop="16dp">
+
+        <TextView
+            android:id="@+id/puzzle_settings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:text="Settings"
+            android:textColor="@color/colorPrimary"
+            android:fontFamily="serif"
+            android:textSize="20dp"
+            android:drawableLeft="@drawable/ic_baseline_settings_24"
+            android:drawableTint="@color/colorPrimary"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:id="@+id/puzzle_remove"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:text="Remove"
+            android:textColor="@color/colorPrimary"
+            android:fontFamily="serif"
+            android:textSize="20dp"
+            android:drawableLeft="@drawable/ic_baseline_delete_24"
+            android:drawableTint="@color/colorPrimary"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

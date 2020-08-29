@@ -129,13 +129,13 @@ public class EliminationRule extends Rule {
             boolean pass = true;
             if(rotatable){
                 for(int i = 0; i < 4; i++){
-                    if(rule.blockBits == areaRule.blockBits){
+                    if(rule.blockBits[i] == areaRule.blockBits[i]){
                         pass = false;
                     }
                     rule = BlocksRule.rotateRule(rule, 1);
                 }
             }
-            else if(rule.blockBits == areaRule.blockBits){
+            else if(rule.blockBits[0] == areaRule.blockBits[0]){
                 pass = false;
             }
 
