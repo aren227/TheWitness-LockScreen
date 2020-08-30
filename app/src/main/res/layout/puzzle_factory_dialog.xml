@@ -13,7 +13,8 @@
         android:drawableTint="@color/colorPrimary"
         android:drawablePadding="4dp"
         android:fontFamily="serif"
-        android:textSize="24dp"/>
+        android:textSize="24dp"
+        android:paddingBottom="16dp"/>
 
     <ImageView
         android:id="@+id/thumbnail"

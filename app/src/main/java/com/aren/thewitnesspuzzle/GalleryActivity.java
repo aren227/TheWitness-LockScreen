@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -32,6 +33,7 @@ public class GalleryActivity extends AppCompatActivity {
     private TextView status;
 
     private Game tempGame;
+    private Thread puzzleGenerationThread, puzzleRenderThread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,14 +51,24 @@ public class GalleryActivity extends AppCompatActivity {
         root = findViewById(R.id.gallery_root);
 
         status = findViewById(R.id.gallery_text);
+
         puzzleFactoryManager.setOnUpdate(new Runnable() {
             @Override
             public void run() {
                 updateStatusText();
             }
         });
-        updateStatusText();
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        updateGallery();
+    }
+
+    public void updateGallery(){
+        updateStatusText();
         startRenderWorker();
     }
 
@@ -65,6 +77,17 @@ public class GalleryActivity extends AppCompatActivity {
     }
 
     private void startRenderWorker(){
+        if(tempGame != null && tempGame.getSurfaceView().getParent() != null){
+            root.removeView(tempGame.getSurfaceView());
+        }
+        if(puzzleGenerationThread != null){
+            puzzleGenerationThread.interrupt();
+        }
+        if(puzzleRenderThread != null){
+            puzzleRenderThread.interrupt();
+        }
+        adapter.clearPreviews();
+
         tempGame = new Game(this, false);
 
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(512, 512);
@@ -107,7 +130,7 @@ public class GalleryActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
 
         // Generate and Query puzzles
-        new Thread(new Runnable() {
+        puzzleGenerationThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 for(GalleryPreview preview : previewsToRender){
@@ -117,10 +140,11 @@ public class GalleryActivity extends AppCompatActivity {
                     tempGame.getSurfaceView().glRenderer.addRenderQueue(puzzle);
                 }
             }
-        }).start();
+        });
+        puzzleGenerationThread.start();
 
         // Receive rendered results
-        new Thread(new Runnable() {
+        puzzleRenderThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 tempGame.getSurfaceView().glRenderer.setGalleryRenderMode();
@@ -155,6 +179,7 @@ public class GalleryActivity extends AppCompatActivity {
                     }
                 });
             }
-        }).start();
+        });
+        puzzleRenderThread.start();
     }
 }

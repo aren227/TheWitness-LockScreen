@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 public class PuzzleFactoryDialog extends Dialog {
 
     PuzzleFactory factory;
+    GalleryActivity galleryActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +69,9 @@ public class PuzzleFactoryDialog extends Dialog {
                 public void onClick(View v) {
                     dismiss();
                     new PuzzleFactoryManager(getContext()).remove(factory);
+                    if(galleryActivity != null){
+                        galleryActivity.updateGallery();
+                    }
                 }
             });
         }
@@ -80,5 +84,9 @@ public class PuzzleFactoryDialog extends Dialog {
     public PuzzleFactoryDialog(@NonNull Context context, PuzzleFactory factory) {
         super(context);
         this.factory = factory;
+
+        if(context instanceof GalleryActivity){
+            galleryActivity = (GalleryActivity)context;
+        }
     }
 }

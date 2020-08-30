@@ -16,7 +16,7 @@ public class PuzzleFactoryManager {
     public static final String sharedPreferenceConfigKey = "com.aren.thewitnesspuzzle.puzzle.factory.config";
 
     private Context context;
-    private Map<UUID, PuzzleFactory> factories = new HashMap<>();
+    private static Map<UUID, PuzzleFactory> factories = new HashMap<>();
 
     private Runnable onUpdate;
 
@@ -30,18 +30,17 @@ public class PuzzleFactoryManager {
         onUpdate = runnable;
     }
 
-    public PuzzleFactory getPuzzleFactoryByUuid(UUID uuid){
-        if(factories.containsKey(uuid)) return factories.get(uuid);
-        return null;
-    }
-
     public List<PuzzleFactory> getAllPuzzleFactories(){
+        registerUserDefinedFactories();
+
         List<PuzzleFactory> list = new ArrayList<>(factories.values());
         sort(list);
         return list;
     }
 
     public List<PuzzleFactory> getActivatedPuzzleFactories(){
+        registerUserDefinedFactories();
+
         List<PuzzleFactory> list = new ArrayList<>();
         for(UUID uuid : factories.keySet()){
             if(isActivated(uuid)){
@@ -145,6 +144,7 @@ public class PuzzleFactoryManager {
     }
 
     private void register(PuzzleFactory puzzleFactory){
+        if(factories.containsKey(puzzleFactory.getUuid())) return;
         factories.put(puzzleFactory.getUuid(), puzzleFactory);
     }
 

@@ -40,6 +40,10 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         previews.add(preview);
     }
 
+    public void clearPreviews(){
+        previews.clear();
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

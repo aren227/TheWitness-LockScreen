@@ -41,6 +41,8 @@ public class CustomPatternPuzzleFactory extends PuzzleFactory {
             int width = getConfig().getInt("width", 4);
             int height = getConfig().getInt("height", 4);
             puzzle = new GridPuzzle(game, palette, width, height);
+            ((GridPuzzle)puzzle).addStartingPoint(0, 0);
+            ((GridPuzzle)puzzle).addEndingPoint(width, height);
         }
         else if(puzzleType.equals("hexagon")){
             puzzle = new HexagonPuzzle(game, palette);
