@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
@@ -37,6 +38,7 @@ import com.aren.thewitnesspuzzle.puzzle.rules.SquareRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.StartingPointRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.SunRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.TrianglesRule;
+import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridTreeWalker;
 import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridWalker;
 
 import java.util.ArrayList;
@@ -737,8 +739,9 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
         trianglesSeed = random.nextLong();
         eliminationSeed = random.nextLong();
 
-        RandomGridWalker walker = new RandomGridWalker((GridPuzzle)puzzle, random, 5, 0, 0, getWidth(), getHeight());
-        ArrayList<Vertex> vertexPositions = walker.getResult();
+        //RandomGridWalker walker = new RandomGridWalker((GridPuzzle)puzzle, random, 5, 0, 0, getWidth(), getHeight());
+        //ArrayList<Vertex> vertexPositions = walker.getResult();
+        ArrayList<Vertex> vertexPositions = RandomGridTreeWalker.getLongestResult((GridPuzzle)puzzle, random, 10, 0, 0, getWidth(), getHeight());
 
         // Connect to the ending point
         Vertex vertex = null;

@@ -24,7 +24,7 @@ public class TrianglesRule extends Rule {
     @Override
     public Shape generateShape(){
         if(!(getGraphElement() instanceof Tile)) return null;
-        return new TrianglesShape(getGraphElement().getPosition().toVector3(), getPuzzle().getPathWidth() * 0.5f, count, COLOR);
+        return new TrianglesShape(getGraphElement().getPosition().toVector3(), 0.1f, count, COLOR);
     }
 
     @Override
