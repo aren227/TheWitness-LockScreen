@@ -194,14 +194,13 @@
         </LinearLayout>
 
         <HorizontalScrollView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <GridLayout
                 android:id="@+id/presets"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
                 android:orientation="vertical"
                 android:rowCount="4">
 
