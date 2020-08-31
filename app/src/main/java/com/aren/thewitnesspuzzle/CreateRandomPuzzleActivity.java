@@ -19,9 +19,11 @@ import com.aren.thewitnesspuzzle.puzzle.HexagonPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.color.PalettePreset;
 import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.cursor.area.GridAreaSplitter;
+import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactory;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryConfig;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
+import com.aren.thewitnesspuzzle.puzzle.graph.EdgeProportion;
 import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.rules.BlocksRule;
@@ -86,6 +88,19 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
         // PLZ HELP ME
 
         super.onCreate(savedInstanceState);
+
+        sizeRefreshImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int w = getWidth();
+                int h = getHeight();
+                widthEditText.setText(Integer.toString(w));
+                heightEditText.setText(Integer.toString(h));
+
+                resetPuzzle();
+                generateRules();
+            }
+        });
 
         // Restore from config
         nameEditText.setText(config.getString("name", "New Randomized Puzzle"));
@@ -283,7 +298,7 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
                     generateRules();
                 }
             });
-            squareCheckBox.setChecked(squareSavedColors.contains(color));
+            squareColorCheckBoxes.get(color).setChecked(squareSavedColors.contains(color));
         }
 
         squareRateSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -635,73 +650,76 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
     }
 
     protected void generateRules(){
-        // Clear previous rules
-        for(Vertex vertex : puzzle.getVertices()){
-            if(vertex.getRule() instanceof StartingPointRule || vertex.getRule() instanceof EndingPointRule) continue;
-            vertex.removeRule();
-        }
-        for(Edge edge : puzzle.getEdges()){
-            edge.removeRule();
-        }
-        for(Tile tile : puzzle.getTiles()){
-            tile.removeRule();
-        }
+        // Synchronize with Render thread
+        synchronized (puzzle){
+            // Clear previous rules
+            for(Vertex vertex : puzzle.getVertices()){
+                if(vertex.getRule() instanceof StartingPointRule || vertex.getRule() instanceof EndingPointRule) continue;
+                vertex.removeRule();
+            }
+            for(Edge edge : puzzle.getEdges()){
+                edge.removeRule();
+            }
+            for(Tile tile : puzzle.getTiles()){
+                tile.removeRule();
+            }
 
-        splitter = new GridAreaSplitter(cursor);
+            splitter = new GridAreaSplitter(cursor);
 
-        // Broken Line
-        if(isBrokenLineUsed()){
-            BrokenLineRule.generate(cursor, new Random(brokenLineSeed), getBrokenLineSpawnRate());
-        }
+            // Broken Line
+            if(isBrokenLineUsed()){
+                BrokenLineRule.generate(cursor, new Random(brokenLineSeed), getBrokenLineSpawnRate());
+            }
 
-        // Hexagon
-        if(isHexagonUsed()){
-            HexagonRule.generate(cursor, new Random(hexagonSeed), getHexagonSpawnRate());
-        }
+            // Hexagon
+            if(isHexagonUsed()){
+                HexagonRule.generate(cursor, new Random(hexagonSeed), getHexagonSpawnRate());
+            }
 
-        // Square
-        if(isSquareUsed()){
-            splitter.assignAreaColorRandomly(new Random(squareAreaSeed), getSquareColors());
-            SquareRule.generate(splitter, new Random(squareSeed), getSquareSpawnRate());
-        }
+            // Square
+            if(isSquareUsed()){
+                splitter.assignAreaColorRandomly(new Random(squareAreaSeed), getSquareColors());
+                SquareRule.generate(splitter, new Random(squareSeed), getSquareSpawnRate());
+            }
 
-        // Blocks
-        if(isBlocksUsed()){
-            BlocksRule.generate(splitter, new Random(blocksSeed), getBlocksColor(), getBlocksSpawnRate(), getBlocksRotatableRate());
-        }
+            // Blocks
+            if(isBlocksUsed()){
+                BlocksRule.generate(splitter, new Random(blocksSeed), getBlocksColor(), getBlocksSpawnRate(), getBlocksRotatableRate());
+            }
 
-        // Sun
-        if(isSunUsed()){
-            SunRule.generate(splitter, new Random(sunSeed), getSunColors(), getSunAreaRate(), getSunSpawnRate(), getSunPairWithSquareRate());
-        }
+            // Sun
+            if(isSunUsed()){
+                SunRule.generate(splitter, new Random(sunSeed), getSunColors(), getSunAreaRate(), getSunSpawnRate(), getSunPairWithSquareRate());
+            }
 
-        // Triangles
-        if(isTrianglesUsed()){
-            TrianglesRule.generate(cursor, new Random(trianglesSeed), getTrianglesSpawnRate());
-        }
+            // Triangles
+            if(isTrianglesUsed()){
+                TrianglesRule.generate(cursor, new Random(trianglesSeed), getTrianglesSpawnRate());
+            }
 
-        // Elimination
-        if(isEliminationUsed()){
-            String fake = getEliminationFakeRule();
-            if(fake != null){
-                if(fake.equals("hexagon")){
-                    EliminationRule.generateFakeHexagon(splitter, new Random(eliminationSeed));
-                }
-                else if(fake.equals("square") && isSquareUsed()){
-                    EliminationRule.generateFakeSquare(splitter, new Random(eliminationSeed), getSquareColors());
-                }
-                else if(fake.equals("blocks")){
-                    EliminationRule.generateFakeBlocks(splitter, new Random(eliminationSeed), getBlocksColor(), 0f);
-                }
-                else if(fake.equals("sun") && isSunUsed()){
-                    EliminationRule.generateFakeSun(splitter, new Random(eliminationSeed), getSunColors());
+            // Elimination
+            if(isEliminationUsed()){
+                String fake = getEliminationFakeRule();
+                if(fake != null){
+                    if(fake.equals("hexagon")){
+                        EliminationRule.generateFakeHexagon(splitter, new Random(eliminationSeed));
+                    }
+                    else if(fake.equals("square") && isSquareUsed()){
+                        EliminationRule.generateFakeSquare(splitter, new Random(eliminationSeed), getSquareColors());
+                    }
+                    else if(fake.equals("blocks")){
+                        EliminationRule.generateFakeBlocks(splitter, new Random(eliminationSeed), getBlocksColor(), 0f);
+                    }
+                    else if(fake.equals("sun") && isSunUsed()){
+                        EliminationRule.generateFakeSun(splitter, new Random(eliminationSeed), getSunColors());
+                    }
                 }
             }
+
+            puzzle.shouldUpdateStaticShapes();
+
+            game.update();
         }
-
-        puzzle.shouldUpdateStaticShapes();
-
-        game.update();
     }
 
     @Override
@@ -720,16 +738,30 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
 
         RandomGridWalker walker = new RandomGridWalker((GridPuzzle)puzzle, random, 5, 0, 0, getWidth(), getHeight());
         ArrayList<Vertex> vertexPositions = walker.getResult();
-        cursor = new Cursor((GridPuzzle)puzzle, vertexPositions, null);
+
+        // Connect to the ending point
+        Vertex vertex = null;
+        for(Vertex v : puzzle.getVertices()){
+            if(v.getRule() instanceof EndingPointRule){
+                vertex = v;
+                break;
+            }
+        }
+        EdgeProportion lastEdge = null;
+        if(vertex != null && puzzle.getEdgeByVertex(((GridPuzzle)puzzle).getVertexAt(getWidth(), getHeight()), vertex) != null){
+            lastEdge = new EdgeProportion(puzzle.getEdgeByVertex(((GridPuzzle)puzzle).getVertexAt(getWidth(), getHeight()), vertex));
+            lastEdge.proportion = 1f;
+        }
+
+        cursor = new Cursor((GridPuzzle)puzzle, vertexPositions, lastEdge);
 
         puzzle.setCursor(cursor);
+        puzzle.setUntouchable(true);
 
         game.update();
     }
 
     protected void savePuzzle(){
-        PuzzleFactoryManager manager = new PuzzleFactoryManager(this);
-
         // Check name
         String name = nameEditText.getText().toString().trim();
         if(name.length() == 0){
@@ -790,6 +822,12 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
         }
 
         config.save();
+
+        // Clear thumbnail cache
+        PuzzleFactory factory = puzzleFactoryManager.getPuzzleFactoryByUuid(config.getUuid());
+        if(factory != null){
+            factory.clearThumbnailCache();
+        }
 
         finish();
     }

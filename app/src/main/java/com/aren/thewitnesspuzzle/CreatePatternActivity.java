@@ -25,6 +25,7 @@ import com.aren.thewitnesspuzzle.puzzle.HexagonPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 import com.aren.thewitnesspuzzle.puzzle.color.PalettePreset;
 import com.aren.thewitnesspuzzle.puzzle.color.PuzzleColorPalette;
+import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactory;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryConfig;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
@@ -197,6 +198,12 @@ public class CreatePatternActivity extends PuzzleEditorActivity {
         }
         config.setIntList("pattern", pattern);
         config.save();
+
+        // Clear thumbnail cache
+        PuzzleFactory factory = puzzleFactoryManager.getPuzzleFactoryByUuid(config.getUuid());
+        if(factory != null){
+            factory.clearThumbnailCache();
+        }
 
         finish();
     }

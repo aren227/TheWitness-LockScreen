@@ -207,7 +207,11 @@ public class MainActivity extends AppCompatActivity {
 
                                             }
                                         });
-                                builder.show();
+                                AlertDialog dialog = builder.create();
+                                dialog.show();
+
+                                dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(0xff000000);
+                                dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(0xff000000);
                             }
                         });
                     }

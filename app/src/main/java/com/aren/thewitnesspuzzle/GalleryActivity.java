@@ -86,7 +86,6 @@ public class GalleryActivity extends AppCompatActivity {
         if(puzzleRenderThread != null){
             puzzleRenderThread.interrupt();
         }
-        adapter.clearPreviews();
 
         tempGame = new Game(this, false);
 
@@ -103,10 +102,12 @@ public class GalleryActivity extends AppCompatActivity {
         canvas.drawColor(Color.GRAY);
         canvas.drawBitmap(notLoaded, 0, 0, null);
 
+        adapter.clearPreviews();
+
         // Lazy Loading
         final List<GalleryPreview> previewsToRender = new ArrayList<>();
         for(PuzzleFactory factory : puzzleFactoryManager.getAllPuzzleFactories()){
-            // Check error
+            // Check config error
             if(factory instanceof CustomPatternPuzzleFactory && factory.generate(tempGame, new Random()) == null){
                 continue;
             }

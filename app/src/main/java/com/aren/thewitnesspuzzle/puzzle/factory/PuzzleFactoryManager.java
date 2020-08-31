@@ -22,6 +22,10 @@ public class PuzzleFactoryManager {
 
     public PuzzleFactoryManager(Context context){
         this.context = context;
+        updateFactoryList();
+    }
+
+    private void updateFactoryList(){
         registerBuiltInFactories();
         registerUserDefinedFactories();
     }
@@ -31,7 +35,7 @@ public class PuzzleFactoryManager {
     }
 
     public List<PuzzleFactory> getAllPuzzleFactories(){
-        registerUserDefinedFactories();
+        updateFactoryList();
 
         List<PuzzleFactory> list = new ArrayList<>(factories.values());
         sort(list);
@@ -39,7 +43,7 @@ public class PuzzleFactoryManager {
     }
 
     public List<PuzzleFactory> getActivatedPuzzleFactories(){
-        registerUserDefinedFactories();
+        updateFactoryList();
 
         List<PuzzleFactory> list = new ArrayList<>();
         for(UUID uuid : factories.keySet()){
@@ -48,6 +52,13 @@ public class PuzzleFactoryManager {
             }
         }
         return list;
+    }
+
+    public PuzzleFactory getPuzzleFactoryByUuid(UUID uuid){
+        updateFactoryList();
+
+        if(!factories.containsKey(uuid)) return null;
+        return factories.get(uuid);
     }
 
     public boolean isActiavted(PuzzleFactory factory){
@@ -77,15 +88,19 @@ public class PuzzleFactoryManager {
         Collections.sort(factories, new Comparator<PuzzleFactory>() {
             @Override
             public int compare(PuzzleFactory o1, PuzzleFactory o2) {
-                if(o1.isCreatedByUser() != o2.isCreatedByUser()){
+                if(o1.isCreatedByUser() && o2.isCreatedByUser()){
+                    return -Long.compare(o1.getConfig().getCreationTimestamp(), o2.getConfig().getCreationTimestamp());
+                }
+                else if(o1.isCreatedByUser() != o2.isCreatedByUser()){
                     return Integer.compare(o1.isCreatedByUser() ? 0 : 1, o2.isCreatedByUser() ? 0 : 1);
                 }
-
-                int a = -1;
-                if(o1.getDifficulty() != null) a = o1.getDifficulty().ordinal();
-                int b = -1;
-                if(o2.getDifficulty() != null) b = o2.getDifficulty().ordinal();
-                return Integer.compare(a, b);
+                else{
+                    int a = -1;
+                    if(o1.getDifficulty() != null) a = o1.getDifficulty().ordinal();
+                    int b = -1;
+                    if(o2.getDifficulty() != null) b = o2.getDifficulty().ordinal();
+                    return Integer.compare(a, b);
+                }
             }
         });
     }

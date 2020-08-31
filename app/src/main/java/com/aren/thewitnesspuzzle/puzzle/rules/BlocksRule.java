@@ -105,7 +105,7 @@ public class BlocksRule extends Colorable {
             }
         }
 
-        return new BlocksRule(rotated, rule.puzzleHeight, rule.rotatable, rule.subtractive);
+        return new BlocksRule(rotated, rule.puzzleHeight, rule.rotatable, rule.subtractive, rule.color);
     }
 
     public int getBlockSize(){

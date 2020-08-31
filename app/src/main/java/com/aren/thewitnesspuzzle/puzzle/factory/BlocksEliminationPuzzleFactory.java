@@ -47,7 +47,7 @@ public class BlocksEliminationPuzzleFactory extends PuzzleFactory {
 
     @Override
     public Difficulty getDifficulty() {
-        return Difficulty.VERY_HARD;
+        return Difficulty.HARD;
     }
 
     @Override

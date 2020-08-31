@@ -23,7 +23,7 @@ public class SlidePuzzleFactory extends PuzzleFactory {
         Puzzle puzzle = new Puzzle(game, PalettePreset.get("General_Slide"));
 
         Vertex a = puzzle.addVertex(new Vertex(puzzle, 0, 0));
-        Vertex b = puzzle.addVertex(new Vertex(puzzle, 0, 2f));
+        Vertex b = puzzle.addVertex(new Vertex(puzzle, 0, 3));
         puzzle.addEdge(new Edge(a, b));
 
         a.setRule(new StartingPointRule());

@@ -69,6 +69,8 @@ public class Puzzle {
 
     protected List<Integer> customPattern;
 
+    protected boolean untouchable = false;
+
     public Puzzle(Game game, PuzzleColorPalette color){
         this(game, color, game.isPlayMode() && game.getSettings().getShadowPanelEnabled());
     }
@@ -143,7 +145,7 @@ public class Puzzle {
     public void calcStaticShapes(){
         staticShapes.clear();
 
-        if(pathWidth == 0) pathWidth = Math.min(getBoundingBox().getWidth(), getBoundingBox().getHeight()) * 0.05f + 0.05f;
+        if(pathWidth == 0) pathWidth = Math.max(getBoundingBox().getWidth(), getBoundingBox().getHeight()) * 0.05f + 0.05f;
 
         ArrayList<Shape> shadow = new ArrayList<>();
         int shadowPathColor = ColorUtils.lerp(color.getBackgroundColor(), color.getPathColor(), 0.4f);
@@ -320,6 +322,8 @@ public class Puzzle {
     }
 
     public void touchEvent(float x, float y, int action){
+        if(untouchable) return;
+
         Vector2 pos = new Vector2(x, y);
         if(shadowPanel){
             pos.y += originalBoundingBox.getHeight();
@@ -654,6 +658,10 @@ public class Puzzle {
             return rules;
         }
 
+    }
+
+    public void setUntouchable(boolean untouchable){
+        this.untouchable = untouchable;
     }
 
 }

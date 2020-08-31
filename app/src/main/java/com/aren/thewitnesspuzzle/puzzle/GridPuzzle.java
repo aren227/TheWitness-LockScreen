@@ -33,7 +33,7 @@ public class GridPuzzle extends Puzzle {
 
         this.width = width;
         this.height = height;
-        pathWidth = Math.min(width, height) * 0.05f + 0.05f;
+        pathWidth = Math.max(width, height) * 0.05f + 0.05f;
 
         gridVerticies = new Vertex[width + 1][height + 1];
         gridHorizontalEdges = new Edge[width][height + 1];

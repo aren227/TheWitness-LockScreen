@@ -35,6 +35,9 @@ public class PuzzleFactoryConfig {
                 e.printStackTrace();
             }
         }
+        else{
+            setLong("created_at", System.currentTimeMillis() / 1000L);
+        }
     }
 
     public void setFactoryType(String type){
@@ -44,6 +47,10 @@ public class PuzzleFactoryConfig {
 
     public String getFactoryType(){
         return factoryType;
+    }
+
+    public long getCreationTimestamp(){
+        return getLong("created_at", 0);
     }
 
     public void setString(String key, String val){
@@ -79,6 +86,24 @@ public class PuzzleFactoryConfig {
         }
         return def;
     }
+
+    public void setLong(String key, long val){
+        try {
+            jsonObject.put(key, val);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public long getLong(String key, long def){
+        try {
+            return jsonObject.getLong(key);
+        } catch (JSONException ignored) {
+
+        }
+        return def;
+    }
+
 
     public void setBoolean(String key, boolean val){
         try {
@@ -172,7 +197,7 @@ public class PuzzleFactoryConfig {
             obj.put("success", val.getCursorSucceededColor());
             obj.put("failure", val.getCursorFailedColor());
             obj.put("bloom", val.getBloomIntensity());
-            jsonObject.put("color", obj);
+            jsonObject.put(key, obj);
         } catch (JSONException ignored) {
 
         }
@@ -196,6 +221,10 @@ public class PuzzleFactoryConfig {
 
     public boolean containsKey(String key){
         return jsonObject.has(key);
+    }
+
+    public UUID getUuid(){
+        return factoryUuid;
     }
 
     public void save(){

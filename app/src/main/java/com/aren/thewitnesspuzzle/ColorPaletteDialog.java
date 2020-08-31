@@ -3,10 +3,13 @@ package com.aren.thewitnesspuzzle;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.GridLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -110,8 +113,10 @@ public class ColorPaletteDialog extends Dialog {
         for(final PuzzleColorPalette palette : PalettePreset.getAll()){
             ColorPaletteView colorPaletteView = new ColorPaletteView(getContext());
             colorPaletteView.setPalette(palette);
+            //colorPaletteView.setAdjustViewBounds(true);
+            //colorPaletteView.setScaleType(ImageView.ScaleType.FIT_XY);
 
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(400, 100);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(300, 70);
             params.setMargins(16, 16, 16, 16);
             presetList.addView(colorPaletteView, params);
 

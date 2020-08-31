@@ -70,6 +70,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
                     dialog.show();
                 }
             });
+            holder.imageView.setOnLongClickListener(null);
             return;
         }
 

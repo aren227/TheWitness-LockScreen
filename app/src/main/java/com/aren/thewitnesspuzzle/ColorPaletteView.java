@@ -14,7 +14,6 @@ import com.aren.thewitnesspuzzle.puzzle.color.PuzzleColorPalette;
 public class ColorPaletteView extends androidx.appcompat.widget.AppCompatImageView {
 
     Paint paint;
-    Bitmap bitmap;
 
     PuzzleColorPalette palette;
 
@@ -27,8 +26,6 @@ public class ColorPaletteView extends androidx.appcompat.widget.AppCompatImageVi
 
         paint = new Paint();
         paint.setColor(Color.LTGRAY);
-
-        bitmap = Bitmap.createBitmap(512, 128, Bitmap.Config.ARGB_8888);
     }
 
     @Override

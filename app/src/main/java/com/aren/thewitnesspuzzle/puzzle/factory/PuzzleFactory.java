@@ -45,6 +45,10 @@ public abstract class PuzzleFactory {
         return thumbnailCache;
     }
 
+    public void clearThumbnailCache(){
+        thumbnailCache = null;
+    }
+
     public PuzzleFactoryConfig getConfig(){
         return config;
     }

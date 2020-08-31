@@ -30,7 +30,8 @@
             android:layout_height="wrap_content"
             android:fontFamily="serif"
             android:textSize="20dp"
-            android:text="Custom Pattern"/>
+            android:text="Pattern"
+            android:buttonTint="@color/colorPrimary"/>
 
         <RadioButton
             android:id="@+id/new_puzzle_random"
@@ -38,7 +39,8 @@
             android:layout_height="wrap_content"
             android:fontFamily="serif"
             android:textSize="20dp"
-            android:text="Custom Randomized Puzzle"/>
+            android:text="Random"
+            android:buttonTint="@color/colorPrimary"/>
 
     </RadioGroup>
 

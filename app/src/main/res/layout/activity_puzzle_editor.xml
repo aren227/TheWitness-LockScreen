@@ -43,6 +43,8 @@
                     android:text=""
                     android:textSize="20dp"
                     android:textStyle="italic"
+                    android:inputType="text"
+                    android:maxLines="1"
                     android:layout_weight="1"
                     android:textColor="@color/colorAccent"
                     android:theme="@style/EditTheme"/>

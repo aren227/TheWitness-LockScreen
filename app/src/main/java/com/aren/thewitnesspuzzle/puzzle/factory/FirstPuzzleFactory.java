@@ -23,7 +23,7 @@ public class FirstPuzzleFactory extends PuzzleFactory{
         Puzzle puzzle = new Puzzle(game, PalettePreset.get("Entry_1"));
 
         Vertex a = puzzle.addVertex(new Vertex(puzzle, 0, 0));
-        Vertex b = puzzle.addVertex(new Vertex(puzzle, 1, 0));
+        Vertex b = puzzle.addVertex(new Vertex(puzzle, 3, 0));
         puzzle.addEdge(new Edge(a, b));
 
         a.setRule(new StartingPointRule());

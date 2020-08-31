@@ -47,6 +47,7 @@ public class PuzzleEditorActivity extends AppCompatActivity {
     ImageView sizeRefreshImageView;
     RelativeLayout root;
 
+    PuzzleFactoryManager puzzleFactoryManager;
     PuzzleFactoryConfig config;
 
     @Override
@@ -58,7 +59,14 @@ public class PuzzleEditorActivity extends AppCompatActivity {
         if(getIntent().getExtras() != null && getIntent().getExtras().getSerializable("uuid") != null){
             uuid = (UUID)getIntent().getExtras().getSerializable("uuid");
         }
-        config = new PuzzleFactoryConfig(this, uuid);
+
+        puzzleFactoryManager = new PuzzleFactoryManager(this);
+        if(puzzleFactoryManager.getPuzzleFactoryByUuid(uuid) != null){
+            config = puzzleFactoryManager.getPuzzleFactoryByUuid(uuid).getConfig();
+        }
+        else{
+            config = new PuzzleFactoryConfig(this, uuid);
+        }
 
         palette = PalettePreset.get("Entry_1");
 

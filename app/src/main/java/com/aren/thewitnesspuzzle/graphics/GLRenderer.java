@@ -218,49 +218,53 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         else{
             game.getSurfaceView().setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
         }
-        puzzle.prepareForDrawing();
-
-        puzzle.updateAnimation();
-        puzzle.updateDynamicShapes();
-
-        BoundingBox frustumBB = getFrustumBoundingBox(puzzle);
-
-        Matrix.frustumM(mProjectionMatrix, 0, -frustumBB.getWidth() / 2, frustumBB.getWidth() / 2, -frustumBB.getHeight() / 2, frustumBB.getHeight() / 2, 1, 100);
-
-        GLES20.glViewport(0, 0, width, height);
-
-        // Draw the puzzle to the first frame buffer
-        GLES20.glUseProgram(glProgram);
-        if(bloom) GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer.get(0));
-        else GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
-
-        int backgroundColor = puzzle.getColorPalette().getBackgroundColor();
-        GLES20.glClearColor(Color.red(backgroundColor) / 255f, Color.green(backgroundColor) / 255f, Color.blue(backgroundColor) / 255f, 1.0f);
-        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
-
-        //카메라 좌표
-        Matrix.setLookAtM(mViewMatrix, 0, frustumBB.getCenter().x, frustumBB.getCenter().y, 1, frustumBB.getCenter().x, frustumBB.getCenter().y, 0f, 0f, 1.0f, 0.0f);
-        Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
-
-        int aPositionHandle = GLES20.glGetAttribLocation(glProgram, "aPosition");
-
-        GLES20.glEnableVertexAttribArray(aPositionHandle);
 
         int COORD_PER_VERTEX = 3;
         int VERTEX_STRIDE = 3 * 4;
-        GLES20.glVertexAttribPointer(aPositionHandle, COORD_PER_VERTEX, GLES20.GL_FLOAT, false, VERTEX_STRIDE, puzzle.getVertexBuffer());
 
-        int aColorHandle = GLES20.glGetAttribLocation(glProgram, "aColor");
+        synchronized (puzzle){
+            puzzle.prepareForDrawing();
 
-        GLES20.glEnableVertexAttribArray(aColorHandle);
+            puzzle.updateAnimation();
+            puzzle.updateDynamicShapes();
 
-        GLES20.glVertexAttribPointer(aColorHandle, COORD_PER_VERTEX, GLES20.GL_FLOAT, false, VERTEX_STRIDE, puzzle.getVertexColorBuffer());
+            BoundingBox frustumBB = getFrustumBoundingBox(puzzle);
 
-        int MVPMatrixHandle = GLES20.glGetUniformLocation(glProgram, "MVP");
+            Matrix.frustumM(mProjectionMatrix, 0, -frustumBB.getWidth() / 2, frustumBB.getWidth() / 2, -frustumBB.getHeight() / 2, frustumBB.getHeight() / 2, 1, 100);
 
-        GLES20.glUniformMatrix4fv(MVPMatrixHandle, 1, false, mMVPMatrix, 0);
+            GLES20.glViewport(0, 0, width, height);
 
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, puzzle.getVertexCount());
+            // Draw the puzzle to the first frame buffer
+            GLES20.glUseProgram(glProgram);
+            if(bloom) GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer.get(0));
+            else GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
+
+            int backgroundColor = puzzle.getColorPalette().getBackgroundColor();
+            GLES20.glClearColor(Color.red(backgroundColor) / 255f, Color.green(backgroundColor) / 255f, Color.blue(backgroundColor) / 255f, 1.0f);
+            GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+
+            //카메라 좌표
+            Matrix.setLookAtM(mViewMatrix, 0, frustumBB.getCenter().x, frustumBB.getCenter().y, 1, frustumBB.getCenter().x, frustumBB.getCenter().y, 0f, 0f, 1.0f, 0.0f);
+            Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
+
+            int aPositionHandle = GLES20.glGetAttribLocation(glProgram, "aPosition");
+
+            GLES20.glEnableVertexAttribArray(aPositionHandle);
+
+            GLES20.glVertexAttribPointer(aPositionHandle, COORD_PER_VERTEX, GLES20.GL_FLOAT, false, VERTEX_STRIDE, puzzle.getVertexBuffer());
+
+            int aColorHandle = GLES20.glGetAttribLocation(glProgram, "aColor");
+
+            GLES20.glEnableVertexAttribArray(aColorHandle);
+
+            GLES20.glVertexAttribPointer(aColorHandle, COORD_PER_VERTEX, GLES20.GL_FLOAT, false, VERTEX_STRIDE, puzzle.getVertexColorBuffer());
+
+            int MVPMatrixHandle = GLES20.glGetUniformLocation(glProgram, "MVP");
+
+            GLES20.glUniformMatrix4fv(MVPMatrixHandle, 1, false, mMVPMatrix, 0);
+
+            GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, puzzle.getVertexCount());
+        }
 
         if(bloom){
             for(int i = 1; i < 5; i++){
@@ -271,7 +275,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
                     GLES20.glViewport(0, 0, texWidth[i], texHeight[i]);
                     GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer.get(i));
 
-                    aPositionHandle = GLES20.glGetAttribLocation(glProgramFrameBuffer_boxblur_down_prelift, "aPosition");
+                    int aPositionHandle = GLES20.glGetAttribLocation(glProgramFrameBuffer_boxblur_down_prelift, "aPosition");
                     GLES20.glEnableVertexAttribArray(aPositionHandle);
                     GLES20.glVertexAttribPointer(aPositionHandle, COORD_PER_VERTEX, GLES20.GL_FLOAT, false, VERTEX_STRIDE, quadPosBuffer);
 
@@ -290,7 +294,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
                     GLES20.glViewport(0, 0, texWidth[i], texHeight[i]);
                     GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer.get(i));
 
-                    aPositionHandle = GLES20.glGetAttribLocation(glProgramFrameBuffer_boxblur_down, "aPosition");
+                    int aPositionHandle = GLES20.glGetAttribLocation(glProgramFrameBuffer_boxblur_down, "aPosition");
                     GLES20.glEnableVertexAttribArray(aPositionHandle);
                     GLES20.glVertexAttribPointer(aPositionHandle, COORD_PER_VERTEX, GLES20.GL_FLOAT, false, VERTEX_STRIDE, quadPosBuffer);
 
@@ -316,7 +320,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
                     GLES20.glViewport(0, 0, texWidth[lastBufferIdx], texHeight[lastBufferIdx]);
                     GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer.get(lastBufferIdx));
 
-                    aPositionHandle = GLES20.glGetAttribLocation(glProgramFrameBuffer_boxblur_up_init, "aPosition");
+                    int aPositionHandle = GLES20.glGetAttribLocation(glProgramFrameBuffer_boxblur_up_init, "aPosition");
                     GLES20.glEnableVertexAttribArray(aPositionHandle);
                     GLES20.glVertexAttribPointer(aPositionHandle, COORD_PER_VERTEX, GLES20.GL_FLOAT, false, VERTEX_STRIDE, quadPosBuffer);
 
@@ -349,7 +353,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
                         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer.get(lastBufferIdx));
                     }
 
-                    aPositionHandle = GLES20.glGetAttribLocation(glProgramFrameBuffer_boxblur_up, "aPosition");
+                    int aPositionHandle = GLES20.glGetAttribLocation(glProgramFrameBuffer_boxblur_up, "aPosition");
                     GLES20.glEnableVertexAttribArray(aPositionHandle);
                     GLES20.glVertexAttribPointer(aPositionHandle, COORD_PER_VERTEX, GLES20.GL_FLOAT, false, VERTEX_STRIDE, quadPosBuffer);
 
