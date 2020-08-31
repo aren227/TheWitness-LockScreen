@@ -41,7 +41,7 @@ public class EntryAreaMazePuzzleFactory extends PuzzleFactory {
         int startX = random.nextInt(width + 1);
         int startY = random.nextInt(height + 1);
 
-        final RandomGridTreeWalker tree = new RandomGridTreeWalker(width, height, random, startX, startY, 0.16f);
+        final RandomGridTreeWalker tree = new RandomGridTreeWalker(width, height, random, startX, startY, true);
 
         Vertex[][] gridVertices = new Vertex[width + 1][height + 1];
 

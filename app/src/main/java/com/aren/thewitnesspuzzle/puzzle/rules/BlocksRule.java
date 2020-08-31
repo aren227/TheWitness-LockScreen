@@ -269,7 +269,7 @@ public class BlocksRule extends Colorable {
 
         for(Area area : areas){
             if((float)filled / (puzzle.getWidth() * puzzle.getHeight()) >= spawnRate) break;
-            if(area.tiles.size() <= 3) continue;
+            if(area.tiles.size() < 3) continue;
 
             boolean[][] tiles = new boolean[puzzle.getWidth()][puzzle.getHeight()];
 

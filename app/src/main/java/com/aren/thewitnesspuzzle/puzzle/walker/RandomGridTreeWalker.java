@@ -23,7 +23,9 @@ public class RandomGridTreeWalker {
     public boolean[][] visited;
     public int[][] dist;
     public int[][] direction;
+    public int[][] bidirection;
     public Vector2Int[][] prev;
+    public boolean[][] branchCreated;
 
     public int[][] travelOrder = {{0,1,2,3}, {0,1,3,2}, {0,2,1,3}, {0,2,3,1}, {0,3,1,2}, {0,3,2,1}, {1,0,2,3}, {1,0,3,2}, {1,2,0,3}, {1,2,3,0}, {1,3,0,2}, {1,3,2,0}, {2,0,1,3}, {2,0,3,1}, {2,1,0,3}, {2,1,3,0}, {2,3,0,1}, {2,3,1,0}, {3,0,1,2}, {3,0,2,1}, {3,1,0,2}, {3,1,2,0}, {3,2,0,1}, {3,2,1,0}};
     public int[][] delta = {{-1, 0}, {1, 0}, {0, 1}, {0, -1}};
@@ -45,7 +47,7 @@ public class RandomGridTreeWalker {
         }
     }
 
-    public RandomGridTreeWalker(int width, int height, Random random, int startX, int startY, float newBranchProb){
+    public RandomGridTreeWalker(int width, int height, Random random, int startX, int startY, boolean useMazeBranch){
         this.width = width;
         this.height = height;
         this.random = random;
@@ -55,11 +57,15 @@ public class RandomGridTreeWalker {
         visited = new boolean[width + 1][height + 1];
         dist = new int[width + 1][height + 1];
         direction = new int[width + 1][height + 1];
+        bidirection = new int[width + 1][height + 1];
         prev = new Vector2Int[width + 1][height + 1];
+        branchCreated = new boolean[width + 1][height + 1];
 
-        List<Stack<Vector4Int>> stacks = new ArrayList<>(); // (x, y, dist, direction)
+        List<Stack<Vector4Int>> stacks = new ArrayList<>(); // (x, y, dist, branch delay)
         stacks.add(new Stack<Vector4Int>());
         stacks.get(0).add(new Vector4Int(startX, startY, 0, 0));
+
+        visited[startX][startY] = true;
 
         while(true){
             int check = 0;
@@ -73,33 +79,57 @@ public class RandomGridTreeWalker {
                 if(stack.isEmpty()) continue;
                 Vector4Int v = stack.peek();
 
-                if(v.x < 0 || v.x > width || v.y < 0 || v.y > height || visited[v.x][v.y]){
+                List<Integer> avail = new ArrayList<>();
+                int order = random.nextInt(24);
+                for(int i = 0; i < 4; i++) {
+                    int nx = v.x + delta[travelOrder[order][i]][0];
+                    int ny = v.y + delta[travelOrder[order][i]][1];
+
+                    if (nx < 0 || nx > width || ny < 0 || ny > height || visited[nx][ny]) {
+                        continue;
+                    }
+
+                    avail.add(i);
+                }
+
+                if(avail.size() < 1){
                     stack.pop();
                     continue;
                 }
 
-                visited[v.x][v.y] = true;
-                dist[v.x][v.y] = v.z;
-                if(!(v.x == startX && v.y == startY)){
-                    direction[v.x + delta[v.w][0]][v.y + delta[v.w][1]] |= 1 << opposite[v.w];
-                    prev[v.x][v.y] = new Vector2Int(v.x + delta[v.w][0], v.y + delta[v.w][1]);
-                }
+                // Forward
+                int nx = v.x + delta[travelOrder[order][avail.get(0)]][0];
+                int ny = v.y + delta[travelOrder[order][avail.get(0)]][1];
+                visited[nx][ny] = true;
+                dist[nx][ny] = v.z + 1;
+                direction[v.x][v.y] |= 1 << travelOrder[order][avail.get(0)];
+                bidirection[v.x][v.y] |= 1 << travelOrder[order][avail.get(0)];
+                bidirection[nx][ny] |= 1 << opposite[travelOrder[order][avail.get(0)]];
+                prev[nx][ny] = new Vector2Int(v.x, v.y);
+                Vector4Int nv = new Vector4Int(nx, ny, v.z + 1, v.w - 1);
 
-                int order = random.nextInt(24);
-                for(int i = 0; i < 4; i++){
-                    int nx = v.x + delta[travelOrder[order][i]][0];
-                    int ny = v.y + delta[travelOrder[order][i]][1];
+                // Branch
+                //if(avail.size() > 1 && random.nextFloat() < newBranchProb && !branchCreated[v.x][v.y]){
+                if(useMazeBranch && avail.size() > 1 && !branchCreated[v.x][v.y] && v.w <= 0){
+                    Log.i("BRANCH", v.x + ", " + v.y);
+                    nx = v.x + delta[travelOrder[order][avail.get(1)]][0];
+                    ny = v.y + delta[travelOrder[order][avail.get(1)]][1];
+                    visited[nx][ny] = true;
+                    dist[nx][ny] = v.z + 1;
+                    direction[v.x][v.y] |= 1 << travelOrder[order][avail.get(1)];
+                    bidirection[v.x][v.y] |= 1 << travelOrder[order][avail.get(1)];
+                    bidirection[nx][ny] |= 1 << opposite[travelOrder[order][avail.get(1)]];
+                    prev[nx][ny] = new Vector2Int(v.x, v.y);
 
-                    // New branch
-                    if(random.nextFloat() < newBranchProb){
-                        Stack<Vector4Int> newStack = new Stack<>();
-                        newStack.add(new Vector4Int(nx, ny, v.z + 1, opposite[travelOrder[order][i]]));
-                        stacks.add(newStack);
-                    }
-                    else{
-                        stack.add(new Vector4Int(nx, ny, v.z + 1, opposite[travelOrder[order][i]]));
-                    }
+                    Stack<Vector4Int> newStack = new Stack<>();
+                    newStack.add(new Vector4Int(nx, ny, v.z + 1, random.nextInt(width + height) + width + height));
+                    stacks.add(newStack);
+                    branchCreated[v.x][v.y] = true;
+
+                    // Reset Delay
+                    nv.w = random.nextInt(width + height) + width + height;
                 }
+                stack.add(nv);
             }
         }
 
@@ -118,17 +148,19 @@ public class RandomGridTreeWalker {
         return result;
     }
 
-    public static ArrayList<Vertex> getLongestResult(GridPuzzle puzzle, Random random, int iter, int startX, int startY, int endX, int endY){
-        return getLongestResult(puzzle, random, iter, startX, startY, endX, endY, 0f);
+    public static RandomGridTreeWalker getLongest(GridPuzzle puzzle, Random random, int iter, int startX, int startY, int endX, int endY){
+        return getLongest(puzzle, random, iter, startX, startY, endX, endY, false);
     }
 
-    public static ArrayList<Vertex> getLongestResult(GridPuzzle puzzle, Random random, int iter, int startX, int startY, int endX, int endY, float newBranchProb){
-        ArrayList<Vertex> longest = new ArrayList<>();
+    public static RandomGridTreeWalker getLongest(GridPuzzle puzzle, Random random, int iter, int startX, int startY, int endX, int endY, boolean useMazeBranch){
+        RandomGridTreeWalker longest = null;
+        int length = 0;
         for(int i = 0; i < iter; i++){
-            RandomGridTreeWalker walker = new RandomGridTreeWalker(puzzle.getWidth(), puzzle.getHeight(), random, startX, startY, newBranchProb);
+            RandomGridTreeWalker walker = new RandomGridTreeWalker(puzzle.getWidth(), puzzle.getHeight(), random, startX, startY, useMazeBranch);
             ArrayList<Vertex> cand = walker.getResult(puzzle, endX, endY);
-            if(cand.size() > longest.size()){
-                longest = cand;
+            if(cand.size() > length){
+                longest = walker;
+                length = cand.size();
             }
         }
         return longest;

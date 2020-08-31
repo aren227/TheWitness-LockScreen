@@ -1,6 +1,7 @@
 package com.aren.thewitnesspuzzle.puzzle.factory;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
@@ -8,6 +9,7 @@ import com.aren.thewitnesspuzzle.puzzle.color.PalettePreset;
 import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.rules.BrokenLineRule;
+import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridTreeWalker;
 import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridWalker;
 
 import java.util.ArrayList;
@@ -26,12 +28,11 @@ public class SimpleMazePuzzleFactory extends PuzzleFactory {
         puzzle.addStartingPoint(0, 0);
         puzzle.addEndingPoint(puzzle.getWidth(), puzzle.getHeight());
 
-        RandomGridWalker walker = new RandomGridWalker(puzzle, random, 10, 0, 0, 6, 6);
-        ArrayList<Vertex> vertexPositions = walker.getResult();
+        RandomGridTreeWalker walker = RandomGridTreeWalker.getLongest(puzzle, random, 10, 0, 0, 6, 6, true);
 
-        Cursor cursor = new Cursor(puzzle, vertexPositions, null);
+        Cursor cursor = new Cursor(puzzle, walker.getResult(puzzle, 6, 6), null);
 
-        BrokenLineRule.generate(cursor, random, 0.8f);
+        BrokenLineRule.generate(puzzle, walker, random, 1f);
 
         return puzzle;
     }
