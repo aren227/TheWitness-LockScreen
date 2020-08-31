@@ -1,7 +1,9 @@
 package com.aren.thewitnesspuzzle;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -67,11 +69,25 @@ public class PuzzleFactoryDialog extends Dialog {
             findViewById(R.id.puzzle_remove).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    dismiss();
-                    new PuzzleFactoryManager(getContext()).remove(factory);
-                    if(galleryActivity != null){
-                        galleryActivity.updateGallery();
-                    }
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
+                            .setTitle("Delete")
+                            .setMessage("Are you sure?")
+                            .setPositiveButton("Yes", new OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dismiss();
+                                    new PuzzleFactoryManager(getContext()).remove(factory);
+                                    if(galleryActivity != null){
+                                        galleryActivity.updateGallery();
+                                    }
+                                }
+                            })
+                            .setNegativeButton("No", null);
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+
+                    dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(0xff000000);
+                    dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(0xff000000);
                 }
             });
         }

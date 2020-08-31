@@ -2,6 +2,7 @@ package com.aren.thewitnesspuzzle;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -763,7 +764,7 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
 
     protected void savePuzzle(){
         // Check name
-        String name = nameEditText.getText().toString().trim();
+        final String name = nameEditText.getText().toString().trim();
         if(name.length() == 0){
             new AlertDialog.Builder(this)
                     .setTitle("Error")
@@ -773,62 +774,75 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
             return;
         }
 
-        config.setFactoryType("random");
-        config.setString("name", name);
-        config.setColorPalette("color", palette);
-        config.setString("puzzleType", "grid");
-        config.setInt("width", getWidth());
-        config.setInt("height", getHeight());
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setTitle("Save & Exit")
+                .setMessage("Are you sure?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        config.setFactoryType("random");
+                        config.setString("name", name);
+                        config.setColorPalette("color", palette);
+                        config.setString("puzzleType", "grid");
+                        config.setInt("width", getWidth());
+                        config.setInt("height", getHeight());
 
-        config.setBoolean("brokenline", isBrokenLineUsed());
-        if(isBrokenLineUsed()){
-            config.setFloat("brokenline_spawnrate", getBrokenLineSpawnRate());
-        }
+                        config.setBoolean("brokenline", isBrokenLineUsed());
+                        if(isBrokenLineUsed()){
+                            config.setFloat("brokenline_spawnrate", getBrokenLineSpawnRate());
+                        }
 
-        config.setBoolean("hexagon", isHexagonUsed());
-        if(isHexagonUsed()){
-            config.setFloat("hexagon_spawnrate", getHexagonSpawnRate());
-        }
+                        config.setBoolean("hexagon", isHexagonUsed());
+                        if(isHexagonUsed()){
+                            config.setFloat("hexagon_spawnrate", getHexagonSpawnRate());
+                        }
 
-        config.setBoolean("square", isSquareUsed());
-        if(isSquareUsed()){
-            config.setColorList("square_colors", getSquareColors());
-            config.setFloat("square_spawnrate", getSquareSpawnRate());
-        }
+                        config.setBoolean("square", isSquareUsed());
+                        if(isSquareUsed()){
+                            config.setColorList("square_colors", getSquareColors());
+                            config.setFloat("square_spawnrate", getSquareSpawnRate());
+                        }
 
-        config.setBoolean("blocks", isBlocksUsed());
-        if(isBlocksUsed()){
-            config.setColorList("blocks_colors", Arrays.asList(getBlocksColor()));
-            config.setFloat("blocks_spawnrate", getBlocksSpawnRate());
-            config.setFloat("blocks_rotatablerate", getBlocksRotatableRate());
-        }
+                        config.setBoolean("blocks", isBlocksUsed());
+                        if(isBlocksUsed()){
+                            config.setColorList("blocks_colors", Arrays.asList(getBlocksColor()));
+                            config.setFloat("blocks_spawnrate", getBlocksSpawnRate());
+                            config.setFloat("blocks_rotatablerate", getBlocksRotatableRate());
+                        }
 
-        config.setBoolean("sun", isSunUsed());
-        if(isSunUsed()){
-            config.setColorList("sun_colors", getSunColors());
-            config.setFloat("sun_arearate", getSunAreaRate());
-            config.setFloat("sun_spawnrate", getSunSpawnRate());
-            config.setFloat("sun_pairwithsquare", getSunPairWithSquareRate());
-        }
+                        config.setBoolean("sun", isSunUsed());
+                        if(isSunUsed()){
+                            config.setColorList("sun_colors", getSunColors());
+                            config.setFloat("sun_arearate", getSunAreaRate());
+                            config.setFloat("sun_spawnrate", getSunSpawnRate());
+                            config.setFloat("sun_pairwithsquare", getSunPairWithSquareRate());
+                        }
 
-        config.setBoolean("triangles", isTrianglesUsed());
-        if(isTrianglesUsed()){
-            config.setFloat("triangles_spawnrate", getTrianglesSpawnRate());
-        }
+                        config.setBoolean("triangles", isTrianglesUsed());
+                        if(isTrianglesUsed()){
+                            config.setFloat("triangles_spawnrate", getTrianglesSpawnRate());
+                        }
 
-        config.setBoolean("elimination", isEliminationUsed());
-        if(isEliminationUsed()){
-            config.setString("elimination_fakerule", getEliminationFakeRule());
-        }
+                        config.setBoolean("elimination", isEliminationUsed());
+                        if(isEliminationUsed()){
+                            config.setString("elimination_fakerule", getEliminationFakeRule());
+                        }
 
-        config.save();
+                        config.save();
 
-        // Clear thumbnail cache
-        PuzzleFactory factory = puzzleFactoryManager.getPuzzleFactoryByUuid(config.getUuid());
-        if(factory != null){
-            factory.clearThumbnailCache();
-        }
+                        // Clear thumbnail cache
+                        PuzzleFactory factory = puzzleFactoryManager.getPuzzleFactoryByUuid(config.getUuid());
+                        if(factory != null){
+                            factory.clearThumbnailCache();
+                        }
 
-        finish();
+                        finish();
+                    }
+                })
+                .setNegativeButton("No", null);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(0xff000000);
+        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(0xff000000);
     }
 }

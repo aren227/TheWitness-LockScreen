@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -178,7 +179,7 @@ public class CreatePatternActivity extends PuzzleEditorActivity {
         PuzzleFactoryManager manager = new PuzzleFactoryManager(this);
 
         // Check name
-        String name = nameEditText.getText().toString().trim();
+        final String name = nameEditText.getText().toString().trim();
         if(name.length() == 0){
             new AlertDialog.Builder(this)
                     .setTitle("Error")
@@ -188,24 +189,37 @@ public class CreatePatternActivity extends PuzzleEditorActivity {
             return;
         }
 
-        config.setFactoryType("pattern");
-        config.setString("name", name);
-        config.setColorPalette("color", palette);
-        config.setString("puzzleType", (puzzle instanceof GridPuzzle) ? "grid" : "hexagon");
-        if(puzzle instanceof GridPuzzle){
-            config.setInt("width", getWidth());
-            config.setInt("height", getHeight());
-        }
-        config.setIntList("pattern", pattern);
-        config.save();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setTitle("Save & Exit")
+                .setMessage("Are you sure?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        config.setFactoryType("pattern");
+                        config.setString("name", name);
+                        config.setColorPalette("color", palette);
+                        config.setString("puzzleType", (puzzle instanceof GridPuzzle) ? "grid" : "hexagon");
+                        if(puzzle instanceof GridPuzzle){
+                            config.setInt("width", getWidth());
+                            config.setInt("height", getHeight());
+                        }
+                        config.setIntList("pattern", pattern);
+                        config.save();
 
-        // Clear thumbnail cache
-        PuzzleFactory factory = puzzleFactoryManager.getPuzzleFactoryByUuid(config.getUuid());
-        if(factory != null){
-            factory.clearThumbnailCache();
-        }
+                        // Clear thumbnail cache
+                        PuzzleFactory factory = puzzleFactoryManager.getPuzzleFactoryByUuid(config.getUuid());
+                        if(factory != null){
+                            factory.clearThumbnailCache();
+                        }
 
-        finish();
+                        finish();
+                    }
+                })
+                .setNegativeButton("No", null);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(0xff000000);
+        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(0xff000000);
     }
 
     @Override
