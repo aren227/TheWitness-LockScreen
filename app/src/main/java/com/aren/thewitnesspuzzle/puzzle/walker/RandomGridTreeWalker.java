@@ -27,6 +27,8 @@ public class RandomGridTreeWalker {
     public Vector2Int[][] prev;
     public boolean[][] branchCreated;
 
+    List<Integer> stackMaxSizes;
+
     public int[][] travelOrder = {{0,1,2,3}, {0,1,3,2}, {0,2,1,3}, {0,2,3,1}, {0,3,1,2}, {0,3,2,1}, {1,0,2,3}, {1,0,3,2}, {1,2,0,3}, {1,2,3,0}, {1,3,0,2}, {1,3,2,0}, {2,0,1,3}, {2,0,3,1}, {2,1,0,3}, {2,1,3,0}, {2,3,0,1}, {2,3,1,0}, {3,0,1,2}, {3,0,2,1}, {3,1,0,2}, {3,1,2,0}, {3,2,0,1}, {3,2,1,0}};
     public int[][] delta = {{-1, 0}, {1, 0}, {0, 1}, {0, -1}};
     public int[] opposite = {1, 0, 3, 2};
@@ -47,7 +49,7 @@ public class RandomGridTreeWalker {
         }
     }
 
-    public RandomGridTreeWalker(int width, int height, Random random, int startX, int startY, boolean useMazeBranch){
+    public RandomGridTreeWalker(int width, int height, Random random, int startX, int startY, List<Vector2Int> branchPositions){
         this.width = width;
         this.height = height;
         this.random = random;
@@ -64,6 +66,9 @@ public class RandomGridTreeWalker {
         List<Stack<Vector4Int>> stacks = new ArrayList<>(); // (x, y, dist, branch delay)
         stacks.add(new Stack<Vector4Int>());
         stacks.get(0).add(new Vector4Int(startX, startY, 0, 0));
+
+        stackMaxSizes = new ArrayList<>();
+        stackMaxSizes.add(0);
 
         visited[startX][startY] = true;
 
@@ -110,8 +115,7 @@ public class RandomGridTreeWalker {
 
                 // Branch
                 //if(avail.size() > 1 && random.nextFloat() < newBranchProb && !branchCreated[v.x][v.y]){
-                if(useMazeBranch && avail.size() > 1 && !branchCreated[v.x][v.y] && v.w <= 0){
-                    Log.i("BRANCH", v.x + ", " + v.y);
+                if(branchPositions != null && branchPositions.contains(new Vector2Int(v.x, v.y)) && avail.size() > 1 && !branchCreated[v.x][v.y] && v.w <= 0){
                     nx = v.x + delta[travelOrder[order][avail.get(1)]][0];
                     ny = v.y + delta[travelOrder[order][avail.get(1)]][1];
                     visited[nx][ny] = true;
@@ -124,12 +128,14 @@ public class RandomGridTreeWalker {
                     Stack<Vector4Int> newStack = new Stack<>();
                     newStack.add(new Vector4Int(nx, ny, v.z + 1, random.nextInt(width + height) + width + height));
                     stacks.add(newStack);
+                    stackMaxSizes.add(1);
                     branchCreated[v.x][v.y] = true;
 
                     // Reset Delay
-                    nv.w = random.nextInt(width + height) + width + height;
+                    //nv.w = random.nextInt(width + height) + width + height;
                 }
                 stack.add(nv);
+                stackMaxSizes.set(idx - 1, stack.size());
             }
         }
 
@@ -148,19 +154,54 @@ public class RandomGridTreeWalker {
         return result;
     }
 
-    public static RandomGridTreeWalker getLongest(GridPuzzle puzzle, Random random, int iter, int startX, int startY, int endX, int endY){
-        return getLongest(puzzle, random, iter, startX, startY, endX, endY, false);
+    public int getPathLength(int endX, int endY){
+        Vector2Int pos = new Vector2Int(endX, endY);
+        int count = 0;
+        while(true){
+            count++;
+            if(prev[pos.x][pos.y] == null) break;
+            pos = prev[pos.x][pos.y];
+        }
+        return count;
     }
 
-    public static RandomGridTreeWalker getLongest(GridPuzzle puzzle, Random random, int iter, int startX, int startY, int endX, int endY, boolean useMazeBranch){
+    // ?????
+    public static RandomGridTreeWalker getMaziest(int width, int height, Random random, int iter, int startX, int startY, int endX, int endY, int branches){
+        int length = 0;
+        RandomGridTreeWalker maziest = null;
+        for(int i = 0; i < iter; i++){
+            List<Vector2Int> branchPositions = new ArrayList<>();
+            for(int j = 0; j < branches; j++){
+                float fx = random.nextFloat();
+                float fy = random.nextFloat();
+                int x = Math.min((int)(Math.pow(fx, 3) * (width + 1)), width);
+                int y = Math.min((int)(Math.pow(fy, 3) * (height + 1)), height);
+                branchPositions.add(new Vector2Int(x, y));
+            }
+
+            RandomGridTreeWalker walker = new RandomGridTreeWalker(width, height, random, startX, startY, branchPositions);
+            int newLength = walker.getPathLength(endX, endY);
+            if(newLength > length){
+                maziest = walker;
+                length = newLength;
+            }
+        }
+        return maziest;
+    }
+
+    /*public static RandomGridTreeWalker getLongest(GridPuzzle puzzle, Random random, int iter, int startX, int startY, int endX, int endY){
+        return getLongest(puzzle, random, iter, startX, startY, endX, endY, 0);
+    }*/
+
+    public static RandomGridTreeWalker getLongest(int width, int height, Random random, int iter, int startX, int startY, int endX, int endY){
         RandomGridTreeWalker longest = null;
         int length = 0;
         for(int i = 0; i < iter; i++){
-            RandomGridTreeWalker walker = new RandomGridTreeWalker(puzzle.getWidth(), puzzle.getHeight(), random, startX, startY, useMazeBranch);
-            ArrayList<Vertex> cand = walker.getResult(puzzle, endX, endY);
-            if(cand.size() > length){
+            RandomGridTreeWalker walker = new RandomGridTreeWalker(width, height, random, startX, startY, null);
+            int newLength = walker.getPathLength(endX, endY);
+            if(newLength > length){
                 longest = walker;
-                length = cand.size();
+                length = newLength;
             }
         }
         return longest;

@@ -41,7 +41,21 @@ public class EntryAreaMazePuzzleFactory extends PuzzleFactory {
         int startX = random.nextInt(width + 1);
         int startY = random.nextInt(height + 1);
 
-        final RandomGridTreeWalker tree = new RandomGridTreeWalker(width, height, random, startX, startY, true);
+        List<Vector2Int> branchCandidates = new ArrayList<>();
+        for(int i = 0; i <= width; i++){
+            for(int j = 0; j <= height; j++){
+                int dist = Math.abs(startX - i) + Math.abs(startY - j);
+                if(1 < dist && dist <= 3){
+                    branchCandidates.add(new Vector2Int(i, j));
+                }
+            }
+        }
+        Collections.shuffle(branchCandidates, random);
+        for(int i = 3; i < branchCandidates.size(); i++){
+            branchCandidates.remove(i);
+        }
+
+        final RandomGridTreeWalker tree = new RandomGridTreeWalker(width, height, random, startX, startY, branchCandidates);
 
         Vertex[][] gridVertices = new Vertex[width + 1][height + 1];
 

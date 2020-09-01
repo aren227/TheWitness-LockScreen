@@ -28,11 +28,11 @@ public class SimpleMazePuzzleFactory extends PuzzleFactory {
         puzzle.addStartingPoint(0, 0);
         puzzle.addEndingPoint(puzzle.getWidth(), puzzle.getHeight());
 
-        RandomGridTreeWalker walker = RandomGridTreeWalker.getLongest(puzzle, random, 10, 0, 0, 6, 6, true);
+        RandomGridTreeWalker walker = RandomGridTreeWalker.getMaziest(puzzle.getWidth(), puzzle.getHeight(), random, 5, 0, 0, 6, 6, 3);
 
         Cursor cursor = new Cursor(puzzle, walker.getResult(puzzle, 6, 6), null);
 
-        BrokenLineRule.generate(puzzle, walker, random, 1f);
+        BrokenLineRule.generate(puzzle, walker, random, 0.9f);
 
         return puzzle;
     }

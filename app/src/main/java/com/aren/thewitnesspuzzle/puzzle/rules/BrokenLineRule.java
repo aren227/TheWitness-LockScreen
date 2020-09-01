@@ -80,6 +80,7 @@ public class BrokenLineRule extends Rule {
                         Math.abs(walker.dist[o2.from.gridPosition.x][o2.from.gridPosition.y] - walker.dist[o2.to.gridPosition.x][o2.to.gridPosition.y]));
             }
         });*/
+        Collections.shuffle(blockEdges, random);
         for(int i = 0; i < brokenEdges; i++){
             blockEdges.get(i).setRule(new BrokenLineRule());
         }
