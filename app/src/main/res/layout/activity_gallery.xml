@@ -15,14 +15,93 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/gallery_text"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/head"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="serif"
-            android:textSize="18dp"
-            android:textColor="#fafafa"
-            android:padding="6dp"/>
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <EditText
+                android:id="@+id/profile_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="20dp"
+                android:textStyle="italic"
+                android:inputType="text"
+                android:maxLines="1"
+                android:layout_weight="0.33"
+                android:layout_marginLeft="4dp"
+                android:textColor="@color/colorAccent"
+                android:theme="@style/EditTheme"/>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.67"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/dropdown"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_baseline_arrow_drop_down_24"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="8dp"/>
+
+                <ImageView
+                    android:id="@+id/profile_lock"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/ic_baseline_lock_24"
+                    android:padding="4dp"/>
+
+                <ImageView
+                    android:id="@+id/profile_play"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/ic_baseline_play_circle_filled_24"
+                    android:padding="4dp"/>
+
+                <TextView
+                    android:id="@+id/profile_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="serif"
+                    android:textSize="18dp"
+                    android:textColor="#fafafa"
+                    android:visibility="gone"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="right">
+
+                    <ImageView
+                        android:id="@+id/profile_add"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:adjustViewBounds="true"
+                        android:src="@drawable/ic_baseline_playlist_add_24"
+                        android:padding="4dp"/>
+
+                    <ImageView
+                        android:id="@+id/profile_delete"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:adjustViewBounds="true"
+                        android:src="@drawable/ic_baseline_delete_24"
+                        android:padding="4dp"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/gallery_grid"

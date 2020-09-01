@@ -74,7 +74,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
             return;
         }
 
-        if(puzzleFactoryManager.isActiavted(preview.puzzleFactory)){
+        if(puzzleFactoryManager.getLastViewedProfile().isActivated(preview.puzzleFactory)){
             holder.imageView.setColorFilter(null);
             holder.imageView.setImageAlpha(255);
             holder.outlineView.setVisibility(View.VISIBLE);
@@ -94,7 +94,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                puzzleFactoryManager.setActivated(preview.puzzleFactory, !puzzleFactoryManager.isActiavted(preview.puzzleFactory));
+                puzzleFactoryManager.getLastViewedProfile().setActivated(preview.puzzleFactory, !puzzleFactoryManager.getLastViewedProfile().isActivated(preview.puzzleFactory));
                 notifyDataSetChanged();
             }
         });

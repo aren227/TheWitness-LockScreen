@@ -105,7 +105,7 @@ public class PlayActivity extends AppCompatActivity {
 
     public boolean generatePuzzle(){
         Random random = new Random(seed);
-        List<PuzzleFactory> factories = puzzleFactoryManager.getActivatedPuzzleFactories();
+        List<PuzzleFactory> factories = puzzleFactoryManager.getPlayProfile().getActivatedPuzzleFactories();
         if(factories.size() == 0) return false;
         Puzzle puzzle = factories.get(random.nextInt(factories.size())).generate(game, random);
         game.setPuzzle(puzzle);

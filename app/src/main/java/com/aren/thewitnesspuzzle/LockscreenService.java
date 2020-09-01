@@ -167,7 +167,7 @@ public class LockscreenService extends Service {
     public void setRandomPuzzle(){
         if(!game.getSettings().getHoldingPuzzles() || puzzle == null){
             Random random = new Random();
-            List<PuzzleFactory> factories = puzzleFactoryManager.getActivatedPuzzleFactories();
+            List<PuzzleFactory> factories = puzzleFactoryManager.getLockProfile().getActivatedPuzzleFactories();
             if(factories.size() > 0){
                 puzzle = factories.get(random.nextInt(factories.size())).generate(game, random);
             }
