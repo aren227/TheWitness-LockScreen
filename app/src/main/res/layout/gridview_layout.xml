@@ -8,7 +8,8 @@
 
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp">
 
         <ImageView
             android:id="@+id/puzzle_preview"
@@ -37,7 +38,7 @@
         android:layout_gravity="center_horizontal"
         android:gravity="center_horizontal"
         android:fontFamily="serif"
-        android:textSize="20dp"
+        android:textSize="16dp"
         android:textColor="#fafafa"/>
 
 </LinearLayout>

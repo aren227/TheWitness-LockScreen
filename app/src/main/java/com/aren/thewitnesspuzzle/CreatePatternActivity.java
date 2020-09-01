@@ -26,6 +26,7 @@ import com.aren.thewitnesspuzzle.puzzle.HexagonPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 import com.aren.thewitnesspuzzle.puzzle.color.PalettePreset;
 import com.aren.thewitnesspuzzle.puzzle.color.PuzzleColorPalette;
+import com.aren.thewitnesspuzzle.puzzle.factory.Difficulty;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactory;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryConfig;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;
@@ -51,6 +52,8 @@ public class CreatePatternActivity extends PuzzleEditorActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        difficultyView.setVisibility(View.GONE);
 
         // Restore from config
         nameEditText.setText(config.getString("name", "New Pattern"));
@@ -199,6 +202,7 @@ public class CreatePatternActivity extends PuzzleEditorActivity {
                         config.setString("name", name);
                         config.setColorPalette("color", palette);
                         config.setString("puzzleType", (puzzle instanceof GridPuzzle) ? "grid" : "hexagon");
+                        config.setString("difficulty", Difficulty.CUSTOM_PATTERN.toString());
                         if(puzzle instanceof GridPuzzle){
                             config.setInt("width", getWidth());
                             config.setInt("height", getHeight());

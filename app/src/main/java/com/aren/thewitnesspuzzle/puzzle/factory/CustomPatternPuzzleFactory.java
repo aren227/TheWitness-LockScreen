@@ -86,7 +86,7 @@ public class CustomPatternPuzzleFactory extends PuzzleFactory {
 
     @Override
     public Difficulty getDifficulty(){
-        return Difficulty.ALWAYS_SOLVABLE;
+        return Difficulty.CUSTOM_PATTERN;
     }
 
     @Override

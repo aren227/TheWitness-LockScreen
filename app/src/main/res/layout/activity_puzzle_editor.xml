@@ -119,6 +119,53 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/difficulty_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:text="Difficulty: "
+                    android:textColor="@color/colorAccent"
+                    android:fontFamily="serif"
+                    android:textSize="20dp"
+                    android:layout_marginRight="8dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <SeekBar
+                        android:id="@+id/puzzle_difficulty"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:progressTint="@color/colorAccent"
+                        android:progressBackgroundTint="#7f7f7f"
+                        android:thumbTint="@color/colorAccent"/>
+
+                    <TextView
+                        android:id="@+id/puzzle_difficulty_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text="Always Solvable"
+                        android:textColor="@color/colorAccent"
+                        android:fontFamily="serif"
+                        android:textSize="14dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_gravity="center_horizontal"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/grid_size"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

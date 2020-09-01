@@ -113,7 +113,7 @@ public class CustomRandomPuzzleFactory extends PuzzleFactory {
 
     @Override
     public Difficulty getDifficulty(){
-        return Difficulty.ALWAYS_SOLVABLE;
+        return Difficulty.fromString(getConfig().getString("difficulty", "ALWAYS_SOLVABLE"));
     }
 
     @Override

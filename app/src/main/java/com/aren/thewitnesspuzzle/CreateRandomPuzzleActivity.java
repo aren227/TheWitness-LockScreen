@@ -741,7 +741,7 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
 
         //RandomGridWalker walker = new RandomGridWalker((GridPuzzle)puzzle, random, 5, 0, 0, getWidth(), getHeight());
         //ArrayList<Vertex> vertexPositions = walker.getResult();
-        ArrayList<Vertex> vertexPositions = RandomGridTreeWalker.getLongest(((GridPuzzle)puzzle).getWidth(), ((GridPuzzle)puzzle).getHeight(), random, 10, 0, 0, getWidth(), getHeight()).getResult((GridPuzzle)puzzle, getWidth(), getHeight());
+        ArrayList<Vertex> vertexPositions = RandomGridTreeWalker.getLongest(((GridPuzzle)puzzle).getWidth(), ((GridPuzzle)puzzle).getHeight(), random, 5, 0, 0, getWidth(), getHeight()).getResult((GridPuzzle)puzzle, getWidth(), getHeight());
 
         // Connect to the ending point
         Vertex vertex = null;
@@ -787,6 +787,7 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
                         config.setString("name", name);
                         config.setColorPalette("color", palette);
                         config.setString("puzzleType", "grid");
+                        config.setString("difficulty", getDifficulty().toString());
                         config.setInt("width", getWidth());
                         config.setInt("height", getHeight());
 

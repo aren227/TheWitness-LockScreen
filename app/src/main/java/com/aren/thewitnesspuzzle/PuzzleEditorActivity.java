@@ -13,6 +13,8 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
@@ -20,6 +22,7 @@ import com.aren.thewitnesspuzzle.puzzle.HexagonPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 import com.aren.thewitnesspuzzle.puzzle.color.PalettePreset;
 import com.aren.thewitnesspuzzle.puzzle.color.PuzzleColorPalette;
+import com.aren.thewitnesspuzzle.puzzle.factory.Difficulty;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryConfig;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;
 import com.aren.thewitnesspuzzle.puzzle.rules.EndingPointRule;
@@ -28,6 +31,8 @@ import com.aren.thewitnesspuzzle.puzzle.rules.StartingPointRule;
 import java.util.UUID;
 
 public class PuzzleEditorActivity extends AppCompatActivity {
+
+    private static final Difficulty[] DIFFICULTIES = new Difficulty[]{Difficulty.ALWAYS_SOLVABLE, Difficulty.VERY_EASY, Difficulty.EASY, Difficulty.NORMAL, Difficulty.HARD, Difficulty.VERY_HARD};
 
     Game game;
     Puzzle puzzle;
@@ -41,6 +46,9 @@ public class PuzzleEditorActivity extends AppCompatActivity {
     RadioButton gridPuzzleRadioButton;
     RadioButton hexagonPuzzleRadioButton;
     ColorPaletteView paletteView;
+    LinearLayout difficultyView;
+    SeekBar difficultySeekBar;
+    TextView difficultyTextView;
     LinearLayout gridSizeView;
     EditText widthEditText;
     EditText heightEditText;
@@ -76,6 +84,9 @@ public class PuzzleEditorActivity extends AppCompatActivity {
         gridPuzzleRadioButton = findViewById(R.id.grid_puzzle);
         hexagonPuzzleRadioButton = findViewById(R.id.hexagon_puzzle);
         paletteView = findViewById(R.id.palette);
+        difficultyView = findViewById(R.id.difficulty_container);
+        difficultySeekBar = findViewById(R.id.puzzle_difficulty);
+        difficultyTextView = findViewById(R.id.puzzle_difficulty_text);
         gridSizeView = findViewById(R.id.grid_size);
         widthEditText = findViewById(R.id.width);
         heightEditText = findViewById(R.id.height);
@@ -117,6 +128,26 @@ public class PuzzleEditorActivity extends AppCompatActivity {
                 dialog.show();
             }
         });
+
+        difficultySeekBar.setMax(DIFFICULTIES.length - 1);
+        difficultySeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                difficultyTextView.setText(DIFFICULTIES[difficultySeekBar.getProgress()].toUserFriendlyString());
+                difficultyTextView.setTextColor(DIFFICULTIES[difficultySeekBar.getProgress()].getColor());
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        difficultySeekBar.setProgress(0);
 
         sizeRefreshImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -164,5 +195,9 @@ public class PuzzleEditorActivity extends AppCompatActivity {
         if(heightEditText.getText().length() == 0) return 4;
         int h = Integer.parseInt(heightEditText.getText().toString());
         return Math.min(Math.max(h, 1), 7);
+    }
+
+    protected Difficulty getDifficulty(){
+        return DIFFICULTIES[difficultySeekBar.getProgress()];
     }
 }
