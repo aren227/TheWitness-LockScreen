@@ -110,7 +110,6 @@ public class PlayActivity extends AppCompatActivity {
     }
 
     public boolean generatePuzzle(){
-        Random random = new Random(seed);
         PuzzleFactory factory = null;
         if(factoryUuid == null){
             factory = puzzleFactoryManager.getPlayProfile().getRandomPuzzleFactory(new Random());
@@ -125,7 +124,7 @@ public class PlayActivity extends AppCompatActivity {
         }
         if(factory == null) return false;
         factoryUuid = factory.getUuid();
-        Puzzle puzzle = factory.generate(game, random);
+        Puzzle puzzle = factory.generate(game, new Random(seed));
         game.setPuzzle(puzzle);
         game.update();
         return true;

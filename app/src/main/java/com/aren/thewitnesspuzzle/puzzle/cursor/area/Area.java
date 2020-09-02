@@ -1,5 +1,7 @@
 package com.aren.thewitnesspuzzle.puzzle.cursor.area;
 
+import android.util.Log;
+
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
@@ -26,26 +28,29 @@ public class Area {
 
     public Puzzle puzzle;
 
-    public Set<Tile> tiles;
-    public Set<Edge> edges;
-    public Set<Vertex> vertices;
+    public List<Tile> tiles;
+    public List<Edge> edges;
+    public List<Vertex> vertices;
+    public boolean edgesAndVerticesCalculated = false;
 
     public Area(Puzzle puzzle) {
         this.puzzle = puzzle;
-        tiles = new HashSet<>();
-        edges = new HashSet<>();
-        vertices = new HashSet<>();
+        tiles = new ArrayList<>();
+        edges = new ArrayList<>();
+        vertices = new ArrayList<>();
     }
 
     private void calculateEdgesAndVertices(Cursor cursor){
+        if(edgesAndVerticesCalculated) return;
+        edgesAndVerticesCalculated = true;
         for(Tile tile : tiles){
             for(Edge edge : tile.edges){
-                if(!cursor.containsEdge(edge)) edges.add(edge);
+                if(!cursor.containsEdge(edge) && !edges.contains(edge)) edges.add(edge);
             }
         }
         for(Edge edge : edges){
-            if(!cursor.containsVertex(edge.from)) vertices.add(edge.from);
-            if(!cursor.containsVertex(edge.to)) vertices.add(edge.to);
+            if(!cursor.containsVertex(edge.from) && !vertices.contains(edge.from)) vertices.add(edge.from);
+            if(!cursor.containsVertex(edge.to) && !vertices.contains(edge.to)) vertices.add(edge.to);
         }
     }
 

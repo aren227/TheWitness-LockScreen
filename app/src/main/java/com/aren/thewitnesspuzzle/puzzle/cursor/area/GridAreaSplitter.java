@@ -72,6 +72,7 @@ public class GridAreaSplitter {
 
         areas[x][y] = area;
         area.tiles.add(puzzle.getTileAt(x, y));
+        area.edgesAndVerticesCalculated = false;
 
         if(x > 0 && !hasVerticalEdge[x][y]) fill(x - 1, y, area);
         if(x < puzzle.getWidth() - 1 && !hasVerticalEdge[x + 1][y]) fill(x + 1, y, area);
