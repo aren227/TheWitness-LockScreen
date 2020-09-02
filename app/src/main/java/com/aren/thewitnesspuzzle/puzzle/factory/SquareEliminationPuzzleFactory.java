@@ -18,8 +18,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-public class SimpleSquareEliminationPuzzleFactory extends PuzzleFactory {
-    public SimpleSquareEliminationPuzzleFactory(Context context) {
+public class SquareEliminationPuzzleFactory extends PuzzleFactory {
+    public SquareEliminationPuzzleFactory(Context context) {
         super(context);
     }
 

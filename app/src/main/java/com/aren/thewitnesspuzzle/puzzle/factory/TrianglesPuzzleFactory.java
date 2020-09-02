@@ -15,8 +15,8 @@ import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridWalker;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class SimpleTrianglesPuzzleFactory extends PuzzleFactory {
-    public SimpleTrianglesPuzzleFactory(Context context) {
+public class TrianglesPuzzleFactory extends PuzzleFactory {
+    public TrianglesPuzzleFactory(Context context) {
         super(context);
     }
 

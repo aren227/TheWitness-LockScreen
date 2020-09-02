@@ -14,9 +14,9 @@ import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridWalker;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class SimplePSymmetryPuzzleFactory extends PuzzleFactory {
+public class PSymmetryPuzzleFactory extends PuzzleFactory {
 
-    public SimplePSymmetryPuzzleFactory(Context context) {
+    public PSymmetryPuzzleFactory(Context context) {
         super(context);
     }
 

@@ -9,55 +9,47 @@ import com.aren.thewitnesspuzzle.puzzle.color.PalettePreset;
 import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.cursor.area.GridAreaSplitter;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
+import com.aren.thewitnesspuzzle.puzzle.rules.BrokenLineRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.Color;
-import com.aren.thewitnesspuzzle.puzzle.rules.SquareRule;
+import com.aren.thewitnesspuzzle.puzzle.rules.SunRule;
 import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridWalker;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.Random;
 
-public class SimpleSquarePuzzleFactory extends PuzzleFactory{
-
-    public SimpleSquarePuzzleFactory(Context context) {
+public class SunPuzzleFactory extends PuzzleFactory {
+    public SunPuzzleFactory(Context context) {
         super(context);
     }
 
     @Override
     public Puzzle generate(Game game, Random random) {
-        GridPuzzle puzzle = new GridPuzzle(game, PalettePreset.get("Blue_1"), 3, 3);
+        GridPuzzle puzzle = new GridPuzzle(game, PalettePreset.get("Treehouse_1"), 4, 4);
 
-        List<Vertex> vertices = puzzle.getBorderVertices();
-        Collections.shuffle(vertices, random);
+        puzzle.addStartingPoint(0, 0);
+        puzzle.addEndingPoint(4, 4);
 
-        Vertex start = vertices.get(0);
-        Vertex end = vertices.get(1);
-
-        puzzle.addStartingPoint(start.gridPosition.x, start.gridPosition.y);
-        puzzle.addEndingPoint(end.gridPosition.x, end.gridPosition.y);
-
-        RandomGridWalker walker = new RandomGridWalker(puzzle, random, 10, start.gridPosition.x, start.gridPosition.y, end.gridPosition.x, end.gridPosition.y);
+        RandomGridWalker walker = new RandomGridWalker(puzzle, random, 10, 0, 0, 4, 4);
         ArrayList<Vertex> vertexPositions = walker.getResult();
 
         Cursor cursor = new Cursor(puzzle, vertexPositions, null);
 
         GridAreaSplitter splitter = new GridAreaSplitter(cursor);
-        splitter.assignAreaColorRandomly(random, Arrays.asList(Color.WHITE, Color.BLACK));
 
-        SquareRule.generate(splitter, random, 1f);
+        BrokenLineRule.generate(cursor, random, 0.2f);
+        SunRule.generate(splitter, random, Arrays.asList(Color.ORANGE), 1f, 1f, 0);
 
         return puzzle;
     }
 
     @Override
-    public Difficulty getDifficulty(){
-        return Difficulty.VERY_EASY;
+    public Difficulty getDifficulty() {
+        return Difficulty.EASY;
     }
 
     @Override
     public String getName(){
-        return "Blue Panel";
+        return "Treehouse #1";
     }
 }

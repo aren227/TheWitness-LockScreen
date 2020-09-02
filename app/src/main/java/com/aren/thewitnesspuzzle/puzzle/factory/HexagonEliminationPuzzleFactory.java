@@ -9,48 +9,47 @@ import com.aren.thewitnesspuzzle.puzzle.color.PalettePreset;
 import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.cursor.area.GridAreaSplitter;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
-import com.aren.thewitnesspuzzle.puzzle.rules.Color;
-import com.aren.thewitnesspuzzle.puzzle.rules.SquareRule;
-import com.aren.thewitnesspuzzle.puzzle.rules.SunRule;
+import com.aren.thewitnesspuzzle.puzzle.rules.BrokenLineRule;
+import com.aren.thewitnesspuzzle.puzzle.rules.EliminationRule;
+import com.aren.thewitnesspuzzle.puzzle.rules.HexagonRule;
 import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridWalker;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 
-public class SimpleSunSquarePuzzleFactory extends PuzzleFactory {
-    public SimpleSunSquarePuzzleFactory(Context context) {
+public class HexagonEliminationPuzzleFactory extends PuzzleFactory {
+    public HexagonEliminationPuzzleFactory(Context context) {
         super(context);
     }
 
     @Override
     public Puzzle generate(Game game, Random random) {
-        GridPuzzle puzzle = new GridPuzzle(game, PalettePreset.get("Treehouse_2"), 4, 4);
+        GridPuzzle puzzle = new GridPuzzle(game, PalettePreset.get("Quarry_1"), 3, 3);
 
         puzzle.addStartingPoint(0, 0);
-        puzzle.addEndingPoint(4, 4);
+        puzzle.addEndingPoint(3, 3);
 
-        RandomGridWalker walker = new RandomGridWalker(puzzle, random, 10, 0, 0, 4, 4);
+        RandomGridWalker walker = new RandomGridWalker(puzzle, random, 3, 0, 0, 3, 3);
         ArrayList<Vertex> vertexPositions = walker.getResult();
 
         Cursor cursor = new Cursor(puzzle, vertexPositions, null);
 
         GridAreaSplitter splitter = new GridAreaSplitter(cursor);
-        splitter.assignAreaColorRandomly(random, Arrays.asList(Color.WHITE, Color.BLACK));
 
-        SunRule.generate(splitter, random, Arrays.asList(Color.ORANGE), 1f, 1f, 0);
-        SquareRule.generate(splitter, random, 0.9f);
+        BrokenLineRule.generate(cursor, random, 0.25f);
+        HexagonRule.generate(cursor, random, 0.75f);
+        EliminationRule.generateFakeHexagon(splitter, random);
 
         return puzzle;
     }
 
     @Override
     public Difficulty getDifficulty() {
-        return Difficulty.HARD;
+        return Difficulty.EASY;
     }
 
     @Override
     public String getName(){
-        return "Treehouse #2";
+        return "Quarry #1";
     }
 }
