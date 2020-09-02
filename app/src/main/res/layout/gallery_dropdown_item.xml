@@ -9,25 +9,31 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="gone"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp">
 
         <ImageView
             android:id="@+id/profile_status_lock"
             android:layout_width="wrap_content"
+            android:maxWidth="24dp"
             android:layout_height="0dp"
             android:adjustViewBounds="true"
             android:src="@drawable/ic_baseline_lock_24"
             android:layout_weight="1"
-            android:visibility="invisible"/>
+            android:layout_gravity="center_vertical"
+            android:visibility="gone"/>
 
         <ImageView
             android:id="@+id/profile_status_play"
             android:layout_width="wrap_content"
+            android:maxWidth="24dp"
             android:layout_height="0dp"
             android:adjustViewBounds="true"
             android:src="@drawable/ic_baseline_play_circle_filled_24"
             android:layout_weight="1"
-            android:visibility="invisible"/>
+            android:layout_gravity="center_vertical"
+            android:visibility="gone"/>
 
     </LinearLayout>
 

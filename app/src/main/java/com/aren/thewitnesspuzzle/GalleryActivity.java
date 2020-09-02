@@ -160,7 +160,7 @@ public class GalleryActivity extends AppCompatActivity {
                             leftStatus.setVisibility(View.VISIBLE);
                             leftStatusLock.setVisibility(View.VISIBLE);
                         }
-                        if(puzzleFactoryManager.getLockProfile().equals(profiles.get(i))){
+                        if(puzzleFactoryManager.getPlayProfile().equals(profiles.get(i))){
                             leftStatus.setVisibility(View.VISIBLE);
                             leftStatusPlay.setVisibility(View.VISIBLE);
                         }
@@ -191,6 +191,7 @@ public class GalleryActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Toast.makeText(GalleryActivity.this, "This profile will be used in the lock screen.", Toast.LENGTH_SHORT).show();
                 puzzleFactoryManager.getLastViewedProfile().assignToLock();
+                removeSpinner();
                 updateGallery();
             }
         });
@@ -200,6 +201,7 @@ public class GalleryActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Toast.makeText(GalleryActivity.this, "This profile will be used in the play mode.", Toast.LENGTH_SHORT).show();
                 puzzleFactoryManager.getLastViewedProfile().assignToPlay();
+                removeSpinner();
                 updateGallery();
             }
         });
