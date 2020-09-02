@@ -41,6 +41,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     private int[] texWidth = new int[6], texHeight = new int[6];
 
     private int textureIds[] = new int[6];
+    private int depthTextureIds[] = new int[1];
 
     // Main, Downscaling, Downscaling, Downscaling, Downscaling, Sub Main
     private IntBuffer frameBuffer = IntBuffer.allocate(6);
@@ -160,11 +161,15 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         if(textureIds[0] != 0) {
             GLES20.glDeleteTextures(6, textureIds, 0);
             GLES20.glDeleteFramebuffers(6, frameBuffer);
+
+            GLES20.glDeleteTextures(1, depthTextureIds, 0);
         }
 
         if(bloom){
             GLES20.glGenTextures(6, textureIds, 0);
             GLES20.glGenFramebuffers(6, frameBuffer);
+
+            GLES20.glGenTextures(1, depthTextureIds, 0);
 
             int w = width;
             int h = height;
@@ -189,6 +194,18 @@ public class GLRenderer implements GLSurfaceView.Renderer {
                 GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, texWidth[i], texHeight[i], 0, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, null);
                 GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0, GLES20.GL_TEXTURE_2D, textureIds[i], 0);
             }
+
+            GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer.get(0));
+
+            GLES20.glActiveTexture(GLES20.GL_TEXTURE0 + 6);
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, depthTextureIds[0]);
+            GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
+            GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+            GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
+            GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
+            GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_DEPTH_COMPONENT16, texWidth[0], texHeight[0], 0, GLES20.GL_DEPTH_COMPONENT, GLES20.GL_UNSIGNED_SHORT, null);
+            GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_DEPTH_ATTACHMENT, GLES20.GL_TEXTURE_2D, depthTextureIds[0], 0);
+
         }
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
     }
@@ -238,13 +255,15 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 
             // Draw the puzzle to the first frame buffer
             GLES20.glUseProgram(glProgram);
+
+            GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+            GLES20.glDepthFunc(GLES20.GL_LEQUAL);
+
             if(bloom) GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer.get(0));
             else GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
 
             int backgroundColor = puzzle.getColorPalette().getBackgroundColor();
 
-            GLES20.glEnable(GLES20.GL_DEPTH_TEST);
-            GLES20.glDepthFunc(GLES20.GL_LEQUAL);
             GLES20.glClearColor(Color.red(backgroundColor) / 255f, Color.green(backgroundColor) / 255f, Color.blue(backgroundColor) / 255f, 1.0f);
             GLES20.glClearDepthf(1.0f);
             GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
