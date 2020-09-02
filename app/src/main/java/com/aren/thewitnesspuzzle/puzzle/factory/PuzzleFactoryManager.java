@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -267,16 +268,15 @@ public class PuzzleFactoryManager {
     public class Profile{
 
         private Context context;
-        private SharedPreferences sharedPreferences;
         private UUID uuid;
 
         public Profile(Context context, UUID uuid){
             this.context = context;
-            this.sharedPreferences = context.getSharedPreferences(PuzzleFactoryManager.sharedPreferenceProfilesKey, Context.MODE_PRIVATE);
             this.uuid = uuid;
 
             SharedPreferences sharedPreferences = context.getSharedPreferences("com.aren.thewitnesspuzzle.puzzle.factory", Context.MODE_PRIVATE);
-            Set<String> set = sharedPreferences.getStringSet("profiles", new HashSet<String>());
+            // Must clone it before use
+            Set<String> set = new HashSet<>(sharedPreferences.getStringSet("profiles", new HashSet<String>()));
             set.add(uuid.toString());
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putStringSet("profiles", set);
@@ -285,30 +285,30 @@ public class PuzzleFactoryManager {
 
         public String getName(){
             if(uuid.equals(defaultProfileUuid)){
-                return sharedPreferences.getString(uuid.toString() + "/name", "Default");
+                return getSharedPreferences().getString(uuid.toString() + "/name", "Default");
             }
-            return sharedPreferences.getString(uuid.toString() + "/name", "No Name");
+            return getSharedPreferences().getString(uuid.toString() + "/name", "No Name");
         }
 
         public void setName(String name){
-            SharedPreferences.Editor editor = sharedPreferences.edit();
+            SharedPreferences.Editor editor = getSharedPreferences().edit();
             editor.putString(uuid.toString() + "/name", name);
             editor.commit();
         }
 
         public long getCreationTime(){
-            return sharedPreferences.getLong(uuid.toString() + "/creation_time", 0);
+            return getSharedPreferences().getLong(uuid.toString() + "/creation_time", 0);
         }
 
         public void setCreationTime(long time){
-            SharedPreferences.Editor editor = sharedPreferences.edit();
+            SharedPreferences.Editor editor = getSharedPreferences().edit();
             editor.putLong(uuid.toString() + "/creation_time", time);
             editor.commit();
         }
 
         public List<PuzzleFactory> getActivatedPuzzleFactories(){
             List<PuzzleFactory> list = new ArrayList<>();
-            for(String strUuid : sharedPreferences.getStringSet(uuid.toString() + "/activated", new HashSet<String>())){
+            for(String strUuid : getSharedPreferences().getStringSet(uuid.toString() + "/activated", new HashSet<String>())){
                 PuzzleFactory factory = getPuzzleFactoryByUuid(UUID.fromString(strUuid));
                 if(factory != null) list.add(factory);
             }
@@ -316,10 +316,12 @@ public class PuzzleFactoryManager {
         }
 
         public void setActivated(PuzzleFactory factory, boolean activated){
-            Set<String> set = sharedPreferences.getStringSet(uuid.toString() + "/activated", new HashSet<String>());
+            // Must clone it before use
+            Set<String> set = new HashSet<>(getSharedPreferences().getStringSet(uuid.toString() + "/activated", new HashSet<String>()));
             if(activated) set.add(factory.getUuid().toString());
             else set.remove(factory.getUuid().toString());
-            SharedPreferences.Editor editor = sharedPreferences.edit();
+
+            SharedPreferences.Editor editor = getSharedPreferences().edit();
             editor.putStringSet(uuid.toString() + "/activated", set);
             editor.commit();
 
@@ -327,7 +329,7 @@ public class PuzzleFactoryManager {
         }
 
         public boolean isActivated(PuzzleFactory factory){
-            Set<String> set = sharedPreferences.getStringSet(uuid.toString() + "/activated", new HashSet<String>());
+            Set<String> set = getSharedPreferences().getStringSet(uuid.toString() + "/activated", new HashSet<String>());
             return set.contains(factory.getUuid().toString());
         }
 
@@ -358,6 +360,10 @@ public class PuzzleFactoryManager {
                 return ((Profile)obj).uuid.equals(uuid);
             }
             return false;
+        }
+
+        public SharedPreferences getSharedPreferences(){
+            return context.getSharedPreferences(PuzzleFactoryManager.sharedPreferenceProfilesKey, Context.MODE_PRIVATE);
         }
     }
 }
