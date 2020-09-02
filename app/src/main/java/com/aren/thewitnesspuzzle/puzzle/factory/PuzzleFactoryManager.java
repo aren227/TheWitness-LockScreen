@@ -2,6 +2,7 @@ package com.aren.thewitnesspuzzle.puzzle.factory;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -247,6 +248,8 @@ public class PuzzleFactoryManager {
         editor.remove(profile.uuid.toString() + "/name");
         editor.remove(profile.uuid.toString() + "/activated");
         editor.commit();
+
+        getProfiles().get(0).markAsLastViewed();
     }
 
     public boolean isRemovedProfile(Profile profile){

@@ -30,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aren.thewitnesspuzzle.game.Game;
+import com.aren.thewitnesspuzzle.puzzle.ErrorPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 import com.aren.thewitnesspuzzle.puzzle.factory.CustomPatternPuzzleFactory;
 import com.aren.thewitnesspuzzle.puzzle.factory.CustomRandomPuzzleFactory;
@@ -205,7 +206,6 @@ public class GalleryActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 puzzleFactoryManager.removeProfile(puzzleFactoryManager.getLastViewedProfile());
-                puzzleFactoryManager.getProfiles().get(0).markAsLastViewed();
                 removeSpinner();
                 updateGallery();
             }
@@ -285,12 +285,13 @@ public class GalleryActivity extends AppCompatActivity {
         final List<GalleryPreview> previewsToRender = new ArrayList<>();
         for(PuzzleFactory factory : puzzleFactoryManager.getAllPuzzleFactories()){
             // Check config error
+            /*long start = System.currentTimeMillis();
             if(factory instanceof CustomPatternPuzzleFactory && factory.generate(tempGame, new Random()) == null){
                 continue;
             }
             if(factory instanceof CustomRandomPuzzleFactory && factory.generate(tempGame, new Random()) == null){
                 continue;
-            }
+            }*/
 
             GalleryPreview preview = new GalleryPreview(factory, notLoaded, factory.getName());
             if(factory.getThumbnailCache() != null){
@@ -315,6 +316,10 @@ public class GalleryActivity extends AppCompatActivity {
                     Puzzle puzzle;
                     if(preview.puzzleFactory instanceof CustomPatternPuzzleFactory) puzzle = ((CustomPatternPuzzleFactory)preview.puzzleFactory).generateWithPattern(tempGame, new Random(), true);
                     else puzzle = preview.puzzleFactory.generate(tempGame, new Random());
+
+                    // Load Failed
+                    if(puzzle == null) puzzle = new ErrorPuzzle(tempGame);
+
                     tempGame.getSurfaceView().glRenderer.addRenderQueue(puzzle);
                 }
             }

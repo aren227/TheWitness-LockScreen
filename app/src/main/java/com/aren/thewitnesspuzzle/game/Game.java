@@ -36,9 +36,9 @@ public class Game {
         settings = new GameSettings(context);
         surfaceView = new PuzzleGLSurfaceView(this, context);
 
-        if(settings.getSoundsEnabled()){
+        /*if(settings.getSoundsEnabled()){
             prepareSounds();
-        }
+        }*/
     }
 
     public GameSettings getSettings(){
@@ -88,12 +88,12 @@ public class Game {
         return Color.BLACK;
     }
 
-    public void prepareSounds(){
+    /*public void prepareSounds(){
         for(Sounds sound : Sounds.values()){
             MediaPlayer mp = MediaPlayer.create(context, sound.getId());
             mediaPlayers.put(sound.getId(), mp);
         }
-    }
+    }*/
 
     public void playSound(Sounds sound){
         if(!settings.getSoundsEnabled()) return;
