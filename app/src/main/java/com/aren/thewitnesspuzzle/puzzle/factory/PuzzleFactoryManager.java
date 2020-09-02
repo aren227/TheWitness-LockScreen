@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 
@@ -311,6 +312,30 @@ public class PuzzleFactoryManager {
                 if(factory != null) list.add(factory);
             }
             return list;
+        }
+
+        public PuzzleFactory getRandomPuzzleFactory(Random random){
+            List<PuzzleFactory> activated = getActivatedPuzzleFactories();
+            if(activated.size() == 0) return null;
+
+            String lastUuid = getSharedPreferences().getString(uuid.toString() + "/last", "");
+
+            List<PuzzleFactory> candidates = new ArrayList<>();
+            for(PuzzleFactory factory : activated){
+                if(!factory.getUuid().toString().equals(lastUuid)){
+                    candidates.add(factory);
+                }
+            }
+
+            if(candidates.size() == 0) return activated.get(0);
+
+            PuzzleFactory selected = candidates.get(random.nextInt(candidates.size()));
+
+            SharedPreferences.Editor editor = getSharedPreferences().edit();
+            editor.putString(uuid.toString() + "/last", selected.getUuid().toString());
+            editor.commit();
+
+            return selected;
         }
 
         public void setActivated(PuzzleFactory factory, boolean activated){
