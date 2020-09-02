@@ -4,10 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -180,6 +184,9 @@ public class GalleryActivity extends AppCompatActivity {
         profileLockImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(!puzzleFactoryManager.getLockProfile().equals(puzzleFactoryManager.getLastViewedProfile())){
+                    Toast.makeText(GalleryActivity.this, "This profile will be used in the lock screen.", Toast.LENGTH_SHORT).show();
+                }
                 puzzleFactoryManager.getLastViewedProfile().assignToLock();
                 updateGallery();
             }
@@ -188,6 +195,9 @@ public class GalleryActivity extends AppCompatActivity {
         profilePlayImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(!puzzleFactoryManager.getPlayProfile().equals(puzzleFactoryManager.getLastViewedProfile())){
+                    Toast.makeText(GalleryActivity.this, "This profile will be used in the play mode.", Toast.LENGTH_SHORT).show();
+                }
                 puzzleFactoryManager.getLastViewedProfile().assignToPlay();
                 updateGallery();
             }
@@ -205,9 +215,30 @@ public class GalleryActivity extends AppCompatActivity {
         profileDeleteImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                puzzleFactoryManager.removeProfile(puzzleFactoryManager.getLastViewedProfile());
+                if(puzzleFactoryManager.getLastViewedProfile().equals(puzzleFactoryManager.getDefaultProfile())){
+                    Toast.makeText(GalleryActivity.this, "You can't delete the default profile.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(GalleryActivity.this);
+                builder.setTitle("Remove Profile");
+                builder.setMessage("Are you sure?");
+                builder.setPositiveButton("Yes",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                puzzleFactoryManager.removeProfile(puzzleFactoryManager.getLastViewedProfile());
+                                removeSpinner();
+                                updateGallery();
+                            }
+                        });
+                builder.setNegativeButton("No", null);
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
+                dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(0xff000000);
+                dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(0xff000000);
+
                 removeSpinner();
-                updateGallery();
             }
         });
 
