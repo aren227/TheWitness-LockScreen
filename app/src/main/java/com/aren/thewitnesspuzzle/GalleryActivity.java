@@ -149,19 +149,25 @@ public class GalleryActivity extends AppCompatActivity {
                             horizon.setBackgroundColor(0xff7f7f7f);
                             linearLayout.addView(horizon);
                         }
-                        TextView textView = new TextView(GalleryActivity.this);
-                        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 32, getResources().getDisplayMetrics()));
-                        textView.setLayoutParams(params1);
-                        textView.setText(profiles.get(i).getName());
-                        textView.setTextColor(0xfffafafa);
-                        textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 24);
-                        textView.setSingleLine();
-                        textView.setEllipsize(TextUtils.TruncateAt.END);
-                        textView.setGravity(Gravity.CENTER_VERTICAL);
+
+                        View itemView = inflater.inflate(R.layout.gallery_dropdown_item, linearLayout, false);
+                        LinearLayout leftStatus = itemView.findViewById(R.id.profile_status);
+                        ImageView leftStatusLock = itemView.findViewById(R.id.profile_status_lock);
+                        ImageView leftStatusPlay = itemView.findViewById(R.id.profile_status_play);
+                        TextView profileName = itemView.findViewById(R.id.profile_item_name);
+
+                        if(puzzleFactoryManager.getLockProfile().equals(profiles.get(i))){
+                            leftStatus.setVisibility(View.VISIBLE);
+                            leftStatusLock.setVisibility(View.VISIBLE);
+                        }
+                        if(puzzleFactoryManager.getLockProfile().equals(profiles.get(i))){
+                            leftStatus.setVisibility(View.VISIBLE);
+                            leftStatusPlay.setVisibility(View.VISIBLE);
+                        }
+                        profileName.setText(profiles.get(i).getName());
 
                         final PuzzleFactoryManager.Profile profile = profiles.get(i);
-
-                        textView.setOnClickListener(new View.OnClickListener() {
+                        itemView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 if(!puzzleFactoryManager.isRemovedProfile(profile)){
@@ -171,8 +177,7 @@ public class GalleryActivity extends AppCompatActivity {
                                 }
                             }
                         });
-
-                        linearLayout.addView(textView);
+                        linearLayout.addView(itemView);
                     }
                 }
                 else{
@@ -184,9 +189,7 @@ public class GalleryActivity extends AppCompatActivity {
         profileLockImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!puzzleFactoryManager.getLockProfile().equals(puzzleFactoryManager.getLastViewedProfile())){
-                    Toast.makeText(GalleryActivity.this, "This profile will be used in the lock screen.", Toast.LENGTH_SHORT).show();
-                }
+                Toast.makeText(GalleryActivity.this, "This profile will be used in the lock screen.", Toast.LENGTH_SHORT).show();
                 puzzleFactoryManager.getLastViewedProfile().assignToLock();
                 updateGallery();
             }
@@ -195,9 +198,7 @@ public class GalleryActivity extends AppCompatActivity {
         profilePlayImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!puzzleFactoryManager.getPlayProfile().equals(puzzleFactoryManager.getLastViewedProfile())){
-                    Toast.makeText(GalleryActivity.this, "This profile will be used in the play mode.", Toast.LENGTH_SHORT).show();
-                }
+                Toast.makeText(GalleryActivity.this, "This profile will be used in the play mode.", Toast.LENGTH_SHORT).show();
                 puzzleFactoryManager.getLastViewedProfile().assignToPlay();
                 updateGallery();
             }

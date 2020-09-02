@@ -26,12 +26,11 @@
                 android:id="@+id/profile_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text=""
                 android:textSize="20dp"
                 android:textStyle="italic"
                 android:inputType="text"
                 android:maxLines="1"
-                android:layout_weight="0.33"
+                android:layout_weight="0.4"
                 android:layout_marginLeft="4dp"
                 android:textColor="@color/colorAccent"
                 android:theme="@style/EditTheme"/>
@@ -39,7 +38,7 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="0.67"
+                android:layout_weight="0.6"
                 android:orientation="horizontal">
 
                 <ImageView
