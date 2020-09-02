@@ -5,6 +5,7 @@ import android.graphics.Color;
 import com.aren.thewitnesspuzzle.graphics.shape.HexagonShape;
 import com.aren.thewitnesspuzzle.graphics.shape.Shape;
 import com.aren.thewitnesspuzzle.math.Vector3;
+import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.cursor.SymmetryCursor;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
@@ -17,6 +18,9 @@ import java.util.Random;
 
 public class HexagonRule extends SymmetricColorable {
 
+    public static final float Z_INDEX_NORMAL = 0f;
+    public static final float Z_INDEX_FLOAT = 0.1f;
+
     public HexagonRule(){
         super();
     }
@@ -28,8 +32,8 @@ public class HexagonRule extends SymmetricColorable {
     @Override
     public Shape generateShape() {
         if(getGraphElement() instanceof Tile) return null;
-        if(hasSymmetricColor()) return new HexagonShape(new Vector3(getGraphElement().x, getGraphElement().y, 0), getPuzzle().getPathWidth() * 0.4f, getSymmetricColor().getRGB());
-        return new HexagonShape(new Vector3(getGraphElement().x, getGraphElement().y, 0), getPuzzle().getPathWidth() * 0.4f, Color.BLACK);
+        if(hasSymmetricColor()) return new HexagonShape(new Vector3(getGraphElement().x, getGraphElement().y, getPuzzle().getGame().isEditorMode() ? Z_INDEX_FLOAT : Z_INDEX_NORMAL), getPuzzle().getPathWidth() * 0.4f, getSymmetricColor().getRGB());
+        return new HexagonShape(new Vector3(getGraphElement().x, getGraphElement().y, getPuzzle().getGame().isEditorMode() ? Z_INDEX_FLOAT : Z_INDEX_NORMAL), getPuzzle().getPathWidth() * 0.4f, Color.BLACK);
     }
 
     @Override

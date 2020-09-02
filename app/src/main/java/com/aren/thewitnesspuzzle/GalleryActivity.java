@@ -298,7 +298,7 @@ public class GalleryActivity extends AppCompatActivity {
             puzzleRenderThread.interrupt();
         }
 
-        tempGame = new Game(this, false);
+        tempGame = new Game(this, Game.Mode.GALLERY);
 
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(512, 512);
         params.addRule(RelativeLayout.ALIGN_PARENT_START, 1);

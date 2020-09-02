@@ -161,7 +161,7 @@ public class PuzzleEditorActivity extends AppCompatActivity {
             }
         });
 
-        game = new Game(this, true);
+        game = new Game(this, Game.Mode.EDITOR);
         resetPuzzle();
         updateGridSizeUI();
 

@@ -39,7 +39,11 @@ public class Vector2 {
     }
 
     public Vector3 toVector3(){
-        return new Vector3(x, y, 0);
+        return toVector3(0);
+    }
+
+    public Vector3 toVector3(float z){
+        return new Vector3(x, y, z);
     }
 
     @Override

@@ -175,7 +175,7 @@ public class Cursor {
             Vertex v = visited.get(i);
             if(edge.containsVertex(v)){
                 float collisionProportion = puzzle.getPathWidth() / length;
-                if(v.getRule() instanceof StartingPointRule) collisionProportion = (((StartingPointRule)v.getRule()).getRadius() + puzzle.getPathWidth() * 0.5f) / length;
+                if(v.getRule() instanceof StartingPointRule && v == visited.get(0)) collisionProportion = (((StartingPointRule)v.getRule()).getRadius() + puzzle.getPathWidth() * 0.5f) / length;
                 to = Math.min(1 - collisionProportion, to);
             }
         }

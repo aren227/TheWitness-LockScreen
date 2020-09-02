@@ -28,6 +28,7 @@ import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
 import com.aren.thewitnesspuzzle.puzzle.graph.EdgeProportion;
 import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
+import com.aren.thewitnesspuzzle.puzzle.rules.BrokenLineRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.EliminationRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.EndingPointRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.Rule;
@@ -81,6 +82,10 @@ public class Puzzle {
         this.shadowPanel = shadowPanel;
 
         animation = new PuzzleAnimationManager(this);
+    }
+
+    public Game getGame(){
+        return game;
     }
 
     public void updateDynamicShapes(){
@@ -167,7 +172,13 @@ public class Puzzle {
         for(Vertex vertex : vertices){
             if(vertex.getRule() != null && vertex.getRule().getShape() != null){
                 // getShape() reads from cache, but some rules need to be updated when changing colors. (ex, StartingPoint, BrokenLine)
-                staticShapes.add(vertex.getRule().generateShape());
+                if(vertex.getRule() instanceof StartingPointRule || vertex.getRule() instanceof BrokenLineRule){
+                    staticShapes.add(vertex.getRule().generateShape());
+                }
+                else{
+                    staticShapes.add(vertex.getRule().getShape());
+                }
+
                 if(shadowPanel && vertex.getRule() instanceof StartingPointRule){
                     Shape shape = vertex.getRule().generateShape(); // clone
                     shape.center = shape.center.add(new Vector3(0, -boundingBox.getHeight(), 0));

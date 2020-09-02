@@ -17,8 +17,6 @@ public class Game {
 
     private Context context;
 
-    private boolean playMode;
-
     private GameSettings settings;
 
     private PuzzleGLSurfaceView surfaceView;
@@ -30,9 +28,12 @@ public class Game {
     private Runnable onSolved;
     private Runnable onPreTouched;
 
-    public Game(Context context, boolean playMode){
+    public enum Mode {PLAY, GALLERY, EDITOR}
+    private Mode mode;
+
+    public Game(Context context, Mode mode){
         this.context = context;
-        this.playMode = playMode;
+        this.mode = mode;
         settings = new GameSettings(context);
         surfaceView = new PuzzleGLSurfaceView(this, context);
 
@@ -109,7 +110,15 @@ public class Game {
     }
 
     public boolean isPlayMode(){
-        return playMode;
+        return mode == Mode.PLAY;
+    }
+
+    public boolean isEditorMode(){
+        return mode == Mode.EDITOR;
+    }
+
+    public boolean isGalleryMode(){
+        return mode == Mode.GALLERY;
     }
 
     public float getDPScale(float dp){

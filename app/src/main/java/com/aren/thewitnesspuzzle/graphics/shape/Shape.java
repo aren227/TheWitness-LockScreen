@@ -1,6 +1,7 @@
 package com.aren.thewitnesspuzzle.graphics.shape;
 
 import android.graphics.Color;
+import android.util.Log;
 
 import com.aren.thewitnesspuzzle.math.Vector2;
 import com.aren.thewitnesspuzzle.math.Vector3;
@@ -14,6 +15,7 @@ public abstract class Shape {
 
     public Vector3 center;
     public Value<Float> scale;
+    public Value<Float> zIndex;
     public Value<Integer> color;
 
     private List<Vector3> vertices;
@@ -21,6 +23,7 @@ public abstract class Shape {
     public Shape(Vector3 center, float scale, int color){
         this.center = center;
         this.scale = new Value<>(scale);
+        this.zIndex = new Value<>(0f);
         this.color = new Value<>(color);
         vertices = new ArrayList<>();
     }
@@ -41,7 +44,7 @@ public abstract class Shape {
         for(Vector3 vector3 : vertices){
             buffer.put(vector3.x * scale.get() + center.x);
             buffer.put(vector3.y * scale.get() + center.y);
-            buffer.put(vector3.z * scale.get() + center.z);
+            buffer.put(vector3.z * scale.get() + center.z + zIndex.get());
         }
     }
 

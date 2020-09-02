@@ -51,7 +51,7 @@ public class LockscreenService extends Service {
 
     @Override
     public void onCreate() {
-        game = new Game(this, true);
+        game = new Game(this, Game.Mode.PLAY);
         game.setOnSolved(new Runnable() {
             @Override
             public void run() {

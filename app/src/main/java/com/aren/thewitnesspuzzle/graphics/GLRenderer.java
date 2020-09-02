@@ -199,7 +199,8 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 
         if(!renderMode && game.getPuzzle() == null || renderMode && renderQueue.isEmpty()) {
             GLES20.glClearColor(1, 0, 1, 1.0f);
-            GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+            GLES20.glClearDepthf(1.0f);
+            GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
             return;
         }
 
@@ -228,9 +229,10 @@ public class GLRenderer implements GLSurfaceView.Renderer {
             puzzle.updateAnimation();
             puzzle.updateDynamicShapes();
 
+            // TODO: Rename variables to orthographic
             BoundingBox frustumBB = getFrustumBoundingBox(puzzle);
 
-            Matrix.frustumM(mProjectionMatrix, 0, -frustumBB.getWidth() / 2, frustumBB.getWidth() / 2, -frustumBB.getHeight() / 2, frustumBB.getHeight() / 2, 1, 100);
+            Matrix.orthoM(mProjectionMatrix, 0, -frustumBB.getWidth() / 2, frustumBB.getWidth() / 2, -frustumBB.getHeight() / 2, frustumBB.getHeight() / 2, 0.1f, 100f);
 
             GLES20.glViewport(0, 0, width, height);
 
@@ -240,8 +242,12 @@ public class GLRenderer implements GLSurfaceView.Renderer {
             else GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
 
             int backgroundColor = puzzle.getColorPalette().getBackgroundColor();
+
+            GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+            GLES20.glDepthFunc(GLES20.GL_LEQUAL);
             GLES20.glClearColor(Color.red(backgroundColor) / 255f, Color.green(backgroundColor) / 255f, Color.blue(backgroundColor) / 255f, 1.0f);
-            GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+            GLES20.glClearDepthf(1.0f);
+            GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
             //카메라 좌표
             Matrix.setLookAtM(mViewMatrix, 0, frustumBB.getCenter().x, frustumBB.getCenter().y, 1, frustumBB.getCenter().x, frustumBB.getCenter().y, 0f, 0f, 1.0f, 0.0f);
@@ -265,6 +271,8 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 
             GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, puzzle.getVertexCount());
         }
+
+        GLES20.glDisable(GLES20.GL_DEPTH_TEST);
 
         if(bloom){
             for(int i = 1; i < 5; i++){

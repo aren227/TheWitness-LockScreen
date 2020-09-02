@@ -32,7 +32,7 @@ public class SettingsActivity extends AppCompatActivity {
         bloomText = findViewById(R.id.settings_bloom);
         lockDelayText = findViewById(R.id.settings_lockdelay);
 
-        game = new Game(this, false);
+        game = new Game(this, Game.Mode.PLAY);
 
         updateSoundsText();
         updateHoldingText();
