@@ -217,12 +217,20 @@ public class PuzzleFactoryManager {
         for(String strUuid : sharedPreferences.getStringSet("profiles", defaultSet)){
             list.add(new Profile(context, UUID.fromString(strUuid)));
         }
+
+        Collections.sort(list, new Comparator<Profile>() {
+            @Override
+            public int compare(Profile o1, Profile o2) {
+                return -Long.compare(o1.getCreationTime(), o2.getCreationTime());
+            }
+        });
         return list;
     }
 
     public Profile createProfile(String name){
         Profile profile = new Profile(context, UUID.randomUUID());
         profile.setName(name);
+        profile.setCreationTime(System.currentTimeMillis());
         return profile;
     }
 
@@ -285,6 +293,16 @@ public class PuzzleFactoryManager {
         public void setName(String name){
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString(uuid.toString() + "/name", name);
+            editor.commit();
+        }
+
+        public long getCreationTime(){
+            return sharedPreferences.getLong(uuid.toString() + "/creation_time", 0);
+        }
+
+        public void setCreationTime(long time){
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putLong(uuid.toString() + "/creation_time", time);
             editor.commit();
         }
 
