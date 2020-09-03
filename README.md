@@ -1,7 +1,24 @@
 # TheWitness-LockScreen
 A puzzle lock screen application based on [The Witness](https://store.steampowered.com/app/210970/The_Witness/) for Android
 
-<img src="demo.gif" width="540" height="960">
+<img src="demo.gif" width="405" height="720">
+
+
+
+Also supports Play Mode, Puzzle Editor!
+
+<table>
+  <tr>
+    <td><img src="play.gif" width = 270px height = 480px></td>
+    <td><img src="pattern.gif" width = 270px height = 480px></td>
+    <td><img src="random.gif" width = 270px height = 480px></td>
+  </tr>
+  <tr>
+    <td>Play Mode</td>
+    <td>Custom Pattern</td>
+    <td>Custom Random Generator</td>
+  </tr>
+</table>
 
 ### This application may contain spoilers!
 
@@ -16,11 +33,11 @@ Go to [Releases Tab](https://github.com/aren227/TheWitness-LockScreen/releases) 
 TODOs
 ---------------
 - [x] Implement basic puzzle panels and rules.
-- [ ] Implement Bloom effect.
-- [ ] Implement the subtractive blocks rule (i hate this rule).
-- [ ] Clearly implement the elimination rule (i have literally no idea).
+- [x] Implement Bloom effect.
+- [ ] Implement the subtractive blocks rule.
+- [ ] Clearly implement the elimination rule.
 - [ ] Add more random puzzle generators.
-- [ ] Implement a puzzle that can be validated with user registered pattern.
+- [x] Implement a puzzle that can be validated with user registered pattern.
 - [ ] Implement a custom puzzle editor.
 - [ ] Implement pillar puzzles.
 
