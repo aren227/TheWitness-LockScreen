@@ -32,7 +32,7 @@ import java.util.UUID;
 
 public class PuzzleEditorActivity extends AppCompatActivity {
 
-    private static final Difficulty[] DIFFICULTIES = new Difficulty[]{Difficulty.ALWAYS_SOLVABLE, Difficulty.VERY_EASY, Difficulty.EASY, Difficulty.NORMAL, Difficulty.HARD, Difficulty.VERY_HARD};
+    protected static final Difficulty[] DIFFICULTIES = new Difficulty[]{Difficulty.ALWAYS_SOLVABLE, Difficulty.VERY_EASY, Difficulty.EASY, Difficulty.NORMAL, Difficulty.HARD, Difficulty.VERY_HARD};
 
     Game game;
     Puzzle puzzle;
@@ -147,7 +147,6 @@ public class PuzzleEditorActivity extends AppCompatActivity {
 
             }
         });
-        difficultySeekBar.setProgress(0);
 
         sizeRefreshImageView.setOnClickListener(new View.OnClickListener() {
             @Override

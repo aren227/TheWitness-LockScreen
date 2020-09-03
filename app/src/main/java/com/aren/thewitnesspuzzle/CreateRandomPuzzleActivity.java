@@ -21,6 +21,7 @@ import com.aren.thewitnesspuzzle.puzzle.HexagonPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.color.PalettePreset;
 import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.cursor.area.GridAreaSplitter;
+import com.aren.thewitnesspuzzle.puzzle.factory.Difficulty;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactory;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryConfig;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;
@@ -110,6 +111,16 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
 
         palette.set(config.getColorPalette("color", PalettePreset.get("Entry_1")));
         paletteView.invalidate();
+
+        Difficulty difficulty = Difficulty.fromString(config.getString("difficulty", "ALWAYS_SOLVABLE"));
+        int difficultyIndex = 0;
+        for(int i = 0; i < DIFFICULTIES.length; i++){
+            if(DIFFICULTIES[i] == difficulty){
+                difficultyIndex = i;
+                break;
+            }
+        }
+        difficultySeekBar.setProgress(difficultyIndex);
 
         widthEditText.setText(config.getInt("width", 4) + "");
         heightEditText.setText(config.getInt("height", 4) + "");
