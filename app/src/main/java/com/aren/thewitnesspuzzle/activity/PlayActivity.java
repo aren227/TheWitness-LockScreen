@@ -1,4 +1,4 @@
-package com.aren.thewitnesspuzzle;
+package com.aren.thewitnesspuzzle.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.aren.thewitnesspuzzle.R;
 import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactory;

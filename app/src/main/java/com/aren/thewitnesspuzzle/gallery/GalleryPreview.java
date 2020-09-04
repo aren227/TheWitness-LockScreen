@@ -1,4 +1,4 @@
-package com.aren.thewitnesspuzzle;
+package com.aren.thewitnesspuzzle.gallery;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;

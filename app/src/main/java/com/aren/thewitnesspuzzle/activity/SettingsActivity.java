@@ -1,4 +1,4 @@
-package com.aren.thewitnesspuzzle;
+package com.aren.thewitnesspuzzle.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.aren.thewitnesspuzzle.R;
 import com.aren.thewitnesspuzzle.game.Game;
 
 public class SettingsActivity extends AppCompatActivity {

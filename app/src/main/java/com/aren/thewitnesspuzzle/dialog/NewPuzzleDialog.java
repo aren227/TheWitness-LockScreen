@@ -1,4 +1,4 @@
-package com.aren.thewitnesspuzzle;
+package com.aren.thewitnesspuzzle.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -8,6 +8,10 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.RadioButton;
 import android.widget.TextView;
+
+import com.aren.thewitnesspuzzle.activity.CreatePatternActivity;
+import com.aren.thewitnesspuzzle.activity.CreateRandomPuzzleActivity;
+import com.aren.thewitnesspuzzle.R;
 
 import androidx.annotation.NonNull;
 

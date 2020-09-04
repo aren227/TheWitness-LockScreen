@@ -1,11 +1,10 @@
-package com.aren.thewitnesspuzzle;
+package com.aren.thewitnesspuzzle.activity;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
@@ -16,15 +15,13 @@ import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
+import com.aren.thewitnesspuzzle.R;
 import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
-import com.aren.thewitnesspuzzle.puzzle.HexagonPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.color.PalettePreset;
 import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.cursor.area.GridAreaSplitter;
 import com.aren.thewitnesspuzzle.puzzle.factory.Difficulty;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactory;
-import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryConfig;
-import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
 import com.aren.thewitnesspuzzle.puzzle.graph.EdgeProportion;
 import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
@@ -40,7 +37,6 @@ import com.aren.thewitnesspuzzle.puzzle.rules.StartingPointRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.SunRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.TrianglesRule;
 import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridTreeWalker;
-import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridWalker;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,7 +44,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.UUID;
 
 public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
 

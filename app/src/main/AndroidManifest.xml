@@ -9,20 +9,20 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".PuzzleEditorActivity"
+        <activity android:name=".activity.PuzzleEditorActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"/>
-        <activity android:name=".CreatePatternActivity"
+        <activity android:name=".activity.CreatePatternActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"/>
-        <activity android:name=".CreateRandomPuzzleActivity"
+        <activity android:name=".activity.CreateRandomPuzzleActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"/>
-        <activity android:name=".DisclaimerActivity" />
-        <activity android:name=".SettingsActivity" />
-        <activity android:name=".PlayActivity" />
-        <activity android:name=".GalleryActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".activity.DisclaimerActivity" />
+        <activity android:name=".activity.SettingsActivity" />
+        <activity android:name=".activity.PlayActivity" />
+        <activity android:name=".activity.GalleryActivity" />
+        <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -31,7 +31,7 @@
         </activity>
 
         <service
-            android:name=".LockscreenService"
+            android:name=".service.LockscreenService"
             android:permission="android.permission.SYSTEM_ALERT_WINDOW" />
     </application>
 

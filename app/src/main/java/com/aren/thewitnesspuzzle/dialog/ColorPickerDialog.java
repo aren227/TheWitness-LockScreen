@@ -1,4 +1,4 @@
-package com.aren.thewitnesspuzzle;
+package com.aren.thewitnesspuzzle.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -16,6 +16,8 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.aren.thewitnesspuzzle.R;
 
 import androidx.annotation.NonNull;
 import androidx.core.graphics.ColorUtils;

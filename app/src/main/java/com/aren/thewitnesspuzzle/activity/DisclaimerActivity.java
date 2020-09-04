@@ -1,10 +1,12 @@
-package com.aren.thewitnesspuzzle;
+package com.aren.thewitnesspuzzle.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.widget.TextView;
+
+import com.aren.thewitnesspuzzle.R;
 
 public class DisclaimerActivity extends AppCompatActivity {
 

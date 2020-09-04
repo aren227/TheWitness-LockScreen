@@ -1,4 +1,4 @@
-package com.aren.thewitnesspuzzle;
+package com.aren.thewitnesspuzzle.dialog;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -11,6 +11,10 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.aren.thewitnesspuzzle.activity.CreatePatternActivity;
+import com.aren.thewitnesspuzzle.activity.CreateRandomPuzzleActivity;
+import com.aren.thewitnesspuzzle.activity.GalleryActivity;
+import com.aren.thewitnesspuzzle.R;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactory;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;
 

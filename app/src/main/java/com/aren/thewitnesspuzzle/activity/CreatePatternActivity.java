@@ -1,42 +1,24 @@
-package com.aren.thewitnesspuzzle;
-
-import androidx.appcompat.app.AppCompatActivity;
+package com.aren.thewitnesspuzzle.activity;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.aren.thewitnesspuzzle.game.Game;
+import com.aren.thewitnesspuzzle.R;
+import com.aren.thewitnesspuzzle.activity.PuzzleEditorActivity;
 import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
-import com.aren.thewitnesspuzzle.puzzle.HexagonPuzzle;
-import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 import com.aren.thewitnesspuzzle.puzzle.color.PalettePreset;
-import com.aren.thewitnesspuzzle.puzzle.color.PuzzleColorPalette;
 import com.aren.thewitnesspuzzle.puzzle.factory.Difficulty;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactory;
-import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryConfig;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;
-import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
-import com.aren.thewitnesspuzzle.puzzle.rules.EndingPointRule;
-import com.aren.thewitnesspuzzle.puzzle.rules.StartingPointRule;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class CreatePatternActivity extends PuzzleEditorActivity {
 

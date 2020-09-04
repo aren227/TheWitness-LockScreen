@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PuzzleEditorActivity"
+    tools:context=".activity.PuzzleEditorActivity"
     android:background="@color/colorPrimary"
     android:orientation="vertical">
 
@@ -110,7 +110,7 @@
                     android:textSize="20dp"
                     android:layout_marginRight="8dp"/>
 
-                <com.aren.thewitnesspuzzle.ColorPaletteView
+                <com.aren.thewitnesspuzzle.view.ColorPaletteView
                     android:id="@+id/palette"
                     android:layout_width="80dp"
                     android:layout_height="24dp"

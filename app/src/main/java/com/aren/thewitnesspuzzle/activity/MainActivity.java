@@ -1,4 +1,4 @@
-package com.aren.thewitnesspuzzle;
+package com.aren.thewitnesspuzzle.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -13,13 +13,14 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.text.method.LinkMovementMethod;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.aren.thewitnesspuzzle.BuildConfig;
+import com.aren.thewitnesspuzzle.service.LockscreenService;
+import com.aren.thewitnesspuzzle.R;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;
 
 import org.json.JSONException;
@@ -29,8 +30,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 

@@ -1,19 +1,17 @@
-package com.aren.thewitnesspuzzle;
+package com.aren.thewitnesspuzzle.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.GridLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.aren.thewitnesspuzzle.view.ColorPaletteView;
+import com.aren.thewitnesspuzzle.R;
 import com.aren.thewitnesspuzzle.puzzle.color.PalettePreset;
 import com.aren.thewitnesspuzzle.puzzle.color.PuzzleColorPalette;
 

@@ -1,4 +1,4 @@
-package com.aren.thewitnesspuzzle;
+package com.aren.thewitnesspuzzle.view;
 
 import android.content.Context;
 import android.graphics.Bitmap;

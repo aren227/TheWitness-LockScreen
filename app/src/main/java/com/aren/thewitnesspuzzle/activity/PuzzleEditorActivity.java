@@ -1,10 +1,8 @@
-package com.aren.thewitnesspuzzle;
+package com.aren.thewitnesspuzzle.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -16,6 +14,8 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.aren.thewitnesspuzzle.R;
+import com.aren.thewitnesspuzzle.dialog.ColorPaletteDialog;
 import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.HexagonPuzzle;
@@ -25,8 +25,7 @@ import com.aren.thewitnesspuzzle.puzzle.color.PuzzleColorPalette;
 import com.aren.thewitnesspuzzle.puzzle.factory.Difficulty;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryConfig;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;
-import com.aren.thewitnesspuzzle.puzzle.rules.EndingPointRule;
-import com.aren.thewitnesspuzzle.puzzle.rules.StartingPointRule;
+import com.aren.thewitnesspuzzle.view.ColorPaletteView;
 
 import java.util.UUID;
 

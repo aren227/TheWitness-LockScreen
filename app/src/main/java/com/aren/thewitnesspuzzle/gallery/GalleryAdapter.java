@@ -1,18 +1,17 @@
-package com.aren.thewitnesspuzzle;
+package com.aren.thewitnesspuzzle.gallery;
 
 import android.content.Context;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aren.thewitnesspuzzle.R;
+import com.aren.thewitnesspuzzle.dialog.NewPuzzleDialog;
+import com.aren.thewitnesspuzzle.dialog.PuzzleFactoryDialog;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;
 
 import java.util.ArrayList;

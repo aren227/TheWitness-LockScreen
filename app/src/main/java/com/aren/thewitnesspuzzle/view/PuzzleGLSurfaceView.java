@@ -1,4 +1,4 @@
-package com.aren.thewitnesspuzzle;
+package com.aren.thewitnesspuzzle.view;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -6,7 +6,6 @@ import android.opengl.GLSurfaceView;
 import android.view.MotionEvent;
 
 import com.aren.thewitnesspuzzle.graphics.GLRenderer;
-import com.aren.thewitnesspuzzle.graphics.GLRenderer3;
 import com.aren.thewitnesspuzzle.math.BoundingBox;
 import com.aren.thewitnesspuzzle.math.MathUtils;
 import com.aren.thewitnesspuzzle.game.Game;
