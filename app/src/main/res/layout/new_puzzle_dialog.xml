@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="12dp">
@@ -14,7 +14,7 @@
         android:textColor="@color/colorPrimary"
         android:fontFamily="serif"
         android:textSize="24dp"
-        android:paddingBottom="16dp"/>
+        android:paddingBottom="16dp" />
 
     <RadioGroup
         android:id="@+id/new_puzzle_radiogroup"
@@ -31,7 +31,7 @@
             android:fontFamily="serif"
             android:textSize="20dp"
             android:text="Pattern"
-            android:buttonTint="@color/colorPrimary"/>
+            android:buttonTint="@color/colorPrimary" />
 
         <RadioButton
             android:id="@+id/new_puzzle_random"
@@ -40,7 +40,7 @@
             android:fontFamily="serif"
             android:textSize="20dp"
             android:text="Random"
-            android:buttonTint="@color/colorPrimary"/>
+            android:buttonTint="@color/colorPrimary" />
 
     </RadioGroup>
 
@@ -59,7 +59,7 @@
             android:textColor="@color/colorPrimary"
             android:fontFamily="serif"
             android:textSize="24dp"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
 
         <TextView
             android:id="@+id/new_puzzle_create"
@@ -70,7 +70,7 @@
             android:textColor="@color/colorPrimary"
             android:fontFamily="serif"
             android:textSize="24dp"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
 
     </LinearLayout>
 

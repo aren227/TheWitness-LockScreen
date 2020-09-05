@@ -7,7 +7,7 @@ public class CursorFailedAnimation extends Animation {
 
     private Puzzle puzzle;
 
-    public CursorFailedAnimation(final Puzzle puzzle){
+    public CursorFailedAnimation(final Puzzle puzzle) {
         super(5000, 1, false);
         this.puzzle = puzzle;
 
@@ -29,8 +29,8 @@ public class CursorFailedAnimation extends Animation {
         int b = android.graphics.Color.blue(puzzle.getColorPalette().getPathColor());
         int c = android.graphics.Color.rgb(
                 (int) MathUtils.lerp(rr, r, rate),
-                (int)MathUtils.lerp(gg, g, rate),
-                (int)MathUtils.lerp(bb, b, rate));
+                (int) MathUtils.lerp(gg, g, rate),
+                (int) MathUtils.lerp(bb, b, rate));
         puzzle.getColorPalette().actualCursorColor.setAnimationValue(this, c);
     }
 }

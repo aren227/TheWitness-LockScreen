@@ -6,7 +6,7 @@ public class WaitForEliminationAnimation extends Animation {
 
     private Puzzle puzzle;
 
-    public WaitForEliminationAnimation(Puzzle puzzle, Runnable runnable){
+    public WaitForEliminationAnimation(Puzzle puzzle, Runnable runnable) {
         super(1000, 1, true);
         this.puzzle = puzzle;
         whenDone(runnable);

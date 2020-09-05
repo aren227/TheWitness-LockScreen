@@ -14,7 +14,7 @@ public class StartingPointRule extends Rule {
         return new CircleShape(getGraphElement().getPosition().toVector3(), getRadius(), getGraphElement().getPuzzle().getColorPalette().getPathColor());
     }
 
-    public float getRadius(){
+    public float getRadius() {
         return getGraphElement().getPuzzle().getPathWidth() * 1.1f;
     }
 

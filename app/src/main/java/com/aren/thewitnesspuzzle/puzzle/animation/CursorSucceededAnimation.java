@@ -7,7 +7,7 @@ public class CursorSucceededAnimation extends Animation {
 
     private Puzzle puzzle;
 
-    public CursorSucceededAnimation(Puzzle puzzle){
+    public CursorSucceededAnimation(Puzzle puzzle) {
         super(500, 1, true);
         this.puzzle = puzzle;
     }
@@ -22,8 +22,8 @@ public class CursorSucceededAnimation extends Animation {
         int b = android.graphics.Color.blue(puzzle.getColorPalette().getCursorSucceededColor());
         int c = android.graphics.Color.rgb(
                 (int) MathUtils.lerp(rr, r, rate),
-                (int)MathUtils.lerp(gg, g, rate),
-                (int)MathUtils.lerp(bb, b, rate));
+                (int) MathUtils.lerp(gg, g, rate),
+                (int) MathUtils.lerp(bb, b, rate));
         puzzle.getColorPalette().actualCursorColor.setAnimationValue(this, c);
     }
 }

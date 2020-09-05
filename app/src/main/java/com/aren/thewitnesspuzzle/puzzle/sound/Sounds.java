@@ -14,11 +14,11 @@ public enum Sounds {
 
     int id;
 
-    Sounds(int id){
+    Sounds(int id) {
         this.id = id;
     }
 
-    public int getId(){
+    public int getId() {
         return id;
     }
 

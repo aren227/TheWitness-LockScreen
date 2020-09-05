@@ -49,7 +49,7 @@ public class HexagonEliminationPuzzleFactory extends PuzzleFactory {
     }
 
     @Override
-    public String getName(){
+    public String getName() {
         return "Quarry #1";
     }
 }

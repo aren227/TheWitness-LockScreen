@@ -11,10 +11,10 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.aren.thewitnesspuzzle.R;
 import com.aren.thewitnesspuzzle.activity.CreatePatternActivity;
 import com.aren.thewitnesspuzzle.activity.CreateRandomPuzzleActivity;
 import com.aren.thewitnesspuzzle.activity.GalleryActivity;
-import com.aren.thewitnesspuzzle.R;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactory;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;
 
@@ -39,11 +39,10 @@ public class PuzzleFactoryDialog extends Dialog {
         TextView nameTextView = findViewById(R.id.name);
         nameTextView.setText(factory.getName());
 
-        if(factory.getConfig().getFactoryType() != null){
-            if(factory.getConfig().getFactoryType().equals("pattern")){
+        if (factory.getConfig().getFactoryType() != null) {
+            if (factory.getConfig().getFactoryType().equals("pattern")) {
                 nameTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_baseline_gesture_24, 0);
-            }
-            else{
+            } else {
                 nameTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_baseline_casino_24, 0);
             }
         }
@@ -51,18 +50,17 @@ public class PuzzleFactoryDialog extends Dialog {
         ImageView thumbnailImageView = findViewById(R.id.thumbnail);
         thumbnailImageView.setImageBitmap(factory.getThumbnailCache());
 
-        if(factory.isCreatedByUser()){
+        if (factory.isCreatedByUser()) {
             findViewById(R.id.puzzle_cant_be_removed).setVisibility(View.GONE);
             findViewById(R.id.puzzle_settings).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     dismiss();
-                    if(factory.getConfig().getFactoryType().equals("pattern")){
+                    if (factory.getConfig().getFactoryType().equals("pattern")) {
                         Intent intent = new Intent(getContext(), CreatePatternActivity.class);
                         intent.putExtra("uuid", factory.getUuid());
                         getContext().startActivity(intent);
-                    }
-                    else if(factory.getConfig().getFactoryType().equals("random")){
+                    } else if (factory.getConfig().getFactoryType().equals("random")) {
                         Intent intent = new Intent(getContext(), CreateRandomPuzzleActivity.class);
                         intent.putExtra("uuid", factory.getUuid());
                         getContext().startActivity(intent);
@@ -81,7 +79,7 @@ public class PuzzleFactoryDialog extends Dialog {
                                 public void onClick(DialogInterface dialog, int which) {
                                     dismiss();
                                     new PuzzleFactoryManager(getContext()).remove(factory);
-                                    if(galleryActivity != null){
+                                    if (galleryActivity != null) {
                                         galleryActivity.updateGallery();
                                     }
                                 }
@@ -94,8 +92,7 @@ public class PuzzleFactoryDialog extends Dialog {
                     dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(0xff000000);
                 }
             });
-        }
-        else{
+        } else {
             findViewById(R.id.puzzle_settings).setVisibility(View.GONE);
             findViewById(R.id.puzzle_remove).setVisibility(View.GONE);
         }
@@ -105,8 +102,8 @@ public class PuzzleFactoryDialog extends Dialog {
         super(context);
         this.factory = factory;
 
-        if(context instanceof GalleryActivity){
-            galleryActivity = (GalleryActivity)context;
+        if (context instanceof GalleryActivity) {
+            galleryActivity = (GalleryActivity) context;
         }
     }
 }

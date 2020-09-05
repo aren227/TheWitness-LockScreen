@@ -9,7 +9,6 @@ import com.aren.thewitnesspuzzle.puzzle.color.PalettePreset;
 import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.cursor.area.GridAreaSplitter;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
-import com.aren.thewitnesspuzzle.puzzle.rules.BlocksRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.Color;
 import com.aren.thewitnesspuzzle.puzzle.rules.EliminationRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.SunRule;
@@ -50,7 +49,7 @@ public class SunEliminationPuzzleFactory extends PuzzleFactory {
     }
 
     @Override
-    public String getName(){
+    public String getName() {
         return "Quarry #4";
     }
 }

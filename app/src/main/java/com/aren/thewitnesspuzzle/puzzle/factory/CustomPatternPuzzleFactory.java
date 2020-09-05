@@ -30,45 +30,44 @@ public class CustomPatternPuzzleFactory extends PuzzleFactory {
         return generateWithPattern(game, random, false);
     }
 
-    public Puzzle generateWithPattern(Game game, Random random, boolean showPattern){
+    public Puzzle generateWithPattern(Game game, Random random, boolean showPattern) {
         Puzzle puzzle = null;
 
         String puzzleType = getConfig().getString("puzzleType", "null");
         PuzzleColorPalette palette = getConfig().getColorPalette("color", PalettePreset.get("Entry_1"));
 
-        if(puzzleType.equals("grid")){
-            if(!getConfig().containsKey("width") || !getConfig().containsKey("height")) return null;
+        if (puzzleType.equals("grid")) {
+            if (!getConfig().containsKey("width") || !getConfig().containsKey("height"))
+                return null;
             int width = getConfig().getInt("width", 4);
             int height = getConfig().getInt("height", 4);
             puzzle = new GridPuzzle(game, palette, width, height);
-            ((GridPuzzle)puzzle).addStartingPoint(0, 0);
-            ((GridPuzzle)puzzle).addEndingPoint(width, height);
-        }
-        else if(puzzleType.equals("hexagon")){
+            ((GridPuzzle) puzzle).addStartingPoint(0, 0);
+            ((GridPuzzle) puzzle).addEndingPoint(width, height);
+        } else if (puzzleType.equals("hexagon")) {
             puzzle = new HexagonPuzzle(game, palette);
-        }
-        else{
+        } else {
             return null;
         }
 
-        if(!getConfig().containsKey("pattern")) return null;
+        if (!getConfig().containsKey("pattern")) return null;
 
         List<Integer> pattern = getConfig().getIntList("pattern", new ArrayList<Integer>());
         puzzle.setCustomPattern(pattern);
 
-        if(showPattern){
+        if (showPattern) {
             ArrayList<Vertex> vertices = new ArrayList<>();
-            for(int i : pattern){
+            for (int i : pattern) {
                 vertices.add(puzzle.getVertex(i));
             }
             EdgeProportion lastEdge = null;
-            for(Edge edge : puzzle.getEdges()){
-                if(edge.from == vertices.get(vertices.size() - 1) && edge.to.getRule() instanceof EndingPointRule){
+            for (Edge edge : puzzle.getEdges()) {
+                if (edge.from == vertices.get(vertices.size() - 1) && edge.to.getRule() instanceof EndingPointRule) {
                     lastEdge = new EdgeProportion(edge);
                     lastEdge.proportion = 1f;
                     break;
                 }
-                if(edge.to == vertices.get(vertices.size() - 1) && edge.from.getRule() instanceof EndingPointRule){
+                if (edge.to == vertices.get(vertices.size() - 1) && edge.from.getRule() instanceof EndingPointRule) {
                     lastEdge = new EdgeProportion(edge);
                     lastEdge.reverse = true;
                     lastEdge.proportion = 1f;
@@ -85,7 +84,7 @@ public class CustomPatternPuzzleFactory extends PuzzleFactory {
     }
 
     @Override
-    public Difficulty getDifficulty(){
+    public Difficulty getDifficulty() {
         return Difficulty.CUSTOM_PATTERN;
     }
 
@@ -95,7 +94,7 @@ public class CustomPatternPuzzleFactory extends PuzzleFactory {
     }
 
     @Override
-    public boolean isCreatedByUser(){
+    public boolean isCreatedByUser() {
         return true;
     }
 }

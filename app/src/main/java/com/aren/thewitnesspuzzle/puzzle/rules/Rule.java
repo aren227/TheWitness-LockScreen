@@ -1,8 +1,8 @@
 package com.aren.thewitnesspuzzle.puzzle.rules;
 
 import com.aren.thewitnesspuzzle.graphics.shape.Shape;
-import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
+import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.graph.GraphElement;
 
 public class Rule {
@@ -13,38 +13,38 @@ public class Rule {
 
     protected Shape shape;
 
-    public Rule(){
+    public Rule() {
 
     }
 
-    public GraphElement getGraphElement(){
+    public GraphElement getGraphElement() {
         return graphElement;
     }
 
-    public void setGraphElement(GraphElement graphElement){
+    public void setGraphElement(GraphElement graphElement) {
         this.graphElement = graphElement;
     }
 
-    public Shape generateShape(){
+    public Shape generateShape() {
         return null;
     }
 
-    public Shape getShape(){
-        if(shape == null){
+    public Shape getShape() {
+        if (shape == null) {
             shape = generateShape();
         }
         return shape;
     }
 
-    public boolean validateLocally(Cursor cursor){
+    public boolean validateLocally(Cursor cursor) {
         return true;
     }
 
-    public boolean canValidateLocally(){
+    public boolean canValidateLocally() {
         return true;
     }
 
-    public Puzzle getPuzzle(){
+    public Puzzle getPuzzle() {
         return graphElement.getPuzzle();
     }
 

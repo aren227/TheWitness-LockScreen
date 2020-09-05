@@ -9,9 +9,9 @@ import android.opengl.Matrix;
 import android.util.Log;
 
 import com.aren.thewitnesspuzzle.R;
+import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.math.BoundingBox;
 import com.aren.thewitnesspuzzle.math.Vector2;
-import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 
 import java.nio.ByteBuffer;
@@ -40,8 +40,8 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     private int width, height;
     private int[] texWidth = new int[6], texHeight = new int[6];
 
-    private int textureIds[] = new int[6];
-    private int depthTextureIds[] = new int[1];
+    private int[] textureIds = new int[6];
+    private int[] depthTextureIds = new int[1];
 
     // Main, Downscaling, Downscaling, Downscaling, Downscaling, Sub Main
     private IntBuffer frameBuffer = IntBuffer.allocate(6);
@@ -52,7 +52,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     private final float[] mProjectionMatrix = new float[16];
     private final float[] mViewMatrix = new float[16];
 
-    private float quadPos[] = {
+    private float[] quadPos = {
             -1.0f, 1.0f, 0.0f,
             -1.0f, -1.0f, 0.0f,
             1.0f, -1.0f, 0.0f,
@@ -60,7 +60,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     };
     private FloatBuffer quadPosBuffer;
 
-    private float quadUV[] = {
+    private float[] quadUV = {
             0, 1,
             0, 0,
             1, 0,
@@ -68,7 +68,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     };
     private FloatBuffer quadUVBuffer;
 
-    private short quadIndex[] = {0, 1, 2, 0, 2, 3}; // order to draw vertices
+    private short[] quadIndex = {0, 1, 2, 0, 2, 3}; // order to draw vertices
     private ShortBuffer quadIndexBuffer;
 
     private ConcurrentLinkedQueue<Puzzle> renderQueue = new ConcurrentLinkedQueue<>(); // only used in gallery
@@ -77,7 +77,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 
     private boolean bloom = false;
 
-    public GLRenderer(Game game, Context context){
+    public GLRenderer(Game game, Context context) {
         this.game = game;
         this.context = context;
 
@@ -157,15 +157,15 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         bloom = game.getSettings().getBloomEnabled();
     }
 
-    public void setupTextures(){
-        if(textureIds[0] != 0) {
+    public void setupTextures() {
+        if (textureIds[0] != 0) {
             GLES20.glDeleteTextures(6, textureIds, 0);
             GLES20.glDeleteFramebuffers(6, frameBuffer);
 
             GLES20.glDeleteTextures(1, depthTextureIds, 0);
         }
 
-        if(bloom){
+        if (bloom) {
             GLES20.glGenTextures(6, textureIds, 0);
             GLES20.glGenFramebuffers(6, frameBuffer);
 
@@ -173,7 +173,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 
             int w = width;
             int h = height;
-            for(int i = 0; i < 5; i++){
+            for (int i = 0; i < 5; i++) {
                 texWidth[i] = w;
                 texHeight[i] = h;
                 w /= 2;
@@ -182,7 +182,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
             texWidth[5] = texWidth[0];
             texHeight[5] = texHeight[0];
 
-            for(int i = 0; i < 6; i++){
+            for (int i = 0; i < 6; i++) {
                 GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer.get(i));
 
                 GLES20.glActiveTexture(GLES20.GL_TEXTURE0 + i);
@@ -214,7 +214,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     public void onDrawFrame(GL10 gl) {
         //Log.i("GL", game.getPuzzle() + " Rendered");
 
-        if(!renderMode && game.getPuzzle() == null || renderMode && renderQueue.isEmpty()) {
+        if (!renderMode && game.getPuzzle() == null || renderMode && renderQueue.isEmpty()) {
             GLES20.glClearColor(1, 0, 1, 1.0f);
             GLES20.glClearDepthf(1.0f);
             GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
@@ -226,21 +226,20 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         }
 
         Puzzle puzzle = game.getPuzzle();
-        if(renderMode){
+        if (renderMode) {
             puzzle = renderQueue.poll();
         }
 
-        if(puzzle.shouldUpdateAnimation() || renderMode){
+        if (puzzle.shouldUpdateAnimation() || renderMode) {
             game.getSurfaceView().setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
-        }
-        else{
+        } else {
             game.getSurfaceView().setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
         }
 
         int COORD_PER_VERTEX = 3;
         int VERTEX_STRIDE = 3 * 4;
 
-        synchronized (puzzle){
+        synchronized (puzzle) {
             puzzle.prepareForDrawing();
 
             puzzle.updateAnimation();
@@ -259,7 +258,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
             GLES20.glEnable(GLES20.GL_DEPTH_TEST);
             GLES20.glDepthFunc(GLES20.GL_LEQUAL);
 
-            if(bloom) GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer.get(0));
+            if (bloom) GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer.get(0));
             else GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
 
             int backgroundColor = puzzle.getColorPalette().getBackgroundColor();
@@ -293,11 +292,11 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 
         GLES20.glDisable(GLES20.GL_DEPTH_TEST);
 
-        if(bloom){
-            for(int i = 1; i < 5; i++){
+        if (bloom) {
+            for (int i = 1; i < 5; i++) {
                 //GLES20.glClearColor(0, 0, 0, 0);
                 //GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
-                if(i == 1){
+                if (i == 1) {
                     GLES20.glUseProgram(glProgramFrameBuffer_boxblur_down_prelift);
                     GLES20.glViewport(0, 0, texWidth[i], texHeight[i]);
                     GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer.get(i));
@@ -315,8 +314,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 
                     int texelHandle = GLES20.glGetUniformLocation(glProgramFrameBuffer_boxblur_down_prelift, "texel");
                     GLES20.glUniform2f(texelHandle, 1f / texWidth[i], 1f / texHeight[i]);
-                }
-                else{
+                } else {
                     GLES20.glUseProgram(glProgramFrameBuffer_boxblur_down);
                     GLES20.glViewport(0, 0, texWidth[i], texHeight[i]);
                     GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer.get(i));
@@ -339,10 +337,10 @@ public class GLRenderer implements GLSurfaceView.Renderer {
             }
 
             int lastBufferIdx = 5;
-            for(int i = 5; i < 9; i++){
+            for (int i = 5; i < 9; i++) {
                 //GLES20.glClearColor(0, 0, 0, 0);
                 //GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
-                if(i == 5){
+                if (i == 5) {
                     GLES20.glUseProgram(glProgramFrameBuffer_boxblur_up_init);
                     GLES20.glViewport(0, 0, texWidth[lastBufferIdx], texHeight[lastBufferIdx]);
                     GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer.get(lastBufferIdx));
@@ -368,14 +366,12 @@ public class GLRenderer implements GLSurfaceView.Renderer {
                     GLES20.glUniform1f(divisionHandle, 1.0f);
 
                     GLES20.glDrawElements(GLES20.GL_TRIANGLES, quadIndex.length, GLES20.GL_UNSIGNED_SHORT, quadIndexBuffer);
-                }
-                else{
+                } else {
                     GLES20.glUseProgram(glProgramFrameBuffer_boxblur_up);
-                    if(i == 8){
+                    if (i == 8) {
                         GLES20.glViewport(0, 0, width, height);
                         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
-                    }
-                    else{
+                    } else {
                         GLES20.glViewport(0, 0, texWidth[lastBufferIdx], texHeight[lastBufferIdx]);
                         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer.get(lastBufferIdx));
                     }
@@ -404,16 +400,16 @@ public class GLRenderer implements GLSurfaceView.Renderer {
             }
         }
 
-        if(renderMode){
+        if (renderMode) {
             saveToBitmap(puzzle);
         }
 
-        synchronized(this){
+        synchronized (this) {
             this.notifyAll();
         }
     }
 
-    public static int loadShader(int type, String shaderCode){
+    public static int loadShader(int type, String shaderCode) {
         int shader = GLES20.glCreateShader(type);
 
         GLES20.glShaderSource(shader, shaderCode);
@@ -432,17 +428,17 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         return shader;
     }
 
-    public float getFrustumWidth(Puzzle puzzle){
+    public float getFrustumWidth(Puzzle puzzle) {
         BoundingBox boundingBox = puzzle.getBoundingBox();
 
         float bbWidth = boundingBox.getWidth() + puzzle.getPadding() * 2;
         float bbHeight = boundingBox.getHeight() + puzzle.getPadding() * 2;
 
-        if(bbWidth * ratio > bbHeight) return bbWidth;
+        if (bbWidth * ratio > bbHeight) return bbWidth;
         return bbHeight / ratio;
     }
 
-    public BoundingBox getFrustumBoundingBox(Puzzle puzzle){
+    public BoundingBox getFrustumBoundingBox(Puzzle puzzle) {
         BoundingBox boundingBox = new BoundingBox();
         boundingBox.min = new Vector2(puzzle.getBoundingBox().getCenter().x - getFrustumWidth(puzzle) * 0.5f, puzzle.getBoundingBox().getCenter().y - getFrustumWidth(puzzle) * ratio * 0.5f);
         boundingBox.max = new Vector2(puzzle.getBoundingBox().getCenter().x + getFrustumWidth(puzzle) * 0.5f, puzzle.getBoundingBox().getCenter().y + getFrustumWidth(puzzle) * ratio * 0.5f);
@@ -450,7 +446,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     }
 
     // https://stackoverflow.com/questions/5514149/capture-screen-of-glsurfaceview-to-bitmap
-    public void saveToBitmap(Puzzle puzzle){
+    public void saveToBitmap(Puzzle puzzle) {
         int[] bitmapBuffer = new int[width * height];
         int[] bitmapSource = new int[width * height];
         IntBuffer intBuffer = IntBuffer.wrap(bitmapBuffer);
@@ -474,15 +470,15 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         renderResults.add(Bitmap.createBitmap(bitmapSource, width, height, Bitmap.Config.ARGB_8888));
     }
 
-    public void addRenderQueue(Puzzle puzzle){
+    public void addRenderQueue(Puzzle puzzle) {
         renderQueue.add(puzzle);
     }
 
-    public ConcurrentLinkedQueue<Bitmap> getRenderedResults(){
+    public ConcurrentLinkedQueue<Bitmap> getRenderedResults() {
         return renderResults;
     }
 
-    public void setGalleryRenderMode(){
+    public void setGalleryRenderMode() {
         renderMode = true;
         game.getSurfaceView().setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
     }

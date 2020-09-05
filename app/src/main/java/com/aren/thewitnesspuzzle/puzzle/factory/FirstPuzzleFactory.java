@@ -12,7 +12,7 @@ import com.aren.thewitnesspuzzle.puzzle.rules.StartingPointRule;
 
 import java.util.Random;
 
-public class FirstPuzzleFactory extends PuzzleFactory{
+public class FirstPuzzleFactory extends PuzzleFactory {
 
     public FirstPuzzleFactory(Context context) {
         super(context);
@@ -38,7 +38,7 @@ public class FirstPuzzleFactory extends PuzzleFactory{
     }
 
     @Override
-    public String getName(){
+    public String getName() {
         return "Lock #1";
     }
 

@@ -40,7 +40,7 @@ public class SecondPuzzleFactory extends PuzzleFactory {
     }
 
     @Override
-    public String getName(){
+    public String getName() {
         return "Lock #2";
     }
 }

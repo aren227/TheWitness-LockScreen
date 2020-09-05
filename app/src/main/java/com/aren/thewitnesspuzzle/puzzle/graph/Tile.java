@@ -6,11 +6,11 @@ import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Tile extends GraphElement{
+public class Tile extends GraphElement {
 
     public List<Edge> edges;
 
-    public Tile(Puzzle puzzle, float x, float y){
+    public Tile(Puzzle puzzle, float x, float y) {
         super(puzzle);
         this.x = x;
         this.y = y;
@@ -19,7 +19,7 @@ public class Tile extends GraphElement{
     }
 
     @Override
-    public Vector2 getPosition(){
+    public Vector2 getPosition() {
         return new Vector2(x, y);
     }
 

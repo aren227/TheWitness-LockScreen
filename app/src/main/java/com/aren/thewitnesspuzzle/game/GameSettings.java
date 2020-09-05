@@ -7,55 +7,55 @@ public class GameSettings {
 
     private SharedPreferences sharedPreferences;
 
-    public GameSettings(Context context){
+    public GameSettings(Context context) {
         sharedPreferences = context.getSharedPreferences("com.aren.thewitnesspuzzle.game", Context.MODE_PRIVATE);
     }
 
-    public boolean getSoundsEnabled(){
+    public boolean getSoundsEnabled() {
         return sharedPreferences.getBoolean("sounds", true);
     }
 
-    public void setSoundsEnabled(boolean enabled){
+    public void setSoundsEnabled(boolean enabled) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean("sounds", enabled);
         editor.commit();
     }
 
-    public boolean getHoldingPuzzles(){
+    public boolean getHoldingPuzzles() {
         return sharedPreferences.getBoolean("holding", false);
     }
 
-    public void setHoldingPuzzles(boolean holding){
+    public void setHoldingPuzzles(boolean holding) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean("holding", holding);
         editor.commit();
     }
 
-    public boolean getShadowPanelEnabled(){
+    public boolean getShadowPanelEnabled() {
         return sharedPreferences.getBoolean("shadowPanel", false);
     }
 
-    public void setShadowPanelEnabled(boolean enabled){
+    public void setShadowPanelEnabled(boolean enabled) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean("shadowPanel", enabled);
         editor.commit();
     }
 
-    public boolean getBloomEnabled(){
+    public boolean getBloomEnabled() {
         return sharedPreferences.getBoolean("bloom", true);
     }
 
-    public void setBloomEnabled(boolean enabled){
+    public void setBloomEnabled(boolean enabled) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean("bloom", enabled);
         editor.commit();
     }
 
-    public int getLockDelay(){
+    public int getLockDelay() {
         return sharedPreferences.getInt("lockdelay", 0);
     }
 
-    public void setLockDelay(int delay){
+    public void setLockDelay(int delay) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt("lockdelay", delay);
         editor.commit();

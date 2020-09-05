@@ -39,7 +39,7 @@ public class TrianglesPuzzleFactory extends PuzzleFactory {
     }
 
     @Override
-    public Difficulty getDifficulty(){
+    public Difficulty getDifficulty() {
         return Difficulty.VERY_EASY;
     }
 

@@ -26,21 +26,21 @@ public class PuzzleFactoryManager {
 
     private Runnable onUpdate;
 
-    public PuzzleFactoryManager(Context context){
+    public PuzzleFactoryManager(Context context) {
         this.context = context;
         updateFactoryList();
     }
 
-    private void updateFactoryList(){
+    private void updateFactoryList() {
         registerBuiltInFactories();
         registerUserDefinedFactories();
     }
 
-    public void setOnUpdate(Runnable runnable){
+    public void setOnUpdate(Runnable runnable) {
         onUpdate = runnable;
     }
 
-    public List<PuzzleFactory> getAllPuzzleFactories(){
+    public List<PuzzleFactory> getAllPuzzleFactories() {
         updateFactoryList();
 
         List<PuzzleFactory> list = new ArrayList<>(factories.values());
@@ -60,10 +60,10 @@ public class PuzzleFactoryManager {
         return list;
     }*/
 
-    public PuzzleFactory getPuzzleFactoryByUuid(UUID uuid){
+    public PuzzleFactory getPuzzleFactoryByUuid(UUID uuid) {
         updateFactoryList();
 
-        if(!factories.containsKey(uuid)) return null;
+        if (!factories.containsKey(uuid)) return null;
         return factories.get(uuid);
     }
 
@@ -90,28 +90,26 @@ public class PuzzleFactoryManager {
     }*/
 
     //TODO: Sorting options
-    private void sort(List<PuzzleFactory> factories){
+    private void sort(List<PuzzleFactory> factories) {
         Collections.sort(factories, new Comparator<PuzzleFactory>() {
             @Override
             public int compare(PuzzleFactory o1, PuzzleFactory o2) {
-                if(o1.isCreatedByUser() && o2.isCreatedByUser()){
+                if (o1.isCreatedByUser() && o2.isCreatedByUser()) {
                     return -Long.compare(o1.getConfig().getCreationTimestamp(), o2.getConfig().getCreationTimestamp());
-                }
-                else if(o1.isCreatedByUser() != o2.isCreatedByUser()){
+                } else if (o1.isCreatedByUser() != o2.isCreatedByUser()) {
                     return Integer.compare(o1.isCreatedByUser() ? 0 : 1, o2.isCreatedByUser() ? 0 : 1);
-                }
-                else{
+                } else {
                     int a = -1;
-                    if(o1.getDifficulty() != null) a = o1.getDifficulty().ordinal();
+                    if (o1.getDifficulty() != null) a = o1.getDifficulty().ordinal();
                     int b = -1;
-                    if(o2.getDifficulty() != null) b = o2.getDifficulty().ordinal();
+                    if (o2.getDifficulty() != null) b = o2.getDifficulty().ordinal();
                     return Integer.compare(a, b);
                 }
             }
         });
     }
 
-    private void registerBuiltInFactories(){
+    private void registerBuiltInFactories() {
         register(new BlocksEliminationPuzzleFactory(context));
         register(new BlocksRotatableBlocksPuzzleFactory(context));
         register(new ChallengeSunBlocksPuzzleFactory(context));
@@ -140,37 +138,35 @@ public class PuzzleFactoryManager {
         register(new SymmetryHexagonPuzzleFactory(context));
     }
 
-    private void registerUserDefinedFactories(){
+    private void registerUserDefinedFactories() {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PuzzleFactoryManager.sharedPreferenceConfigKey, Context.MODE_PRIVATE);
         List<String> factoryUuidStrList = new ArrayList<>(sharedPreferences.getAll().keySet());
 
-        for(String uuidStr : factoryUuidStrList){
-            try{
+        for (String uuidStr : factoryUuidStrList) {
+            try {
                 UUID uuid = UUID.fromString(uuidStr);
                 PuzzleFactoryConfig config = new PuzzleFactoryConfig(context, uuid);
 
-                if(config.getFactoryType().equals("pattern")){
+                if (config.getFactoryType().equals("pattern")) {
                     CustomPatternPuzzleFactory factory = new CustomPatternPuzzleFactory(context, uuid);
                     register(factory);
-                }
-                else if(config.getFactoryType().equals("random")){
+                } else if (config.getFactoryType().equals("random")) {
                     CustomRandomPuzzleFactory factory = new CustomRandomPuzzleFactory(context, uuid);
                     register(factory);
                 }
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
 
-    private void register(PuzzleFactory puzzleFactory){
-        if(factories.containsKey(puzzleFactory.getUuid())) return;
+    private void register(PuzzleFactory puzzleFactory) {
+        if (factories.containsKey(puzzleFactory.getUuid())) return;
         factories.put(puzzleFactory.getUuid(), puzzleFactory);
     }
 
-    public void remove(PuzzleFactory puzzleFactory){
-        if(!puzzleFactory.isCreatedByUser()) return;
+    public void remove(PuzzleFactory puzzleFactory) {
+        if (!puzzleFactory.isCreatedByUser()) return;
         factories.remove(puzzleFactory.getUuid());
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(PuzzleFactoryManager.sharedPreferenceConfigKey, Context.MODE_PRIVATE);
@@ -179,42 +175,42 @@ public class PuzzleFactoryManager {
         editor.commit();
     }
 
-    public PuzzleFactory getPuzzleFactoryByName(String name){
-        for(PuzzleFactory factory : factories.values()){
-            if(factory.getName().equals(name)) return factory;
+    public PuzzleFactory getPuzzleFactoryByName(String name) {
+        for (PuzzleFactory factory : factories.values()) {
+            if (factory.getName().equals(name)) return factory;
         }
         return null;
     }
 
-    public Profile getLastViewedProfile(){
+    public Profile getLastViewedProfile() {
         SharedPreferences sharedPreferences = context.getSharedPreferences("com.aren.thewitnesspuzzle.puzzle.factory", Context.MODE_PRIVATE);
         UUID uuid = UUID.fromString(sharedPreferences.getString("last", defaultProfileUuid.toString()));
         return new Profile(context, uuid);
     }
 
-    public Profile getLockProfile(){
+    public Profile getLockProfile() {
         SharedPreferences sharedPreferences = context.getSharedPreferences("com.aren.thewitnesspuzzle.puzzle.factory", Context.MODE_PRIVATE);
         UUID uuid = UUID.fromString(sharedPreferences.getString("lock", defaultProfileUuid.toString()));
         return new Profile(context, uuid);
     }
 
-    public Profile getPlayProfile(){
+    public Profile getPlayProfile() {
         SharedPreferences sharedPreferences = context.getSharedPreferences("com.aren.thewitnesspuzzle.puzzle.factory", Context.MODE_PRIVATE);
         UUID uuid = UUID.fromString(sharedPreferences.getString("play", defaultProfileUuid.toString()));
         return new Profile(context, uuid);
     }
 
-    public Profile getDefaultProfile(){
+    public Profile getDefaultProfile() {
         return new Profile(context, defaultProfileUuid);
     }
 
-    public List<Profile> getProfiles(){
+    public List<Profile> getProfiles() {
         Set<String> defaultSet = new HashSet<>();
         defaultSet.add(defaultProfileUuid.toString());
 
         SharedPreferences sharedPreferences = context.getSharedPreferences("com.aren.thewitnesspuzzle.puzzle.factory", Context.MODE_PRIVATE);
         List<Profile> list = new ArrayList<>();
-        for(String strUuid : sharedPreferences.getStringSet("profiles", defaultSet)){
+        for (String strUuid : sharedPreferences.getStringSet("profiles", defaultSet)) {
             list.add(new Profile(context, UUID.fromString(strUuid)));
         }
 
@@ -227,20 +223,20 @@ public class PuzzleFactoryManager {
         return list;
     }
 
-    public Profile createProfile(String name){
+    public Profile createProfile(String name) {
         Profile profile = new Profile(context, UUID.randomUUID());
         profile.setName(name);
         profile.setCreationTime(System.currentTimeMillis());
         return profile;
     }
 
-    public void removeProfile(Profile profile){
-        if(profile.uuid.equals(defaultProfileUuid)) return;
+    public void removeProfile(Profile profile) {
+        if (profile.uuid.equals(defaultProfileUuid)) return;
 
-        if(getLockProfile().equals(profile)){
+        if (getLockProfile().equals(profile)) {
             getDefaultProfile().assignToLock();
         }
-        if(getPlayProfile().equals(profile)){
+        if (getPlayProfile().equals(profile)) {
             getDefaultProfile().assignToPlay();
         }
 
@@ -260,16 +256,16 @@ public class PuzzleFactoryManager {
         getProfiles().get(0).markAsLastViewed();
     }
 
-    public boolean isRemovedProfile(Profile profile){
+    public boolean isRemovedProfile(Profile profile) {
         return !getProfiles().contains(profile);
     }
 
-    public class Profile{
+    public class Profile {
 
         private Context context;
         private UUID uuid;
 
-        public Profile(Context context, UUID uuid){
+        public Profile(Context context, UUID uuid) {
             this.context = context;
             this.uuid = uuid;
 
@@ -282,52 +278,52 @@ public class PuzzleFactoryManager {
             editor.commit();
         }
 
-        public String getName(){
-            if(uuid.equals(defaultProfileUuid)){
+        public String getName() {
+            if (uuid.equals(defaultProfileUuid)) {
                 return getSharedPreferences().getString(uuid.toString() + "/name", "Default");
             }
             return getSharedPreferences().getString(uuid.toString() + "/name", "No Name");
         }
 
-        public void setName(String name){
+        public void setName(String name) {
             SharedPreferences.Editor editor = getSharedPreferences().edit();
             editor.putString(uuid.toString() + "/name", name);
             editor.commit();
         }
 
-        public long getCreationTime(){
+        public long getCreationTime() {
             return getSharedPreferences().getLong(uuid.toString() + "/creation_time", 0);
         }
 
-        public void setCreationTime(long time){
+        public void setCreationTime(long time) {
             SharedPreferences.Editor editor = getSharedPreferences().edit();
             editor.putLong(uuid.toString() + "/creation_time", time);
             editor.commit();
         }
 
-        public List<PuzzleFactory> getActivatedPuzzleFactories(){
+        public List<PuzzleFactory> getActivatedPuzzleFactories() {
             List<PuzzleFactory> list = new ArrayList<>();
-            for(String strUuid : getSharedPreferences().getStringSet(uuid.toString() + "/activated", new HashSet<String>())){
+            for (String strUuid : getSharedPreferences().getStringSet(uuid.toString() + "/activated", new HashSet<String>())) {
                 PuzzleFactory factory = getPuzzleFactoryByUuid(UUID.fromString(strUuid));
-                if(factory != null) list.add(factory);
+                if (factory != null) list.add(factory);
             }
             return list;
         }
 
-        public PuzzleFactory getRandomPuzzleFactory(Random random){
+        public PuzzleFactory getRandomPuzzleFactory(Random random) {
             List<PuzzleFactory> activated = getActivatedPuzzleFactories();
-            if(activated.size() == 0) return null;
+            if (activated.size() == 0) return null;
 
             String lastUuid = getSharedPreferences().getString(uuid.toString() + "/last", "");
 
             List<PuzzleFactory> candidates = new ArrayList<>();
-            for(PuzzleFactory factory : activated){
-                if(!factory.getUuid().toString().equals(lastUuid)){
+            for (PuzzleFactory factory : activated) {
+                if (!factory.getUuid().toString().equals(lastUuid)) {
                     candidates.add(factory);
                 }
             }
 
-            if(candidates.size() == 0) return activated.get(0);
+            if (candidates.size() == 0) return activated.get(0);
 
             PuzzleFactory selected = candidates.get(random.nextInt(candidates.size()));
 
@@ -338,39 +334,39 @@ public class PuzzleFactoryManager {
             return selected;
         }
 
-        public void setActivated(PuzzleFactory factory, boolean activated){
+        public void setActivated(PuzzleFactory factory, boolean activated) {
             // Must clone it before use
             Set<String> set = new HashSet<>(getSharedPreferences().getStringSet(uuid.toString() + "/activated", new HashSet<String>()));
-            if(activated) set.add(factory.getUuid().toString());
+            if (activated) set.add(factory.getUuid().toString());
             else set.remove(factory.getUuid().toString());
 
             SharedPreferences.Editor editor = getSharedPreferences().edit();
             editor.putStringSet(uuid.toString() + "/activated", set);
             editor.commit();
 
-            if(onUpdate != null) onUpdate.run();
+            if (onUpdate != null) onUpdate.run();
         }
 
-        public boolean isActivated(PuzzleFactory factory){
+        public boolean isActivated(PuzzleFactory factory) {
             Set<String> set = getSharedPreferences().getStringSet(uuid.toString() + "/activated", new HashSet<String>());
             return set.contains(factory.getUuid().toString());
         }
 
-        public void assignToLock(){
+        public void assignToLock() {
             SharedPreferences sharedPreferences = context.getSharedPreferences("com.aren.thewitnesspuzzle.puzzle.factory", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("lock", uuid.toString());
             editor.commit();
         }
 
-        public void assignToPlay(){
+        public void assignToPlay() {
             SharedPreferences sharedPreferences = context.getSharedPreferences("com.aren.thewitnesspuzzle.puzzle.factory", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("play", uuid.toString());
             editor.commit();
         }
 
-        public void markAsLastViewed(){
+        public void markAsLastViewed() {
             SharedPreferences sharedPreferences = context.getSharedPreferences("com.aren.thewitnesspuzzle.puzzle.factory", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("last", uuid.toString());
@@ -378,14 +374,14 @@ public class PuzzleFactoryManager {
         }
 
         @Override
-        public boolean equals(Object obj){
-            if(obj instanceof Profile){
-                return ((Profile)obj).uuid.equals(uuid);
+        public boolean equals(Object obj) {
+            if (obj instanceof Profile) {
+                return ((Profile) obj).uuid.equals(uuid);
             }
             return false;
         }
 
-        public SharedPreferences getSharedPreferences(){
+        public SharedPreferences getSharedPreferences() {
             return context.getSharedPreferences(PuzzleFactoryManager.sharedPreferenceProfilesKey, Context.MODE_PRIVATE);
         }
     }

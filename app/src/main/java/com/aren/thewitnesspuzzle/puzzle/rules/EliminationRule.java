@@ -10,7 +10,6 @@ import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -21,34 +20,34 @@ public class EliminationRule extends Rule {
 
     public static final int COLOR = android.graphics.Color.parseColor("#fafafa");
 
-    public EliminationRule(){
+    public EliminationRule() {
         super();
     }
 
     @Override
-    public Shape generateShape(){
-        if(!(getGraphElement() instanceof Tile)) return null;
+    public Shape generateShape() {
+        if (!(getGraphElement() instanceof Tile)) return null;
         return new EliminatorShape(new Vector3(getGraphElement().x, getGraphElement().y, 0), COLOR);
     }
 
     @Override
-    public boolean canValidateLocally(){
+    public boolean canValidateLocally() {
         return false;
     }
 
-    public static void generateFakeHexagon(GridAreaSplitter splitter, Random random){
+    public static void generateFakeHexagon(GridAreaSplitter splitter, Random random) {
         List<Area> areas = new ArrayList<>(splitter.areaList);
         Collections.shuffle(areas, random);
-        for(Area area : areas){
+        for (Area area : areas) {
             List<Tile> tiles = new ArrayList<>();
-            for(Tile tile : area.tiles){
-                if(tile.getRule() == null) tiles.add(tile);
+            for (Tile tile : area.tiles) {
+                if (tile.getRule() == null) tiles.add(tile);
             }
-            if(tiles.size() == 0) continue;
+            if (tiles.size() == 0) continue;
 
             // There is no hexagon dot in the area. So we can add them all!
             List<Vertex> vertices = new ArrayList<>(area.getVertices(splitter.getCursor()));
-            if(vertices.size() == 0) continue;
+            if (vertices.size() == 0) continue;
 
             // Add fake rule
             vertices.get(random.nextInt(vertices.size())).setRule(new HexagonRule());
@@ -58,27 +57,26 @@ public class EliminationRule extends Rule {
         }
     }
 
-    public static void generateFakeSquare(GridAreaSplitter splitter, Random random, List<Color> colors){
+    public static void generateFakeSquare(GridAreaSplitter splitter, Random random, List<Color> colors) {
         List<Area> areas = new ArrayList<>(splitter.areaList);
         Collections.shuffle(areas, random);
-        for(Area area : splitter.areaList){
+        for (Area area : splitter.areaList) {
             List<Tile> tiles = new ArrayList<>();
             List<Tile> squareTiles = new ArrayList<>();
             Set<Color> availableColors = new HashSet<>(colors);
-            for(Tile tile : area.tiles){
-                if(tile.getRule() == null){
+            for (Tile tile : area.tiles) {
+                if (tile.getRule() == null) {
                     tiles.add(tile);
-                }
-                else if(tile.getRule() instanceof SquareRule){
+                } else if (tile.getRule() instanceof SquareRule) {
                     squareTiles.add(tile);
-                    availableColors.remove(((SquareRule)tile.getRule()).color);
+                    availableColors.remove(((SquareRule) tile.getRule()).color);
                 }
                 /*else if(tile.getRule() instanceof SunRule){
                     availableColors.remove(((SunRule)tile.getRule()).color);
                 }*/
             }
-            if(squareTiles.size() < 1 || tiles.size() + squareTiles.size() < 3) continue;
-            if(availableColors.size() == 0) continue;
+            if (squareTiles.size() < 1 || tiles.size() + squareTiles.size() < 3) continue;
+            if (availableColors.size() == 0) continue;
             List<Color> availableColorList = new ArrayList<>(availableColors);
 
             Collections.shuffle(tiles, random);
@@ -95,10 +93,10 @@ public class EliminationRule extends Rule {
         }
     }
 
-    public static void generateFakeBlocks(GridAreaSplitter splitter, Random random, Color color, float rotatableProb){
+    public static void generateFakeBlocks(GridAreaSplitter splitter, Random random, Color color, float rotatableProb) {
         List<Area> areas = new ArrayList<>(splitter.areaList);
         Collections.shuffle(areas, random);
-        for(Area area : splitter.areaList) {
+        for (Area area : splitter.areaList) {
             List<Tile> tiles = new ArrayList<>();
             for (Tile tile : area.tiles) {
                 if (tile.getRule() == null) {
@@ -106,7 +104,7 @@ public class EliminationRule extends Rule {
                 }
             }
 
-            if(tiles.size() < 2) continue;
+            if (tiles.size() < 2) continue;
 
             boolean[][] grid = new boolean[4][4];
             for (int i = 0; i < 4; i++) {
@@ -122,24 +120,23 @@ public class EliminationRule extends Rule {
 
             // Check if this one block matches with the area
             List<Vector2Int> areaList = new ArrayList<>();
-            for(Tile tile : area.tiles){
+            for (Tile tile : area.tiles) {
                 areaList.add(tile.gridPosition);
             }
             BlocksRule areaRule = new BlocksRule(BlocksRule.listToGridArray(areaList), splitter.getPuzzle().getHeight(), false, false);
             boolean pass = true;
-            if(rotatable){
-                for(int i = 0; i < 4; i++){
-                    if(rule.blockBits[i] == areaRule.blockBits[i]){
+            if (rotatable) {
+                for (int i = 0; i < 4; i++) {
+                    if (rule.blockBits[i] == areaRule.blockBits[i]) {
                         pass = false;
                     }
                     rule = BlocksRule.rotateRule(rule, 1);
                 }
-            }
-            else if(rule.blockBits[0] == areaRule.blockBits[0]){
+            } else if (rule.blockBits[0] == areaRule.blockBits[0]) {
                 pass = false;
             }
 
-            if(!pass) continue;
+            if (!pass) continue;
 
             Collections.shuffle(tiles, random);
 

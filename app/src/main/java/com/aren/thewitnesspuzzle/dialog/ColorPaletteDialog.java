@@ -10,10 +10,10 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.aren.thewitnesspuzzle.view.ColorPaletteView;
 import com.aren.thewitnesspuzzle.R;
 import com.aren.thewitnesspuzzle.puzzle.color.PalettePreset;
 import com.aren.thewitnesspuzzle.puzzle.color.PuzzleColorPalette;
+import com.aren.thewitnesspuzzle.view.ColorPaletteView;
 
 import androidx.annotation.NonNull;
 
@@ -104,11 +104,11 @@ public class ColorPaletteDialog extends Dialog {
             }
         });
         bloomIntensitySeekBar.setMax(100);
-        bloomIntensitySeekBar.setProgress((int)(palette.getBloomIntensity() * 100));
+        bloomIntensitySeekBar.setProgress((int) (palette.getBloomIntensity() * 100));
 
         updateColors();
 
-        for(final PuzzleColorPalette palette : PalettePreset.getAll()){
+        for (final PuzzleColorPalette palette : PalettePreset.getAll()) {
             ColorPaletteView colorPaletteView = new ColorPaletteView(getContext());
             colorPaletteView.setPalette(palette);
             //colorPaletteView.setAdjustViewBounds(true);
@@ -146,7 +146,7 @@ public class ColorPaletteDialog extends Dialog {
                 palette.setCursorSucceededColor(successColorRef[0]);
                 palette.setCursorFailedColor(failureColorRef[0]);
                 palette.setBloomIntensity(bloomIntensitySeekBar.getProgress() / 100f);
-                if(onExit != null) onExit.run();
+                if (onExit != null) onExit.run();
                 dismiss();
             }
         });
@@ -164,7 +164,7 @@ public class ColorPaletteDialog extends Dialog {
         failureColorRef = new int[]{palette.getCursorFailedColor()};
     }
 
-    public void updateColors(){
+    public void updateColors() {
         backgroundColorView.setBackgroundColor(backgroundColorRef[0]);
         pathColorView.setBackgroundColor(pathColorRef[0]);
         lineColorView.setBackgroundColor(lineColorRef[0]);

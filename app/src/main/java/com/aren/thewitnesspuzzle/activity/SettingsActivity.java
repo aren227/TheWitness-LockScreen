@@ -1,14 +1,13 @@
 package com.aren.thewitnesspuzzle.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
 import com.aren.thewitnesspuzzle.R;
 import com.aren.thewitnesspuzzle.game.Game;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -78,8 +77,8 @@ public class SettingsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 int idx = 0;
                 int current = game.getSettings().getLockDelay();
-                for(int i = 0; i < lockDelays.length; i++){
-                    if(lockDelays[i] == current){
+                for (int i = 0; i < lockDelays.length; i++) {
+                    if (lockDelays[i] == current) {
                         idx = i;
                         break;
                     }
@@ -90,32 +89,30 @@ public class SettingsActivity extends AppCompatActivity {
         });
     }
 
-    private void updateSoundsText(){
+    private void updateSoundsText() {
         soundsText.setText(game.getSettings().getSoundsEnabled() ? "Yes" : "No");
     }
 
-    private void updateHoldingText(){
+    private void updateHoldingText() {
         holdingText.setText(game.getSettings().getHoldingPuzzles() ? "Yes" : "No");
     }
 
-    private void updateShadowPanelText(){
+    private void updateShadowPanelText() {
         shadowPanelText.setText(game.getSettings().getShadowPanelEnabled() ? "Yes" : "No");
     }
 
-    private void updateBloomText(){
+    private void updateBloomText() {
         bloomText.setText(game.getSettings().getBloomEnabled() ? "Yes" : "No");
     }
 
-    private void updateLockDelayText(){
+    private void updateLockDelayText() {
         int delay = game.getSettings().getLockDelay();
         String str = "";
-        if(delay == 0){
+        if (delay == 0) {
             str = "Instantly";
-        }
-        else if(delay < 60){
+        } else if (delay < 60) {
             str = delay + "s";
-        }
-        else{
+        } else {
             str = delay / 60 + "m";
         }
         lockDelayText.setText(str);

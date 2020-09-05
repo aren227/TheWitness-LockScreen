@@ -13,19 +13,19 @@ public class PuzzleAnimationManager {
     private List<Animation> tempRemoveQueue;
     private boolean lock;
 
-    public PuzzleAnimationManager(Puzzle puzzle){
+    public PuzzleAnimationManager(Puzzle puzzle) {
         animations = new ArrayList<>();
         tempAddQueue = new ArrayList<>();
         tempRemoveQueue = new ArrayList<>();
         lock = false;
     }
 
-    public void process(){
+    public void process() {
         lock = true;
         Iterator<Animation> iterator = animations.iterator();
-        while(iterator.hasNext()){
+        while (iterator.hasNext()) {
             Animation animation = iterator.next();
-            if(!animation.isDone() && !animation.process()){
+            if (!animation.isDone() && !animation.process()) {
                 animation.remove();
                 iterator.remove();
             }
@@ -39,15 +39,15 @@ public class PuzzleAnimationManager {
         tempRemoveQueue.clear();
     }
 
-    public boolean shouldUpdate(){
-        for(Animation animation : animations){
-            if(!animation.isDone()) return true;
+    public boolean shouldUpdate() {
+        for (Animation animation : animations) {
+            if (!animation.isDone()) return true;
         }
         return false;
     }
 
-    public void reset(){
-        for(Animation animation : animations){
+    public void reset() {
+        for (Animation animation : animations) {
             animation.remove();
         }
         animations.clear();
@@ -55,36 +55,36 @@ public class PuzzleAnimationManager {
         tempRemoveQueue.clear();
     }
 
-    public void addAnimation(Animation animation){
-        if(lock) tempAddQueue.add(animation);
+    public void addAnimation(Animation animation) {
+        if (lock) tempAddQueue.add(animation);
         else animations.add(animation);
     }
 
-    public boolean isPlaying(Class cls){
-        for(Animation animation : animations){
-            if(animation.getClass().equals(cls)) return true;
+    public boolean isPlaying(Class cls) {
+        for (Animation animation : animations) {
+            if (animation.getClass().equals(cls)) return true;
         }
         return false;
     }
 
-    public List<Animation> getAnimations(Class cls){
+    public List<Animation> getAnimations(Class cls) {
         List<Animation> result = new ArrayList<>();
-        for(Animation animation : animations){
-            if(animation.getClass().equals(cls)) result.add(animation);
+        for (Animation animation : animations) {
+            if (animation.getClass().equals(cls)) result.add(animation);
         }
         return result;
     }
 
-    public void stopAnimation(Animation animation){
+    public void stopAnimation(Animation animation) {
         animation.remove();
-        if(lock) tempRemoveQueue.add(animation);
+        if (lock) tempRemoveQueue.add(animation);
         else animations.remove(animation);
     }
 
-    public void stopAnimation(Class cls){
+    public void stopAnimation(Class cls) {
         List<Animation> list = getAnimations(cls);
-        for(Animation animation : animations) animation.remove();
-        if(lock) tempRemoveQueue.addAll(list);
+        for (Animation animation : animations) animation.remove();
+        if (lock) tempRemoveQueue.addAll(list);
         else animations.removeAll(list);
     }
 

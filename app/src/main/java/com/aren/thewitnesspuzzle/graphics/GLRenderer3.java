@@ -3,16 +3,15 @@ package com.aren.thewitnesspuzzle.graphics;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.opengl.GLES20;
 import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.util.Log;
 
 import com.aren.thewitnesspuzzle.R;
+import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.math.BoundingBox;
 import com.aren.thewitnesspuzzle.math.Vector2;
-import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 
 import java.nio.ByteBuffer;
@@ -46,7 +45,7 @@ public class GLRenderer3 implements GLSurfaceView.Renderer {
     private int width, height;
     private int[] texWidth = new int[13], texHeight = new int[13];
 
-    private int textureIds[] = new int[14];
+    private int[] textureIds = new int[14];
 
     private IntBuffer frameBuffer = IntBuffer.allocate(14);
 
@@ -56,7 +55,7 @@ public class GLRenderer3 implements GLSurfaceView.Renderer {
     private final float[] mProjectionMatrix = new float[16];
     private final float[] mViewMatrix = new float[16];
 
-    private float quadPos[] = {
+    private float[] quadPos = {
             -1.0f, 1.0f, 0.0f,
             -1.0f, -1.0f, 0.0f,
             1.0f, -1.0f, 0.0f,
@@ -64,7 +63,7 @@ public class GLRenderer3 implements GLSurfaceView.Renderer {
     };
     private FloatBuffer quadPosBuffer;
 
-    private float quadUV[] = {
+    private float[] quadUV = {
             0, 1,
             0, 0,
             1, 0,
@@ -72,12 +71,12 @@ public class GLRenderer3 implements GLSurfaceView.Renderer {
     };
     private FloatBuffer quadUVBuffer;
 
-    private short quadIndex[] = {0, 1, 2, 0, 2, 3}; // order to draw vertices
+    private short[] quadIndex = {0, 1, 2, 0, 2, 3}; // order to draw vertices
     private ShortBuffer quadIndexBuffer;
 
     private long lastUpdated;
 
-    public GLRenderer3(Game game, Context context){
+    public GLRenderer3(Game game, Context context) {
         this.game = game;
         this.context = context;
 
@@ -189,8 +188,8 @@ public class GLRenderer3 implements GLSurfaceView.Renderer {
         ratio = (float) height / width;
     }
 
-    public void setupTextures(){
-        if(textureIds[0] != 0) {
+    public void setupTextures() {
+        if (textureIds[0] != 0) {
             GLES30.glDeleteTextures(14, textureIds, 0);
             GLES30.glDeleteFramebuffers(14, frameBuffer);
         }
@@ -200,20 +199,20 @@ public class GLRenderer3 implements GLSurfaceView.Renderer {
 
         int w = width;
         int h = height;
-        for(int i = 0; i < 5; i++){
+        for (int i = 0; i < 5; i++) {
             texWidth[i] = w;
             texHeight[i] = h;
             w /= 2;
             h /= 2;
         }
-        for(int i = 5; i < 11; i++){
+        for (int i = 5; i < 11; i++) {
             //texWidth[i] = texWidth[11 - i - 1];
             //texHeight[i] = texHeight[11 - i - 1];
             texWidth[i] = texWidth[0];
             texHeight[i] = texHeight[0];
         }
 
-        for(int i = 0; i < 11; i++){
+        for (int i = 0; i < 11; i++) {
             GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, frameBuffer.get(i));
 
             GLES30.glActiveTexture(GLES30.GL_TEXTURE0 + i);
@@ -246,7 +245,7 @@ public class GLRenderer3 implements GLSurfaceView.Renderer {
         Log.i("GL", 1000f / (System.currentTimeMillis() - lastUpdated) + " fps");
         lastUpdated = System.currentTimeMillis();
 
-        if(game.getPuzzle() == null) {
+        if (game.getPuzzle() == null) {
             GLES30.glClearColor(1, 0, 1, 1.0f);
             GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT);
             return;
@@ -258,10 +257,9 @@ public class GLRenderer3 implements GLSurfaceView.Renderer {
 
         Puzzle puzzle = game.getPuzzle();
 
-        if(puzzle.shouldUpdateAnimation()){
+        if (puzzle.shouldUpdateAnimation()) {
             game.getSurfaceView().setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
-        }
-        else{
+        } else {
             game.getSurfaceView().setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
         }
         puzzle.prepareForDrawing();
@@ -307,8 +305,8 @@ public class GLRenderer3 implements GLSurfaceView.Renderer {
 
         GLES30.glDrawArrays(GLES30.GL_TRIANGLES, 0, puzzle.getVertexCount());
 
-        for(int i = 1; i < 5; i++){
-            if(i == 1){
+        for (int i = 1; i < 5; i++) {
+            if (i == 1) {
                 GLES30.glUseProgram(glProgramFrameBuffer_boxblur_down_prelift);
                 GLES30.glViewport(0, 0, texWidth[i], texHeight[i]);
                 GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, frameBuffer.get(i));
@@ -328,8 +326,7 @@ public class GLRenderer3 implements GLSurfaceView.Renderer {
                 GLES30.glUniform2f(texelHandle, 1f / texWidth[i], 1f / texHeight[i]);
 
                 GLES30.glDrawElements(GLES30.GL_TRIANGLES, quadIndex.length, GLES30.GL_UNSIGNED_SHORT, quadIndexBuffer);
-            }
-            else{
+            } else {
                 GLES30.glUseProgram(glProgramFrameBuffer_boxblur_down);
                 GLES30.glViewport(0, 0, texWidth[i], texHeight[i]);
                 GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, frameBuffer.get(i));
@@ -353,8 +350,8 @@ public class GLRenderer3 implements GLSurfaceView.Renderer {
 
         }
 
-        for(int i = 5; i < 9; i++){
-            if(i == 5){
+        for (int i = 5; i < 9; i++) {
+            if (i == 5) {
                 GLES30.glUseProgram(glProgramFrameBuffer_boxblur_up_final);
                 GLES30.glViewport(0, 0, texWidth[i], texHeight[i]);
                 GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, frameBuffer.get(i));
@@ -368,7 +365,7 @@ public class GLRenderer3 implements GLSurfaceView.Renderer {
                 GLES30.glVertexAttribPointer(aTextureCoordHandle, 2, GLES30.GL_FLOAT, false, 2 * 4, quadUVBuffer);
 
                 int texHandle = GLES30.glGetUniformLocation(glProgramFrameBuffer_boxblur_up_final, "tex");
-                GLES30.glUniform1i(texHandle,  i - 4);
+                GLES30.glUniform1i(texHandle, i - 4);
 
                 int texHandle2 = GLES30.glGetUniformLocation(glProgramFrameBuffer_boxblur_up_final, "source");
                 GLES30.glUniform1i(texHandle2, 0);
@@ -380,8 +377,7 @@ public class GLRenderer3 implements GLSurfaceView.Renderer {
                 GLES30.glUniform1f(amountHandle, 0.3f);
 
                 GLES30.glDrawElements(GLES30.GL_TRIANGLES, quadIndex.length, GLES30.GL_UNSIGNED_SHORT, quadIndexBuffer);
-            }
-            else{
+            } else {
                 GLES30.glUseProgram(glProgramFrameBuffer_boxblur_up_final);
                 GLES30.glViewport(0, 0, texWidth[i], texHeight[i]);
                 GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, frameBuffer.get(i));
@@ -523,12 +519,12 @@ public class GLRenderer3 implements GLSurfaceView.Renderer {
         GLES30.glDrawElements(GLES30.GL_TRIANGLES, quadIndex.length, GLES30.GL_UNSIGNED_SHORT, quadIndexBuffer);
 
         //GLES30.glDisableVertexAttribArray(vPositionHandle);
-        synchronized(this){
+        synchronized (this) {
             this.notifyAll();
         }
     }
 
-    public static int loadShader(int type, String shaderCode){
+    public static int loadShader(int type, String shaderCode) {
         int shader = GLES30.glCreateShader(type);
 
         GLES30.glShaderSource(shader, shaderCode);
@@ -537,17 +533,17 @@ public class GLRenderer3 implements GLSurfaceView.Renderer {
         return shader;
     }
 
-    public float getFrustumWidth(Puzzle puzzle){
+    public float getFrustumWidth(Puzzle puzzle) {
         BoundingBox boundingBox = puzzle.getBoundingBox();
 
         float bbWidth = boundingBox.getWidth() + puzzle.getPadding() * 2;
         float bbHeight = boundingBox.getHeight() + puzzle.getPadding() * 2;
 
-        if(bbWidth * ratio > bbHeight) return bbWidth;
+        if (bbWidth * ratio > bbHeight) return bbWidth;
         return bbHeight / ratio;
     }
 
-    public BoundingBox getFrustumBoundingBox(Puzzle puzzle){
+    public BoundingBox getFrustumBoundingBox(Puzzle puzzle) {
         BoundingBox boundingBox = new BoundingBox();
         boundingBox.min = new Vector2(puzzle.getBoundingBox().getCenter().x - getFrustumWidth(puzzle) * 0.5f, puzzle.getBoundingBox().getCenter().y - getFrustumWidth(puzzle) * ratio * 0.5f);
         boundingBox.max = new Vector2(puzzle.getBoundingBox().getCenter().x + getFrustumWidth(puzzle) * 0.5f, puzzle.getBoundingBox().getCenter().y + getFrustumWidth(puzzle) * ratio * 0.5f);
@@ -555,9 +551,9 @@ public class GLRenderer3 implements GLSurfaceView.Renderer {
     }
 
     // https://stackoverflow.com/questions/5514149/capture-screen-of-glsurfaceview-to-bitmap
-    public Bitmap captureToBitmap(int x, int y, int w, int h){
-        int bitmapBuffer[] = new int[w * h];
-        int bitmapSource[] = new int[w * h];
+    public Bitmap captureToBitmap(int x, int y, int w, int h) {
+        int[] bitmapBuffer = new int[w * h];
+        int[] bitmapSource = new int[w * h];
         IntBuffer intBuffer = IntBuffer.wrap(bitmapBuffer);
         intBuffer.position(0);
 

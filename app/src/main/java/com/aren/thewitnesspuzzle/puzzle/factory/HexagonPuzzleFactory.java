@@ -54,7 +54,7 @@ public class HexagonPuzzleFactory extends PuzzleFactory {
     }
 
     @Override
-    public String getName(){
+    public String getName() {
         return "Green Panel";
     }
 }

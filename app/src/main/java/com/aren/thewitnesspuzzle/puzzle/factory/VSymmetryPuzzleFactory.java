@@ -54,7 +54,7 @@ public class VSymmetryPuzzleFactory extends PuzzleFactory {
     }
 
     @Override
-    public String getName(){
+    public String getName() {
         return "Glass Factory #1";
     }
 }

@@ -5,10 +5,10 @@ import android.graphics.Bitmap;
 import android.opengl.GLSurfaceView;
 import android.view.MotionEvent;
 
+import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.graphics.GLRenderer;
 import com.aren.thewitnesspuzzle.math.BoundingBox;
 import com.aren.thewitnesspuzzle.math.MathUtils;
-import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 
 public class PuzzleGLSurfaceView extends GLSurfaceView {
@@ -39,11 +39,11 @@ public class PuzzleGLSurfaceView extends GLSurfaceView {
         // MotionEvent reports input details from the touch screen
         // and other input controls. In this case, you are only
         // interested in events where the touch position changed.
-        if(e.getAction() == MotionEvent.ACTION_DOWN || e.getAction() == MotionEvent.ACTION_MOVE || e.getAction() == MotionEvent.ACTION_UP){
+        if (e.getAction() == MotionEvent.ACTION_DOWN || e.getAction() == MotionEvent.ACTION_MOVE || e.getAction() == MotionEvent.ACTION_UP) {
             float x = e.getX();
             float y = e.getY();
 
-            float ratio = (float)getHeight() / getWidth();
+            float ratio = (float) getHeight() / getWidth();
 
             BoundingBox frustumBB = glRenderer.getFrustumBoundingBox(game.getPuzzle());
 
@@ -65,13 +65,13 @@ public class PuzzleGLSurfaceView extends GLSurfaceView {
         return true;
     }
 
-    public void capture(Puzzle puzzle){
+    public void capture(Puzzle puzzle) {
         // Why It needs to draw several times to get a rendered result?
         // First one or two results are always black. wtf?
         // idk but i think it's buffer related issue.
-        for(int i = 0; i < 1; i++){
-            synchronized(glRenderer){
-                while(true){
+        for (int i = 0; i < 1; i++) {
+            synchronized (glRenderer) {
+                while (true) {
                     requestRender();
                     try {
                         glRenderer.wait();
@@ -88,7 +88,7 @@ public class PuzzleGLSurfaceView extends GLSurfaceView {
             public void run() {
                 //bitmap = glRenderer.captureToBitmap(0, 0, getWidth(), getHeight());
 
-                synchronized (PuzzleGLSurfaceView.this){
+                synchronized (PuzzleGLSurfaceView.this) {
                     PuzzleGLSurfaceView.this.notifyAll();
                 }
             }

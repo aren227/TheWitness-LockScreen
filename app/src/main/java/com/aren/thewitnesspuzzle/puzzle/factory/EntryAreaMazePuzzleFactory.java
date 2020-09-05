@@ -1,23 +1,17 @@
 package com.aren.thewitnesspuzzle.puzzle.factory;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.aren.thewitnesspuzzle.game.Game;
-import com.aren.thewitnesspuzzle.math.Vector2;
 import com.aren.thewitnesspuzzle.math.Vector2Int;
-import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 import com.aren.thewitnesspuzzle.puzzle.color.PalettePreset;
-import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
-import com.aren.thewitnesspuzzle.puzzle.rules.BrokenLineRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.EndingPointRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.SquareVertexRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.StartingPointRule;
 import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridTreeWalker;
-import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridWalker;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,16 +36,16 @@ public class EntryAreaMazePuzzleFactory extends PuzzleFactory {
         int startY = random.nextInt(height + 1);
 
         List<Vector2Int> branchCandidates = new ArrayList<>();
-        for(int i = 0; i <= width; i++){
-            for(int j = 0; j <= height; j++){
+        for (int i = 0; i <= width; i++) {
+            for (int j = 0; j <= height; j++) {
                 int dist = Math.abs(startX - i) + Math.abs(startY - j);
-                if(1 < dist && dist <= 3){
+                if (1 < dist && dist <= 3) {
                     branchCandidates.add(new Vector2Int(i, j));
                 }
             }
         }
         Collections.shuffle(branchCandidates, random);
-        for(int i = 3; i < branchCandidates.size(); i++){
+        for (int i = 3; i < branchCandidates.size(); i++) {
             branchCandidates.remove(i);
         }
 
@@ -59,16 +53,16 @@ public class EntryAreaMazePuzzleFactory extends PuzzleFactory {
 
         Vertex[][] gridVertices = new Vertex[width + 1][height + 1];
 
-        for(int i = 0; i <= width; i++){
-            for(int j = 0; j <= height; j++){
+        for (int i = 0; i <= width; i++) {
+            for (int j = 0; j <= height; j++) {
                 gridVertices[i][j] = puzzle.addVertex(new Vertex(puzzle, i, j));
             }
         }
 
-        for(int i = 0; i <= width; i++){
-            for(int j = 0; j <= height; j++){
-                for(int k = 0; k < 4; k++){
-                    if(((tree.direction[i][j] >> k) & 1) > 0){
+        for (int i = 0; i <= width; i++) {
+            for (int j = 0; j <= height; j++) {
+                for (int k = 0; k < 4; k++) {
+                    if (((tree.direction[i][j] >> k) & 1) > 0) {
                         Vertex from = gridVertices[i][j];
                         Vertex to = gridVertices[i + tree.delta[k][0]][j + tree.delta[k][1]];
                         puzzle.addEdge(new Edge(from, to));
@@ -80,11 +74,11 @@ public class EntryAreaMazePuzzleFactory extends PuzzleFactory {
         gridVertices[startX][startY].setRule(new StartingPointRule());
 
         List<Vector2Int> endPointCandidates = new ArrayList<>();
-        for(int x = 0; x <= width; x++){
+        for (int x = 0; x <= width; x++) {
             endPointCandidates.add(new Vector2Int(x, 0));
             endPointCandidates.add(new Vector2Int(x, height));
         }
-        for(int y = 1; y < height; y++){
+        for (int y = 1; y < height; y++) {
             endPointCandidates.add(new Vector2Int(0, y));
             endPointCandidates.add(new Vector2Int(width, y));
         }
@@ -102,25 +96,22 @@ public class EntryAreaMazePuzzleFactory extends PuzzleFactory {
         int endY = endPointCandidates.get(idx).y;
 
         Vertex end = null;
-        if(endY == 0){
+        if (endY == 0) {
             end = puzzle.addVertex(new Vertex(puzzle, endX, endY - puzzle.getPathWidth()), true);
-        }
-        else if(endY == height){
+        } else if (endY == height) {
             end = puzzle.addVertex(new Vertex(puzzle, endX, endY + puzzle.getPathWidth()), true);
-        }
-        else if(endX == 0){
+        } else if (endX == 0) {
             end = puzzle.addVertex(new Vertex(puzzle, endX - puzzle.getPathWidth(), endY), true);
-        }
-        else if(endX == width){
+        } else if (endX == width) {
             end = puzzle.addVertex(new Vertex(puzzle, endX + puzzle.getPathWidth(), endY), true);
         }
 
         puzzle.addEdge(new Edge(gridVertices[endX][endY], end));
         end.setRule(new EndingPointRule());
 
-        for(int i = 0; i <= width; i++){
-            for(int j = 0; j <= height; j++){
-                if(tree.direction[i][j] == 0 && !(i == endX && j == endY)){
+        for (int i = 0; i <= width; i++) {
+            for (int j = 0; j <= height; j++) {
+                if (tree.direction[i][j] == 0 && !(i == endX && j == endY)) {
                     gridVertices[i][j].setRule(new SquareVertexRule());
                 }
             }
@@ -135,7 +126,7 @@ public class EntryAreaMazePuzzleFactory extends PuzzleFactory {
     }
 
     @Override
-    public String getName(){
+    public String getName() {
         return "Entry Area #1";
     }
 }

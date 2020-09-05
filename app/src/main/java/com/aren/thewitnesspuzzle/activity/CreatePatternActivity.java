@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aren.thewitnesspuzzle.R;
-import com.aren.thewitnesspuzzle.activity.PuzzleEditorActivity;
 import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.color.PalettePreset;
 import com.aren.thewitnesspuzzle.puzzle.factory.Difficulty;
@@ -28,6 +27,7 @@ public class CreatePatternActivity extends PuzzleEditorActivity {
     boolean viewInit = false;
 
     enum State {INIT, FIRST_DRAWN, VALIDATE, DONE}
+
     State state = State.INIT;
     List<Integer> pattern = new ArrayList<>();
 
@@ -44,12 +44,11 @@ public class CreatePatternActivity extends PuzzleEditorActivity {
         paletteView.invalidate();
 
         isGridPuzzle = config.getString("puzzleType", "grid").equals("grid");
-        if(isGridPuzzle){
+        if (isGridPuzzle) {
             gridPuzzleRadioButton.setChecked(true);
             widthEditText.setText(config.getInt("width", 4) + "");
             heightEditText.setText(config.getInt("height", 4) + "");
-        }
-        else{
+        } else {
             hexagonPuzzleRadioButton.setChecked(true);
         }
         updateGridSizeUI();
@@ -72,15 +71,14 @@ public class CreatePatternActivity extends PuzzleEditorActivity {
         nextImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(state == State.FIRST_DRAWN){
+                if (state == State.FIRST_DRAWN) {
                     puzzle.setCustomPattern(pattern);
                     puzzle.setCursor(null);
                     game.update();
 
                     state = State.VALIDATE;
                     updateUI();
-                }
-                else if(state == State.DONE){
+                } else if (state == State.DONE) {
                     savePattern();
                 }
             }
@@ -91,10 +89,9 @@ public class CreatePatternActivity extends PuzzleEditorActivity {
         game.setOnSolved(new Runnable() {
             @Override
             public void run() {
-                if(puzzle.getCustomPattern() != null){
+                if (puzzle.getCustomPattern() != null) {
                     state = State.DONE;
-                }
-                else{
+                } else {
                     pattern = puzzle.getCursor().getVisitedVertexIndices();
                     state = State.FIRST_DRAWN;
                 }
@@ -109,10 +106,9 @@ public class CreatePatternActivity extends PuzzleEditorActivity {
         game.setOnPreTouched(new Runnable() {
             @Override
             public void run() {
-                if(state == State.FIRST_DRAWN){
+                if (state == State.FIRST_DRAWN) {
                     state = State.INIT;
-                }
-                else if(state == State.DONE){
+                } else if (state == State.DONE) {
                     state = State.VALIDATE;
                 }
                 runOnUiThread(new Runnable() {
@@ -127,31 +123,28 @@ public class CreatePatternActivity extends PuzzleEditorActivity {
         resetPuzzle();
     }
 
-    protected void updateUI(){
-        if(!viewInit) return;
-        if(state == State.INIT){
+    protected void updateUI() {
+        if (!viewInit) return;
+        if (state == State.INIT) {
             instructionTextView.setText(R.string.create_pattern_draw);
             deleteImageView.setVisibility(View.INVISIBLE);
             nextImageView.setVisibility(View.INVISIBLE);
-        }
-        else if(state == State.FIRST_DRAWN){
+        } else if (state == State.FIRST_DRAWN) {
             deleteImageView.setVisibility(View.INVISIBLE);
             nextImageView.setImageResource(R.drawable.ic_navigate_next_black_24dp);
             nextImageView.setVisibility(View.VISIBLE);
-        }
-        else if(state == State.VALIDATE){
+        } else if (state == State.VALIDATE) {
             instructionTextView.setText(R.string.create_pattern_validate);
             deleteImageView.setVisibility(View.VISIBLE);
             nextImageView.setVisibility(View.INVISIBLE);
-        }
-        else{
+        } else {
             nextImageView.setImageResource(R.drawable.ic_baseline_check_24);
             deleteImageView.setVisibility(View.VISIBLE);
             nextImageView.setVisibility(View.VISIBLE);
         }
     }
 
-    protected void deletePattern(){
+    protected void deletePattern() {
         puzzle.setCustomPattern(null);
         puzzle.setCursor(null);
         game.update();
@@ -160,12 +153,12 @@ public class CreatePatternActivity extends PuzzleEditorActivity {
         updateUI();
     }
 
-    protected void savePattern(){
+    protected void savePattern() {
         PuzzleFactoryManager manager = new PuzzleFactoryManager(this);
 
         // Check name
         final String name = nameEditText.getText().toString().trim();
-        if(name.length() == 0){
+        if (name.length() == 0) {
             new AlertDialog.Builder(this)
                     .setTitle("Error")
                     .setMessage(String.format("Please enter a name", name))
@@ -185,7 +178,7 @@ public class CreatePatternActivity extends PuzzleEditorActivity {
                         config.setColorPalette("color", palette);
                         config.setString("puzzleType", (puzzle instanceof GridPuzzle) ? "grid" : "hexagon");
                         config.setString("difficulty", Difficulty.CUSTOM_PATTERN.toString());
-                        if(puzzle instanceof GridPuzzle){
+                        if (puzzle instanceof GridPuzzle) {
                             config.setInt("width", getWidth());
                             config.setInt("height", getHeight());
                         }
@@ -194,7 +187,7 @@ public class CreatePatternActivity extends PuzzleEditorActivity {
 
                         // Clear thumbnail cache
                         PuzzleFactory factory = puzzleFactoryManager.getPuzzleFactoryByUuid(config.getUuid());
-                        if(factory != null){
+                        if (factory != null) {
                             factory.clearThumbnailCache();
                         }
 
@@ -209,7 +202,7 @@ public class CreatePatternActivity extends PuzzleEditorActivity {
     }
 
     @Override
-    protected void resetPuzzle(){
+    protected void resetPuzzle() {
         super.resetPuzzle();
         deletePattern();
     }

@@ -48,7 +48,7 @@ public class RotatableBlocksPuzzleFactory extends PuzzleFactory {
     }
 
     @Override
-    public String getName(){
+    public String getName() {
         return "Swamp #2";
     }
 }

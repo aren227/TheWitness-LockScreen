@@ -10,7 +10,7 @@ public class EliminatorActivatedAnimation extends Animation {
     private Shape shape;
     private Puzzle puzzle;
 
-    public EliminatorActivatedAnimation(Rule rule){
+    public EliminatorActivatedAnimation(Rule rule) {
         super(1000, 1, true);
         shape = rule.getShape();
         puzzle = rule.getPuzzle();
@@ -27,9 +27,9 @@ public class EliminatorActivatedAnimation extends Animation {
         int gg = android.graphics.Color.green(puzzle.getColorPalette().getBackgroundColor());
         int bb = android.graphics.Color.blue(puzzle.getColorPalette().getBackgroundColor());
         int c = android.graphics.Color.rgb(
-                (int)MathUtils.lerp(r, rr, s),
-                (int)MathUtils.lerp(g, gg, s),
-                (int)MathUtils.lerp(b, bb, s));
+                (int) MathUtils.lerp(r, rr, s),
+                (int) MathUtils.lerp(g, gg, s),
+                (int) MathUtils.lerp(b, bb, s));
         shape.color.setAnimationValue(this, c);
     }
 }

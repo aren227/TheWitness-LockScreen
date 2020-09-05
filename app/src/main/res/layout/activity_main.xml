@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -24,7 +22,7 @@
             android:textSize="42dp"
             android:textStyle="bold"
             android:textColor="#fafafa"
-            android:layout_gravity="center_horizontal"/>
+            android:layout_gravity="center_horizontal" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -33,7 +31,7 @@
             android:fontFamily="serif"
             android:textSize="24dp"
             android:textColor="#fafafa"
-            android:layout_gravity="center_horizontal"/>
+            android:layout_gravity="center_horizontal" />
 
     </LinearLayout>
 
@@ -52,7 +50,7 @@
             android:textSize="36dp"
             android:textColor="#fafafa"
             android:layout_gravity="center_horizontal"
-            android:layout_margin="4dp"/>
+            android:layout_margin="4dp" />
 
         <TextView
             android:id="@+id/play"
@@ -63,7 +61,7 @@
             android:textSize="36dp"
             android:textColor="#fafafa"
             android:layout_gravity="center_horizontal"
-            android:layout_margin="4dp"/>
+            android:layout_margin="4dp" />
 
         <TextView
             android:id="@+id/puzzles"
@@ -74,7 +72,7 @@
             android:textSize="36dp"
             android:textColor="#fafafa"
             android:layout_gravity="center_horizontal"
-            android:layout_margin="4dp"/>
+            android:layout_margin="4dp" />
 
         <TextView
             android:id="@+id/settings"
@@ -85,7 +83,7 @@
             android:textSize="36dp"
             android:textColor="#fafafa"
             android:layout_gravity="center_horizontal"
-            android:layout_margin="4dp"/>
+            android:layout_margin="4dp" />
 
         <TextView
             android:id="@+id/disclaimer"
@@ -96,7 +94,7 @@
             android:textSize="36dp"
             android:textColor="#fafafa"
             android:layout_gravity="center_horizontal"
-            android:layout_margin="4dp"/>
+            android:layout_margin="4dp" />
 
     </LinearLayout>
 
@@ -106,7 +104,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_above="@id/version_name"
-        android:src="@drawable/ic_github"/>
+        android:src="@drawable/ic_github" />
 
     <TextView
         android:id="@+id/version_name"
@@ -118,6 +116,6 @@
         android:gravity="center"
         android:paddingTop="10dp"
         android:paddingBottom="30dp"
-        android:layout_alignParentBottom="true"/>
+        android:layout_alignParentBottom="true" />
 
 </RelativeLayout>

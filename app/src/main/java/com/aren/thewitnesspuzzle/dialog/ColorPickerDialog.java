@@ -7,11 +7,9 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -20,7 +18,6 @@ import android.widget.TextView;
 import com.aren.thewitnesspuzzle.R;
 
 import androidx.annotation.NonNull;
-import androidx.core.graphics.ColorUtils;
 
 public class ColorPickerDialog extends Dialog {
 
@@ -85,7 +82,7 @@ public class ColorPickerDialog extends Dialog {
         svImageView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction() == MotionEvent.ACTION_MOVE){
+                if (event.getAction() == MotionEvent.ACTION_MOVE) {
                     float screenX = event.getX();
                     float screenY = event.getY();
                     float x = (screenX - v.getLeft()) / v.getWidth();
@@ -115,7 +112,7 @@ public class ColorPickerDialog extends Dialog {
         hImageView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction() == MotionEvent.ACTION_MOVE){
+                if (event.getAction() == MotionEvent.ACTION_MOVE) {
                     float screenX = event.getX();
                     float x = (screenX - v.getLeft()) / v.getWidth();
                     x = Math.min(Math.max(x, 0), 1);
@@ -138,7 +135,7 @@ public class ColorPickerDialog extends Dialog {
             public void onClick(View v) {
                 dismiss();
                 rgbRef[0] = Color.HSVToColor(hsv);
-                if(onExit != null) onExit.run();
+                if (onExit != null) onExit.run();
             }
         });
 
@@ -156,22 +153,22 @@ public class ColorPickerDialog extends Dialog {
         Color.RGBToHSV(Color.red(rgbRef[0]), Color.green(rgbRef[0]), Color.blue(rgbRef[0]), hsv);
     }
 
-    public void drawHBitmap(){
+    public void drawHBitmap() {
         float[] _hsv = new float[3];
         _hsv[1] = _hsv[2] = 1;
-        for(int i = 0; i < 256; i++){
+        for (int i = 0; i < 256; i++) {
             _hsv[0] = i / 255f * 360;
-            for(int j = 0; j < 1; j++){
+            for (int j = 0; j < 1; j++) {
                 hBitmap.setPixel(i, j, Color.HSVToColor(_hsv));
             }
         }
     }
 
-    public void drawSVBitmap(){
+    public void drawSVBitmap() {
         float[] _hsv = new float[3];
         _hsv[0] = hsv[0];
-        for(int i = 0; i < 64; i++){
-            for(int j = 0; j < 64; j++){
+        for (int i = 0; i < 64; i++) {
+            for (int j = 0; j < 64; j++) {
                 _hsv[1] = i / 63f;
                 _hsv[2] = j / 63f;
                 svBitmap.setPixel(i, 63 - j, Color.HSVToColor(_hsv));
@@ -179,39 +176,39 @@ public class ColorPickerDialog extends Dialog {
         }
     }
 
-    public void updateColor(){
+    public void updateColor() {
         drawSVBitmap();
 
         updateSVCursorColor();
         updateHCursorColor();
     }
 
-    public void updateSVCursorColor(){
+    public void updateSVCursorColor() {
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(dpToPx(32), dpToPx(32));
-        params.setMargins(-dpToPx(16) + (int)(hsv[1] * svImageView.getWidth()), -dpToPx(16) + (int)((1 - hsv[2]) * svImageView.getHeight()), -dpToPx(16), -dpToPx(16));
+        params.setMargins(-dpToPx(16) + (int) (hsv[1] * svImageView.getWidth()), -dpToPx(16) + (int) ((1 - hsv[2]) * svImageView.getHeight()), -dpToPx(16), -dpToPx(16));
         svColorOuter.setLayoutParams(params);
 
         params = new RelativeLayout.LayoutParams(dpToPx(24), dpToPx(24));
-        params.setMargins(-dpToPx(12) + (int)(hsv[1] * svImageView.getWidth()), -dpToPx(12) + (int)((1 - hsv[2]) * svImageView.getHeight()), -dpToPx(12), -dpToPx(12));
+        params.setMargins(-dpToPx(12) + (int) (hsv[1] * svImageView.getWidth()), -dpToPx(12) + (int) ((1 - hsv[2]) * svImageView.getHeight()), -dpToPx(12), -dpToPx(12));
         svColorInner.setLayoutParams(params);
 
         svColorInner.getBackground().setColorFilter(Color.HSVToColor(hsv), PorterDuff.Mode.SRC_ATOP);
     }
 
-    public void updateHCursorColor(){
+    public void updateHCursorColor() {
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(dpToPx(32), dpToPx(32));
-        params.setMargins(-dpToPx(16) + (int)(hsv[0] / 360f * hImageView.getWidth()), hImageView.getTop() -dpToPx(16) + (int)(0.5f * hImageView.getHeight()), -dpToPx(16), -dpToPx(16));
+        params.setMargins(-dpToPx(16) + (int) (hsv[0] / 360f * hImageView.getWidth()), hImageView.getTop() - dpToPx(16) + (int) (0.5f * hImageView.getHeight()), -dpToPx(16), -dpToPx(16));
         hColorOuter.setLayoutParams(params);
 
         params = new RelativeLayout.LayoutParams(dpToPx(24), dpToPx(24));
-        params.setMargins(-dpToPx(12) + (int)(hsv[0] / 360f * hImageView.getWidth()), hImageView.getTop() -dpToPx(12) + (int)(0.5f * hImageView.getHeight()), -dpToPx(12), -dpToPx(12));
+        params.setMargins(-dpToPx(12) + (int) (hsv[0] / 360f * hImageView.getWidth()), hImageView.getTop() - dpToPx(12) + (int) (0.5f * hImageView.getHeight()), -dpToPx(12), -dpToPx(12));
         hColorInner.setLayoutParams(params);
 
         float[] onlyH = new float[]{hsv[0], 1, 1};
         hColorInner.getBackground().setColorFilter(Color.HSVToColor(onlyH), PorterDuff.Mode.SRC_ATOP);
     }
 
-    public int dpToPx(float dp){
+    public int dpToPx(float dp) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, getContext().getResources().getDisplayMetrics());
     }
 }

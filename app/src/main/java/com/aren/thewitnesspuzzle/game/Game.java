@@ -4,10 +4,10 @@ import android.content.Context;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 
-import com.aren.thewitnesspuzzle.view.PuzzleGLSurfaceView;
 import com.aren.thewitnesspuzzle.math.BoundingBox;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 import com.aren.thewitnesspuzzle.puzzle.sound.Sounds;
+import com.aren.thewitnesspuzzle.view.PuzzleGLSurfaceView;
 
 import java.util.HashMap;
 
@@ -27,9 +27,10 @@ public class Game {
     private Runnable onPreTouched;
 
     public enum Mode {PLAY, GALLERY, EDITOR}
+
     private Mode mode;
 
-    public Game(Context context, Mode mode){
+    public Game(Context context, Mode mode) {
         this.context = context;
         this.mode = mode;
         settings = new GameSettings(context);
@@ -40,50 +41,50 @@ public class Game {
         }*/
     }
 
-    public GameSettings getSettings(){
+    public GameSettings getSettings() {
         return settings;
     }
 
-    public void touchEvent(float x, float y, int action){
-        if(onPreTouched != null) onPreTouched.run();
+    public void touchEvent(float x, float y, int action) {
+        if (onPreTouched != null) onPreTouched.run();
         puzzle.touchEvent(x, y, action);
         update();
     }
 
-    public PuzzleGLSurfaceView getSurfaceView(){
+    public PuzzleGLSurfaceView getSurfaceView() {
         return surfaceView;
     }
 
-    public void update(){
+    public void update() {
         surfaceView.requestRender();
     }
 
-    public void solved(){
-        if(onSolved != null){
+    public void solved() {
+        if (onSolved != null) {
             onSolved.run();
         }
     }
 
-    public void setOnSolved(Runnable runnable){
+    public void setOnSolved(Runnable runnable) {
         onSolved = runnable;
     }
 
-    public void setOnPreTouched(Runnable runnable){
+    public void setOnPreTouched(Runnable runnable) {
         onPreTouched = runnable;
     }
 
-    public void setPuzzle(Puzzle puzzle){
+    public void setPuzzle(Puzzle puzzle) {
         this.puzzle = puzzle;
 
         //update();
     }
 
-    public Puzzle getPuzzle(){
+    public Puzzle getPuzzle() {
         return puzzle;
     }
 
-    public int getBackgroundColor(){
-        if(puzzle != null) return puzzle.getColorPalette().getBackgroundColor();
+    public int getBackgroundColor() {
+        if (puzzle != null) return puzzle.getColorPalette().getBackgroundColor();
         return Color.BLACK;
     }
 
@@ -94,10 +95,10 @@ public class Game {
         }
     }*/
 
-    public void playSound(Sounds sound){
-        if(!settings.getSoundsEnabled()) return;
+    public void playSound(Sounds sound) {
+        if (!settings.getSoundsEnabled()) return;
 
-        if(!mediaPlayers.containsKey(sound.getId())){
+        if (!mediaPlayers.containsKey(sound.getId())) {
             MediaPlayer mp = MediaPlayer.create(context, sound.getId());
             mediaPlayers.put(sound.getId(), mp);
         }
@@ -107,19 +108,19 @@ public class Game {
         mp.start();
     }
 
-    public boolean isPlayMode(){
+    public boolean isPlayMode() {
         return mode == Mode.PLAY;
     }
 
-    public boolean isEditorMode(){
+    public boolean isEditorMode() {
         return mode == Mode.EDITOR;
     }
 
-    public boolean isGalleryMode(){
+    public boolean isGalleryMode() {
         return mode == Mode.GALLERY;
     }
 
-    public float getDPScale(float dp){
+    public float getDPScale(float dp) {
         BoundingBox bb = surfaceView.glRenderer.getFrustumBoundingBox(puzzle);
         float px = surfaceView.getResources().getDisplayMetrics().density * dp;
         return px / surfaceView.getWidth() * bb.getWidth();

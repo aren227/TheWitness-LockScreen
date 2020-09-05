@@ -15,29 +15,29 @@ public class GraphElement {
 
     public Vector2Int gridPosition; // Only for grid puzzle
 
-    public GraphElement(Puzzle puzzle){
+    public GraphElement(Puzzle puzzle) {
         this.puzzle = puzzle;
     }
 
-    public void setRule(Rule rule){
-        if(rule == null) return;
+    public void setRule(Rule rule) {
+        if (rule == null) return;
         this.rule = rule;
         rule.setGraphElement(this);
     }
 
-    public Rule getRule(){
+    public Rule getRule() {
         return rule;
     }
 
-    public void removeRule(){
+    public void removeRule() {
         rule = null;
     }
 
-    public Vector2 getPosition(){
+    public Vector2 getPosition() {
         return new Vector2(x, y);
     }
 
-    public Puzzle getPuzzle(){
+    public Puzzle getPuzzle() {
         return puzzle;
     }
 

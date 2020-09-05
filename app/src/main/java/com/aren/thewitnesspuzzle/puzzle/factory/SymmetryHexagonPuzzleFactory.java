@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-public class SymmetryHexagonPuzzleFactory extends PuzzleFactory{
+public class SymmetryHexagonPuzzleFactory extends PuzzleFactory {
     public SymmetryHexagonPuzzleFactory(Context context) {
         super(context);
     }
@@ -53,7 +53,7 @@ public class SymmetryHexagonPuzzleFactory extends PuzzleFactory{
     }
 
     @Override
-    public String getName(){
+    public String getName() {
         return "Symmetry Island #1";
     }
 }

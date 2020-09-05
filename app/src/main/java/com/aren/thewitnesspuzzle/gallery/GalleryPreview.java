@@ -16,13 +16,13 @@ public class GalleryPreview {
     public Difficulty difficulty;
     public boolean isForAddBtn;
 
-    public GalleryPreview(PuzzleFactory puzzleFactory, Bitmap bitmap, String name){
+    public GalleryPreview(PuzzleFactory puzzleFactory, Bitmap bitmap, String name) {
         this.puzzleFactory = puzzleFactory;
         this.bitmap = bitmap;
         this.name = name;
     }
 
-    public static GalleryPreview addButton(){
+    public static GalleryPreview addButton() {
         Bitmap add = Bitmap.createBitmap(512, 512, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(add);
         canvas.drawColor(Color.DKGRAY);
@@ -40,7 +40,7 @@ public class GalleryPreview {
         return preview;
     }
 
-    public Difficulty getDifficulty(){
+    public Difficulty getDifficulty() {
         return puzzleFactory.getDifficulty();
     }
 

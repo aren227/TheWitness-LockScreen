@@ -1,7 +1,5 @@
 package com.aren.thewitnesspuzzle.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,9 +13,10 @@ import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactory;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;
 
-import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class PlayActivity extends AppCompatActivity {
 
@@ -72,16 +71,15 @@ public class PlayActivity extends AppCompatActivity {
 
         puzzleFactoryManager = new PuzzleFactoryManager(this);
 
-        if(savedInstanceState == null){
+        if (savedInstanceState == null) {
             seed = new Random().nextLong();
             factoryUuid = null;
-        }
-        else{
+        } else {
             seed = savedInstanceState.getLong("seed");
             factoryUuid = UUID.fromString(savedInstanceState.getString("uuid"));
         }
 
-        if(generatePuzzle()){
+        if (generatePuzzle()) {
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             root.addView(game.getSurfaceView(), params);
 
@@ -100,30 +98,29 @@ public class PlayActivity extends AppCompatActivity {
         super.onSaveInstanceState(savedInstanceState);
     }
 
-    public void nextPuzzle(){
+    public void nextPuzzle() {
         seed = new Random(seed).nextLong();
         factoryUuid = null;
-        if(!generatePuzzle()){
+        if (!generatePuzzle()) {
             root.removeView(game.getSurfaceView());
         }
         nextImage.setVisibility(View.GONE);
         skipImage.setVisibility(View.VISIBLE);
     }
 
-    public boolean generatePuzzle(){
+    public boolean generatePuzzle() {
         PuzzleFactory factory = null;
-        if(factoryUuid == null){
+        if (factoryUuid == null) {
             factory = puzzleFactoryManager.getPlayProfile().getRandomPuzzleFactory(new Random());
-        }
-        else{
-            for(PuzzleFactory f : puzzleFactoryManager.getPlayProfile().getActivatedPuzzleFactories()){
-                if(f.getUuid().equals(factoryUuid)){
+        } else {
+            for (PuzzleFactory f : puzzleFactoryManager.getPlayProfile().getActivatedPuzzleFactories()) {
+                if (f.getUuid().equals(factoryUuid)) {
                     factory = f;
                     break;
                 }
             }
         }
-        if(factory == null) return false;
+        if (factory == null) return false;
         factoryUuid = factory.getUuid();
         Puzzle puzzle = factory.generate(game, new Random(seed));
         game.setPuzzle(puzzle);

@@ -3,13 +3,10 @@ package com.aren.thewitnesspuzzle.puzzle;
 import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.math.Vector2Int;
 import com.aren.thewitnesspuzzle.puzzle.color.PuzzleColorPalette;
-import com.aren.thewitnesspuzzle.puzzle.cursor.area.Area;
-import com.aren.thewitnesspuzzle.puzzle.cursor.area.GridAreaSplitter;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
 import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.rules.EndingPointRule;
-import com.aren.thewitnesspuzzle.puzzle.rules.Rule;
 import com.aren.thewitnesspuzzle.puzzle.rules.StartingPointRule;
 
 import java.util.ArrayList;
@@ -24,11 +21,11 @@ public class GridPuzzle extends Puzzle {
     protected Edge[][] gridVerticalEdges;
     protected Tile[][] gridTiles;
 
-    public GridPuzzle(Game game, PuzzleColorPalette color, int width, int height){
+    public GridPuzzle(Game game, PuzzleColorPalette color, int width, int height) {
         this(game, color, width, height, game.isPlayMode() && game.getSettings().getShadowPanelEnabled());
     }
 
-    public GridPuzzle(Game game, PuzzleColorPalette color, int width, int height, boolean shadowPanel){
+    public GridPuzzle(Game game, PuzzleColorPalette color, int width, int height, boolean shadowPanel) {
         super(game, color, shadowPanel);
 
         this.width = width;
@@ -40,8 +37,8 @@ public class GridPuzzle extends Puzzle {
         gridVerticalEdges = new Edge[width + 1][height];
         gridTiles = new Tile[width][height];
 
-        for(int i = 0; i <= width; i++){
-            for(int j = 0; j <= height; j++){
+        for (int i = 0; i <= width; i++) {
+            for (int j = 0; j <= height; j++) {
                 Vertex vertex = addVertex(new Vertex(this, i, j));
                 vertex.gridPosition = new Vector2Int(i, j);
                 gridVerticies[i][j] = vertex;
@@ -49,8 +46,8 @@ public class GridPuzzle extends Puzzle {
         }
 
         // Horizontal lines
-        for(int i = 0; i < width; i++){
-            for(int j = 0; j <= height; j++){
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j <= height; j++) {
                 Edge edge = addEdge(new Edge(getVertexAt(i, j), getVertexAt(i + 1, j)));
                 edge.gridPosition = new Vector2Int(i, j);
                 edge.isHorizontal = true;
@@ -59,8 +56,8 @@ public class GridPuzzle extends Puzzle {
         }
 
         // Vertical lines
-        for(int i = 0; i <= width; i++){
-            for(int j = 0; j < height; j++){
+        for (int i = 0; i <= width; i++) {
+            for (int j = 0; j < height; j++) {
                 Edge edge = addEdge(new Edge(getVertexAt(i, j), getVertexAt(i, j + 1)));
                 edge.gridPosition = new Vector2Int(i, j);
                 edge.isHorizontal = false;
@@ -68,8 +65,8 @@ public class GridPuzzle extends Puzzle {
             }
         }
 
-        for(int i = 0; i < width; i++){
-            for(int j = 0; j < height; j++){
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
                 Tile tile = addTile(new Tile(this, i + 0.5f, j + 0.5f));
                 tile.gridPosition = new Vector2Int(i, j);
                 gridTiles[i][j] = tile;
@@ -82,16 +79,16 @@ public class GridPuzzle extends Puzzle {
         }
     }
 
-    public Vertex getVertexAt(int x, int y){
+    public Vertex getVertexAt(int x, int y) {
         return gridVerticies[x][y];
     }
 
-    public Edge getEdgeAt(int x, int y, boolean horizontal){
-        if(horizontal) return gridHorizontalEdges[x][y];
+    public Edge getEdgeAt(int x, int y, boolean horizontal) {
+        if (horizontal) return gridHorizontalEdges[x][y];
         return gridVerticalEdges[x][y];
     }
 
-    public Tile getTileAt(int x, int y){
+    public Tile getTileAt(int x, int y) {
         return gridTiles[x][y];
     }
 
@@ -103,26 +100,23 @@ public class GridPuzzle extends Puzzle {
         return height;
     }
 
-    public void addStartingPoint(int x, int y){
+    public void addStartingPoint(int x, int y) {
         getVertexAt(x, y).setRule(new StartingPointRule());
     }
 
-    public Edge addEndingPoint(int x, int y){
+    public Edge addEndingPoint(int x, int y) {
         Vertex vertex = null;
-        if(y == 0){
+        if (y == 0) {
             vertex = addVertex(new Vertex(this, x, y - getPathWidth()), true);
-        }
-        else if(y == height){
+        } else if (y == height) {
             vertex = addVertex(new Vertex(this, x, y + getPathWidth()), true);
-        }
-        else if(x == 0){
+        } else if (x == 0) {
             vertex = addVertex(new Vertex(this, x - getPathWidth(), y), true);
-        }
-        else if(x == width){
+        } else if (x == width) {
             vertex = addVertex(new Vertex(this, x + getPathWidth(), y), true);
         }
 
-        if(vertex != null){
+        if (vertex != null) {
             Edge edge = addEdge(new Edge(getVertexAt(x, y), vertex));
             vertex.setRule(new EndingPointRule());
             return edge;
@@ -164,23 +158,23 @@ public class GridPuzzle extends Puzzle {
         return result;
     }*/
 
-    public List<Vertex> getBorderVertices(){
+    public List<Vertex> getBorderVertices() {
         List<Vertex> vertices = new ArrayList<>();
-        for(int x = 0; x <= width; x++){
+        for (int x = 0; x <= width; x++) {
             vertices.add(getVertexAt(x, 0));
             vertices.add(getVertexAt(x, height));
         }
-        for(int y = 1; y < height; y++){
+        for (int y = 1; y < height; y++) {
             vertices.add(getVertexAt(0, y));
             vertices.add(getVertexAt(width, y));
         }
         return vertices;
     }
 
-    public List<Vertex> getInnerVertices(){
+    public List<Vertex> getInnerVertices() {
         List<Vertex> vertices = new ArrayList<>();
-        for(int x = 1; x < width; x++){
-            for(int y = 1; y < height; y++){
+        for (int x = 1; x < width; x++) {
+            for (int y = 1; y < height; y++) {
                 vertices.add(getVertexAt(x, y));
             }
         }

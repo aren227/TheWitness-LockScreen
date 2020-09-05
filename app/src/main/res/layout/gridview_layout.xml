@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical"
-              android:padding="5dp"
-              android:id="@+id/preview_root">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="5dp"
+    android:id="@+id/preview_root">
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:adjustViewBounds="true"
-            android:background="@drawable/rounded_image"/>
+            android:background="@drawable/rounded_image" />
 
         <View
             android:id="@+id/puzzle_selected"
@@ -27,7 +27,7 @@
             android:layout_alignTop="@id/puzzle_preview"
             android:layout_alignBottom="@id/puzzle_preview"
             android:layout_alignStart="@id/puzzle_preview"
-            android:layout_alignEnd="@id/puzzle_preview"/>
+            android:layout_alignEnd="@id/puzzle_preview" />
 
     </RelativeLayout>
 
@@ -39,6 +39,6 @@
         android:gravity="center_horizontal"
         android:fontFamily="serif"
         android:textSize="16dp"
-        android:textColor="#fafafa"/>
+        android:textColor="#fafafa" />
 
 </LinearLayout>

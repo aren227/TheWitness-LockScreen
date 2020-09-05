@@ -1,17 +1,12 @@
 package com.aren.thewitnesspuzzle.graphics.shape;
 
-import android.graphics.Color;
-
-import com.aren.thewitnesspuzzle.graphics.shape.Shape;
 import com.aren.thewitnesspuzzle.math.Matrix2x2;
 import com.aren.thewitnesspuzzle.math.Vector2;
 import com.aren.thewitnesspuzzle.math.Vector3;
 
-import java.nio.FloatBuffer;
-
 public class EliminatorShape extends Shape {
 
-    public EliminatorShape(Vector3 center, int color){
+    public EliminatorShape(Vector3 center, int color) {
         super(center, 1, color);
     }
 
@@ -19,14 +14,14 @@ public class EliminatorShape extends Shape {
     public void draw() {
         super.draw();
         float width = 0.1f, height = 0.17f;
-        float[] angles = new float[]{(float)Math.toRadians(120f), 0, (float)Math.toRadians(-120f)};
+        float[] angles = new float[]{(float) Math.toRadians(120f), 0, (float) Math.toRadians(-120f)};
         float[] cx = new float[]{-0.43f * height, 0, 0.43f * height};
         float[] cy = new float[]{-0.25f * height, 0.5f * height, -0.25f * height};
-        for(int i = 0; i < 3; i++){
-            Vector2 lb = new Vector2(- width / 2, - height / 2);
-            Vector2 lt = new Vector2(- width / 2, + height / 2);
-            Vector2 rt = new Vector2(+ width / 2, + height / 2);
-            Vector2 rb = new Vector2(+ width / 2, - height / 2);
+        for (int i = 0; i < 3; i++) {
+            Vector2 lb = new Vector2(-width / 2, -height / 2);
+            Vector2 lt = new Vector2(-width / 2, +height / 2);
+            Vector2 rt = new Vector2(+width / 2, +height / 2);
+            Vector2 rb = new Vector2(+width / 2, -height / 2);
 
             Matrix2x2 rot = Matrix2x2.getRotationMatrix(angles[i]);
 

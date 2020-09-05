@@ -40,65 +40,62 @@ public class GridSymmetryPuzzle extends GridPuzzle {
         oppositeVertex = new HashMap<>();
         oppositeEdge = new HashMap<>();
 
-        for(int i = 0; i <= width; i++){
-            for(int j = 0; j <= height; j++){
-                if(symmetryType == SymmetryType.VLINE){
+        for (int i = 0; i <= width; i++) {
+            for (int j = 0; j <= height; j++) {
+                if (symmetryType == SymmetryType.VLINE) {
                     oppositeVertex.put(getVertexAt(i, j).index, getVertexAt(width - i, j));
-                }
-                else if(symmetryType == SymmetryType.POINT){
+                } else if (symmetryType == SymmetryType.POINT) {
                     oppositeVertex.put(getVertexAt(i, j).index, getVertexAt(width - i, height - j));
                 }
             }
         }
 
         // Horizontal lines
-        for(int i = 0; i < width; i++){
-            for(int j = 0; j <= height; j++){
-                if(symmetryType == SymmetryType.VLINE){
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j <= height; j++) {
+                if (symmetryType == SymmetryType.VLINE) {
                     oppositeEdge.put(getEdgeAt(i, j, true).index, getEdgeAt(width - i - 1, j, true));
-                }
-                else if(symmetryType == SymmetryType.POINT){
+                } else if (symmetryType == SymmetryType.POINT) {
                     oppositeEdge.put(getEdgeAt(i, j, true).index, getEdgeAt(width - i - 1, height - j, true));
                 }
             }
         }
 
         // Vertical lines
-        for(int i = 0; i <= width; i++){
-            for(int j = 0; j < height; j++){
-                if(symmetryType == SymmetryType.VLINE){
+        for (int i = 0; i <= width; i++) {
+            for (int j = 0; j < height; j++) {
+                if (symmetryType == SymmetryType.VLINE) {
                     oppositeEdge.put(getEdgeAt(i, j, false).index, getEdgeAt(width - i, j, false));
-                }
-                else if(symmetryType == SymmetryType.POINT){
+                } else if (symmetryType == SymmetryType.POINT) {
                     oppositeEdge.put(getEdgeAt(i, j, false).index, getEdgeAt(width - i, height - j - 1, false));
                 }
             }
         }
     }
 
-    public SymmetryType getSymmetryType(){
+    public SymmetryType getSymmetryType() {
         return symmetryType;
     }
 
-    public boolean hasSymmetricColor(){
+    public boolean hasSymmetricColor() {
         return hasSymmetricColor;
     }
 
     @Override
-    public void calcDynamicShapes(){
+    public void calcDynamicShapes() {
         dynamicShapes.clear();
 
         int shadowCursorColor = ColorUtils.lerp(ColorUtils.lerp(color.getBackgroundColor(), color.getPathColor(), 0.4f), color.getCursorColor(), 0.4f);
-        if(cursor != null){
-            dynamicShapes.add(new CircleShape(cursor.getFirstVisitedVertex().getPosition().toVector3(), ((StartingPointRule)cursor.getFirstVisitedVertex().getRule()).getRadius(), hasSymmetricColor ? SymmetricColor.CYAN.getRGB() : getColorPalette().getCursorColor()));
-            dynamicShapes.add(new CircleShape(getOppositeVertex(cursor.getFirstVisitedVertex()).getPosition().toVector3(), ((StartingPointRule)getOppositeVertex(cursor.getFirstVisitedVertex()).getRule()).getRadius(), hasSymmetricColor ? SymmetricColor.YELLOW.getRGB() : getColorPalette().getCursorColor()));
-            if(shadowPanel){
-                dynamicShapes.add(new CircleShape(cursor.getFirstVisitedVertex().getPosition().toVector3().add(new Vector3(0, -originalBoundingBox.getHeight(), 0)), ((StartingPointRule)cursor.getFirstVisitedVertex().getRule()).getRadius(), shadowCursorColor));
+        if (cursor != null) {
+            dynamicShapes.add(new CircleShape(cursor.getFirstVisitedVertex().getPosition().toVector3(), ((StartingPointRule) cursor.getFirstVisitedVertex().getRule()).getRadius(), hasSymmetricColor ? SymmetricColor.CYAN.getRGB() : getColorPalette().getCursorColor()));
+            dynamicShapes.add(new CircleShape(getOppositeVertex(cursor.getFirstVisitedVertex()).getPosition().toVector3(), ((StartingPointRule) getOppositeVertex(cursor.getFirstVisitedVertex()).getRule()).getRadius(), hasSymmetricColor ? SymmetricColor.YELLOW.getRGB() : getColorPalette().getCursorColor()));
+            if (shadowPanel) {
+                dynamicShapes.add(new CircleShape(cursor.getFirstVisitedVertex().getPosition().toVector3().add(new Vector3(0, -originalBoundingBox.getHeight(), 0)), ((StartingPointRule) cursor.getFirstVisitedVertex().getRule()).getRadius(), shadowCursorColor));
             }
 
             ArrayList<EdgeProportion> visitedEdges = cursor.getVisitedEdgesWithProportion(true);
-            if(visitedEdges.size() == 0) return;
-            for(int i = 0; i < visitedEdges.size(); i++){
+            if (visitedEdges.size() == 0) return;
+            for (int i = 0; i < visitedEdges.size(); i++) {
                 EdgeProportion edgeProportion = visitedEdges.get(i);
                 EdgeProportion oppositeEdgeProportion = getOppositeEdgeProportion(edgeProportion);
                 dynamicShapes.add(new CircleShape(new Vector3(edgeProportion.getProportionPoint().x, edgeProportion.getProportionPoint().y, 0), getPathWidth() * 0.5f, hasSymmetricColor ? SymmetricColor.CYAN.getRGB() : getColorPalette().getCursorColor()));
@@ -106,7 +103,7 @@ public class GridSymmetryPuzzle extends GridPuzzle {
                 dynamicShapes.add(new RectangleShape(edgeProportion.getProportionMiddlePoint().toVector3(), edgeProportion.getProportionLength(), getPathWidth(), edgeProportion.edge.getAngle(), hasSymmetricColor ? SymmetricColor.CYAN.getRGB() : getColorPalette().getCursorColor()));
                 dynamicShapes.add(new RectangleShape(oppositeEdgeProportion.getProportionMiddlePoint().toVector3(), oppositeEdgeProportion.getProportionLength(), getPathWidth(), oppositeEdgeProportion.edge.getAngle(), hasSymmetricColor ? SymmetricColor.YELLOW.getRGB() : getColorPalette().getCursorColor()));
 
-                if(shadowPanel){
+                if (shadowPanel) {
                     dynamicShapes.add(new CircleShape(new Vector3(edgeProportion.getProportionPoint().x, edgeProportion.getProportionPoint().y - originalBoundingBox.getHeight(), 0), getPathWidth() * 0.5f, shadowCursorColor));
                     dynamicShapes.add(new RectangleShape(edgeProportion.getProportionMiddlePoint().toVector3().add(new Vector3(0, -originalBoundingBox.getHeight(), 0)), edgeProportion.getProportionLength(), getPathWidth(), edgeProportion.edge.getAngle(), shadowCursorColor));
                 }
@@ -115,21 +112,22 @@ public class GridSymmetryPuzzle extends GridPuzzle {
     }
 
     @Override
-    public void addStartingPoint(int x, int y){
+    public void addStartingPoint(int x, int y) {
         super.addStartingPoint(x, y);
-        if(symmetryType == SymmetryType.VLINE) super.addStartingPoint(width - x, y);
-        else if(symmetryType == SymmetryType.POINT) super.addStartingPoint(width - x, height - y);
+        if (symmetryType == SymmetryType.VLINE) super.addStartingPoint(width - x, y);
+        else if (symmetryType == SymmetryType.POINT) super.addStartingPoint(width - x, height - y);
     }
 
     @Override
-    public Edge addEndingPoint(int x, int y){
+    public Edge addEndingPoint(int x, int y) {
         Edge edge1 = super.addEndingPoint(x, y);
         Edge edge2 = null;
-        if(symmetryType == SymmetryType.VLINE) edge2 = super.addEndingPoint(width - x, y);
-        else if(symmetryType == SymmetryType.POINT) edge2 = super.addEndingPoint(width - x, height - y);
+        if (symmetryType == SymmetryType.VLINE) edge2 = super.addEndingPoint(width - x, y);
+        else if (symmetryType == SymmetryType.POINT)
+            edge2 = super.addEndingPoint(width - x, height - y);
 
         // edge1 and edge2 are already opposite each other (check super.addEndingPoint)
-        if(edge2 != null){
+        if (edge2 != null) {
             oppositeVertex.put(edge1.to.index, edge2.to);
             oppositeVertex.put(edge2.to.index, edge1.to);
 
@@ -139,29 +137,28 @@ public class GridSymmetryPuzzle extends GridPuzzle {
         return edge1;
     }
 
-    public Vertex getOppositeVertex(Vertex vertex){
-        if(oppositeVertex.containsKey(vertex.index)) return oppositeVertex.get(vertex.index);
+    public Vertex getOppositeVertex(Vertex vertex) {
+        if (oppositeVertex.containsKey(vertex.index)) return oppositeVertex.get(vertex.index);
         return null;
     }
 
-    public Edge getOppositeEdge(Edge edge){
-        if(oppositeEdge.containsKey(edge.index)){
+    public Edge getOppositeEdge(Edge edge) {
+        if (oppositeEdge.containsKey(edge.index)) {
             return oppositeEdge.get(edge.index);
         }
         return null;
     }
 
-    public EdgeProportion getOppositeEdgeProportion(EdgeProportion edgeProportion){
+    public EdgeProportion getOppositeEdgeProportion(EdgeProportion edgeProportion) {
         EdgeProportion opposite = new EdgeProportion(getOppositeEdge(edgeProportion.edge));
         opposite.proportion = edgeProportion.proportion;
         opposite.reverse = edgeProportion.reverse;
-        if(symmetryType == SymmetryType.VLINE){
-            if(opposite.edge.isHorizontal) opposite.reverse = !opposite.reverse;
+        if (symmetryType == SymmetryType.VLINE) {
+            if (opposite.edge.isHorizontal) opposite.reverse = !opposite.reverse;
             return opposite;
-        }
-        else if(symmetryType == SymmetryType.POINT){
+        } else if (symmetryType == SymmetryType.POINT) {
             // If it contains ending point, the direction of two opposite edges are already symmetric
-            if(!(edgeProportion.to().getRule() instanceof EndingPointRule)){
+            if (!(edgeProportion.to().getRule() instanceof EndingPointRule)) {
                 opposite.reverse = !opposite.reverse;
             }
             return opposite;
@@ -170,7 +167,7 @@ public class GridSymmetryPuzzle extends GridPuzzle {
     }
 
     @Override
-    protected Cursor createCursor(Vertex start){
+    protected Cursor createCursor(Vertex start) {
         return new SymmetryCursor(this, start);
     }
 }

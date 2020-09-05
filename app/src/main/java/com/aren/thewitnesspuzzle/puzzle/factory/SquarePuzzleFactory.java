@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-public class SquarePuzzleFactory extends PuzzleFactory{
+public class SquarePuzzleFactory extends PuzzleFactory {
 
     public SquarePuzzleFactory(Context context) {
         super(context);
@@ -52,12 +52,12 @@ public class SquarePuzzleFactory extends PuzzleFactory{
     }
 
     @Override
-    public Difficulty getDifficulty(){
+    public Difficulty getDifficulty() {
         return Difficulty.VERY_EASY;
     }
 
     @Override
-    public String getName(){
+    public String getName() {
         return "Blue Panel";
     }
 }

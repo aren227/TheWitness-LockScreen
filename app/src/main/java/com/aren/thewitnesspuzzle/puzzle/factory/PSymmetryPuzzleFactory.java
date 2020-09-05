@@ -53,7 +53,7 @@ public class PSymmetryPuzzleFactory extends PuzzleFactory {
     }
 
     @Override
-    public String getName(){
+    public String getName() {
         return "Glass Factory #2";
     }
 }

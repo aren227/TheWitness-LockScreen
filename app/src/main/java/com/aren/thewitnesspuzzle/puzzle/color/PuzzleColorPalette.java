@@ -13,19 +13,19 @@ public class PuzzleColorPalette {
 
     public final Value<Integer> actualCursorColor;
 
-    public PuzzleColorPalette(int background, int path, int cursor){
+    public PuzzleColorPalette(int background, int path, int cursor) {
         this(background, path, cursor, cursor);
     }
 
-    public PuzzleColorPalette(int background, int path, int cursor, int cursorSucceeded){
+    public PuzzleColorPalette(int background, int path, int cursor, int cursorSucceeded) {
         this(background, path, cursor, cursorSucceeded, ColorUtils.RGB("#050a0f"));
     }
 
-    public PuzzleColorPalette(int background, int path, int cursor, int cursorSucceeded, int cursorFailed){
+    public PuzzleColorPalette(int background, int path, int cursor, int cursorSucceeded, int cursorFailed) {
         this(background, path, cursor, cursorSucceeded, cursorFailed, 1f);
     }
 
-    public PuzzleColorPalette(int background, int path, int cursor, int cursorSucceeded, int cursorFailed, float bloomIntensity){
+    public PuzzleColorPalette(int background, int path, int cursor, int cursorSucceeded, int cursorFailed, float bloomIntensity) {
         this.background = background;
         this.path = path;
         this.cursorSucceeded = cursorSucceeded;
@@ -36,59 +36,59 @@ public class PuzzleColorPalette {
     }
 
     @Override
-    public PuzzleColorPalette clone(){
+    public PuzzleColorPalette clone() {
         return new PuzzleColorPalette(background, path, actualCursorColor.getOriginalValue(), cursorSucceeded, cursorFailed, bloomIntensity);
     }
 
-    public int getBackgroundColor(){
+    public int getBackgroundColor() {
         return background;
     }
 
-    public void setBackgroundColor(int color){
+    public void setBackgroundColor(int color) {
         background = color;
     }
 
-    public int getPathColor(){
+    public int getPathColor() {
         return path;
     }
 
-    public void setPathColor(int color){
+    public void setPathColor(int color) {
         path = color;
     }
 
-    public int getCursorColor(){
+    public int getCursorColor() {
         return actualCursorColor.get();
     }
 
-    public void setCursorColor(int color){
+    public void setCursorColor(int color) {
         actualCursorColor.set(color);
     }
 
-    public int getCursorSucceededColor(){
+    public int getCursorSucceededColor() {
         return cursorSucceeded;
     }
 
-    public void setCursorSucceededColor(int color){
+    public void setCursorSucceededColor(int color) {
         cursorSucceeded = color;
     }
 
-    public int getCursorFailedColor(){
+    public int getCursorFailedColor() {
         return cursorFailed;
     }
 
-    public void setCursorFailedColor(int color){
+    public void setCursorFailedColor(int color) {
         cursorFailed = color;
     }
 
-    public float getBloomIntensity(){
+    public float getBloomIntensity() {
         return bloomIntensity;
     }
 
-    public void setBloomIntensity(float intensity){
+    public void setBloomIntensity(float intensity) {
         bloomIntensity = intensity;
     }
 
-    public void set(PuzzleColorPalette palette){
+    public void set(PuzzleColorPalette palette) {
         background = palette.getBackgroundColor();
         path = palette.getPathColor();
         actualCursorColor.set(palette.actualCursorColor.getOriginalValue());

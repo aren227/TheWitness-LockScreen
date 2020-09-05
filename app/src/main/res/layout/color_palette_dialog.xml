@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="12dp">
@@ -18,7 +17,7 @@
             android:textColor="@color/colorPrimary"
             android:fontFamily="serif"
             android:textSize="24dp"
-            android:layout_marginBottom="8dp"/>
+            android:layout_marginBottom="8dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -42,14 +41,14 @@
                     android:fontFamily="serif"
                     android:textSize="20dp"
                     android:layout_marginRight="8dp"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1" />
 
                 <View
                     android:id="@+id/background_color"
                     android:layout_width="0dp"
                     android:layout_height="24dp"
                     android:background="@color/colorPrimary"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1" />
 
             </LinearLayout>
 
@@ -69,14 +68,14 @@
                     android:fontFamily="serif"
                     android:textSize="20dp"
                     android:layout_marginRight="8dp"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1" />
 
                 <View
                     android:id="@+id/path_color"
                     android:layout_width="0dp"
                     android:layout_height="24dp"
                     android:background="@color/colorPrimary"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1" />
 
             </LinearLayout>
 
@@ -96,14 +95,14 @@
                     android:fontFamily="serif"
                     android:textSize="20dp"
                     android:layout_marginRight="8dp"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1" />
 
                 <View
                     android:id="@+id/line_color"
                     android:layout_width="0dp"
                     android:layout_height="24dp"
                     android:background="@color/colorPrimary"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1" />
 
             </LinearLayout>
 
@@ -123,14 +122,14 @@
                     android:fontFamily="serif"
                     android:textSize="20dp"
                     android:layout_marginRight="8dp"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1" />
 
                 <View
                     android:id="@+id/success_color"
                     android:layout_width="0dp"
                     android:layout_height="24dp"
                     android:background="@color/colorPrimary"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1" />
 
             </LinearLayout>
 
@@ -150,14 +149,14 @@
                     android:fontFamily="serif"
                     android:textSize="20dp"
                     android:layout_marginRight="8dp"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1" />
 
                 <View
                     android:id="@+id/failure_color"
                     android:layout_width="0dp"
                     android:layout_height="24dp"
                     android:background="@color/colorPrimary"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1" />
 
             </LinearLayout>
 
@@ -177,7 +176,7 @@
                     android:fontFamily="serif"
                     android:textSize="20dp"
                     android:layout_marginRight="8dp"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1" />
 
                 <SeekBar
                     android:id="@+id/bloom_intensity"
@@ -187,7 +186,7 @@
                     android:progressTint="@color/colorPrimary"
                     android:progressBackgroundTint="#7f7f7f"
                     android:thumbTint="@color/colorPrimary"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1" />
 
             </LinearLayout>
 
@@ -223,7 +222,7 @@
                 android:text="Cancel"
                 android:textSize="20dp"
                 android:textColor="@color/colorPrimary"
-                android:layout_marginRight="36dp"/>
+                android:layout_marginRight="36dp" />
 
             <TextView
                 android:id="@+id/apply"
@@ -232,7 +231,7 @@
                 android:gravity="center"
                 android:text="Apply"
                 android:textSize="20dp"
-                android:textColor="@color/colorPrimary"/>
+                android:textColor="@color/colorPrimary" />
 
         </LinearLayout>
 

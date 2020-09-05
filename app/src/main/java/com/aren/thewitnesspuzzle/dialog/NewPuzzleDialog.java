@@ -9,9 +9,9 @@ import android.view.WindowManager;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import com.aren.thewitnesspuzzle.R;
 import com.aren.thewitnesspuzzle.activity.CreatePatternActivity;
 import com.aren.thewitnesspuzzle.activity.CreateRandomPuzzleActivity;
-import com.aren.thewitnesspuzzle.R;
 
 import androidx.annotation.NonNull;
 
@@ -43,12 +43,11 @@ public class NewPuzzleDialog extends Dialog {
         createText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(patternRadioButton.isChecked()){
+                if (patternRadioButton.isChecked()) {
                     dismiss();
                     Intent intent = new Intent(getContext(), CreatePatternActivity.class);
                     getContext().startActivity(intent);
-                }
-                else if(randomRadioButton.isChecked()){
+                } else if (randomRadioButton.isChecked()) {
                     dismiss();
                     Intent intent = new Intent(getContext(), CreateRandomPuzzleActivity.class);
                     getContext().startActivity(intent);

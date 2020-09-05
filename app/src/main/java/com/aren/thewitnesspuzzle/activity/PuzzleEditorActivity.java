@@ -1,7 +1,5 @@
 package com.aren.thewitnesspuzzle.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +26,8 @@ import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;
 import com.aren.thewitnesspuzzle.view.ColorPaletteView;
 
 import java.util.UUID;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class PuzzleEditorActivity extends AppCompatActivity {
 
@@ -63,15 +63,14 @@ public class PuzzleEditorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_puzzle_editor);
 
         UUID uuid = UUID.randomUUID();
-        if(getIntent().getExtras() != null && getIntent().getExtras().getSerializable("uuid") != null){
-            uuid = (UUID)getIntent().getExtras().getSerializable("uuid");
+        if (getIntent().getExtras() != null && getIntent().getExtras().getSerializable("uuid") != null) {
+            uuid = (UUID) getIntent().getExtras().getSerializable("uuid");
         }
 
         puzzleFactoryManager = new PuzzleFactoryManager(this);
-        if(puzzleFactoryManager.getPuzzleFactoryByUuid(uuid) != null){
+        if (puzzleFactoryManager.getPuzzleFactoryByUuid(uuid) != null) {
             config = puzzleFactoryManager.getPuzzleFactoryByUuid(uuid).getConfig();
-        }
-        else{
+        } else {
             config = new PuzzleFactoryConfig(this, uuid);
         }
 
@@ -167,35 +166,34 @@ public class PuzzleEditorActivity extends AppCompatActivity {
         root.addView(game.getSurfaceView(), params);
     }
 
-    protected void resetPuzzle(){
-        if(isGridPuzzle){
+    protected void resetPuzzle() {
+        if (isGridPuzzle) {
             puzzle = new GridPuzzle(game, palette, getWidth(), getHeight(), false);
-            ((GridPuzzle)puzzle).addStartingPoint(0, 0);
-            ((GridPuzzle)puzzle).addEndingPoint(getWidth(), getHeight());
-        }
-        else puzzle = new HexagonPuzzle(game, palette, false);
+            ((GridPuzzle) puzzle).addStartingPoint(0, 0);
+            ((GridPuzzle) puzzle).addEndingPoint(getWidth(), getHeight());
+        } else puzzle = new HexagonPuzzle(game, palette, false);
         game.setPuzzle(puzzle);
         game.update();
     }
 
-    protected void updateGridSizeUI(){
-        if(isGridPuzzle) gridSizeView.setVisibility(View.VISIBLE);
+    protected void updateGridSizeUI() {
+        if (isGridPuzzle) gridSizeView.setVisibility(View.VISIBLE);
         else gridSizeView.setVisibility(View.GONE);
     }
 
-    protected int getWidth(){
-        if(widthEditText.getText().length() == 0) return 4;
+    protected int getWidth() {
+        if (widthEditText.getText().length() == 0) return 4;
         int w = Integer.parseInt(widthEditText.getText().toString());
         return Math.min(Math.max(w, 1), 7);
     }
 
-    protected int getHeight(){
-        if(heightEditText.getText().length() == 0) return 4;
+    protected int getHeight() {
+        if (heightEditText.getText().length() == 0) return 4;
         int h = Integer.parseInt(heightEditText.getText().toString());
         return Math.min(Math.max(h, 1), 7);
     }
 
-    protected Difficulty getDifficulty(){
+    protected Difficulty getDifficulty() {
         return DIFFICULTIES[difficultySeekBar.getProgress()];
     }
 }

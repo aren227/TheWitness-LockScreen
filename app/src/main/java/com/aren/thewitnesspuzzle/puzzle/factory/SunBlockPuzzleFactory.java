@@ -13,7 +13,6 @@ import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.rules.BlocksRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.Color;
-import com.aren.thewitnesspuzzle.puzzle.rules.SquareRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.SunRule;
 import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridWalker;
 
@@ -43,16 +42,16 @@ public class SunBlockPuzzleFactory extends PuzzleFactory {
 
         BlocksRule.generate(splitter, random, Color.ORANGE, 0.3f, 0.5f);
         List<BlocksRule> blocks = new ArrayList<>();
-        for(Area area : splitter.areaList){
-            for(Tile tile : area.tiles){
-                if(tile.getRule() instanceof BlocksRule){
-                    blocks.add((BlocksRule)tile.getRule());
+        for (Area area : splitter.areaList) {
+            for (Tile tile : area.tiles) {
+                if (tile.getRule() instanceof BlocksRule) {
+                    blocks.add((BlocksRule) tile.getRule());
                 }
             }
         }
 
         // Mutate one blocks' color to purple so that it can be paired with sun rule
-        if(blocks.size() > 0 && random.nextFloat() < 0.5f){
+        if (blocks.size() > 0 && random.nextFloat() < 0.5f) {
             blocks.get(random.nextInt(blocks.size())).color = Color.PURPLE;
         }
 
@@ -67,7 +66,7 @@ public class SunBlockPuzzleFactory extends PuzzleFactory {
     }
 
     @Override
-    public String getName(){
+    public String getName() {
         return "Treehouse #5";
     }
 }

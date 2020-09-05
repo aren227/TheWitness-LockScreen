@@ -16,54 +16,54 @@ public class TrianglesRule extends Rule {
 
     public int count;
 
-    public TrianglesRule(int count){
+    public TrianglesRule(int count) {
         super();
         this.count = count;
     }
 
     @Override
-    public Shape generateShape(){
-        if(!(getGraphElement() instanceof Tile)) return null;
+    public Shape generateShape() {
+        if (!(getGraphElement() instanceof Tile)) return null;
         return new TrianglesShape(getGraphElement().getPosition().toVector3(), 0.1f, count, COLOR);
     }
 
     @Override
-    public boolean validateLocally(Cursor cursor){
-        if(getGraphElement() instanceof Tile){
-            Tile tile = (Tile)getGraphElement();
+    public boolean validateLocally(Cursor cursor) {
+        if (getGraphElement() instanceof Tile) {
+            Tile tile = (Tile) getGraphElement();
             int c = 0;
-            for(Edge edge : tile.edges){
-                if(cursor.containsEdge(edge)) c++;
+            for (Edge edge : tile.edges) {
+                if (cursor.containsEdge(edge)) c++;
             }
             return c == count;
         }
         return true;
     }
 
-    public static void generate(Cursor solution, Random random, float spawnRate){
+    public static void generate(Cursor solution, Random random, float spawnRate) {
         ArrayList<Tile> tiles = new ArrayList<>();
-        for(Tile tile : solution.getPuzzle().getTiles()){
-            if(tile.getRule() == null){
+        for (Tile tile : solution.getPuzzle().getTiles()) {
+            if (tile.getRule() == null) {
                 // Only add tiles that have one or more edges
                 boolean haveEdge = false;
-                for(Edge edge : tile.edges){
-                    if(solution.containsEdge(edge)){
+                for (Edge edge : tile.edges) {
+                    if (solution.containsEdge(edge)) {
                         haveEdge = true;
                         break;
                     }
                 }
-                if(haveEdge) tiles.add(tile);
+                if (haveEdge) tiles.add(tile);
             }
         }
 
-        int triangleCount = Math.min((int)(solution.getPuzzle().getTiles().size() * spawnRate), tiles.size());
+        int triangleCount = Math.min((int) (solution.getPuzzle().getTiles().size() * spawnRate), tiles.size());
 
         Collections.shuffle(tiles, random);
 
-        for(int i = 0; i < triangleCount; i++){
+        for (int i = 0; i < triangleCount; i++) {
             int edgeCount = 0;
-            for(Edge edge : tiles.get(i).edges){
-                if(solution.containsEdge(edge)) edgeCount++;
+            for (Edge edge : tiles.get(i).edges) {
+                if (solution.containsEdge(edge)) edgeCount++;
             }
             tiles.get(i).setRule(new TrianglesRule(edgeCount));
         }

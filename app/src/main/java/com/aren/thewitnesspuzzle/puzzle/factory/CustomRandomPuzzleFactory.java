@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
-import com.aren.thewitnesspuzzle.puzzle.HexagonPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 import com.aren.thewitnesspuzzle.puzzle.color.PalettePreset;
 import com.aren.thewitnesspuzzle.puzzle.color.PuzzleColorPalette;
@@ -23,7 +22,6 @@ import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridWalker;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -40,11 +38,11 @@ public class CustomRandomPuzzleFactory extends PuzzleFactory {
         String puzzleType = getConfig().getString("puzzleType", "null");
         PuzzleColorPalette palette = getConfig().getColorPalette("color", PalettePreset.get("Entry_1"));
 
-        if(!puzzleType.equals("grid")){
+        if (!puzzleType.equals("grid")) {
             return null;
         }
 
-        if(!getConfig().containsKey("width") || !getConfig().containsKey("height")) return null;
+        if (!getConfig().containsKey("width") || !getConfig().containsKey("height")) return null;
         int width = getConfig().getInt("width", 4);
         int height = getConfig().getInt("height", 4);
         puzzle = new GridPuzzle(game, palette, width, height);
@@ -59,50 +57,47 @@ public class CustomRandomPuzzleFactory extends PuzzleFactory {
         GridAreaSplitter splitter = new GridAreaSplitter(cursor);
 
         // Broken Line
-        if(getConfig().getBoolean("brokenline", false)){
+        if (getConfig().getBoolean("brokenline", false)) {
             BrokenLineRule.generate(cursor, random, getConfig().getFloat("brokenline_spawnrate", 0f));
         }
 
         // Hexagon
-        if(getConfig().getBoolean("hexagon", false)){
+        if (getConfig().getBoolean("hexagon", false)) {
             HexagonRule.generate(cursor, random, getConfig().getFloat("hexagon_spawnrate", 0f));
         }
 
         // Square
-        if(getConfig().getBoolean("square", false)){
+        if (getConfig().getBoolean("square", false)) {
             splitter.assignAreaColorRandomly(random, getConfig().getColorList("square_colors", new ArrayList<Color>()));
             SquareRule.generate(splitter, random, getConfig().getFloat("square_spawnrate", 0f));
         }
 
         // Blocks
-        if(getConfig().getBoolean("blocks", false)){
+        if (getConfig().getBoolean("blocks", false)) {
             BlocksRule.generate(splitter, random, getConfig().getColorList("blocks_colors", Arrays.asList(Color.YELLOW)).get(0), getConfig().getFloat("blocks_spawnrate", 0f), getConfig().getFloat("blocks_rotatablerate", 0f));
         }
 
         // Sun
-        if(getConfig().getBoolean("sun", false)){
+        if (getConfig().getBoolean("sun", false)) {
             SunRule.generate(splitter, random, getConfig().getColorList("sun_colors", new ArrayList<Color>()), getConfig().getFloat("sun_arearate", 0f), getConfig().getFloat("sun_spawnrate", 0f), getConfig().getFloat("sun_pairwithsquare", 0f));
         }
 
         // Triangles
-        if(getConfig().getBoolean("triangles", false)){
+        if (getConfig().getBoolean("triangles", false)) {
             TrianglesRule.generate(cursor, random, getConfig().getFloat("triangles_spawnrate", 0f));
         }
 
         // Elimination
-        if(getConfig().getBoolean("elimination", false)){
+        if (getConfig().getBoolean("elimination", false)) {
             String fake = getConfig().getString("elimination_fakerule", null);
-            if(fake != null){
-                if(fake.equals("hexagon")){
+            if (fake != null) {
+                if (fake.equals("hexagon")) {
                     EliminationRule.generateFakeHexagon(splitter, random);
-                }
-                else if(fake.equals("square") && getConfig().getBoolean("square", false) && getConfig().getColorList("square_colors", new ArrayList<Color>()).size() > 1){
+                } else if (fake.equals("square") && getConfig().getBoolean("square", false) && getConfig().getColorList("square_colors", new ArrayList<Color>()).size() > 1) {
                     EliminationRule.generateFakeSquare(splitter, random, getConfig().getColorList("square_colors", new ArrayList<Color>()));
-                }
-                else if(fake.equals("blocks")){
+                } else if (fake.equals("blocks")) {
                     EliminationRule.generateFakeBlocks(splitter, random, getConfig().getColorList("blocks_colors", Arrays.asList(Color.YELLOW)).get(0), 0f);
-                }
-                else if(fake.equals("sun") && getConfig().getBoolean("sun", false)){
+                } else if (fake.equals("sun") && getConfig().getBoolean("sun", false)) {
                     EliminationRule.generateFakeSun(splitter, random, getConfig().getColorList("sun_colors", new ArrayList<Color>()));
                 }
             }
@@ -112,7 +107,7 @@ public class CustomRandomPuzzleFactory extends PuzzleFactory {
     }
 
     @Override
-    public Difficulty getDifficulty(){
+    public Difficulty getDifficulty() {
         return Difficulty.fromString(getConfig().getString("difficulty", "ALWAYS_SOLVABLE"));
     }
 
@@ -122,7 +117,7 @@ public class CustomRandomPuzzleFactory extends PuzzleFactory {
     }
 
     @Override
-    public boolean isCreatedByUser(){
+    public boolean isCreatedByUser() {
         return true;
     }
 }

@@ -50,7 +50,7 @@ public class SquareEliminationPuzzleFactory extends PuzzleFactory {
     }
 
     @Override
-    public String getName(){
+    public String getName() {
         return "Quarry #2";
     }
 }

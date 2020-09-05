@@ -1,9 +1,5 @@
 package com.aren.thewitnesspuzzle.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -37,6 +33,10 @@ import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class GalleryActivity extends AppCompatActivity {
 
@@ -106,7 +106,7 @@ public class GalleryActivity extends AppCompatActivity {
         profileDropdownImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(dropdownView == null){
+                if (dropdownView == null) {
                     // Manually implement spinner
 
                     dropdownBgView = new View(GalleryActivity.this);
@@ -122,19 +122,19 @@ public class GalleryActivity extends AppCompatActivity {
                     });
                     root.addView(dropdownBgView);
 
-                    LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     dropdownView = inflater.inflate(R.layout.gallery_dropdown_list, root, false);
 
                     int clipedCount = Math.min(profiles.size(), 5);
-                    int totalHeight = 2 * (clipedCount - 1) + (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 32, getResources().getDisplayMetrics()) * clipedCount;
+                    int totalHeight = 2 * (clipedCount - 1) + (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 32, getResources().getDisplayMetrics()) * clipedCount;
                     RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(profileNameEditText.getWidth(), totalHeight);
                     params.setMargins(profileNameEditText.getLeft(), profileNameEditText.getTop() + profileNameEditText.getHeight(), 0, 0);
                     dropdownView.setLayoutParams(params);
                     root.addView(dropdownView);
 
                     LinearLayout linearLayout = findViewById(R.id.list);
-                    for(int i = 0; i < profiles.size(); i++){
-                        if(i > 0){
+                    for (int i = 0; i < profiles.size(); i++) {
+                        if (i > 0) {
                             View horizon = new View(GalleryActivity.this);
                             LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 2);
                             params1.setMargins(16, 0, 16, 0);
@@ -149,11 +149,11 @@ public class GalleryActivity extends AppCompatActivity {
                         ImageView leftStatusPlay = itemView.findViewById(R.id.profile_status_play);
                         TextView profileName = itemView.findViewById(R.id.profile_item_name);
 
-                        if(puzzleFactoryManager.getLockProfile().equals(profiles.get(i))){
+                        if (puzzleFactoryManager.getLockProfile().equals(profiles.get(i))) {
                             leftStatus.setVisibility(View.VISIBLE);
                             leftStatusLock.setVisibility(View.VISIBLE);
                         }
-                        if(puzzleFactoryManager.getPlayProfile().equals(profiles.get(i))){
+                        if (puzzleFactoryManager.getPlayProfile().equals(profiles.get(i))) {
                             leftStatus.setVisibility(View.VISIBLE);
                             leftStatusPlay.setVisibility(View.VISIBLE);
                         }
@@ -163,7 +163,7 @@ public class GalleryActivity extends AppCompatActivity {
                         itemView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                if(!puzzleFactoryManager.isRemovedProfile(profile)){
+                                if (!puzzleFactoryManager.isRemovedProfile(profile)) {
                                     profile.markAsLastViewed();
                                     removeSpinner();
                                     updateGallery();
@@ -172,8 +172,7 @@ public class GalleryActivity extends AppCompatActivity {
                         });
                         linearLayout.addView(itemView);
                     }
-                }
-                else{
+                } else {
                     removeSpinner();
                 }
             }
@@ -211,7 +210,7 @@ public class GalleryActivity extends AppCompatActivity {
         profileDeleteImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(puzzleFactoryManager.getLastViewedProfile().equals(puzzleFactoryManager.getDefaultProfile())){
+                if (puzzleFactoryManager.getLastViewedProfile().equals(puzzleFactoryManager.getDefaultProfile())) {
                     Toast.makeText(GalleryActivity.this, "You can't delete the default profile.", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -253,15 +252,15 @@ public class GalleryActivity extends AppCompatActivity {
         updateGallery();
     }
 
-    public void removeSpinner(){
-        if(dropdownView != null){
+    public void removeSpinner() {
+        if (dropdownView != null) {
             root.removeView(dropdownView);
             root.removeView(dropdownBgView);
             dropdownView = dropdownBgView = null;
         }
     }
 
-    public void updateGallery(){
+    public void updateGallery() {
         profiles = puzzleFactoryManager.getProfiles();
 
         PuzzleFactoryManager.Profile profile = puzzleFactoryManager.getLastViewedProfile();
@@ -275,19 +274,19 @@ public class GalleryActivity extends AppCompatActivity {
         startRenderWorker();
     }
 
-    public void updateStatusText(){
+    public void updateStatusText() {
         PuzzleFactoryManager.Profile profile = puzzleFactoryManager.getLastViewedProfile();
         profileCountTextView.setText(String.format("%d/%d", profile.getActivatedPuzzleFactories().size(), puzzleFactoryManager.getAllPuzzleFactories().size()));
     }
 
-    private void startRenderWorker(){
-        if(tempGame != null && tempGame.getSurfaceView().getParent() != null){
+    private void startRenderWorker() {
+        if (tempGame != null && tempGame.getSurfaceView().getParent() != null) {
             root.removeView(tempGame.getSurfaceView());
         }
-        if(puzzleGenerationThread != null){
+        if (puzzleGenerationThread != null) {
             puzzleGenerationThread.interrupt();
         }
-        if(puzzleRenderThread != null){
+        if (puzzleRenderThread != null) {
             puzzleRenderThread.interrupt();
         }
 
@@ -310,7 +309,7 @@ public class GalleryActivity extends AppCompatActivity {
 
         // Lazy Loading
         final List<GalleryPreview> previewsToRender = new ArrayList<>();
-        for(PuzzleFactory factory : puzzleFactoryManager.getAllPuzzleFactories()){
+        for (PuzzleFactory factory : puzzleFactoryManager.getAllPuzzleFactories()) {
             // Check config error
             /*long start = System.currentTimeMillis();
             if(factory instanceof CustomPatternPuzzleFactory && factory.generate(tempGame, new Random()) == null){
@@ -321,10 +320,9 @@ public class GalleryActivity extends AppCompatActivity {
             }*/
 
             GalleryPreview preview = new GalleryPreview(factory, notLoaded, factory.getName());
-            if(factory.getThumbnailCache() != null){
+            if (factory.getThumbnailCache() != null) {
                 preview.bitmap = factory.getThumbnailCache();
-            }
-            else{
+            } else {
                 previewsToRender.add(preview);
             }
             adapter.addPreview(preview);
@@ -339,13 +337,14 @@ public class GalleryActivity extends AppCompatActivity {
         puzzleGenerationThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                for(GalleryPreview preview : previewsToRender){
+                for (GalleryPreview preview : previewsToRender) {
                     Puzzle puzzle;
-                    if(preview.puzzleFactory instanceof CustomPatternPuzzleFactory) puzzle = ((CustomPatternPuzzleFactory)preview.puzzleFactory).generateWithPattern(tempGame, new Random(), true);
+                    if (preview.puzzleFactory instanceof CustomPatternPuzzleFactory)
+                        puzzle = ((CustomPatternPuzzleFactory) preview.puzzleFactory).generateWithPattern(tempGame, new Random(), true);
                     else puzzle = preview.puzzleFactory.generate(tempGame, new Random());
 
                     // Load Failed
-                    if(puzzle == null) puzzle = new ErrorPuzzle(tempGame);
+                    if (puzzle == null) puzzle = new ErrorPuzzle(tempGame);
 
                     tempGame.getSurfaceView().glRenderer.addRenderQueue(puzzle);
                 }
@@ -358,14 +357,15 @@ public class GalleryActivity extends AppCompatActivity {
             @Override
             public void run() {
                 tempGame.getSurfaceView().glRenderer.setGalleryRenderMode();
-                for(GalleryPreview preview : previewsToRender){
+                for (GalleryPreview preview : previewsToRender) {
                     try {
-                        while(true){
+                        while (true) {
                             tempGame.getSurfaceView().requestRender();
-                            synchronized (tempGame.getSurfaceView().glRenderer){
+                            synchronized (tempGame.getSurfaceView().glRenderer) {
                                 tempGame.getSurfaceView().glRenderer.wait();
                             }
-                            if(tempGame.getSurfaceView().glRenderer.getRenderedResults().size() > 0) break;
+                            if (tempGame.getSurfaceView().glRenderer.getRenderedResults().size() > 0)
+                                break;
                         }
 
                         preview.bitmap = tempGame.getSurfaceView().glRenderer.getRenderedResults().poll();

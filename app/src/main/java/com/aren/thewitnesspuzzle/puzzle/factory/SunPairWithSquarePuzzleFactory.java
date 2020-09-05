@@ -50,7 +50,7 @@ public class SunPairWithSquarePuzzleFactory extends PuzzleFactory {
     }
 
     @Override
-    public String getName(){
+    public String getName() {
         return "Treehouse #3";
     }
 }

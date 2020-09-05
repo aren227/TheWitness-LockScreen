@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -13,7 +12,7 @@
         android:textSize="24dp"
         android:fontFamily="serif"
         android:textColor="@color/colorAccent"
-        android:buttonTint="@color/colorAccent"/>
+        android:buttonTint="@color/colorAccent" />
 
     <LinearLayout
         android:id="@+id/broken_line_settings"
@@ -40,7 +39,7 @@
                 android:fontFamily="serif"
                 android:textSize="20dp"
                 android:layout_marginRight="8dp"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
 
             <SeekBar
                 android:id="@+id/broken_line_rate"
@@ -50,7 +49,7 @@
                 android:progressTint="@color/colorAccent"
                 android:progressBackgroundTint="#7f7f7f"
                 android:thumbTint="@color/colorAccent"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
 
         </LinearLayout>
 
@@ -64,7 +63,7 @@
         android:textSize="24dp"
         android:fontFamily="serif"
         android:textColor="@color/colorAccent"
-        android:buttonTint="@color/colorAccent"/>
+        android:buttonTint="@color/colorAccent" />
 
     <LinearLayout
         android:id="@+id/hexagon_settings"
@@ -91,7 +90,7 @@
                 android:fontFamily="serif"
                 android:textSize="20dp"
                 android:layout_marginRight="8dp"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
 
             <SeekBar
                 android:id="@+id/hexagon_rate"
@@ -101,7 +100,7 @@
                 android:progressTint="@color/colorAccent"
                 android:progressBackgroundTint="#7f7f7f"
                 android:thumbTint="@color/colorAccent"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
 
         </LinearLayout>
 
@@ -115,7 +114,7 @@
         android:textSize="24dp"
         android:fontFamily="serif"
         android:textColor="@color/colorAccent"
-        android:buttonTint="@color/colorAccent"/>
+        android:buttonTint="@color/colorAccent" />
 
     <LinearLayout
         android:id="@+id/square_settings"
@@ -142,7 +141,7 @@
                 android:fontFamily="serif"
                 android:textSize="20dp"
                 android:layout_marginRight="8dp"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
 
             <LinearLayout
                 android:id="@+id/square_colors_root"
@@ -172,7 +171,7 @@
                 android:fontFamily="serif"
                 android:textSize="20dp"
                 android:layout_marginRight="8dp"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
 
             <SeekBar
                 android:id="@+id/square_rate"
@@ -182,7 +181,7 @@
                 android:progressTint="@color/colorAccent"
                 android:progressBackgroundTint="#7f7f7f"
                 android:thumbTint="@color/colorAccent"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
 
         </LinearLayout>
 
@@ -196,7 +195,7 @@
         android:textSize="24dp"
         android:fontFamily="serif"
         android:textColor="@color/colorAccent"
-        android:buttonTint="@color/colorAccent"/>
+        android:buttonTint="@color/colorAccent" />
 
     <LinearLayout
         android:id="@+id/blocks_settings"
@@ -223,7 +222,7 @@
                 android:fontFamily="serif"
                 android:textSize="20dp"
                 android:layout_marginRight="8dp"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
 
             <RadioGroup
                 android:id="@+id/blocks_color_radio_group"
@@ -231,7 +230,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="left"
                 android:layout_weight="1"
-                android:orientation="vertical"/>
+                android:orientation="vertical" />
 
         </LinearLayout>
 
@@ -251,7 +250,7 @@
                 android:fontFamily="serif"
                 android:textSize="20dp"
                 android:layout_marginRight="8dp"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
 
             <SeekBar
                 android:id="@+id/blocks_rate"
@@ -261,7 +260,7 @@
                 android:progressTint="@color/colorAccent"
                 android:progressBackgroundTint="#7f7f7f"
                 android:thumbTint="@color/colorAccent"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
 
         </LinearLayout>
 
@@ -281,7 +280,7 @@
                 android:fontFamily="serif"
                 android:textSize="20dp"
                 android:layout_marginRight="8dp"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
 
             <SeekBar
                 android:id="@+id/blocks_rotatable_rate"
@@ -291,7 +290,7 @@
                 android:progressTint="@color/colorAccent"
                 android:progressBackgroundTint="#7f7f7f"
                 android:thumbTint="@color/colorAccent"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
 
         </LinearLayout>
 
@@ -305,7 +304,7 @@
         android:textSize="24dp"
         android:fontFamily="serif"
         android:textColor="@color/colorAccent"
-        android:buttonTint="@color/colorAccent"/>
+        android:buttonTint="@color/colorAccent" />
 
     <LinearLayout
         android:id="@+id/sun_settings"
@@ -332,7 +331,7 @@
                 android:fontFamily="serif"
                 android:textSize="20dp"
                 android:layout_marginRight="8dp"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
 
             <LinearLayout
                 android:id="@+id/sun_colors_root"
@@ -362,7 +361,7 @@
                 android:fontFamily="serif"
                 android:textSize="20dp"
                 android:layout_marginRight="8dp"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
 
             <SeekBar
                 android:id="@+id/sun_area_rate"
@@ -372,7 +371,7 @@
                 android:progressTint="@color/colorAccent"
                 android:progressBackgroundTint="#7f7f7f"
                 android:thumbTint="@color/colorAccent"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
 
         </LinearLayout>
 
@@ -392,7 +391,7 @@
                 android:fontFamily="serif"
                 android:textSize="20dp"
                 android:layout_marginRight="8dp"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
 
             <SeekBar
                 android:id="@+id/sun_spawn_rate"
@@ -402,7 +401,7 @@
                 android:progressTint="@color/colorAccent"
                 android:progressBackgroundTint="#7f7f7f"
                 android:thumbTint="@color/colorAccent"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
 
         </LinearLayout>
 
@@ -422,7 +421,7 @@
                 android:fontFamily="serif"
                 android:textSize="20dp"
                 android:layout_marginRight="8dp"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
 
             <SeekBar
                 android:id="@+id/sun_pair_with_square_rate"
@@ -432,7 +431,7 @@
                 android:progressTint="@color/colorAccent"
                 android:progressBackgroundTint="#7f7f7f"
                 android:thumbTint="@color/colorAccent"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
 
         </LinearLayout>
 
@@ -446,7 +445,7 @@
         android:textSize="24dp"
         android:fontFamily="serif"
         android:textColor="@color/colorAccent"
-        android:buttonTint="@color/colorAccent"/>
+        android:buttonTint="@color/colorAccent" />
 
     <LinearLayout
         android:id="@+id/triangles_settings"
@@ -473,7 +472,7 @@
                 android:fontFamily="serif"
                 android:textSize="20dp"
                 android:layout_marginRight="8dp"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
 
             <SeekBar
                 android:id="@+id/triangles_rate"
@@ -483,7 +482,7 @@
                 android:progressTint="@color/colorAccent"
                 android:progressBackgroundTint="#7f7f7f"
                 android:thumbTint="@color/colorAccent"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
 
         </LinearLayout>
 
@@ -497,7 +496,7 @@
         android:textSize="24dp"
         android:fontFamily="serif"
         android:textColor="@color/colorAccent"
-        android:buttonTint="@color/colorAccent"/>
+        android:buttonTint="@color/colorAccent" />
 
     <LinearLayout
         android:id="@+id/elimination_settings"
@@ -524,7 +523,7 @@
                 android:fontFamily="serif"
                 android:textSize="20dp"
                 android:layout_marginRight="8dp"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
 
             <RadioGroup
                 android:id="@+id/elimination_radio_group"
@@ -532,7 +531,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="left"
                 android:layout_weight="1"
-                android:orientation="vertical"/>
+                android:orientation="vertical" />
 
         </LinearLayout>
 

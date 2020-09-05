@@ -17,7 +17,7 @@ import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridWalker;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class BlocksPuzzleFactory extends PuzzleFactory{
+public class BlocksPuzzleFactory extends PuzzleFactory {
 
     public BlocksPuzzleFactory(Context context) {
         super(context);
@@ -49,7 +49,7 @@ public class BlocksPuzzleFactory extends PuzzleFactory{
     }
 
     @Override
-    public String getName(){
+    public String getName() {
         return "Swamp #1";
     }
 }

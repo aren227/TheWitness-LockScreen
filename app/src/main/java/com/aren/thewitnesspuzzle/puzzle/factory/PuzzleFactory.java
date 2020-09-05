@@ -14,12 +14,12 @@ public abstract class PuzzleFactory {
     private Bitmap thumbnailCache;
     private PuzzleFactoryConfig config;
 
-    public PuzzleFactory(Context context){
+    public PuzzleFactory(Context context) {
         this(context, null);
     }
 
-    public PuzzleFactory(Context context, UUID uuid){
-        if(uuid == null){
+    public PuzzleFactory(Context context, UUID uuid) {
+        if (uuid == null) {
             uuid = UUID.nameUUIDFromBytes(getClass().getName().getBytes());
         }
         config = new PuzzleFactoryConfig(context, uuid);
@@ -27,33 +27,33 @@ public abstract class PuzzleFactory {
 
     public abstract Puzzle generate(Game game, Random random);
 
-    public Difficulty getDifficulty(){
+    public Difficulty getDifficulty() {
         return null;
     }
 
     public abstract String getName();
 
-    public UUID getUuid(){
+    public UUID getUuid() {
         return getConfig().factoryUuid;
     }
 
-    public void setThumbnailCache(Bitmap bitmap){
+    public void setThumbnailCache(Bitmap bitmap) {
         thumbnailCache = bitmap;
     }
 
-    public Bitmap getThumbnailCache(){
+    public Bitmap getThumbnailCache() {
         return thumbnailCache;
     }
 
-    public void clearThumbnailCache(){
+    public void clearThumbnailCache() {
         thumbnailCache = null;
     }
 
-    public PuzzleFactoryConfig getConfig(){
+    public PuzzleFactoryConfig getConfig() {
         return config;
     }
 
-    public boolean isCreatedByUser(){
+    public boolean isCreatedByUser() {
         return false;
     }
 }

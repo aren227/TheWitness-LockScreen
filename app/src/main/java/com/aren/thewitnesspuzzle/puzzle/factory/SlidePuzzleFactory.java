@@ -38,7 +38,7 @@ public class SlidePuzzleFactory extends PuzzleFactory {
     }
 
     @Override
-    public String getName(){
+    public String getName() {
         return "Lock #3";
     }
 }

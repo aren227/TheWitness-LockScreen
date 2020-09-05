@@ -1,7 +1,5 @@
 package com.aren.thewitnesspuzzle.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
@@ -19,9 +17,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aren.thewitnesspuzzle.BuildConfig;
-import com.aren.thewitnesspuzzle.service.LockscreenService;
 import com.aren.thewitnesspuzzle.R;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;
+import com.aren.thewitnesspuzzle.service.LockscreenService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,6 +30,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -62,19 +62,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, LockscreenService.class);
-                if(serviceRunning){
+                if (serviceRunning) {
                     stopService(intent);
                     serviceRunning = !serviceRunning;
-                }
-                else{
-                    if(puzzleFactoryManager.getLockProfile().getActivatedPuzzleFactories().size() == 0){
+                } else {
+                    if (puzzleFactoryManager.getLockProfile().getActivatedPuzzleFactories().size() == 0) {
                         Toast.makeText(MainActivity.this, "Please activate one or more puzzles in the gallery.", Toast.LENGTH_LONG).show();
-                    }
-                    else{
-                        if(!checkPermission()){
+                    } else {
+                        if (!checkPermission()) {
                             requestPermission();
-                        }
-                        else{
+                        } else {
                             startService(intent);
                             serviceRunning = !serviceRunning;
                         }
@@ -145,21 +142,21 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
-    private boolean checkPermission(){
+    private boolean checkPermission() {
         return Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.canDrawOverlays(this);
     }
 
     @TargetApi(Build.VERSION_CODES.M)
-    private void requestPermission(){
-        Uri uri = Uri.fromParts("package" , getPackageName(), null);
+    private void requestPermission() {
+        Uri uri = Uri.fromParts("package", getPackageName(), null);
         Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, uri);
         startActivityForResult(intent, ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE);
     }
 
-    private void checkLatestVersion(){
+    private void checkLatestVersion() {
         SharedPreferences sharedPreferences = getSharedPreferences("com.aren.thewitnesspuzzle", MODE_PRIVATE);
         long lastCheck = sharedPreferences.getLong("last_update_check", 0);
-        if(lastCheck + 3600 * 24 > System.currentTimeMillis() / 1000L) return;
+        if (lastCheck + 3600 * 24 > System.currentTimeMillis() / 1000L) return;
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putLong("last_update_check", System.currentTimeMillis() / 1000L);
         editor.commit();
@@ -174,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
                     BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
 
                     String result;
-                    while((result = br.readLine()) != null){
+                    while ((result = br.readLine()) != null) {
                         sb.append(result).append("\n");
                     }
                     result = sb.toString();
@@ -182,11 +179,11 @@ public class MainActivity extends AppCompatActivity {
                     is.close();
 
                     JSONObject js = new JSONObject(result);
-                    if(!js.has("tag_name")) return;
+                    if (!js.has("tag_name")) return;
 
                     final String newVersion = js.getString("tag_name");
 
-                    if(!BuildConfig.VERSION_NAME.equals(newVersion)){
+                    if (!BuildConfig.VERSION_NAME.equals(newVersion)) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {

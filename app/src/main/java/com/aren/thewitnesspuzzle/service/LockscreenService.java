@@ -71,7 +71,7 @@ public class LockscreenService extends Service {
         //filter.setPriority(2147483647);
         registerReceiver(mReceiver, filter);
 
-        TelephonyManager telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+        TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         telephonyManager.listen(phoneListener, PhoneStateListener.LISTEN_CALL_STATE);
     }
 
@@ -82,7 +82,7 @@ public class LockscreenService extends Service {
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId){
+    public int onStartCommand(Intent intent, int flags, int startId) {
         PendingIntent pendingIntent = PendingIntent.getActivity(
                 this,
                 0,
@@ -93,7 +93,7 @@ public class LockscreenService extends Service {
         Notification notification;
         if (Build.VERSION.SDK_INT >= 26) {
             NotificationChannel channel = new NotificationChannel("com.aren.thewitnesspuzzle", "MyChannel", NotificationManager.IMPORTANCE_DEFAULT);
-            ((NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE)).createNotificationChannel(channel);
+            ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).createNotificationChannel(channel);
 
             notification = new Notification.Builder(this, "com.aren.thewitnesspuzzle")
                     .setContentTitle("The Witness Lock Screen")
@@ -101,8 +101,7 @@ public class LockscreenService extends Service {
                     .setSmallIcon(R.drawable.ic_notification)
                     .setContentIntent(pendingIntent)
                     .build();
-        }
-        else{
+        } else {
             notification = new Notification.Builder(this)
                     .setContentTitle("The Witness Lock Screen")
                     .setContentText("Service is running")
@@ -121,7 +120,7 @@ public class LockscreenService extends Service {
             if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
                 Log.i("TAG", "SCREEN_OFF");
 
-                if(phoneState != TelephonyManager.CALL_STATE_IDLE) return;
+                if (phoneState != TelephonyManager.CALL_STATE_IDLE) return;
 
                 final int currentKey = lockToken;
                 new Thread(new Runnable() {
@@ -135,7 +134,7 @@ public class LockscreenService extends Service {
                             e.printStackTrace();
                         }
 
-                        if(puzzle != null && currentKey == lockToken){
+                        if (puzzle != null && currentKey == lockToken) {
                             game.setPuzzle(puzzle);
                             // Run on Main thread
                             handler.post(new Runnable() {
@@ -147,8 +146,7 @@ public class LockscreenService extends Service {
                         }
                     }
                 }).start();
-            }
-            else if(intent.getAction().equals(Intent.ACTION_SCREEN_ON)){
+            } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
                 Log.i("TAG", "SCREEN_ON");
 
                 lockToken++;
@@ -157,29 +155,29 @@ public class LockscreenService extends Service {
     }
 
     @Override
-    public void onDestroy(){
+    public void onDestroy() {
         super.onDestroy();
-        if(mReceiver != null){
+        if (mReceiver != null) {
             unregisterReceiver(mReceiver);
         }
     }
 
-    public void setRandomPuzzle(){
-        if(!game.getSettings().getHoldingPuzzles() || puzzle == null){
+    public void setRandomPuzzle() {
+        if (!game.getSettings().getHoldingPuzzles() || puzzle == null) {
             Random random = new Random();
             /*List<PuzzleFactory> factories = puzzleFactoryManager.getLockProfile().getActivatedPuzzleFactories();
             if(factories.size() > 0){
                 puzzle = factories.get(random.nextInt(factories.size())).generate(game, random);
             }*/
             PuzzleFactory factory = puzzleFactoryManager.getLockProfile().getRandomPuzzleFactory(random);
-            if(factory != null){
+            if (factory != null) {
                 puzzle = factory.generate(game, random);
             }
         }
     }
 
-    public void lockScreen(){
-        if(isLocked()) return;
+    public void lockScreen() {
+        if (isLocked()) return;
 
         WindowManager mWindowManager = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
 
@@ -209,7 +207,7 @@ public class LockscreenService extends Service {
                         WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
                 PixelFormat.TRANSLUCENT);
 
-        if(game.getSurfaceView().getParent() == null){
+        if (game.getSurfaceView().getParent() == null) {
             //권한이 없다면 여기서 에러 발생
             mWindowManager.addView(game.getSurfaceView(), mLayoutParams);
         }
@@ -218,29 +216,28 @@ public class LockscreenService extends Service {
         game.update();
     }
 
-    public void unlockScreen(){
-        if(!isLocked()) return;
+    public void unlockScreen() {
+        if (!isLocked()) return;
 
         WindowManager mWindowManager = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
         mWindowManager.removeView(game.getSurfaceView());
     }
 
-    public boolean isLocked(){
+    public boolean isLocked() {
         return game.getSurfaceView().getParent() != null;
     }
 
-    PhoneStateListener phoneListener = new PhoneStateListener(){
+    PhoneStateListener phoneListener = new PhoneStateListener() {
         @Override
-        public void onCallStateChanged(int state, String incomingNumber){
+        public void onCallStateChanged(int state, String incomingNumber) {
             phoneState = state;
-            if(state == TelephonyManager.CALL_STATE_IDLE){
-                if(interrupted){
+            if (state == TelephonyManager.CALL_STATE_IDLE) {
+                if (interrupted) {
                     lockScreen();
                     interrupted = false;
                 }
-            }
-            else if(state == TelephonyManager.CALL_STATE_RINGING){
-                if(isLocked()){
+            } else if (state == TelephonyManager.CALL_STATE_RINGING) {
+                if (isLocked()) {
                     interrupted = true;
                     unlockScreen();
                 }

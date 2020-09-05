@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -19,7 +17,7 @@
         android:textColor="#fafafa"
         android:layout_centerInParent="true"
         android:padding="16dp"
-        android:gravity="center"/>
+        android:gravity="center" />
 
     <ImageView
         android:layout_width="64dp"
@@ -29,7 +27,7 @@
         android:src="@drawable/ic_navigate_next_black_24dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <ImageView
         android:layout_width="64dp"
@@ -39,6 +37,6 @@
         android:src="@drawable/ic_baseline_skip_next_24"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
 </RelativeLayout>

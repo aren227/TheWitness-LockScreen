@@ -1,18 +1,13 @@
 package com.aren.thewitnesspuzzle.graphics.shape;
 
-import android.graphics.Color;
-
-import com.aren.thewitnesspuzzle.graphics.shape.Shape;
 import com.aren.thewitnesspuzzle.math.Vector2;
 import com.aren.thewitnesspuzzle.math.Vector3;
-
-import java.nio.FloatBuffer;
 
 public class SunShape extends Shape {
 
     public float radius;
 
-    public SunShape(Vector3 center, float radius, int color){
+    public SunShape(Vector3 center, float radius, int color) {
         super(center, 1, color);
         this.radius = radius;
     }

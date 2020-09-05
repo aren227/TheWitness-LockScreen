@@ -28,18 +28,18 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
 
     private List<GalleryPreview> previews;
 
-    public GalleryAdapter(Context context, PuzzleFactoryManager puzzleFactoryManager){
+    public GalleryAdapter(Context context, PuzzleFactoryManager puzzleFactoryManager) {
         this.context = context;
         this.puzzleFactoryManager = puzzleFactoryManager;
-        inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         previews = new ArrayList<>();
     }
 
-    public void addPreview(GalleryPreview preview){
+    public void addPreview(GalleryPreview preview) {
         previews.add(preview);
     }
 
-    public void clearPreviews(){
+    public void clearPreviews() {
         previews.clear();
     }
 
@@ -57,7 +57,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         holder.imageView.setImageBitmap(preview.bitmap);
         holder.imageView.setClipToOutline(true);
 
-        if(preview.isForAddBtn){
+        if (preview.isForAddBtn) {
             holder.textView.setText("");
             holder.imageView.setColorFilter(null);
             holder.imageView.setImageAlpha(255);
@@ -73,12 +73,11 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
             return;
         }
 
-        if(puzzleFactoryManager.getLastViewedProfile().isActivated(preview.puzzleFactory)){
+        if (puzzleFactoryManager.getLastViewedProfile().isActivated(preview.puzzleFactory)) {
             holder.imageView.setColorFilter(null);
             holder.imageView.setImageAlpha(255);
             holder.outlineView.setVisibility(View.VISIBLE);
-        }
-        else{
+        } else {
             ColorMatrix matrix = new ColorMatrix();
             matrix.setSaturation(0);
             ColorMatrixColorFilter cf = new ColorMatrixColorFilter(matrix);
@@ -88,7 +87,8 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         }
 
         holder.textView.setText(preview.name);
-        if(preview.getDifficulty() != null) holder.textView.setTextColor(preview.getDifficulty().getColor());
+        if (preview.getDifficulty() != null)
+            holder.textView.setTextColor(preview.getDifficulty().getColor());
 
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,7 +113,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         return previews.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
         TextView textView;
         View outlineView;

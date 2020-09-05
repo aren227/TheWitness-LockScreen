@@ -1,18 +1,14 @@
 package com.aren.thewitnesspuzzle.puzzle.factory;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.color.PalettePreset;
 import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
-import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.rules.BrokenLineRule;
 import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridTreeWalker;
-import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridWalker;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 public class MazePuzzleFactory extends PuzzleFactory {
@@ -43,7 +39,7 @@ public class MazePuzzleFactory extends PuzzleFactory {
     }
 
     @Override
-    public String getName(){
+    public String getName() {
         return "Entry Area #2";
     }
 }

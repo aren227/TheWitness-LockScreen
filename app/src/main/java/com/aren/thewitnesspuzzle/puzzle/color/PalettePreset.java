@@ -11,7 +11,7 @@ public class PalettePreset {
 
     private Map<String, PuzzleColorPalette> presets = new HashMap<>();
 
-    public PalettePreset(){
+    public PalettePreset() {
         register("General_Slide", "#fd9700", "#8a4700", "#fffef9", "#fbe50d", "#050a0f", 0.5f);
         register("General_Panel", "#babcb9", "#5a4d3f", "#fccf97", "#ff8326", "#050a0f", 0.3f);
         register("Entry_1", "#ffcb00", "#422c06", "#feffc5", "#fef656", "#050a0f", 1.0f);
@@ -31,16 +31,16 @@ public class PalettePreset {
         register("Desert_1", "#3c0300", "#000000", "#fff0b3", "#ff8400", "#050a0f", 1.0f);
     }
 
-    private void register(String name, String background, String path, String cursor, String cursorSucceeded, String cursorFailed, float bloomIntensity){
+    private void register(String name, String background, String path, String cursor, String cursorSucceeded, String cursorFailed, float bloomIntensity) {
         presets.put(name, new PuzzleColorPalette(ColorUtils.RGB(background), ColorUtils.RGB(path), ColorUtils.RGB(cursor), ColorUtils.RGB(cursorSucceeded), ColorUtils.RGB(cursorFailed), bloomIntensity));
     }
 
-    public static PuzzleColorPalette get(String name){
-        if(instance.presets.containsKey(name)) return instance.presets.get(name).clone();
+    public static PuzzleColorPalette get(String name) {
+        if (instance.presets.containsKey(name)) return instance.presets.get(name).clone();
         return null;
     }
 
-    public static List<PuzzleColorPalette> getAll(){
+    public static List<PuzzleColorPalette> getAll() {
         return new ArrayList<>(instance.presets.values());
     }
 
