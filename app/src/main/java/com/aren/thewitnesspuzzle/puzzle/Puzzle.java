@@ -38,6 +38,7 @@ import com.aren.thewitnesspuzzle.puzzle.sound.Sounds;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -122,6 +123,35 @@ public class Puzzle {
         vertexBuffer.position(0);
 
         return vertexBuffer;
+    }
+
+    public int getIndexCount(){
+        int indexCount = 0;
+        for(Shape shape : staticShapes){
+            indexCount += shape.getIndexCount();
+        }
+        for(Shape shape : dynamicShapes){
+            indexCount += shape.getIndexCount();
+        }
+        return indexCount;
+    }
+
+    public ShortBuffer getIndexBuffer(){
+        ByteBuffer bb = ByteBuffer.allocateDirect(getIndexCount() * 2);
+        bb.order(ByteOrder.nativeOrder());
+
+        ShortBuffer indexBuffer = bb.asShortBuffer();
+
+        for(Shape shape : staticShapes){
+            shape.fillIndexBuffer(indexBuffer);
+        }
+        for(Shape shape : dynamicShapes){
+            shape.fillIndexBuffer(indexBuffer);
+        }
+
+        indexBuffer.position(0);
+
+        return indexBuffer;
     }
 
     public FloatBuffer getVertexColorBuffer() {

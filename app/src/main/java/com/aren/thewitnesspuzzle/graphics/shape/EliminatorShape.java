@@ -35,13 +35,13 @@ public class EliminatorShape extends Shape {
             Vector2 c = new Vector2(cx[i] + rt.x, cy[i] + rt.y);
             Vector2 d = new Vector2(cx[i] + rb.x, cy[i] + rb.y);
 
-            addVertex(a);
+            int idx = addVertex(a);
             addVertex(b);
             addVertex(c);
-
-            addVertex(a);
-            addVertex(c);
             addVertex(d);
+
+            addTriangle(idx, idx + 1, idx + 2);
+            addTriangle(idx, idx + 2, idx + 3);
         }
     }
 }

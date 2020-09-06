@@ -26,20 +26,20 @@ public class SunShape extends Shape {
         Vector2 g = new Vector2(-radius * 0.7f, -radius * 0.7f);
         Vector2 h = new Vector2(-radius * 0.7f, radius * 0.7f);
 
-        addVertex(a);
+        int idx = addVertex(a);
         addVertex(b);
-        addVertex(c);
-
-        addVertex(a);
         addVertex(c);
         addVertex(d);
 
-        addVertex(e);
+        addTriangle(idx, idx + 1, idx + 2);
+        addTriangle(idx, idx + 2, idx + 3);
+
+        idx = addVertex(e);
         addVertex(f);
         addVertex(g);
-
-        addVertex(e);
-        addVertex(g);
         addVertex(h);
+
+        addTriangle(idx, idx + 1, idx + 2);
+        addTriangle(idx, idx + 2, idx + 3);
     }
 }

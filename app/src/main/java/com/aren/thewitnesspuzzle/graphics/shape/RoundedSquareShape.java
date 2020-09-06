@@ -21,10 +21,8 @@ public class RoundedSquareShape extends Shape {
     public void draw() {
         super.draw();
 
-        int[] signX = {1, -1, -1, 1};
-        int[] signY = {1, 1, -1, -1};
-
-        ArrayList<Vector2> points = new ArrayList<>();
+        int[] signX = {1, 1, -1, -1};
+        int[] signY = {1, -1, -1, 1};
 
         // draw 4 rounded corners
         for (int i = 0; i < 4; i++) {
@@ -34,30 +32,19 @@ public class RoundedSquareShape extends Shape {
             cy *= signY[i];
             Vector2 c = new Vector2(cx, cy);
 
-            for (int j = 0; j < CORNER_TRIANGLE; j++) {
+            for (int j = 0; j <= CORNER_TRIANGLE; j++) {
                 float a = 2 * (float) Math.PI * (CORNER_TRIANGLE * i + j) / (CORNER_TRIANGLE * 4);
-                float b = 2 * (float) Math.PI * (CORNER_TRIANGLE * i + j + 1) / (CORNER_TRIANGLE * 4);
 
-                Vector2 pa = c.add(new Vector2((float) Math.cos(a) * radius * CORNER_RATE, (float) Math.sin(a) * radius * CORNER_RATE));
-                Vector2 pb = c.add(new Vector2((float) Math.cos(b) * radius * CORNER_RATE, (float) Math.sin(b) * radius * CORNER_RATE));
+                Vector2 pa = c.add(new Vector2((float) Math.sin(a) * radius * CORNER_RATE, (float) Math.cos(a) * radius * CORNER_RATE));
 
                 addVertex(pa);
-                addVertex(new Vector2(0, 0));
-                addVertex(pb);
-
-                if (j == 0) points.add(pa);
-                if (j == CORNER_TRIANGLE - 1) points.add(pb);
             }
         }
 
-        // draw 4 triangles to fill center
-        for (int i = 0; i < 4; i++) {
-            Vector2 pa = points.get(i * 2 + 1);
-            Vector2 pb = points.get((i * 2 + 2) % 8);
+        int idx = addVertex(new Vector2(0, 0));
 
-            addVertex(pa);
-            addVertex(new Vector2(0, 0));
-            addVertex(pb);
+        for(int i = 0; i < idx; i++){
+            addTriangle(idx, i, (i + 1) % idx);
         }
     }
 }

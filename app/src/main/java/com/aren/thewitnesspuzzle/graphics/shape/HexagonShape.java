@@ -17,14 +17,15 @@ public class HexagonShape extends Shape {
         super.draw();
         for (int i = 0; i < 6; i++) {
             float a = 2 * (float) Math.PI * i / 6;
-            float b = 2 * (float) Math.PI * (i + 1) / 6;
 
             Vector2 pa = new Vector2((float) Math.cos(a) * radius, (float) Math.sin(a) * radius);
-            Vector2 pb = new Vector2((float) Math.cos(b) * radius, (float) Math.sin(b) * radius);
 
             addVertex(pa);
-            addVertex(new Vector2(0, 0));
-            addVertex(pb);
+        }
+        addVertex(new Vector2(0, 0));
+
+        for(int i = 0; i < 6; i++){
+            addTriangle(6, i, (i + 1) % 6);
         }
     }
 }

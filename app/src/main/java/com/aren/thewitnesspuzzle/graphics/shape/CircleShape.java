@@ -19,14 +19,15 @@ public class CircleShape extends Shape {
         super.draw();
         for (int i = 0; i < TRIANGLES; i++) {
             float a = 2 * (float) Math.PI * i / TRIANGLES;
-            float b = 2 * (float) Math.PI * (i + 1) / TRIANGLES;
 
             Vector2 pa = new Vector2((float) Math.cos(a) * radius, (float) Math.sin(a) * radius);
-            Vector2 pb = new Vector2((float) Math.cos(b) * radius, (float) Math.sin(b) * radius);
 
             addVertex(pa);
-            addVertex(new Vector2(0, 0));
-            addVertex(pb);
+        }
+        addVertex(new Vector2(0, 0));
+
+        for(int i = 0; i < TRIANGLES; i++){
+            addTriangle(TRIANGLES, i, (i + 1) % TRIANGLES);
         }
     }
 }

@@ -53,12 +53,13 @@ public class BlocksShape extends Shape {
                     d = rot.multiply(d);
                 }
 
-                addVertex(a);
+                int idx = addVertex(a);
                 addVertex(b);
                 addVertex(c);
-                addVertex(a);
-                addVertex(c);
                 addVertex(d);
+
+                addTriangle(idx, idx + 1, idx + 2);
+                addTriangle(idx, idx + 2, idx + 3);
             }
         }
     }

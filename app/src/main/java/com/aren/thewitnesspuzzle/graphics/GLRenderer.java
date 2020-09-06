@@ -287,7 +287,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 
             GLES20.glUniformMatrix4fv(MVPMatrixHandle, 1, false, mMVPMatrix, 0);
 
-            GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, puzzle.getVertexCount());
+            GLES20.glDrawElements(GLES20.GL_TRIANGLES, puzzle.getIndexCount(), GLES20.GL_UNSIGNED_SHORT, puzzle.getIndexBuffer());
         }
 
         GLES20.glDisable(GLES20.GL_DEPTH_TEST);

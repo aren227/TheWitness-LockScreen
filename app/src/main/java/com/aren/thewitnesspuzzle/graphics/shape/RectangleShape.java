@@ -36,12 +36,12 @@ public class RectangleShape extends Shape {
         Vector2 c = new Vector2(rt.x, rt.y);
         Vector2 d = new Vector2(rb.x, rb.y);
 
-        addVertex(a);
+        int idx = addVertex(a);
         addVertex(b);
         addVertex(c);
-
-        addVertex(a);
-        addVertex(c);
         addVertex(d);
+
+        addTriangle(idx, idx + 1, idx + 2);
+        addTriangle(idx, idx + 2, idx + 3);
     }
 }

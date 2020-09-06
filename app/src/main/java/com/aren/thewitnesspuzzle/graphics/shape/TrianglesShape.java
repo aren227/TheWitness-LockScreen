@@ -21,9 +21,11 @@ public class TrianglesShape extends Shape {
         for (int i = 0; i < amount; i++) {
             float x = -size * amount + size * (i * 2 + 1);
 
-            addVertex(new Vector2(x - 0.866f * size, -0.5f * size));
+            int idx = addVertex(new Vector2(x - 0.866f * size, -0.5f * size));
             addVertex(new Vector2(x, size));
             addVertex(new Vector2(x + 0.866f * size, -0.5f * size));
+
+            addTriangle(idx, idx + 1, idx + 2);
         }
     }
 }
