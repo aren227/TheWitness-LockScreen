@@ -89,6 +89,15 @@
                         android:textSize="20dp"
                         android:text="Hexagon" />
 
+                    <RadioButton
+                        android:id="@+id/jungle_puzzle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorAccent"
+                        android:buttonTint="@color/colorAccent"
+                        android:textSize="20dp"
+                        android:text="Jungle" />
+
                 </RadioGroup>
 
             </LinearLayout>

@@ -43,13 +43,16 @@ public class CreatePatternActivity extends PuzzleEditorActivity {
         palette.set(config.getColorPalette("color", PalettePreset.get("Entry_1")));
         paletteView.invalidate();
 
-        isGridPuzzle = config.getString("puzzleType", "grid").equals("grid");
-        if (isGridPuzzle) {
+        puzzleType = config.getString("puzzleType", "grid");
+        if (puzzleType.equals("grid")) {
             gridPuzzleRadioButton.setChecked(true);
             widthEditText.setText(config.getInt("width", 4) + "");
             heightEditText.setText(config.getInt("height", 4) + "");
-        } else {
+        } else if (puzzleType.equals("hexagon")) {
             hexagonPuzzleRadioButton.setChecked(true);
+        } else if (puzzleType.equals("jungle")) {
+            junglePuzzleRadioButton.setChecked(true);
+            widthEditText.setText(config.getInt("width", 4) + "");
         }
         updateGridSizeUI();
 

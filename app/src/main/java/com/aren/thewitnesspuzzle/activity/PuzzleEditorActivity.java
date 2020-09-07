@@ -17,6 +17,7 @@ import com.aren.thewitnesspuzzle.dialog.ColorPaletteDialog;
 import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.HexagonPuzzle;
+import com.aren.thewitnesspuzzle.puzzle.JunglePuzzle;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 import com.aren.thewitnesspuzzle.puzzle.color.PalettePreset;
 import com.aren.thewitnesspuzzle.puzzle.color.PuzzleColorPalette;
@@ -36,7 +37,7 @@ public class PuzzleEditorActivity extends AppCompatActivity {
     Game game;
     Puzzle puzzle;
 
-    boolean isGridPuzzle = true;
+    String puzzleType = "grid";
     PuzzleColorPalette palette;
 
     LinearLayout editorWindow;
@@ -44,6 +45,7 @@ public class PuzzleEditorActivity extends AppCompatActivity {
     RadioGroup puzzleTypeRadioGroup;
     RadioButton gridPuzzleRadioButton;
     RadioButton hexagonPuzzleRadioButton;
+    RadioButton junglePuzzleRadioButton;
     ColorPaletteView paletteView;
     LinearLayout difficultyView;
     SeekBar difficultySeekBar;
@@ -81,6 +83,7 @@ public class PuzzleEditorActivity extends AppCompatActivity {
         puzzleTypeRadioGroup = findViewById(R.id.puzzle_type);
         gridPuzzleRadioButton = findViewById(R.id.grid_puzzle);
         hexagonPuzzleRadioButton = findViewById(R.id.hexagon_puzzle);
+        junglePuzzleRadioButton = findViewById(R.id.jungle_puzzle);
         paletteView = findViewById(R.id.palette);
         difficultyView = findViewById(R.id.difficulty_container);
         difficultySeekBar = findViewById(R.id.puzzle_difficulty);
@@ -95,7 +98,7 @@ public class PuzzleEditorActivity extends AppCompatActivity {
         gridPuzzleRadioButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isGridPuzzle = true;
+                puzzleType = "grid";
                 resetPuzzle();
                 updateGridSizeUI();
             }
@@ -104,7 +107,16 @@ public class PuzzleEditorActivity extends AppCompatActivity {
         hexagonPuzzleRadioButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isGridPuzzle = false;
+                puzzleType = "hexagon";
+                resetPuzzle();
+                updateGridSizeUI();
+            }
+        });
+
+        junglePuzzleRadioButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                puzzleType = "jungle";
                 resetPuzzle();
                 updateGridSizeUI();
             }
@@ -167,18 +179,29 @@ public class PuzzleEditorActivity extends AppCompatActivity {
     }
 
     protected void resetPuzzle() {
-        if (isGridPuzzle) {
+        if (puzzleType.equals("grid")) {
             puzzle = new GridPuzzle(game, palette, getWidth(), getHeight(), false);
             ((GridPuzzle) puzzle).addStartingPoint(0, 0);
             ((GridPuzzle) puzzle).addEndingPoint(getWidth(), getHeight());
-        } else puzzle = new HexagonPuzzle(game, palette, false);
+        } else if (puzzleType.equals("hexagon")) {
+            puzzle = new HexagonPuzzle(game, palette, false);
+        } else if (puzzleType.equals("jungle")) {
+            puzzle = new JunglePuzzle(game, palette, getWidth());
+        }
         game.setPuzzle(puzzle);
         game.update();
     }
 
     protected void updateGridSizeUI() {
-        if (isGridPuzzle) gridSizeView.setVisibility(View.VISIBLE);
-        else gridSizeView.setVisibility(View.GONE);
+        if (puzzleType.equals("grid")) {
+            gridSizeView.setVisibility(View.VISIBLE);
+            heightEditText.setVisibility(View.VISIBLE);
+        } else if (puzzleType.equals("hexagon")) {
+            gridSizeView.setVisibility(View.GONE);
+        } else if (puzzleType.equals("jungle")) {
+            gridSizeView.setVisibility(View.VISIBLE);
+            heightEditText.setVisibility(View.GONE);
+        }
     }
 
     protected int getWidth() {
