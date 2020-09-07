@@ -9,14 +9,17 @@ public class BoundingBox {
     }
 
     public float getWidth() {
+        if(min == null || max == null) return 1e-5f;
         return max.x - min.x;
     }
 
     public float getHeight() {
+        if(min == null || max == null) return 1e-5f;
         return max.y - min.y;
     }
 
     public Vector2 getCenter() {
+        if(min == null || max == null) return new Vector2(0, 0);
         return new Vector2((min.x + max.x) / 2, (min.y + max.y) / 2);
     }
 

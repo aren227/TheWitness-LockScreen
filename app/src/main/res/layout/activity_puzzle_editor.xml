@@ -98,6 +98,15 @@
                         android:textSize="20dp"
                         android:text="Jungle" />
 
+                    <RadioButton
+                        android:id="@+id/video_room_puzzle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorAccent"
+                        android:buttonTint="@color/colorAccent"
+                        android:textSize="20dp"
+                        android:text="Video Room" />
+
                 </RadioGroup>
 
             </LinearLayout>

@@ -53,6 +53,8 @@ public class CreatePatternActivity extends PuzzleEditorActivity {
         } else if (puzzleType.equals("jungle")) {
             junglePuzzleRadioButton.setChecked(true);
             widthEditText.setText(config.getInt("width", 4) + "");
+        } else if (puzzleType.equals("video_room")) {
+            videoRoomPuzzleRadioButton.setChecked(true);
         }
         updateGridSizeUI();
 
@@ -179,11 +181,13 @@ public class CreatePatternActivity extends PuzzleEditorActivity {
                         config.setFactoryType("pattern");
                         config.setString("name", name);
                         config.setColorPalette("color", palette);
-                        config.setString("puzzleType", (puzzle instanceof GridPuzzle) ? "grid" : "hexagon");
+                        config.setString("puzzleType", puzzleType);
                         config.setString("difficulty", Difficulty.CUSTOM_PATTERN.toString());
-                        if (puzzle instanceof GridPuzzle) {
+                        if (puzzleType.equals("grid")) {
                             config.setInt("width", getWidth());
                             config.setInt("height", getHeight());
+                        } else if (puzzleType.equals("jungle")) {
+                            config.setInt("width", getWidth());
                         }
                         config.setIntList("pattern", pattern);
                         config.save();

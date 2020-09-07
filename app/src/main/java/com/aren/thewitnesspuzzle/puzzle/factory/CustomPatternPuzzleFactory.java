@@ -5,7 +5,9 @@ import android.content.Context;
 import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.HexagonPuzzle;
+import com.aren.thewitnesspuzzle.puzzle.JunglePuzzle;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
+import com.aren.thewitnesspuzzle.puzzle.VideoRoomPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.color.PalettePreset;
 import com.aren.thewitnesspuzzle.puzzle.color.PuzzleColorPalette;
 import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
@@ -46,6 +48,13 @@ public class CustomPatternPuzzleFactory extends PuzzleFactory {
             ((GridPuzzle) puzzle).addEndingPoint(width, height);
         } else if (puzzleType.equals("hexagon")) {
             puzzle = new HexagonPuzzle(game, palette);
+        } else if (puzzleType.equals("jungle")) {
+            if (!getConfig().containsKey("width"))
+                return null;
+            int width = getConfig().getInt("width", 4);
+            puzzle = new JunglePuzzle(game, palette, width);
+        } else if (puzzleType.equals("video_room")) {
+            puzzle = new VideoRoomPuzzle(game, palette);
         } else {
             return null;
         }

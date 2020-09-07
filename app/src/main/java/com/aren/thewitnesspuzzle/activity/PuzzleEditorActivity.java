@@ -19,6 +19,7 @@ import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.HexagonPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.JunglePuzzle;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
+import com.aren.thewitnesspuzzle.puzzle.VideoRoomPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.color.PalettePreset;
 import com.aren.thewitnesspuzzle.puzzle.color.PuzzleColorPalette;
 import com.aren.thewitnesspuzzle.puzzle.factory.Difficulty;
@@ -46,6 +47,7 @@ public class PuzzleEditorActivity extends AppCompatActivity {
     RadioButton gridPuzzleRadioButton;
     RadioButton hexagonPuzzleRadioButton;
     RadioButton junglePuzzleRadioButton;
+    RadioButton videoRoomPuzzleRadioButton;
     ColorPaletteView paletteView;
     LinearLayout difficultyView;
     SeekBar difficultySeekBar;
@@ -84,6 +86,7 @@ public class PuzzleEditorActivity extends AppCompatActivity {
         gridPuzzleRadioButton = findViewById(R.id.grid_puzzle);
         hexagonPuzzleRadioButton = findViewById(R.id.hexagon_puzzle);
         junglePuzzleRadioButton = findViewById(R.id.jungle_puzzle);
+        videoRoomPuzzleRadioButton = findViewById(R.id.video_room_puzzle);
         paletteView = findViewById(R.id.palette);
         difficultyView = findViewById(R.id.difficulty_container);
         difficultySeekBar = findViewById(R.id.puzzle_difficulty);
@@ -117,6 +120,15 @@ public class PuzzleEditorActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 puzzleType = "jungle";
+                resetPuzzle();
+                updateGridSizeUI();
+            }
+        });
+
+        videoRoomPuzzleRadioButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                puzzleType = "video_room";
                 resetPuzzle();
                 updateGridSizeUI();
             }
@@ -187,6 +199,8 @@ public class PuzzleEditorActivity extends AppCompatActivity {
             puzzle = new HexagonPuzzle(game, palette, false);
         } else if (puzzleType.equals("jungle")) {
             puzzle = new JunglePuzzle(game, palette, getWidth());
+        } else if (puzzleType.equals("video_room")) {
+            puzzle = new VideoRoomPuzzle(game, palette);
         }
         game.setPuzzle(puzzle);
         game.update();
@@ -201,6 +215,8 @@ public class PuzzleEditorActivity extends AppCompatActivity {
         } else if (puzzleType.equals("jungle")) {
             gridSizeView.setVisibility(View.VISIBLE);
             heightEditText.setVisibility(View.GONE);
+        } else if (puzzleType.equals("video_room")) {
+            gridSizeView.setVisibility(View.GONE);
         }
     }
 

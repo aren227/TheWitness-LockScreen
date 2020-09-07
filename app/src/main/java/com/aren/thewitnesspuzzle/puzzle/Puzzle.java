@@ -529,6 +529,11 @@ public class Puzzle {
         return result;
     }
 
+    public Edge addEdge(int va, int vb){
+        Edge edge = new Edge(getVertex(va), getVertex(vb));
+        return addEdge(edge);
+    }
+
     public Edge addEdge(Edge edge) {
         edge.index = edges.size();
         edges.add(edge);

@@ -15,6 +15,7 @@ public class JunglePuzzle extends Puzzle{
         super(game, color);
 
         this.width = width;
+        pathWidth = width * 0.035f + 0.1f;
 
         Vertex start = addVertex(new Vertex(this, -0.5f, 0));
         Vertex end = addVertex(new Vertex(this, width + 0.5f, 0));
