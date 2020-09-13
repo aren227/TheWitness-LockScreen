@@ -23,6 +23,9 @@ import android.widget.Toast;
 import com.aren.thewitnesspuzzle.R;
 import com.aren.thewitnesspuzzle.gallery.GalleryAdapter;
 import com.aren.thewitnesspuzzle.gallery.GalleryPreview;
+import com.aren.thewitnesspuzzle.gallery.ItemMoveCallback;
+import com.aren.thewitnesspuzzle.gallery.OnPreviewClick;
+import com.aren.thewitnesspuzzle.gallery.PuzzleOrderAdapter;
 import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.puzzle.ErrorPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
@@ -36,6 +39,8 @@ import java.util.Random;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class GalleryActivity extends AppCompatActivity {
@@ -61,6 +66,8 @@ public class GalleryActivity extends AppCompatActivity {
     private View dropdownView;
     private View dropdownBgView;
 
+    private PuzzleOrderAdapter orderAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,11 +75,34 @@ public class GalleryActivity extends AppCompatActivity {
 
         puzzleFactoryManager = new PuzzleFactoryManager(this);
 
-        adapter = new GalleryAdapter(this, puzzleFactoryManager);
+        OnPreviewClick onPreviewClick = new OnPreviewClick() {
+            @Override
+            public void onClick(GalleryPreview preview) {
+                puzzleFactoryManager.getLastViewedProfile().setActivated(preview.puzzleFactory, !puzzleFactoryManager.getLastViewedProfile().isActivated(preview.puzzleFactory));
+                adapter.notifyDataSetChanged();
+                orderAdapter.addPuzzle(preview.puzzleFactory);
+                orderAdapter.notifyDataSetChanged();
+            }
+        };
+
+        adapter = new GalleryAdapter(this, puzzleFactoryManager, onPreviewClick);
 
         RecyclerView recyclerView = findViewById(R.id.gallery_grid);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
         recyclerView.setAdapter(adapter);
+
+        orderAdapter = new PuzzleOrderAdapter(this, puzzleFactoryManager);
+
+        RecyclerView orderRecyclerView = findViewById(R.id.order);
+
+        ItemTouchHelper.Callback callback = new ItemMoveCallback(orderAdapter);
+        ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
+        touchHelper.attachToRecyclerView(orderRecyclerView);
+
+        LinearLayoutManager manager = new LinearLayoutManager(this);
+        manager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        orderRecyclerView.setLayoutManager(manager);
+        orderRecyclerView.setAdapter(orderAdapter);
 
         root = findViewById(R.id.gallery_root);
 

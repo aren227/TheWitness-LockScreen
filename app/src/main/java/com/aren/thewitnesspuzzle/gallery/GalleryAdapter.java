@@ -28,9 +28,12 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
 
     private List<GalleryPreview> previews;
 
-    public GalleryAdapter(Context context, PuzzleFactoryManager puzzleFactoryManager) {
+    private OnPreviewClick onPreviewClick;
+
+    public GalleryAdapter(Context context, PuzzleFactoryManager puzzleFactoryManager, OnPreviewClick onPreviewClick) {
         this.context = context;
         this.puzzleFactoryManager = puzzleFactoryManager;
+        this.onPreviewClick = onPreviewClick;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         previews = new ArrayList<>();
     }
@@ -93,8 +96,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                puzzleFactoryManager.getLastViewedProfile().setActivated(preview.puzzleFactory, !puzzleFactoryManager.getLastViewedProfile().isActivated(preview.puzzleFactory));
-                notifyDataSetChanged();
+                onPreviewClick.onClick(preview);
             }
         });
 
