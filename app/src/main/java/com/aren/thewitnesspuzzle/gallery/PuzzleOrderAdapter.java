@@ -24,17 +24,29 @@ public class PuzzleOrderAdapter extends RecyclerView.Adapter<PuzzleOrderAdapter.
     private LayoutInflater inflater;
     private PuzzleFactoryManager puzzleFactoryManager;
 
-    private List<PuzzleFactory> order;
+    private List<PuzzleFactory> sequence;
 
-    public PuzzleOrderAdapter(Context context, PuzzleFactoryManager puzzleFactoryManager){
+    private OnUpdate onUpdate;
+
+    public PuzzleOrderAdapter(Context context, PuzzleFactoryManager puzzleFactoryManager, OnUpdate onUpdate){
         this.context = context;
         this.puzzleFactoryManager = puzzleFactoryManager;
+        this.onUpdate = onUpdate;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        order = new ArrayList<>();
+        sequence = new ArrayList<>();
     }
 
     public void addPuzzle(PuzzleFactory factory){
-        order.add(factory);
+        sequence.add(factory);
+        onUpdate.onUpdate();
+    }
+
+    public void setSequence(List<PuzzleFactory> order){
+        this.sequence = order;
+    }
+
+    public List<PuzzleFactory> getSequence(){
+        return sequence;
     }
 
     @NonNull
@@ -46,34 +58,39 @@ public class PuzzleOrderAdapter extends RecyclerView.Adapter<PuzzleOrderAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        PuzzleFactory factory = order.get(position);
+        PuzzleFactory factory = sequence.get(position);
 
         holder.imageView.setImageBitmap(factory.getThumbnailCache());
+        holder.textView.setText(factory.getName());
     }
 
     @Override
     public int getItemCount() {
-        return order.size();
+        return sequence.size();
     }
 
     @Override
     public void onItemMove(int fromPos, int targetPos) {
-        Collections.swap(order, fromPos, targetPos);
+        Collections.swap(sequence, fromPos, targetPos);
         notifyItemMoved(fromPos, targetPos);
+        onUpdate.onUpdate();
     }
 
     @Override
     public void onItemDismiss(int pos) {
-        order.remove(pos);
+        sequence.remove(pos);
         notifyItemRemoved(pos);
+        onUpdate.onUpdate();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
+        TextView textView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.image);
+            textView = itemView.findViewById(R.id.name);
         }
     }
 }

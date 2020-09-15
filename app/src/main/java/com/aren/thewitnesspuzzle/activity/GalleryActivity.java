@@ -3,12 +3,19 @@ package com.aren.thewitnesspuzzle.activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,10 +28,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aren.thewitnesspuzzle.R;
+import com.aren.thewitnesspuzzle.dialog.NewProfileDialog;
 import com.aren.thewitnesspuzzle.gallery.GalleryAdapter;
 import com.aren.thewitnesspuzzle.gallery.GalleryPreview;
 import com.aren.thewitnesspuzzle.gallery.ItemMoveCallback;
 import com.aren.thewitnesspuzzle.gallery.OnPreviewClick;
+import com.aren.thewitnesspuzzle.gallery.OnUpdate;
 import com.aren.thewitnesspuzzle.gallery.PuzzleOrderAdapter;
 import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.puzzle.ErrorPuzzle;
@@ -33,11 +42,15 @@ import com.aren.thewitnesspuzzle.puzzle.factory.CustomPatternPuzzleFactory;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactory;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.loader.content.CursorLoader;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -68,6 +81,15 @@ public class GalleryActivity extends AppCompatActivity {
 
     private PuzzleOrderAdapter orderAdapter;
 
+    private TextView orderAdapterHintText;
+    private LinearLayout sequenceSettingsContainer;
+
+    private TextView musicNameTextView;
+    private ImageView attachMusicFileImageView;
+    private ImageView playMusicFileImageView;
+    private ImageView detachMusicFileImageView;
+    private MediaPlayer mediaPlayer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,10 +100,15 @@ public class GalleryActivity extends AppCompatActivity {
         OnPreviewClick onPreviewClick = new OnPreviewClick() {
             @Override
             public void onClick(GalleryPreview preview) {
-                puzzleFactoryManager.getLastViewedProfile().setActivated(preview.puzzleFactory, !puzzleFactoryManager.getLastViewedProfile().isActivated(preview.puzzleFactory));
-                adapter.notifyDataSetChanged();
-                orderAdapter.addPuzzle(preview.puzzleFactory);
-                orderAdapter.notifyDataSetChanged();
+                PuzzleFactoryManager.Profile profile = puzzleFactoryManager.getLastViewedProfile();
+                if(profile.getType() == PuzzleFactoryManager.ProfileType.DEFAULT){
+                    puzzleFactoryManager.getLastViewedProfile().setActivated(preview.puzzleFactory, !puzzleFactoryManager.getLastViewedProfile().isActivated(preview.puzzleFactory));
+                    adapter.notifyDataSetChanged();
+                }
+                else if(profile.getType() == PuzzleFactoryManager.ProfileType.SEQUENCE){
+                    orderAdapter.addPuzzle(preview.puzzleFactory);
+                    orderAdapter.notifyDataSetChanged();
+                }
             }
         };
 
@@ -91,7 +118,25 @@ public class GalleryActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
         recyclerView.setAdapter(adapter);
 
-        orderAdapter = new PuzzleOrderAdapter(this, puzzleFactoryManager);
+        orderAdapterHintText = findViewById(R.id.order_hint);
+        sequenceSettingsContainer = findViewById(R.id.sequence_settings);
+        sequenceSettingsContainer.setVisibility(View.GONE);
+
+        OnUpdate onSequenceUpdate = new OnUpdate() {
+            @Override
+            public void onUpdate() {
+                if(orderAdapter.getItemCount() > 0){
+                    orderAdapterHintText.setVisibility(View.GONE);
+                }
+                else{
+                    orderAdapterHintText.setVisibility(View.VISIBLE);
+                }
+                PuzzleFactoryManager.Profile profile = puzzleFactoryManager.getLastViewedProfile();
+                profile.setSequence(orderAdapter.getSequence());
+            }
+        };
+
+        orderAdapter = new PuzzleOrderAdapter(this, puzzleFactoryManager, onSequenceUpdate);
 
         RecyclerView orderRecyclerView = findViewById(R.id.order);
 
@@ -231,9 +276,24 @@ public class GalleryActivity extends AppCompatActivity {
         profileAddImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                puzzleFactoryManager.createProfile("New Profile").markAsLastViewed();
-                removeSpinner();
-                updateGallery();
+                View.OnClickListener onDefaultClicked = new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        puzzleFactoryManager.createProfile("New Profile", PuzzleFactoryManager.ProfileType.DEFAULT).markAsLastViewed();
+                        removeSpinner();
+                        updateGallery();
+                    }
+                };
+                View.OnClickListener onSequenceClicked = new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        puzzleFactoryManager.createProfile("New Sequence", PuzzleFactoryManager.ProfileType.SEQUENCE).markAsLastViewed();
+                        removeSpinner();
+                        updateGallery();
+                    }
+                };
+                NewProfileDialog dialog = new NewProfileDialog(GalleryActivity.this, onDefaultClicked, onSequenceClicked);
+                dialog.show();
             }
         });
 
@@ -273,6 +333,52 @@ public class GalleryActivity extends AppCompatActivity {
                 updateStatusText();
             }
         });
+
+        musicNameTextView = findViewById(R.id.music_name);
+        attachMusicFileImageView = findViewById(R.id.attach_music_file);
+        playMusicFileImageView = findViewById(R.id.play_music_file);
+        detachMusicFileImageView = findViewById(R.id.detach_music_file);
+
+        attachMusicFileImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent().setType("*/*").setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(intent, 12345);
+            }
+        });
+        playMusicFileImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mediaPlayer != null){
+                    mediaPlayer.release();
+                }
+                PuzzleFactoryManager.Profile profile = puzzleFactoryManager.getLastViewedProfile();
+                if(profile.hasMusic()){
+                    try {
+                        mediaPlayer = new MediaPlayer();
+                        mediaPlayer.setDataSource(profile.getMusicFile().getPath());
+                        mediaPlayer.prepare();
+                        mediaPlayer.start();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+        detachMusicFileImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mediaPlayer != null){
+                    if(mediaPlayer.isPlaying()){
+                        mediaPlayer.stop();
+                    }
+                    mediaPlayer.release();
+                }
+                PuzzleFactoryManager.Profile profile = puzzleFactoryManager.getLastViewedProfile();
+                profile.removeMusic();
+                musicNameTextView.setText("");
+            }
+        });
     }
 
     @Override
@@ -280,6 +386,63 @@ public class GalleryActivity extends AppCompatActivity {
         super.onResume();
 
         updateGallery();
+    }
+
+    public String getNameFromUri(Uri uri){
+        try{
+            Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+            if (cursor.getCount() <= 0) {
+                cursor.close();
+                return "No Name";
+            }
+            cursor.moveToFirst();
+
+            String fileName = cursor.getString(cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME));
+
+            cursor.close();
+
+            return fileName;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return "No Name";
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 12345 && resultCode == RESULT_OK) {
+            if(data.getData() == null) return;
+            boolean pass = true;
+
+            String fileName = getNameFromUri(data.getData());
+            if(!fileName.endsWith(".mp3") && !fileName.endsWith(".wav")){
+                pass = false;
+            }
+
+            if(pass){
+                try{
+                    MediaPlayer player = MediaPlayer.create(this, data.getData());
+                }
+                catch (Exception e){
+                    pass = false;
+                }
+            }
+
+            if(pass){
+                try {
+                    puzzleFactoryManager.getLastViewedProfile().setMusic(getContentResolver().openInputStream(data.getData()), getNameFromUri(data.getData()));
+                    musicNameTextView.setText(puzzleFactoryManager.getLastViewedProfile().getMusicName());
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+            else{
+                Toast.makeText(this, "Please select a valid mp3 or wav file.", Toast.LENGTH_LONG).show();
+            }
+
+        }
     }
 
     public void removeSpinner() {
@@ -299,6 +462,22 @@ public class GalleryActivity extends AppCompatActivity {
 
         profileLockImageView.setAlpha(puzzleFactoryManager.getLockProfile().equals(profile) ? 1 : 0.3f);
         profilePlayImageView.setAlpha(puzzleFactoryManager.getPlayProfile().equals(profile) ? 1 : 0.3f);
+
+        if(profile.getType() == PuzzleFactoryManager.ProfileType.DEFAULT){
+            sequenceSettingsContainer.setVisibility(View.GONE);
+        }
+        else if(profile.getType() == PuzzleFactoryManager.ProfileType.SEQUENCE){
+            sequenceSettingsContainer.setVisibility(View.VISIBLE);
+
+            orderAdapter.setSequence(profile.getSequence());
+            orderAdapter.notifyDataSetChanged();
+
+            String musicName = "";
+            if(profile.hasMusic()){
+                musicName = profile.getMusicName();
+            }
+            musicNameTextView.setText(musicName);
+        }
 
         updateStatusText();
         startRenderWorker();

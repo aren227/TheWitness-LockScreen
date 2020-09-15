@@ -2,7 +2,16 @@ package com.aren.thewitnesspuzzle.puzzle.factory;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.Uri;
 
+import com.aren.thewitnesspuzzle.puzzle.rules.Color;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -223,10 +232,11 @@ public class PuzzleFactoryManager {
         return list;
     }
 
-    public Profile createProfile(String name) {
+    public Profile createProfile(String name, ProfileType type) {
         Profile profile = new Profile(context, UUID.randomUUID());
         profile.setName(name);
         profile.setCreationTime(System.currentTimeMillis());
+        profile.setType(type);
         return profile;
     }
 
@@ -251,6 +261,7 @@ public class PuzzleFactoryManager {
         editor = sharedPreferences.edit();
         editor.remove(profile.uuid.toString() + "/name");
         editor.remove(profile.uuid.toString() + "/activated");
+        editor.remove(profile.uuid.toString() + "/sequence");
         editor.commit();
 
         getProfiles().get(0).markAsLastViewed();
@@ -258,6 +269,19 @@ public class PuzzleFactoryManager {
 
     public boolean isRemovedProfile(Profile profile) {
         return !getProfiles().contains(profile);
+    }
+
+    public enum ProfileType{
+        DEFAULT, SEQUENCE;
+
+        public static ProfileType fromString(String str) {
+            for (ProfileType type : ProfileType.values()) {
+                if (type.toString().equalsIgnoreCase(str)) {
+                    return type;
+                }
+            }
+            return null;
+        }
     }
 
     public class Profile {
@@ -299,6 +323,63 @@ public class PuzzleFactoryManager {
             SharedPreferences.Editor editor = getSharedPreferences().edit();
             editor.putLong(uuid.toString() + "/creation_time", time);
             editor.commit();
+        }
+
+        public ProfileType getType(){
+            return ProfileType.fromString(getSharedPreferences().getString(uuid.toString() + "/type", "DEFAULT"));
+        }
+
+        public void setType(ProfileType type){
+            SharedPreferences.Editor editor = getSharedPreferences().edit();
+            editor.putString(uuid.toString() + "/type", type.toString());
+            editor.commit();
+        }
+
+        public File getMusicFile(){
+            File file = new File(context.getFilesDir(), uuid.toString() + "_music");
+            return file;
+        }
+
+        public String getMusicName(){
+            return getSharedPreferences().getString(uuid.toString() + "/music", "No Name");
+        }
+
+        public boolean hasMusic(){
+            return getSharedPreferences().contains(uuid.toString() + "/music");
+        }
+
+        public void removeMusic(){
+            SharedPreferences.Editor editor = getSharedPreferences().edit();
+            editor.remove(uuid.toString() + "/music");
+
+            File file = new File(context.getFilesDir(), uuid.toString() + "_music");
+            if(file.exists()) file.delete();
+
+            editor.commit();
+        }
+
+        public void setMusic(InputStream stream, String name){
+            try{
+                // Write to file
+                BufferedInputStream bis = new BufferedInputStream(stream);
+
+                File file = new File(context.getFilesDir(), uuid.toString() + "_music");
+                FileOutputStream fos = new FileOutputStream(file);
+                byte[] buf = new byte[1024];
+                int len;
+                while((len = bis.read(buf)) > 0){
+                    fos.write(buf, 0,len);
+                }
+                fos.close();
+                bis.close();
+
+                SharedPreferences.Editor editor = getSharedPreferences().edit();
+                editor.putString(uuid.toString() + "/music", name);
+                editor.commit();
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
         }
 
         public List<PuzzleFactory> getActivatedPuzzleFactories() {
@@ -350,6 +431,35 @@ public class PuzzleFactoryManager {
         public boolean isActivated(PuzzleFactory factory) {
             Set<String> set = getSharedPreferences().getStringSet(uuid.toString() + "/activated", new HashSet<String>());
             return set.contains(factory.getUuid().toString());
+        }
+
+        public List<PuzzleFactory> getSequence(){
+            List<PuzzleFactory> list = new ArrayList<>();
+            String[] strs = getSharedPreferences().getString(uuid.toString() + "/sequence", "").split(",");
+            for (String strUuid : strs) {
+                try{
+                    PuzzleFactory factory = getPuzzleFactoryByUuid(UUID.fromString(strUuid));
+                    if (factory != null) list.add(factory);
+                }
+                catch (Exception e){
+
+                }
+            }
+            return list;
+        }
+
+        public void setSequence(List<PuzzleFactory> seq){
+            StringBuilder builder = new StringBuilder();
+            for(int i = 0; i < seq.size(); i++){
+                if(i > 0){
+                    builder.append(",");
+                }
+                builder.append(seq.get(i).getUuid());
+            }
+
+            SharedPreferences.Editor editor = getSharedPreferences().edit();
+            editor.putString(uuid.toString() + "/sequence", builder.toString());
+            editor.commit();
         }
 
         public void assignToLock() {
