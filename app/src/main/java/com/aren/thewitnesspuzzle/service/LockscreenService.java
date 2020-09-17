@@ -17,14 +17,21 @@ import android.os.IBinder;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.aren.thewitnesspuzzle.R;
 import com.aren.thewitnesspuzzle.activity.MainActivity;
 import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
+import com.aren.thewitnesspuzzle.puzzle.animation.PuzzleFadeInAnimation;
+import com.aren.thewitnesspuzzle.puzzle.animation.PuzzleFadeOutAnimation;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactory;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;
+import com.aren.thewitnesspuzzle.puzzle.sound.Sounds;
 
 import java.util.Random;
 
@@ -45,6 +52,8 @@ public class LockscreenService extends Service {
 
     public final Handler handler = new Handler();
 
+    private int sequenceIndex = 0;
+
     public LockscreenService() {
 
     }
@@ -55,8 +64,26 @@ public class LockscreenService extends Service {
         game.setOnSolved(new Runnable() {
             @Override
             public void run() {
-                unlockScreen();
-                puzzle = null;
+                PuzzleFactoryManager.Profile profile = puzzleFactoryManager.getLockProfile();
+                if(profile.getType() == PuzzleFactoryManager.ProfileType.DEFAULT){
+                    unlockScreen();
+                    puzzle = null;
+                }
+                else if(profile.getType() == PuzzleFactoryManager.ProfileType.SEQUENCE){
+                    setRandomPuzzle();
+                    if(puzzle == null){
+                        // SUCCESS!
+
+                        unlockScreen();
+
+                        game.stopExternalSound();
+                        game.stopTimerMode();
+                    }
+                    else{
+                        game.setPuzzle(puzzle);
+                        game.update();
+                    }
+                }
             }
         });
 
@@ -122,10 +149,19 @@ public class LockscreenService extends Service {
 
                 if (phoneState != TelephonyManager.CALL_STATE_IDLE) return;
 
+                if(puzzleFactoryManager.getLockProfile().getType() == PuzzleFactoryManager.ProfileType.SEQUENCE && isLocked() && puzzle != null){
+                    game.stopExternalSound();
+                    game.stopTimerMode();
+                    game.playSound(Sounds.CABLE_UNPOWERED);
+
+                    puzzle = null;
+                }
+
                 final int currentKey = lockToken;
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
+                        sequenceIndex = 0;
                         setRandomPuzzle();
 
                         try {
@@ -149,9 +185,58 @@ public class LockscreenService extends Service {
             } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
                 Log.i("TAG", "SCREEN_ON");
 
+                PuzzleFactoryManager.Profile profile = puzzleFactoryManager.getLockProfile();
+                if(profile.getType() == PuzzleFactoryManager.ProfileType.SEQUENCE && isLocked() && puzzle != null){
+                    setTimerMode();
+                }
+
                 lockToken++;
             }
         }
+    }
+
+    public void setTimerMode(){
+        final PuzzleFactoryManager.Profile profile = puzzleFactoryManager.getLockProfile();
+        game.setTimerMode(profile.getTimeLength(), new Runnable() {
+            @Override
+            public void run() {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Runnable retry = new Runnable() {
+                            @Override
+                            public void run() {
+                                if (game.isTLE) {
+                                    sequenceIndex = 0;
+                                    setRandomPuzzle();
+
+                                    if (puzzle != null) {
+                                        game.setPuzzle(puzzle);
+                                        puzzle.addAnimation(new PuzzleFadeInAnimation(puzzle, 2000));
+                                        setTimerMode();
+                                    } else {
+                                        unlockScreen();
+                                    }
+                                }
+                            }
+                        };
+
+                        game.setOnClicked(retry);
+
+                        game.getPuzzle().addAnimation(new PuzzleFadeOutAnimation(game.getPuzzle(), 1000));
+                        game.playSound(Sounds.ABORT_TRACING);
+
+                        game.update();
+                    }
+                });
+            }
+        });
+
+        game.playSound(Sounds.CHALLENGE_START);
+        if(profile.getMusicFile().exists()){
+            game.playExternalSound(profile.getMusicFile().getPath());
+        }
+        puzzle.addAnimation(new PuzzleFadeInAnimation(puzzle, 2000));
     }
 
     @Override
@@ -163,21 +248,32 @@ public class LockscreenService extends Service {
     }
 
     public void setRandomPuzzle() {
-        if (!game.getSettings().getHoldingPuzzles() || puzzle == null) {
-            Random random = new Random();
-            /*List<PuzzleFactory> factories = puzzleFactoryManager.getLockProfile().getActivatedPuzzleFactories();
-            if(factories.size() > 0){
-                puzzle = factories.get(random.nextInt(factories.size())).generate(game, random);
-            }*/
-            PuzzleFactory factory = puzzleFactoryManager.getLockProfile().getRandomPuzzleFactory(random);
-            if (factory != null) {
-                puzzle = factory.generate(game, random);
+        PuzzleFactoryManager.Profile profile = puzzleFactoryManager.getLockProfile();
+        if(profile.getType() == PuzzleFactoryManager.ProfileType.DEFAULT){
+            if (!game.getSettings().getHoldingPuzzles() || puzzle == null) {
+                Random random = new Random();
+                PuzzleFactory factory = profile.getRandomPuzzleFactory(random);
+                if (factory != null) {
+                    puzzle = factory.generate(game, random);
+                }
+            }
+        }
+        else if(profile.getType() == PuzzleFactoryManager.ProfileType.SEQUENCE){
+            if(sequenceIndex < profile.getSequence().size()){
+                puzzle = profile.getSequence().get(sequenceIndex).generate(game, new Random());
+                sequenceIndex++;
+            }
+            else{
+                puzzle = null;
             }
         }
     }
 
     public void lockScreen() {
-        if (isLocked()) return;
+        if (isLocked()){
+            game.update();
+            return;
+        }
 
         WindowManager mWindowManager = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
 

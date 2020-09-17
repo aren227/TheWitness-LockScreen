@@ -19,6 +19,7 @@ import com.aren.thewitnesspuzzle.puzzle.animation.EliminatorActivatedAnimation;
 import com.aren.thewitnesspuzzle.puzzle.animation.ErrorAnimation;
 import com.aren.thewitnesspuzzle.puzzle.animation.PuzzleAnimationManager;
 import com.aren.thewitnesspuzzle.puzzle.animation.WaitForEliminationAnimation;
+import com.aren.thewitnesspuzzle.puzzle.animation.value.Value;
 import com.aren.thewitnesspuzzle.puzzle.color.ColorUtils;
 import com.aren.thewitnesspuzzle.puzzle.color.PuzzleColorPalette;
 import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
@@ -72,6 +73,8 @@ public class Puzzle {
     protected List<Integer> customPattern;
 
     protected boolean untouchable = false;
+
+    protected Value<Float> fadeIntensity = new Value<>(1f);
 
     public Puzzle(Game game, PuzzleColorPalette color) {
         this(game, color, game.isPlayMode() && game.getSettings().getShadowPanelEnabled());
@@ -169,6 +172,10 @@ public class Puzzle {
         }
 
         vertexBuffer.position(0);
+        float fi = fadeIntensity.get();
+        for(int i = 0; i < vertexBuffer.limit(); i++){
+            vertexBuffer.put(i, vertexBuffer.get(i) * fi);
+        }
 
         return vertexBuffer;
     }
@@ -703,4 +710,7 @@ public class Puzzle {
         this.untouchable = untouchable;
     }
 
+    public Value<Float> getFadeIntensity(){
+        return fadeIntensity;
+    }
 }

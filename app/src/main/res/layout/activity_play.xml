@@ -33,6 +33,16 @@
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:layout_margin="16dp"
+        android:id="@+id/retry_puzzle"
+        android:src="@drawable/ic_baseline_refresh_24"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:visibility="gone" />
+
+    <ImageView
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_margin="16dp"
         android:id="@+id/skip_puzzle"
         android:src="@drawable/ic_baseline_skip_next_24"
         android:layout_alignParentBottom="true"

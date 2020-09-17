@@ -10,8 +10,11 @@ import android.widget.TextView;
 import com.aren.thewitnesspuzzle.R;
 import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
+import com.aren.thewitnesspuzzle.puzzle.animation.PuzzleFadeInAnimation;
+import com.aren.thewitnesspuzzle.puzzle.animation.PuzzleFadeOutAnimation;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactory;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;
+import com.aren.thewitnesspuzzle.puzzle.sound.Sounds;
 
 import java.util.Random;
 import java.util.UUID;
@@ -26,10 +29,13 @@ public class PlayActivity extends AppCompatActivity {
     private RelativeLayout root;
     private ImageView nextImage;
     private ImageView skipImage;
+    private ImageView retryImage;
     private TextView warningText;
 
     private long seed;
     private UUID factoryUuid;
+
+    private int sequenceIndex = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +45,7 @@ public class PlayActivity extends AppCompatActivity {
         root = findViewById(R.id.play_root);
         nextImage = findViewById(R.id.next_puzzle);
         skipImage = findViewById(R.id.skip_puzzle);
+        retryImage = findViewById(R.id.retry_puzzle);
         warningText = findViewById(R.id.no_puzzle_warn);
 
         game = new Game(this, Game.Mode.PLAY);
@@ -48,8 +55,14 @@ public class PlayActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        nextImage.setVisibility(View.VISIBLE);
-                        skipImage.setVisibility(View.GONE);
+                        PuzzleFactoryManager.Profile profile = puzzleFactoryManager.getPlayProfile();
+                        if(profile.getType() == PuzzleFactoryManager.ProfileType.SEQUENCE){
+                            nextPuzzle();
+                        }
+                        else if(profile.getType() == PuzzleFactoryManager.ProfileType.DEFAULT){
+                            nextImage.setVisibility(View.VISIBLE);
+                            skipImage.setVisibility(View.GONE);
+                        }
                     }
                 });
             }
@@ -58,6 +71,7 @@ public class PlayActivity extends AppCompatActivity {
         nextImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                sequenceIndex = 0;
                 nextPuzzle();
             }
         });
@@ -69,6 +83,14 @@ public class PlayActivity extends AppCompatActivity {
             }
         });
 
+        retryImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sequenceIndex = 0;
+                nextPuzzle();
+            }
+        });
+
         puzzleFactoryManager = new PuzzleFactoryManager(this);
 
         if (savedInstanceState == null) {
@@ -76,7 +98,10 @@ public class PlayActivity extends AppCompatActivity {
             factoryUuid = null;
         } else {
             seed = savedInstanceState.getLong("seed");
-            factoryUuid = UUID.fromString(savedInstanceState.getString("uuid"));
+            if(puzzleFactoryManager.getLastViewedProfile().getType() == PuzzleFactoryManager.ProfileType.DEFAULT){
+                factoryUuid = UUID.fromString(savedInstanceState.getString("uuid"));
+            }
+            sequenceIndex = savedInstanceState.getInt("sequenceIndex");
         }
 
         if (generatePuzzle()) {
@@ -88,49 +113,122 @@ public class PlayActivity extends AppCompatActivity {
 
             skipImage.setVisibility(View.VISIBLE);
             skipImage.bringToFront();
+
+            retryImage.setVisibility(View.GONE);
+            retryImage.bringToFront();
         }
     }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putLong("seed", seed);
-        savedInstanceState.putString("uuid", factoryUuid.toString());
+        if(puzzleFactoryManager.getLastViewedProfile().getType() == PuzzleFactoryManager.ProfileType.DEFAULT){
+            savedInstanceState.putString("uuid", factoryUuid.toString());
+        }
+        savedInstanceState.putInt("sequenceIndex", sequenceIndex);
         super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        game.update();
     }
 
     public void nextPuzzle() {
         seed = new Random(seed).nextLong();
         factoryUuid = null;
+
+        PuzzleFactoryManager.Profile profile = puzzleFactoryManager.getPlayProfile();
+        if(profile.getType() == PuzzleFactoryManager.ProfileType.SEQUENCE){
+            if(sequenceIndex >= profile.getSequence().size()){
+                // SUCCESS!
+                nextImage.setVisibility(View.VISIBLE);
+                skipImage.setVisibility(View.GONE);
+                retryImage.setVisibility(View.GONE);
+
+                game.stopExternalSound();
+                game.getPuzzle().setUntouchable(true);
+                game.stopTimerMode();
+
+                return;
+            }
+        }
+
         if (!generatePuzzle()) {
             root.removeView(game.getSurfaceView());
         }
         nextImage.setVisibility(View.GONE);
         skipImage.setVisibility(View.VISIBLE);
+        retryImage.setVisibility(View.GONE);
     }
 
     public boolean generatePuzzle() {
-        PuzzleFactory factory = null;
-        if (factoryUuid == null) {
-            factory = puzzleFactoryManager.getPlayProfile().getRandomPuzzleFactory(new Random());
-        } else {
-            for (PuzzleFactory f : puzzleFactoryManager.getPlayProfile().getActivatedPuzzleFactories()) {
-                if (f.getUuid().equals(factoryUuid)) {
-                    factory = f;
-                    break;
+        PuzzleFactoryManager.Profile profile = puzzleFactoryManager.getPlayProfile();
+        if(profile.getType() == PuzzleFactoryManager.ProfileType.DEFAULT){
+            PuzzleFactory factory = null;
+            if (factoryUuid == null) {
+                factory = puzzleFactoryManager.getPlayProfile().getRandomPuzzleFactory(new Random());
+            } else {
+                for (PuzzleFactory f : puzzleFactoryManager.getPlayProfile().getActivatedPuzzleFactories()) {
+                    if (f.getUuid().equals(factoryUuid)) {
+                        factory = f;
+                        break;
+                    }
                 }
             }
+            if (factory == null) return false;
+            factoryUuid = factory.getUuid();
+            Puzzle puzzle = factory.generate(game, new Random(seed));
+            game.setPuzzle(puzzle);
+            game.update();
+            return true;
         }
-        if (factory == null) return false;
-        factoryUuid = factory.getUuid();
-        Puzzle puzzle = factory.generate(game, new Random(seed));
-        game.setPuzzle(puzzle);
-        game.update();
-        return true;
-        /*List<PuzzleFactory> factories = puzzleFactoryManager.getPlayProfile().getActivatedPuzzleFactories();
-        if(factories.size() == 0) return false;
-        Puzzle puzzle = factories.get(random.nextInt(factories.size())).generate(game, random);
-        game.setPuzzle(puzzle);
-        game.update();
-        return true;*/
+        else if(profile.getType() == PuzzleFactoryManager.ProfileType.SEQUENCE){
+            if(profile.getSequence().size() == 0) return false;
+
+            if(sequenceIndex >= profile.getSequence().size()){
+                sequenceIndex = 0;
+            }
+
+            if(sequenceIndex == 0){
+                game.playSound(Sounds.CHALLENGE_START);
+                if(profile.getMusicFile().exists()){
+                    game.playExternalSound(profile.getMusicFile().getPath());
+                }
+                game.setTimerMode(profile.getTimeLength(), new Runnable() {
+                    @Override
+                    public void run() {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                nextImage.setVisibility(View.GONE);
+                                skipImage.setVisibility(View.GONE);
+                                retryImage.setVisibility(View.VISIBLE);
+
+                                game.getPuzzle().addAnimation(new PuzzleFadeOutAnimation(game.getPuzzle(), 1000));
+                                game.playSound(Sounds.ABORT_TRACING);
+
+                                game.update();
+                            }
+                        });
+                    }
+                });
+            }
+
+            Puzzle puzzle = profile.getSequence().get(sequenceIndex).generate(game, new Random(seed));
+            game.setPuzzle(puzzle);
+
+            if(sequenceIndex == 0){
+                puzzle.addAnimation(new PuzzleFadeInAnimation(puzzle, 2000));
+            }
+
+            game.update();
+
+            sequenceIndex++;
+
+            return true;
+        }
+        return false;
     }
 }

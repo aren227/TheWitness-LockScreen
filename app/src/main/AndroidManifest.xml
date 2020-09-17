@@ -23,7 +23,9 @@
             android:screenOrientation="portrait" />
         <activity android:name=".activity.DisclaimerActivity" />
         <activity android:name=".activity.SettingsActivity" />
-        <activity android:name=".activity.PlayActivity" />
+        <activity android:name=".activity.PlayActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
         <activity android:name=".activity.GalleryActivity" />
         <activity android:name=".activity.MainActivity">
             <intent-filter>

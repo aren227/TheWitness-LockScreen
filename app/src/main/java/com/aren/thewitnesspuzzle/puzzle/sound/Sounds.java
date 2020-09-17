@@ -10,7 +10,9 @@ public enum Sounds {
     POTENTIAL_FAILURE(R.raw.panel_potential_failure),
     FINISH_TRACING(R.raw.panel_finish_tracing),
     START_TRACING(R.raw.panel_start_tracing),
-    SUCCESS(R.raw.panel_success);
+    SUCCESS(R.raw.panel_success),
+    CHALLENGE_START(R.raw.challenge_start),
+    CABLE_UNPOWERED(R.raw.cable_unpowered);
 
     int id;
 

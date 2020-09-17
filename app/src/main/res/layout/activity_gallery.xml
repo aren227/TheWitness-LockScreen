@@ -122,6 +122,7 @@
                     android:paddingRight="6dp"/>
 
                 <EditText
+                    android:id="@+id/sequence_time_m"
                     android:layout_width="50dp"
                     android:layout_height="wrap_content"
                     android:textSize="20dp"
@@ -140,6 +141,7 @@
                     android:text=":"/>
 
                 <EditText
+                    android:id="@+id/sequence_time_s"
                     android:layout_width="50dp"
                     android:layout_height="wrap_content"
                     android:textSize="20dp"

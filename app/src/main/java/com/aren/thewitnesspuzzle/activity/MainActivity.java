@@ -66,7 +66,9 @@ public class MainActivity extends AppCompatActivity {
                     stopService(intent);
                     serviceRunning = !serviceRunning;
                 } else {
-                    if (puzzleFactoryManager.getLockProfile().getActivatedPuzzleFactories().size() == 0) {
+                    PuzzleFactoryManager.Profile profile = puzzleFactoryManager.getLockProfile();
+                    if (profile.getType() == PuzzleFactoryManager.ProfileType.DEFAULT && profile.getActivatedPuzzleFactories().size() == 0
+                    || profile.getType() == PuzzleFactoryManager.ProfileType.SEQUENCE && profile.getSequence().size() == 0) {
                         Toast.makeText(MainActivity.this, "Please activate one or more puzzles in the gallery.", Toast.LENGTH_LONG).show();
                     } else {
                         if (!checkPermission()) {

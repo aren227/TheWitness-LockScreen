@@ -89,6 +89,8 @@ public class GalleryActivity extends AppCompatActivity {
     private ImageView playMusicFileImageView;
     private ImageView detachMusicFileImageView;
     private MediaPlayer mediaPlayer;
+    private EditText timeLengthMEditText;
+    private EditText timeLengthSEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -369,14 +371,74 @@ public class GalleryActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(mediaPlayer != null){
-                    if(mediaPlayer.isPlaying()){
-                        mediaPlayer.stop();
-                    }
                     mediaPlayer.release();
                 }
                 PuzzleFactoryManager.Profile profile = puzzleFactoryManager.getLastViewedProfile();
                 profile.removeMusic();
                 musicNameTextView.setText("");
+            }
+        });
+
+        timeLengthMEditText = findViewById(R.id.sequence_time_m);
+        timeLengthSEditText = findViewById(R.id.sequence_time_s);
+
+        showSequenceTimeLength();
+
+        timeLengthMEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                timeLengthMEditText.removeTextChangedListener(this);
+
+                try{
+                    int i = Integer.parseInt(s.toString());
+                    s.replace(0, s.length(), "" + Math.min(Math.max(i, 0), 59));
+                }
+                catch (Exception e){
+                    s.replace(0, s.length(), "0");
+                }
+
+                saveSequenceTimeLength();
+
+                timeLengthMEditText.addTextChangedListener(this);
+            }
+        });
+
+        timeLengthSEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                timeLengthSEditText.removeTextChangedListener(this);
+
+                try{
+                    int i = Integer.parseInt(s.toString());
+                    s.replace(0, s.length(), "" + Math.min(Math.max(i, 0), 59));
+                }
+                catch (Exception e){
+                    s.replace(0, s.length(), "0");
+                }
+
+                saveSequenceTimeLength();
+
+                timeLengthSEditText.addTextChangedListener(this);
             }
         });
     }
@@ -409,6 +471,27 @@ public class GalleryActivity extends AppCompatActivity {
         }
     }
 
+    public void saveSequenceTimeLength(){
+        int m = 0, s = 0;
+        try{
+            m = Integer.parseInt(timeLengthMEditText.getText().toString());
+        }
+        catch (Exception e){}
+        try{
+            s = Integer.parseInt(timeLengthSEditText.getText().toString());
+        }
+        catch (Exception e){}
+        puzzleFactoryManager.getLastViewedProfile().setTimeLength(m * 60 + s);
+    }
+
+    public void showSequenceTimeLength(){
+        PuzzleFactoryManager.Profile profile = puzzleFactoryManager.getLastViewedProfile();
+        int m = profile.getTimeLength() / 60;
+        int s = profile.getTimeLength() % 60;
+        timeLengthMEditText.setText("" + m);
+        timeLengthSEditText.setText("" + s);
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -421,9 +504,10 @@ public class GalleryActivity extends AppCompatActivity {
                 pass = false;
             }
 
+            MediaPlayer player = null;
             if(pass){
                 try{
-                    MediaPlayer player = MediaPlayer.create(this, data.getData());
+                    player = MediaPlayer.create(this, data.getData());
                 }
                 catch (Exception e){
                     pass = false;
@@ -434,6 +518,9 @@ public class GalleryActivity extends AppCompatActivity {
                 try {
                     puzzleFactoryManager.getLastViewedProfile().setMusic(getContentResolver().openInputStream(data.getData()), getNameFromUri(data.getData()));
                     musicNameTextView.setText(puzzleFactoryManager.getLastViewedProfile().getMusicName());
+
+                    puzzleFactoryManager.getLastViewedProfile().setTimeLength(player.getDuration() / 1000 + 2);
+                    showSequenceTimeLength();
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }

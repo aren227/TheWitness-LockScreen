@@ -3,13 +3,17 @@ package com.aren.thewitnesspuzzle.game;
 import android.content.Context;
 import android.graphics.Color;
 import android.media.MediaPlayer;
+import android.view.MotionEvent;
 
 import com.aren.thewitnesspuzzle.math.BoundingBox;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 import com.aren.thewitnesspuzzle.puzzle.sound.Sounds;
 import com.aren.thewitnesspuzzle.view.PuzzleGLSurfaceView;
 
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Game {
 
@@ -25,10 +29,17 @@ public class Game {
 
     private Runnable onSolved;
     private Runnable onPreTouched;
+    private Runnable onClicked;
 
     public enum Mode {PLAY, GALLERY, EDITOR}
 
     private Mode mode;
+
+    private boolean disableTimer;
+    private long endTime;
+    private Timer timer;
+    private Runnable onTLE;
+    public boolean isTLE;
 
     public Game(Context context, Mode mode) {
         this.context = context;
@@ -47,6 +58,7 @@ public class Game {
 
     public void touchEvent(float x, float y, int action) {
         if (onPreTouched != null) onPreTouched.run();
+        if (action == MotionEvent.ACTION_DOWN && onClicked != null) onClicked.run();
         puzzle.touchEvent(x, y, action);
         update();
     }
@@ -73,6 +85,10 @@ public class Game {
         onPreTouched = runnable;
     }
 
+    public void setOnClicked(Runnable runnable){
+        onClicked = runnable;
+    }
+
     public void setPuzzle(Puzzle puzzle) {
         this.puzzle = puzzle;
 
@@ -94,6 +110,30 @@ public class Game {
             mediaPlayers.put(sound.getId(), mp);
         }
     }*/
+
+    public void playExternalSound(String path){
+        if (!settings.getSoundsEnabled()) return;
+
+        if(mediaPlayers.containsKey(-1)){
+            mediaPlayers.get(-1).release();
+        }
+        MediaPlayer mp = new MediaPlayer();
+        try {
+            mp.setDataSource(path);
+            mp.prepare();
+            mp.start();
+
+            mediaPlayers.put(-1, mp);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void stopExternalSound(){
+        if(mediaPlayers.containsKey(-1)){
+            mediaPlayers.get(-1).release();
+        }
+    }
 
     public void playSound(Sounds sound) {
         if (!settings.getSoundsEnabled()) return;
@@ -126,4 +166,51 @@ public class Game {
         return px / surfaceView.getWidth() * bb.getWidth();
     }
 
+    public void checkTime(){
+        if(disableTimer){
+            timer.cancel();
+            return;
+        }
+
+        if(System.currentTimeMillis() / 1000 >= endTime){
+            puzzle.setUntouchable(true);
+            stopExternalSound();
+            timer.cancel();
+            onTLE.run();
+            isTLE = true;
+        }
+    }
+
+    public void setTimerMode(long time, Runnable onTLE){
+        if(timer != null){
+            timer.cancel();
+        }
+
+        endTime = System.currentTimeMillis() / 1000 + time;
+        this.onTLE = onTLE;
+        isTLE = false;
+        disableTimer = false;
+
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                checkTime();
+            }
+        };
+        timer = new Timer();
+        timer.schedule(task, 0, 500);
+    }
+
+    public void stopTimerMode(){
+        disableTimer = true;
+    }
+
+    public void close(){
+        for(MediaPlayer player : mediaPlayers.values()){
+            player.release();
+        }
+        if(timer != null){
+            timer.cancel();
+        }
+    }
 }

@@ -462,6 +462,16 @@ public class PuzzleFactoryManager {
             editor.commit();
         }
 
+        public int getTimeLength(){
+            return getSharedPreferences().getInt(uuid.toString() + "/time_length", 90);
+        }
+
+        public void setTimeLength(int length){
+            SharedPreferences.Editor editor = getSharedPreferences().edit();
+            editor.putInt(uuid.toString() + "/time_length", length);
+            editor.commit();
+        }
+
         public void assignToLock() {
             SharedPreferences sharedPreferences = context.getSharedPreferences("com.aren.thewitnesspuzzle.puzzle.factory", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();

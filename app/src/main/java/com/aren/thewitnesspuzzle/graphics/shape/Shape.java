@@ -72,6 +72,7 @@ public abstract class Shape {
         float r = Color.red(color.get()) / 255f;
         float g = Color.green(color.get()) / 255f;
         float b = Color.blue(color.get()) / 255f;
+
         for (int i = 0; i < getVertexCount(); i++) {
             buffer.put(r);
             buffer.put(g);

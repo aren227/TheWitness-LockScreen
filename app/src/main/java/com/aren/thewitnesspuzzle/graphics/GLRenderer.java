@@ -233,8 +233,9 @@ public class GLRenderer implements GLSurfaceView.Renderer {
             else GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
 
             int backgroundColor = puzzle.getColorPalette().getBackgroundColor();
+            float fi = puzzle.getFadeIntensity().get();
 
-            GLES20.glClearColor(Color.red(backgroundColor) / 255f, Color.green(backgroundColor) / 255f, Color.blue(backgroundColor) / 255f, 1.0f);
+            GLES20.glClearColor(Color.red(backgroundColor) / 255f * fi, Color.green(backgroundColor) / 255f * fi, Color.blue(backgroundColor) / 255f * fi, 1.0f);
             GLES20.glClearDepthf(1.0f);
             GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
