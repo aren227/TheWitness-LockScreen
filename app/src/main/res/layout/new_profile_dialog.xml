@@ -33,6 +33,15 @@
             android:text="Default"
             android:buttonTint="@color/colorPrimary" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="serif"
+            android:textSize="16dp"
+            android:textColor="#505050"
+            android:text="Solve only one puzzle."
+            android:paddingLeft="10dp"/>
+
         <RadioButton
             android:id="@+id/new_profile_radio_sequence"
             android:layout_width="match_parent"
@@ -41,6 +50,15 @@
             android:textSize="20dp"
             android:text="Challenge"
             android:buttonTint="@color/colorPrimary" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="serif"
+            android:textSize="16dp"
+            android:textColor="#505050"
+            android:text="Solve a series of puzzles in a limited time."
+            android:paddingLeft="10dp"/>
 
     </RadioGroup>
 
