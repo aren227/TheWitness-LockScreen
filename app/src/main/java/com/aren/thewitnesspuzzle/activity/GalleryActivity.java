@@ -291,7 +291,7 @@ public class GalleryActivity extends AppCompatActivity {
                 View.OnClickListener onSequenceClicked = new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        puzzleFactoryManager.createProfile("New Sequence", PuzzleFactoryManager.ProfileType.SEQUENCE).markAsLastViewed();
+                        puzzleFactoryManager.createProfile("New Challenge", PuzzleFactoryManager.ProfileType.SEQUENCE).markAsLastViewed();
                         removeSpinner();
                         updateGallery();
                     }

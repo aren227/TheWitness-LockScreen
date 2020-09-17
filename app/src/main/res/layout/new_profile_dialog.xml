@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="serif"
             android:textSize="20dp"
-            android:text="Sequence"
+            android:text="Challenge"
             android:buttonTint="@color/colorPrimary" />
 
     </RadioGroup>
