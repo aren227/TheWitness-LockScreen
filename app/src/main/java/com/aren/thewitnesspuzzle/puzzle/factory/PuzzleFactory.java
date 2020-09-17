@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -13,6 +15,8 @@ public abstract class PuzzleFactory {
 
     private Bitmap thumbnailCache;
     private PuzzleFactoryConfig config;
+
+    private List<Runnable> onPreviewRenderedCallbackQueue;
 
     public PuzzleFactory(Context context) {
         this(context, null);
@@ -23,6 +27,8 @@ public abstract class PuzzleFactory {
             uuid = UUID.nameUUIDFromBytes(getClass().getName().getBytes());
         }
         config = new PuzzleFactoryConfig(context, uuid);
+
+        onPreviewRenderedCallbackQueue = new ArrayList<>();
     }
 
     public abstract Puzzle generate(Game game, Random random);
@@ -39,6 +45,10 @@ public abstract class PuzzleFactory {
 
     public void setThumbnailCache(Bitmap bitmap) {
         thumbnailCache = bitmap;
+        for(Runnable runnable : onPreviewRenderedCallbackQueue){
+            runnable.run();
+        }
+        onPreviewRenderedCallbackQueue.clear();
     }
 
     public Bitmap getThumbnailCache() {
@@ -55,5 +65,9 @@ public abstract class PuzzleFactory {
 
     public boolean isCreatedByUser() {
         return false;
+    }
+
+    public void setOnPreviewRendered(Runnable onPreviewRendered){
+        onPreviewRenderedCallbackQueue.add(onPreviewRendered);
     }
 }

@@ -135,6 +135,12 @@ public class PlayActivity extends AppCompatActivity {
         game.update();
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        game.close();
+    }
+
     public void nextPuzzle() {
         seed = new Random(seed).nextLong();
         factoryUuid = null;

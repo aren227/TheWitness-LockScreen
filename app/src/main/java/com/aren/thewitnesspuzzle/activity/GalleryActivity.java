@@ -92,6 +92,8 @@ public class GalleryActivity extends AppCompatActivity {
     private EditText timeLengthMEditText;
     private EditText timeLengthSEditText;
 
+    private static Bitmap notLoadedBitmap;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -564,6 +566,15 @@ public class GalleryActivity extends AppCompatActivity {
                 musicName = profile.getMusicName();
             }
             musicNameTextView.setText(musicName);
+
+            if(profile.getSequence().size() == 0){
+                orderAdapterHintText.setVisibility(View.VISIBLE);
+            }
+            else{
+                orderAdapterHintText.setVisibility(View.GONE);
+            }
+
+            showSequenceTimeLength();
         }
 
         updateStatusText();
@@ -596,11 +607,6 @@ public class GalleryActivity extends AppCompatActivity {
         root.addView(tempGame.getSurfaceView(), params);
         tempGame.getSurfaceView().getHolder().setFixedSize(512, 512);
 
-        Bitmap notLoaded = Bitmap.createBitmap(512, 512, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(notLoaded);
-        canvas.drawColor(Color.GRAY);
-        canvas.drawBitmap(notLoaded, 0, 0, null);
-
         adapter.clearPreviews();
 
         // Lazy Loading
@@ -615,7 +621,7 @@ public class GalleryActivity extends AppCompatActivity {
                 continue;
             }*/
 
-            GalleryPreview preview = new GalleryPreview(factory, notLoaded, factory.getName());
+            GalleryPreview preview = new GalleryPreview(factory, getNotLoadedBitmap(), factory.getName());
             if (factory.getThumbnailCache() != null) {
                 preview.bitmap = factory.getThumbnailCache();
             } else {
@@ -687,5 +693,15 @@ public class GalleryActivity extends AppCompatActivity {
             }
         });
         puzzleRenderThread.start();
+    }
+
+    public static Bitmap getNotLoadedBitmap(){
+        if(notLoadedBitmap == null){
+            notLoadedBitmap = Bitmap.createBitmap(512, 512, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(notLoadedBitmap);
+            canvas.drawColor(Color.GRAY);
+            canvas.drawBitmap(notLoadedBitmap, 0, 0, null);
+        }
+        return notLoadedBitmap;
     }
 }

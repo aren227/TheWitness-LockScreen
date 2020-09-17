@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aren.thewitnesspuzzle.R;
+import com.aren.thewitnesspuzzle.activity.GalleryActivity;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactory;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;
 
@@ -57,10 +58,21 @@ public class PuzzleOrderAdapter extends RecyclerView.Adapter<PuzzleOrderAdapter.
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        PuzzleFactory factory = sequence.get(position);
+    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
+        final PuzzleFactory factory = sequence.get(position);
 
-        holder.imageView.setImageBitmap(factory.getThumbnailCache());
+        if(factory.getThumbnailCache() == null){
+            holder.imageView.setImageBitmap(GalleryActivity.getNotLoadedBitmap());
+            factory.setOnPreviewRendered(new Runnable() {
+                @Override
+                public void run() {
+                    holder.imageView.setImageBitmap(factory.getThumbnailCache());
+                }
+            });
+        }
+        else{
+            holder.imageView.setImageBitmap(factory.getThumbnailCache());
+        }
         holder.textView.setText(factory.getName());
     }
 
