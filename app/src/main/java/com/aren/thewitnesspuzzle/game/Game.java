@@ -144,8 +144,14 @@ public class Game {
         }
 
         MediaPlayer mp = mediaPlayers.get(sound.getId());
-        mp.seekTo(0);
-        mp.start();
+        try {
+            mp.seekTo(0);
+            mp.start();
+        } catch (Exception e) {
+            mp = MediaPlayer.create(context, sound.getId());
+            mediaPlayers.put(sound.getId(), mp);
+            mp.start();
+        }
     }
 
     public boolean isPlayMode() {
