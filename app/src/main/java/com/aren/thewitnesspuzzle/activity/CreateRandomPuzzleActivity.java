@@ -122,6 +122,8 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
 
         // Disable hexagon puzzle
         hexagonPuzzleRadioButton.setVisibility(View.GONE);
+        junglePuzzleRadioButton.setVisibility(View.GONE);
+        videoRoomPuzzleRadioButton.setVisibility(View.GONE);
 
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.activity_create_random_puzzle_overlay, root, true);
