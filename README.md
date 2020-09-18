@@ -30,6 +30,8 @@ Download
 ---------------
 Go to [Releases Tab](https://github.com/aren227/TheWitness-LockScreen/releases) and download app-release.apk.
 
+If you want to try the latest **beta version**, you can download from [here](https://github.com/aren227/TheWitness-LockScreen/blob/master/app/release/app-release.apk).
+
 TODOs
 ---------------
 - [x] Implement basic puzzle panels and rules.
