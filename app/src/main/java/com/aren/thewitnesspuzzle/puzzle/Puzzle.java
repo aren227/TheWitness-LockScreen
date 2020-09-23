@@ -379,7 +379,7 @@ public class Puzzle {
         if (action == MotionEvent.ACTION_DOWN) {
             Vertex start = null;
             for (Vertex vertex : vertices) {
-                if (vertex.getRule() instanceof StartingPointRule && pos.distance(vertex.getPosition()) <= ((StartingPointRule) vertex.getRule()).getRadius()) {
+                if (vertex.getRule() instanceof StartingPointRule && pos.distance(vertex.getPosition()) <= ((StartingPointRule) vertex.getRule()).getRadius() * 1.3f) {
                     start = vertex;
                     break;
                 }
@@ -544,6 +544,8 @@ public class Puzzle {
     public Edge addEdge(Edge edge) {
         edge.index = edges.size();
         edges.add(edge);
+        edge.from.adj.add(edge.to);
+        edge.to.adj.add(edge.from);
         return edge;
     }
 
