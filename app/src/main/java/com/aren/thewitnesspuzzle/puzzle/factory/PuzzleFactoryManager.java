@@ -112,6 +112,7 @@ public class PuzzleFactoryManager {
                     if (o1.getDifficulty() != null) a = o1.getDifficulty().ordinal();
                     int b = -1;
                     if (o2.getDifficulty() != null) b = o2.getDifficulty().ordinal();
+                    if(a == b) return o1.getName().compareTo(o2.getName());
                     return Integer.compare(a, b);
                 }
             }
@@ -138,6 +139,8 @@ public class PuzzleFactoryManager {
         register(new SquarePuzzleFactory(context));
         register(new SunPuzzleFactory(context));
         register(new SunSquarePuzzleFactory(context));
+        register(new SwampLockPuzzleFactory(context));
+        register(new TriangleLockPuzzleFactory(context));
         register(new TrianglesPuzzleFactory(context));
         register(new VSymmetryPuzzleFactory(context));
         register(new SlidePuzzleFactory(context));
