@@ -89,6 +89,6 @@ public class ChallengeSunBlocksPuzzleFactory extends PuzzleFactory {
 
     @Override
     public String getName() {
-        return "Challenge #2";
+        return "Challenge #8";
     }
 }

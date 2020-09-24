@@ -122,8 +122,16 @@ public class PuzzleFactoryManager {
     private void registerBuiltInFactories() {
         register(new BlocksEliminationPuzzleFactory(context));
         register(new BlocksRotatableBlocksPuzzleFactory(context));
+        register(new ChallengeMaze1PuzzleFactory(context));
+        register(new ChallengeMaze2PuzzleFactory(context));
+        register(new ChallengeMaze3PuzzleFactory(context));
+        register(new ChallengeTwoHexPuzzleFactory(context));
+        register(new ChallengeMazePuzzleFactory(context));
+        register(new ChallengeSymmetryPuzzleFactory(context));
         register(new ChallengeSunBlocksPuzzleFactory(context));
         register(new ChallengeSunHexagonPuzzleFactory(context));
+        register(new ChallengeTwoSquarePuzzleFactory(context));
+        register(new ChallengeThreeSquarePuzzleFactory(context));
         register(new ChallengeTrianglesPuzzleFactory(context));
         register(new EntryAreaMazePuzzleFactory(context));
         register(new FirstPuzzleFactory(context));

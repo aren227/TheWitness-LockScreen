@@ -5,14 +5,22 @@ import com.aren.thewitnesspuzzle.graphics.shape.Shape;
 import com.aren.thewitnesspuzzle.math.Vector3;
 import com.aren.thewitnesspuzzle.puzzle.cursor.area.Area;
 import com.aren.thewitnesspuzzle.puzzle.cursor.area.GridAreaSplitter;
+import com.aren.thewitnesspuzzle.puzzle.factory.spawn.SpawnByCount;
+import com.aren.thewitnesspuzzle.puzzle.factory.spawn.SpawnByRate;
+import com.aren.thewitnesspuzzle.puzzle.factory.spawn.SpawnSelector;
 import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
+
+import androidx.recyclerview.widget.ItemTouchUIUtil;
 
 public class SquareRule extends Colorable {
 
@@ -62,17 +70,70 @@ public class SquareRule extends Colorable {
     }
 
     public static void generate(GridAreaSplitter splitter, Random random, float spawnRate) {
-        for (Area area : splitter.areaList) {
+        generate(splitter, random, new SpawnByRate(spawnRate));
+    }
+
+    public static void generate(GridAreaSplitter splitter, Random random, SpawnSelector spawnSelector) {
+        /*for (Area area : splitter.areaList) {
             ArrayList<Tile> tiles = new ArrayList<>();
             for (Tile tile : area.tiles) {
                 if (tile.getRule() == null) tiles.add(tile);
             }
             if (tiles.size() == 0) continue;
 
-            int squareCount = Math.max((int) (tiles.size() * spawnRate), 1);
-            Collections.shuffle(tiles, random);
-            for (int j = 0; j < squareCount; j++) {
-                tiles.get(j).setRule(new SquareRule(area.color));
+            for(Tile tile : spawnSelector.select(tiles, random)){
+                tile.setRule(new SquareRule(area.color));
+            }
+        }*/
+        ArrayList<Tile> tiles = new ArrayList<>();
+        for(Tile tile : splitter.getPuzzle().getTiles()){
+            if(tile.getRule() == null) tiles.add(tile);
+        }
+
+        for(Tile tile : spawnSelector.select(tiles, random)){
+            tile.setRule(new SquareRule(splitter.areas[tile.gridPosition.x][tile.gridPosition.y].color));
+        }
+    }
+
+    public static void generate(GridAreaSplitter splitter, Random random, List<SpawnByCount> spawnSelectors) {
+        Set<Color> colorSet = new HashSet<>();
+        for(Area area : splitter.areaList){
+            colorSet.add(area.color);
+        }
+
+        final Map<Color, List<Tile>> tiles = new HashMap<>();
+        for(Color color : colorSet){
+            tiles.put(color, new ArrayList<Tile>());
+        }
+
+        for(Area area : splitter.areaList){
+            for(Tile tile : area.tiles){
+                if(tile.getRule() == null){
+                    tiles.get(area.color).add(tile);
+                }
+            }
+        }
+
+        // Sort colors by tile size
+        List<Color> colorList = new ArrayList<>(colorSet);
+        Collections.sort(colorList, new Comparator<Color>() {
+            @Override
+            public int compare(Color o1, Color o2) {
+                return Integer.compare(tiles.get(o1).size(), tiles.get(o2).size());
+            }
+        });
+
+        // Sort spawnSelectors
+        Collections.sort(spawnSelectors, new Comparator<SpawnByCount>() {
+            @Override
+            public int compare(SpawnByCount o1, SpawnByCount o2) {
+                return Integer.compare(o1.count, o2.count);
+            }
+        });
+
+        for(int i = 0; i < colorList.size(); i++){
+            for(Tile tile : spawnSelectors.get(i).select(tiles.get(colorList.get(i)), random)){
+                tile.setRule(new SquareRule(colorList.get(i)));
             }
         }
     }

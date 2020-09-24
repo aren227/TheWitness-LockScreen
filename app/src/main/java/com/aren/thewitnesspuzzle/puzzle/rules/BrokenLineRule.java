@@ -5,6 +5,8 @@ import com.aren.thewitnesspuzzle.graphics.shape.Shape;
 import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
+import com.aren.thewitnesspuzzle.puzzle.factory.spawn.SpawnByRate;
+import com.aren.thewitnesspuzzle.puzzle.factory.spawn.SpawnSelector;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridTreeWalker;
@@ -14,6 +16,8 @@ import java.util.Collections;
 import java.util.Random;
 
 public class BrokenLineRule extends Rule {
+
+    private float overrideCollisionCircleRadius = 0;
 
     public BrokenLineRule() {
         super();
@@ -29,6 +33,10 @@ public class BrokenLineRule extends Rule {
     }
 
     public static void generate(Cursor solution, Random random, float blockRate) {
+        generate(solution, random, new SpawnByRate(blockRate));
+    }
+
+    public static void generate(Cursor solution, Random random, SpawnSelector spawnSelector) {
         Puzzle puzzle = solution.getPuzzle();
 
         ArrayList<Edge> notSolutionEdges = new ArrayList<>();
@@ -39,10 +47,8 @@ public class BrokenLineRule extends Rule {
             }
         }
 
-        int brokenEdges = (int) (notSolutionEdges.size() * blockRate);
-        Collections.shuffle(notSolutionEdges, random);
-        for (int i = 0; i < brokenEdges; i++) {
-            notSolutionEdges.get(i).setRule(new BrokenLineRule());
+        for (Edge edge : spawnSelector.select(notSolutionEdges, random)) {
+            edge.setRule(new BrokenLineRule());
         }
     }
 
@@ -87,7 +93,12 @@ public class BrokenLineRule extends Rule {
     }
 
     public float getCollisionCircleRadius() {
+        if(overrideCollisionCircleRadius > 0) return overrideCollisionCircleRadius;
         return 0.07f / getGraphElement().getPuzzle().getPathWidth() * 0.5f;
+    }
+
+    public void setOverrideCollisionCircleRadius(float collisionCircleRadius){
+        overrideCollisionCircleRadius = collisionCircleRadius;
     }
 
 }
