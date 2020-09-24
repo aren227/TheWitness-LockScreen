@@ -119,7 +119,7 @@ public class SquareRule extends Colorable {
         Collections.sort(colorList, new Comparator<Color>() {
             @Override
             public int compare(Color o1, Color o2) {
-                return Integer.compare(tiles.get(o1).size(), tiles.get(o2).size());
+                return -Integer.compare(tiles.get(o1).size(), tiles.get(o2).size());
             }
         });
 
@@ -127,7 +127,7 @@ public class SquareRule extends Colorable {
         Collections.sort(spawnSelectors, new Comparator<SpawnByCount>() {
             @Override
             public int compare(SpawnByCount o1, SpawnByCount o2) {
-                return Integer.compare(o1.count, o2.count);
+                return -Integer.compare(o1.count, o2.count);
             }
         });
 

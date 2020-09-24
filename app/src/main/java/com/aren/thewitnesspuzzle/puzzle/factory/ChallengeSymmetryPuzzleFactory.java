@@ -12,6 +12,7 @@ import com.aren.thewitnesspuzzle.puzzle.factory.spawn.SpawnByCount;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.rules.BrokenLineRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.HexagonRule;
+import com.aren.thewitnesspuzzle.puzzle.walker.FastGridTreeWalker;
 import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridWalker;
 
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class ChallengeSymmetryPuzzleFactory extends PuzzleFactory {
 
         symmetryPuzzle.addEndingPoint(endPoint.x, endPoint.y);
 
-        RandomGridWalker walker = new RandomGridWalker(symmetryPuzzle, random, 10, 0, 0, endPoint.x, endPoint.y);
+        FastGridTreeWalker walker = FastGridTreeWalker.getLongest(symmetryPuzzle, random, 15,0, 0, endPoint.x, endPoint.y);
         ArrayList<Vertex> vertexPositions = walker.getResult();
 
         SymmetryCursor cursor = new SymmetryCursor(symmetryPuzzle, vertexPositions, null);

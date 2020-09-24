@@ -11,6 +11,7 @@ import com.aren.thewitnesspuzzle.puzzle.cursor.area.GridAreaSplitter;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.rules.Color;
 import com.aren.thewitnesspuzzle.puzzle.rules.SquareRule;
+import com.aren.thewitnesspuzzle.puzzle.walker.FastGridTreeWalker;
 import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridWalker;
 
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class SquarePuzzleFactory extends PuzzleFactory {
         puzzle.addStartingPoint(start.gridPosition.x, start.gridPosition.y);
         puzzle.addEndingPoint(end.gridPosition.x, end.gridPosition.y);
 
-        RandomGridWalker walker = new RandomGridWalker(puzzle, random, 10, start.gridPosition.x, start.gridPosition.y, end.gridPosition.x, end.gridPosition.y);
+        FastGridTreeWalker walker = FastGridTreeWalker.getLongest(puzzle, random, 10, start.gridPosition.x, start.gridPosition.y, end.gridPosition.x, end.gridPosition.y);
         ArrayList<Vertex> vertexPositions = walker.getResult();
 
         Cursor cursor = new Cursor(puzzle, vertexPositions, null);

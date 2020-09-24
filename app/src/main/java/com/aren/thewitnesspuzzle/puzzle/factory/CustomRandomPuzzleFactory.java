@@ -18,6 +18,7 @@ import com.aren.thewitnesspuzzle.puzzle.rules.HexagonRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.SquareRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.SunRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.TrianglesRule;
+import com.aren.thewitnesspuzzle.puzzle.walker.FastGridTreeWalker;
 import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridWalker;
 
 import java.util.ArrayList;
@@ -49,7 +50,7 @@ public class CustomRandomPuzzleFactory extends PuzzleFactory {
         puzzle.addStartingPoint(0, 0);
         puzzle.addEndingPoint(width, height);
 
-        RandomGridWalker walker = new RandomGridWalker(puzzle, random, 4, 0, 0, width, height);
+        FastGridTreeWalker walker = FastGridTreeWalker.getLongest(puzzle, random, 4, 0, 0, width, height);
         ArrayList<Vertex> vertexPositions = walker.getResult();
 
         Cursor cursor = new Cursor(puzzle, vertexPositions, null);

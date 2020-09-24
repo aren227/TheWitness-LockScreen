@@ -12,6 +12,7 @@ import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.rules.BrokenLineRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.Color;
 import com.aren.thewitnesspuzzle.puzzle.rules.SunRule;
+import com.aren.thewitnesspuzzle.puzzle.walker.FastGridTreeWalker;
 import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridWalker;
 
 import java.util.ArrayList;
@@ -30,14 +31,14 @@ public class SunPuzzleFactory extends PuzzleFactory {
         puzzle.addStartingPoint(0, 0);
         puzzle.addEndingPoint(4, 4);
 
-        RandomGridWalker walker = new RandomGridWalker(puzzle, random, 10, 0, 0, 4, 4);
+        FastGridTreeWalker walker = FastGridTreeWalker.getLongest(puzzle, random, 20, 0, 0, 4, 4);
         ArrayList<Vertex> vertexPositions = walker.getResult();
 
         Cursor cursor = new Cursor(puzzle, vertexPositions, null);
 
         GridAreaSplitter splitter = new GridAreaSplitter(cursor);
 
-        BrokenLineRule.generate(cursor, random, 0.2f);
+        BrokenLineRule.generate(cursor, random, 0.5f);
         SunRule.generate(splitter, random, Arrays.asList(Color.ORANGE), 1f, 1f, 0);
 
         return puzzle;

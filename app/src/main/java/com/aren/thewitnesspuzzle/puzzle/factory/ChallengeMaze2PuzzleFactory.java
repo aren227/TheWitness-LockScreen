@@ -10,6 +10,7 @@ import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.rules.BrokenLineRule;
+import com.aren.thewitnesspuzzle.puzzle.walker.FastGridTreeWalker;
 import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridWalker;
 
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class ChallengeMaze2PuzzleFactory extends PuzzleFactory {
         puzzle.addStartingPoint(0, 0);
         puzzle.addEndingPoint(7, 7);
 
-        RandomGridWalker walker = new RandomGridWalker(puzzle, random, 5, 0, 0, 7, 7);
+        FastGridTreeWalker walker = FastGridTreeWalker.getLongest(puzzle, random, 5,0, 0, 7, 7);
         ArrayList<Vertex> vertexPositions = walker.getResult();
 
         Cursor cursor = new Cursor(puzzle, vertexPositions, null);

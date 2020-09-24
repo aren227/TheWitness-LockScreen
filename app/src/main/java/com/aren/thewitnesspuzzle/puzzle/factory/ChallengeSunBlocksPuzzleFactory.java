@@ -16,6 +16,7 @@ import com.aren.thewitnesspuzzle.puzzle.rules.BlocksRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.BrokenLineRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.Color;
 import com.aren.thewitnesspuzzle.puzzle.rules.SunRule;
+import com.aren.thewitnesspuzzle.puzzle.walker.FastGridTreeWalker;
 import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridWalker;
 
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class ChallengeSunBlocksPuzzleFactory extends PuzzleFactory {
         puzzle.addStartingPoint(0, 0);
         puzzle.addEndingPoint(4, 4);
 
-        RandomGridWalker walker = new RandomGridWalker(puzzle, random, 7, 0, 0, 4, 4);
+        FastGridTreeWalker walker = FastGridTreeWalker.getLongest(puzzle, random, 10,0, 0, 4, 4);
         ArrayList<Vertex> vertexPositions = walker.getResult();
 
         Cursor cursor = new Cursor(puzzle, vertexPositions, null);

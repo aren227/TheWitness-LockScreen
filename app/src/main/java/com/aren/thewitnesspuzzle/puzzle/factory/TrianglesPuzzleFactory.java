@@ -10,6 +10,7 @@ import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.rules.BrokenLineRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.TrianglesRule;
+import com.aren.thewitnesspuzzle.puzzle.walker.FastGridTreeWalker;
 import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridWalker;
 
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class TrianglesPuzzleFactory extends PuzzleFactory {
         puzzle.addStartingPoint(0, 0);
         puzzle.addEndingPoint(3, 3);
 
-        RandomGridWalker walker = new RandomGridWalker(puzzle, random, 2, 0, 0, 3, 3);
+        FastGridTreeWalker walker = FastGridTreeWalker.getLongest(puzzle, random, 2, 0, 0, 3, 3);
         ArrayList<Vertex> vertexPositions = walker.getResult();
 
         Cursor cursor = new Cursor(puzzle, vertexPositions, null);

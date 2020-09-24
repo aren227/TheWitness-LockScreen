@@ -83,6 +83,15 @@ public class Cursor {
         return visited;
     }
 
+    public List<Vertex> getVisitedVerticesWithNoRule(){
+        List<Vertex> vertices = new ArrayList<>();
+        for(Vertex vertex : getVisitedVertices()){
+            if(vertex.getRule() == null)
+                vertices.add(vertex);
+        }
+        return vertices;
+    }
+
     public ArrayList<Integer> getVisitedVertexIndices() {
         ArrayList<Integer> list = new ArrayList<>();
         for (Vertex vertex : getVisitedVertices()) {

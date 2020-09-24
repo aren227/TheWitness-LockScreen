@@ -134,22 +134,21 @@ public class HexagonRule extends SymmetricColorable {
 
     // For the challenge
     public static void generate(SymmetryCursor solution, Random random, SpawnSelector spawnSelectorCyan, SpawnSelector spawnSelectorYellow, SpawnSelector spawnSelectorHex){
-        List<Vertex> yellow = new ArrayList<>();
-        List<Vertex> all = new ArrayList<>();
+        for(Vertex vertex : spawnSelectorCyan.select(solution.getVisitedVerticesWithNoRule(), random)){
+            vertex.setRule(new HexagonRule(solution.getSymmetricColor(vertex)));
+        }
+
+        List<Vertex> oppositeVertices = new ArrayList<>();
         for(Vertex vertex : solution.getVisitedVertices()){
-            yellow.add(solution.getPuzzle().getOppositeVertex(vertex));
+            Vertex opposite = solution.getPuzzle().getOppositeVertex(vertex);
+            if(opposite.getRule() == null)
+                oppositeVertices.add(opposite);
         }
-
-        all.addAll(solution.getVisitedVertices());
-        all.addAll(yellow);
-
-        for(Vertex vertex : spawnSelectorCyan.select(solution.getVisitedVertices(), random)){
+        for(Vertex vertex : spawnSelectorYellow.select(oppositeVertices, random)){
             vertex.setRule(new HexagonRule(solution.getSymmetricColor(vertex)));
         }
-        for(Vertex vertex : spawnSelectorYellow.select(yellow, random)){
-            vertex.setRule(new HexagonRule(solution.getSymmetricColor(vertex)));
-        }
-        for(Vertex vertex : spawnSelectorHex.select(all, random)){
+
+        for(Vertex vertex : spawnSelectorHex.select(solution.getVisitedVerticesWithNoRule(), random)){
             vertex.setRule(new HexagonRule());
         }
     }

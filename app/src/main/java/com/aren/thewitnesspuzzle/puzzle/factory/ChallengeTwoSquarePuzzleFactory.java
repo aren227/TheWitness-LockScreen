@@ -1,6 +1,7 @@
 package com.aren.thewitnesspuzzle.puzzle.factory;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
@@ -14,6 +15,7 @@ import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.rules.BrokenLineRule;
 import com.aren.thewitnesspuzzle.puzzle.rules.Color;
 import com.aren.thewitnesspuzzle.puzzle.rules.SquareRule;
+import com.aren.thewitnesspuzzle.puzzle.walker.FastGridTreeWalker;
 import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridWalker;
 
 import java.util.ArrayList;
@@ -34,7 +36,8 @@ public class ChallengeTwoSquarePuzzleFactory extends PuzzleFactory {
         puzzle.addStartingPoint(0, 0);
         puzzle.addEndingPoint(4, 4);
 
-        RandomGridWalker walker = new RandomGridWalker(puzzle, random, 15, 0, 0, 4, 4);
+        //FastGridTreeWalker walker = FastGridTreeWalker.getMostAreas(puzzle.getWidth(), puzzle.getHeight(), random, 15,0, 0, 4, 4);
+        FastGridTreeWalker walker = FastGridTreeWalker.getLongest(puzzle, random, 30,0, 0, 4, 4);
         ArrayList<Vertex> vertexPositions = walker.getResult();
 
         Cursor cursor = new Cursor(puzzle, vertexPositions, null);
