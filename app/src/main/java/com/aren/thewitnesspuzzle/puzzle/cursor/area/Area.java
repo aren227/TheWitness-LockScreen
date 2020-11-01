@@ -15,6 +15,7 @@ import com.aren.thewitnesspuzzle.puzzle.rules.SunRule;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 public class Area {
 
@@ -52,6 +53,81 @@ public class Area {
         }
     }
 
+    private boolean eliminate(Cursor cursor, List<Rule> errors, int idx, int eliminatorCnt, int eliminatorUsed){
+        if(eliminatorCnt <= eliminatorUsed || idx >= errors.size()){
+            // The half of the unused elimination rules can eliminate the rest of them
+            if((eliminatorCnt - eliminatorUsed) % 2 != 0) return false;
+
+            for (Rule rule : getAllRules()) {
+                if (!rule.validateLocally(cursor)) return false;
+            }
+            return SunRule.areaValidate(this).size() == 0
+                    && SquareRule.areaValidate(this).size() == 0
+                    && BlocksRule.areaValidate(this).size() == 0;
+        }
+        else{
+            errors.get(idx).eliminated = true;
+            if(eliminate(cursor, errors, idx + 1, eliminatorCnt, eliminatorUsed + 1)) return true;
+            errors.get(idx).eliminated = false;
+
+            if(eliminate(cursor, errors, idx + 1, eliminatorCnt, eliminatorUsed)) return true;
+
+            return false;
+        }
+    }
+
+    // Make random elimination state
+    private boolean randomlyEliminate(Cursor cursor, Random random, List<Rule> errors, int idx, List<EliminationRule> eliminators, int eliminatorUsed, AreaValidationResult result){
+        if(eliminators.size() <= eliminatorUsed || idx >= errors.size()){
+            // Force to use all elimination rules
+            if(eliminatorUsed != Math.min(eliminators.size(), errors.size())) return false;
+
+            Collections.shuffle(eliminators, random);
+            for(int i = eliminatorUsed; i < eliminators.size(); i++){
+                // Eliminate themselves
+                if(i + 1 < eliminators.size()){
+                    i++;
+                    eliminatorUsed++;
+                    continue;
+                }
+                eliminators.get(i).eliminated = false;
+                result.originalErrors.add(eliminators.get(i));
+            }
+
+            // Elimination rule not used
+            if(eliminatorUsed == 0) result.eliminated = false;
+
+            for (Rule rule : getAllRules()) {
+                if (!rule.validateLocally(cursor)) result.newErrors.add(rule);
+            }
+            result.newErrors.addAll(SquareRule.areaValidate(this));
+            result.newErrors.addAll(SunRule.areaValidate(this));
+            result.newErrors.addAll(BlocksRule.areaValidate(this));
+
+            return true;
+        }
+        else{
+            if(random.nextFloat() > 0.5f){
+                errors.get(idx).eliminated = true;
+                if(randomlyEliminate(cursor, random, errors, idx + 1, eliminators, eliminatorUsed + 1, result)) return true;
+                errors.get(idx).eliminated = false;
+
+                if(randomlyEliminate(cursor, random, errors, idx + 1, eliminators, eliminatorUsed, result)) return true;
+
+                return false;
+            }
+            else{
+                if(randomlyEliminate(cursor, random, errors, idx + 1, eliminators, eliminatorUsed, result)) return true;
+
+                errors.get(idx).eliminated = true;
+                if(randomlyEliminate(cursor, random, errors, idx + 1, eliminators, eliminatorUsed + 1, result)) return true;
+                errors.get(idx).eliminated = false;
+
+                return false;
+            }
+        }
+    }
+
     public AreaValidationResult validate(Cursor cursor) {
         calculateEdgesAndVertices(cursor);
 
@@ -59,17 +135,14 @@ public class Area {
             rule.eliminated = false;
         }
 
-        List<Rule> localErrors = new ArrayList<>();
+        List<Rule> errors = new ArrayList<>();
 
-        // Local validation
         for (Rule rule : getAllRules()) {
-            if (!rule.validateLocally(cursor)) localErrors.add(rule);
+            if (!rule.validateLocally(cursor)) errors.add(rule);
         }
-
-        List<Rule> areaErrors = new ArrayList<>();
-        areaErrors.addAll(SquareRule.areaValidate(this));
-        areaErrors.addAll(SunRule.areaValidate(this));
-        areaErrors.addAll(BlocksRule.areaValidate(this));
+        errors.addAll(SquareRule.areaValidate(this));
+        errors.addAll(SunRule.areaValidate(this));
+        errors.addAll(BlocksRule.areaValidate(this));
 
         List<EliminationRule> eliminationRules = new ArrayList<>();
         for (Tile tile : tiles) {
@@ -79,56 +152,26 @@ public class Area {
         }
 
         AreaValidationResult result = new AreaValidationResult(this);
-        result.originalErrors.addAll(localErrors);
-        result.originalErrors.addAll(areaErrors);
+        result.originalErrors.addAll(errors);
 
-        //FIXME: Dirty code
-        if (eliminationRules.size() == 0) {
-            return result;
-        } else if (eliminationRules.size() == 1) {
-            if (localErrors.size() + areaErrors.size() == 0) {
-                result.originalErrors.add(eliminationRules.get(0));
-                return result;
-            } else if (localErrors.size() + areaErrors.size() == 1) {
-                result.eliminated = true;
-                result.originalErrors.get(0).eliminated = true;
-                return result;
-            }
-            // localErrors.size() + areaErrors.size() >= 2
-            else if (localErrors.size() == 0) {
-                // Shuffle area errors to randomly eliminate symbol when validation is failed
-                Collections.shuffle(areaErrors);
+        if(eliminationRules.size() == 0) return result;
 
-                result.eliminated = true;
-                for (Rule rule : areaErrors) {
-                    rule.eliminated = true;
+        result.eliminated = true;
 
-                    result.newErrors.clear();
-                    result.newErrors.addAll(SquareRule.areaValidate(this));
-                    result.newErrors.addAll(SunRule.areaValidate(this));
-                    result.newErrors.addAll(BlocksRule.areaValidate(this));
-
-                    if (result.newErrors.size() == 0) {
-                        return result;
-                    }
-
-                    rule.eliminated = false;
-                }
-                // Failed. Mark last rule as eliminated
-                areaErrors.get(areaErrors.size() - 1).eliminated = true;
-                return result;
-            } else {
-                result.eliminated = true;
-                localErrors.get(0).eliminated = true;
-                for (int i = 1; i < localErrors.size(); i++)
-                    result.newErrors.add(localErrors.get(i));
-                result.newErrors.addAll(areaErrors);
-                return result;
-            }
+        // All elimination symbols are eliminated themselves (e.i. sun rules can't pair with them).
+        for(EliminationRule eliminationRule : eliminationRules){
+            eliminationRule.eliminated = true;
         }
 
-        //TODO: I think it's undefined behaviour. Can elimination symbols cancel each other?
-        throw new RuntimeException("Multiple elimination symbols in the same area are not supported.");
+        // Success
+        if(eliminate(cursor, errors, 0, eliminationRules.size(), 0)){
+            return result;
+        }
+
+        // Failed
+        result.newErrors.clear();
+        randomlyEliminate(cursor, new Random(), errors, 0, eliminationRules, 0, result);
+        return result;
     }
 
     public List<Rule> getAllRules() {

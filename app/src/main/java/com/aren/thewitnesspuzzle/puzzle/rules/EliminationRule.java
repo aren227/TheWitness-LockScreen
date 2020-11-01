@@ -16,18 +16,22 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-public class EliminationRule extends Rule {
+public class EliminationRule extends Colorable {
 
     public static final int COLOR = android.graphics.Color.parseColor("#fafafa");
 
-    public EliminationRule() {
-        super();
+    public EliminationRule(){
+        this(Color.WHITE);
+    }
+
+    public EliminationRule(Color color) {
+        super(color);
     }
 
     @Override
     public Shape generateShape() {
         if (!(getGraphElement() instanceof Tile)) return null;
-        return new EliminatorShape(new Vector3(getGraphElement().x, getGraphElement().y, 0), COLOR);
+        return new EliminatorShape(new Vector3(getGraphElement().x, getGraphElement().y, 0), color.getRGB());
     }
 
     @Override

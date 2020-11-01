@@ -29,6 +29,8 @@ public class TrianglesRule extends Rule {
 
     @Override
     public boolean validateLocally(Cursor cursor) {
+        if(eliminated) return true;
+
         if (getGraphElement() instanceof Tile) {
             Tile tile = (Tile) getGraphElement();
             int c = 0;

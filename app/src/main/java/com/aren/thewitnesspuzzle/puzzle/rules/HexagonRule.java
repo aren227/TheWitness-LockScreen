@@ -45,6 +45,8 @@ public class HexagonRule extends SymmetricColorable {
 
     @Override
     public boolean validateLocally(Cursor cursor) {
+        if(eliminated) return true;
+
         if (getGraphElement() instanceof Edge) {
             if (!cursor.containsEdge((Edge) getGraphElement())) return false;
             if (hasSymmetricColor() && cursor instanceof SymmetryCursor && ((SymmetryCursor) cursor).hasSymmetricColor()) {

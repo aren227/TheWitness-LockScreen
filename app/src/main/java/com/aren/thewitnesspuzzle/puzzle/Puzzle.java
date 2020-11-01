@@ -334,18 +334,18 @@ public class Puzzle {
                             for (Rule rule : result.getEliminatedRules()) {
                                 addAnimation(new EliminatedAnimation(rule));
                             }
-                            for (Rule rule : result.getEliminators()) {
+                            /*for (Rule rule : result.getEliminators()) {
                                 addAnimation(new EliminatorActivatedAnimation(rule));
-                            }
+                            }*/
                             addAnimation(new CursorFailedAnimation(Puzzle.this));
                             game.playSound(Sounds.FAILURE);
                         } else {
                             for (Rule rule : result.getEliminatedRules()) {
                                 addAnimation(new EliminatedAnimation(rule));
                             }
-                            for (Rule rule : result.getEliminators()) {
+                            /*for (Rule rule : result.getEliminators()) {
                                 addAnimation(new EliminatorActivatedAnimation(rule));
-                            }
+                            }*/
                             addAnimation(new CursorSucceededAnimation(Puzzle.this));
                             game.playSound(Sounds.SUCCESS);
                             game.solved();
@@ -668,11 +668,16 @@ public class Puzzle {
         public List<Rule> getEliminatedRules() {
             List<Rule> rules = new ArrayList<>();
             for (Area.AreaValidationResult result : areaValidationResults) {
-                for (Rule rule : result.originalErrors) {
-                    if (rule.eliminated) {
+                for (Rule rule : result.area.getAllRules()) {
+                    if(rule.eliminated){
                         rules.add(rule);
                     }
                 }
+                /*for (Rule rule : result.originalErrors) {
+                    if (rule.eliminated) {
+                        rules.add(rule);
+                    }
+                }*/
             }
             return rules;
         }
