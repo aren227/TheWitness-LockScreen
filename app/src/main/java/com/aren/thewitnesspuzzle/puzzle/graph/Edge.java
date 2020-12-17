@@ -1,15 +1,18 @@
 package com.aren.thewitnesspuzzle.puzzle.graph;
 
 import com.aren.thewitnesspuzzle.math.Vector2;
+import com.aren.thewitnesspuzzle.puzzle.base.PuzzleBase;
 import com.aren.thewitnesspuzzle.puzzle.rules.EndingPointRule;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class Edge extends GraphElement {
 
     public Vertex from, to;
-    public boolean isHorizontal; // Only for grid puzzle
 
     public Edge(Vertex from, Vertex to) {
-        super(from.puzzle);
+        super();
         this.from = from;
         this.to = to;
         this.x = getMiddlePoint().x;
@@ -60,6 +63,25 @@ public class Edge extends GraphElement {
 
     public boolean isEndingEdge() {
         return from.getRule() instanceof EndingPointRule || to.getRule() instanceof EndingPointRule;
+    }
+
+    public boolean isHorizontal(){
+        return from.getGridY() == to.getGridY();
+    }
+
+    @Override
+    protected void serialize(JSONObject jsonObject) throws JSONException {
+        super.serialize(jsonObject);
+        jsonObject.put("from", from.index);
+        jsonObject.put("to", to.index);
+    }
+
+    public static Edge deserialize(PuzzleBase puzzleBase, JSONObject jsonObject) throws JSONException {
+        int from = jsonObject.getInt("from");
+        int to = jsonObject.getInt("to");
+        Edge edge = new Edge(puzzleBase.getVertex(from), puzzleBase.getVertex(to));
+        edge.baseDeserialize(jsonObject);
+        return edge;
     }
 
 }

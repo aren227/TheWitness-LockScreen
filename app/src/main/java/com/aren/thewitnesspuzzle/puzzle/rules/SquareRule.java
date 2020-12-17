@@ -10,6 +10,9 @@ import com.aren.thewitnesspuzzle.puzzle.factory.spawn.SpawnByRate;
 import com.aren.thewitnesspuzzle.puzzle.factory.spawn.SpawnSelector;
 import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -24,6 +27,8 @@ import androidx.recyclerview.widget.ItemTouchUIUtil;
 
 public class SquareRule extends Colorable {
 
+    public static final String NAME = "square";
+
     public SquareRule(Color color) {
         super(color);
     }
@@ -37,6 +42,16 @@ public class SquareRule extends Colorable {
     @Override
     public boolean canValidateLocally() {
         return false;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
+    public static SquareRule deserialize(JSONObject jsonObject) throws JSONException {
+        Color color = Color.fromString(jsonObject.getString("color"));
+        return new SquareRule(color);
     }
 
     public static List<Rule> areaValidate(Area area) {

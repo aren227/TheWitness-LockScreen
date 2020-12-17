@@ -5,6 +5,8 @@ import com.aren.thewitnesspuzzle.graphics.shape.Shape;
 
 public class StartingPointRule extends Rule {
 
+    public static final String NAME = "start";
+
     public StartingPointRule() {
         super();
     }
@@ -12,6 +14,11 @@ public class StartingPointRule extends Rule {
     @Override
     public Shape generateShape() {
         return new CircleShape(getGraphElement().getPosition().toVector3(), getRadius(), getGraphElement().getPuzzle().getColorPalette().getPathColor());
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
     }
 
     public float getRadius() {

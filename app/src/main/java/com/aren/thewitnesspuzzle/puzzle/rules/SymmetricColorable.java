@@ -1,6 +1,9 @@
 package com.aren.thewitnesspuzzle.puzzle.rules;
 
-public class SymmetricColorable extends Rule {
+import org.json.JSONException;
+import org.json.JSONObject;
+
+public abstract class SymmetricColorable extends Rule {
 
     public SymmetricColor color;
 
@@ -24,6 +27,11 @@ public class SymmetricColorable extends Rule {
 
     public boolean hasSymmetricColor() {
         return color != null;
+    }
+
+    @Override
+    public void serialize(JSONObject jsonObject) throws JSONException {
+        jsonObject.put("color", color.toString());
     }
 
 }

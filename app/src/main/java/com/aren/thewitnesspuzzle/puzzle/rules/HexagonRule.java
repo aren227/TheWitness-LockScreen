@@ -13,12 +13,17 @@ import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
 import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
 public class HexagonRule extends SymmetricColorable {
+
+    public static final String NAME = "hexagon";
 
     public static final float Z_INDEX_NORMAL = 0f;
     public static final float Z_INDEX_FLOAT = 0.1f;
@@ -62,6 +67,16 @@ public class HexagonRule extends SymmetricColorable {
             return true;
         }
         return true;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
+    public static HexagonRule deserialize(JSONObject jsonObject) throws JSONException {
+        SymmetricColor color = SymmetricColor.fromString(jsonObject.getString("color"));
+        return new HexagonRule(color);
     }
 
     public void setOverrideColor(int color){

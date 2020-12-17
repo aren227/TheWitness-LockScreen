@@ -6,11 +6,16 @@ import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
 import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
 public class TrianglesRule extends Rule {
+
+    public static final String NAME = "triangles";
 
     public static final int COLOR = android.graphics.Color.parseColor("#ffaa00");
 
@@ -40,6 +45,21 @@ public class TrianglesRule extends Rule {
             return c == count;
         }
         return true;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    public void serialize(JSONObject jsonObject) throws JSONException {
+        jsonObject.put("count", count);
+    }
+
+    public static TrianglesRule deserialize(JSONObject jsonObject) throws JSONException {
+        int count = jsonObject.getInt("count");
+        return new TrianglesRule(count);
     }
 
     public static void generate(Cursor solution, Random random, float spawnRate) {

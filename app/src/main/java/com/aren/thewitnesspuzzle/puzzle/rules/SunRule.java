@@ -7,6 +7,9 @@ import com.aren.thewitnesspuzzle.puzzle.cursor.area.Area;
 import com.aren.thewitnesspuzzle.puzzle.cursor.area.GridAreaSplitter;
 import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -16,6 +19,8 @@ import java.util.Map;
 import java.util.Random;
 
 public class SunRule extends Colorable {
+
+    public static final String NAME = "sun";
 
     public SunRule(Color color) {
         super(color);
@@ -30,6 +35,16 @@ public class SunRule extends Colorable {
     @Override
     public boolean canValidateLocally() {
         return false;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
+    public static SunRule deserialize(JSONObject jsonObject) throws JSONException {
+        Color color = Color.fromString(jsonObject.getString("color"));
+        return new SunRule(color);
     }
 
     public static List<Rule> areaValidate(Area area) {

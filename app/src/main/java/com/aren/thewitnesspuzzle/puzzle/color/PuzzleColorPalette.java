@@ -2,16 +2,18 @@ package com.aren.thewitnesspuzzle.puzzle.color;
 
 import com.aren.thewitnesspuzzle.puzzle.animation.value.Value;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class PuzzleColorPalette {
 
     private int background;
     private int path;
+    private int cursor;
     private int cursorSucceeded;
     private int cursorFailed;
 
     private float bloomIntensity;
-
-    public final Value<Integer> actualCursorColor;
 
     public PuzzleColorPalette(int background, int path, int cursor) {
         this(background, path, cursor, cursor);
@@ -28,16 +30,15 @@ public class PuzzleColorPalette {
     public PuzzleColorPalette(int background, int path, int cursor, int cursorSucceeded, int cursorFailed, float bloomIntensity) {
         this.background = background;
         this.path = path;
+        this.cursor = cursor;
         this.cursorSucceeded = cursorSucceeded;
         this.cursorFailed = cursorFailed;
         this.bloomIntensity = bloomIntensity;
-
-        actualCursorColor = new Value<>(cursor);
     }
 
     @Override
     public PuzzleColorPalette clone() {
-        return new PuzzleColorPalette(background, path, actualCursorColor.getOriginalValue(), cursorSucceeded, cursorFailed, bloomIntensity);
+        return new PuzzleColorPalette(background, path, cursor, cursorSucceeded, cursorFailed, bloomIntensity);
     }
 
     public int getBackgroundColor() {
@@ -57,11 +58,11 @@ public class PuzzleColorPalette {
     }
 
     public int getCursorColor() {
-        return actualCursorColor.get();
+        return cursor;
     }
 
     public void setCursorColor(int color) {
-        actualCursorColor.set(color);
+        cursor = color;
     }
 
     public int getCursorSucceededColor() {
@@ -91,9 +92,30 @@ public class PuzzleColorPalette {
     public void set(PuzzleColorPalette palette) {
         background = palette.getBackgroundColor();
         path = palette.getPathColor();
-        actualCursorColor.set(palette.actualCursorColor.getOriginalValue());
+        cursor = palette.getCursorColor();
         cursorSucceeded = palette.getCursorSucceededColor();
         cursorFailed = palette.getCursorFailedColor();
+    }
+
+    public JSONObject serialize() throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("background", getBackgroundColor());
+        jsonObject.put("path", getPathColor());
+        jsonObject.put("line", getCursorColor());
+        jsonObject.put("success", getCursorSucceededColor());
+        jsonObject.put("failure", getCursorFailedColor());
+        jsonObject.put("bloom", getBloomIntensity());
+        return jsonObject;
+    }
+
+    public static PuzzleColorPalette deserialize(JSONObject jsonObject) throws JSONException {
+        int background = jsonObject.getInt("background");
+        int path = jsonObject.getInt("path");
+        int line = jsonObject.getInt("line");
+        int success = jsonObject.getInt("success");
+        int failure = jsonObject.getInt("failure");
+        float bloom = (float) jsonObject.getDouble("bloom");
+        return new PuzzleColorPalette(background, path, line, success, failure, bloom);
     }
 
 }

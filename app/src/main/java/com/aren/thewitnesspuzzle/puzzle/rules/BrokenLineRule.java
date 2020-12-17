@@ -11,13 +11,16 @@ import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridTreeWalker;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
 public class BrokenLineRule extends Rule {
 
-    private float overrideCollisionCircleRadius = 0;
+    public static final String NAME = "brokenline";
 
     public BrokenLineRule() {
         super();
@@ -30,6 +33,11 @@ public class BrokenLineRule extends Rule {
             return new RectangleShape(edge.getMiddlePoint().toVector3(), getCollisionCircleRadius() * 2f / edge.getLength(), edge.getPuzzle().getPathWidth(), edge.getAngle(), edge.getPuzzle().getColorPalette().getBackgroundColor());
         }
         return null;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
     }
 
     public static void generate(Cursor solution, Random random, float blockRate) {

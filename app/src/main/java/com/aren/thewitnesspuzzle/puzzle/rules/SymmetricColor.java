@@ -15,4 +15,12 @@ public enum SymmetricColor {
         return 0;
     }
 
+    public static SymmetricColor fromString(String str) {
+        for (SymmetricColor color : SymmetricColor.values()) {
+            if (color.toString().equalsIgnoreCase(str)) {
+                return color;
+            }
+        }
+        return null;
+    }
 }

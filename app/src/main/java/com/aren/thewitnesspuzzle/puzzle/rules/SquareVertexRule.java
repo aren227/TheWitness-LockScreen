@@ -6,9 +6,16 @@ import com.aren.thewitnesspuzzle.graphics.shape.Shape;
 // Actually, it's not rule but for convenience.
 public class SquareVertexRule extends Rule {
 
+    public static final String NAME = "squarevertex";
+
     @Override
     public Shape generateShape() {
         return new RectangleShape(getGraphElement().getPosition().toVector3(), getPuzzle().getPathWidth(), getPuzzle().getPathWidth(), 0, getGraphElement().getPuzzle().getColorPalette().getPathColor());
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
     }
 
 }

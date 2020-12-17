@@ -189,14 +189,7 @@ public class PuzzleFactoryConfig {
 
     public void setColorPalette(String key, PuzzleColorPalette val) {
         try {
-            JSONObject obj = new JSONObject();
-            obj.put("background", val.getBackgroundColor());
-            obj.put("path", val.getPathColor());
-            obj.put("line", val.actualCursorColor.getOriginalValue());
-            obj.put("success", val.getCursorSucceededColor());
-            obj.put("failure", val.getCursorFailedColor());
-            obj.put("bloom", val.getBloomIntensity());
-            jsonObject.put(key, obj);
+            jsonObject.put(key, val.serialize());
         } catch (JSONException ignored) {
 
         }
@@ -205,13 +198,7 @@ public class PuzzleFactoryConfig {
     public PuzzleColorPalette getColorPalette(String key, PuzzleColorPalette def) {
         try {
             JSONObject colorObj = jsonObject.getJSONObject(key);
-            int background = colorObj.getInt("background");
-            int path = colorObj.getInt("path");
-            int line = colorObj.getInt("line");
-            int success = colorObj.getInt("success");
-            int failure = colorObj.getInt("failure");
-            float bloom = (float) colorObj.getDouble("bloom");
-            return new PuzzleColorPalette(background, path, line, success, failure, bloom);
+            def.set(PuzzleColorPalette.deserialize(colorObj));
         } catch (JSONException ignored) {
 
         }

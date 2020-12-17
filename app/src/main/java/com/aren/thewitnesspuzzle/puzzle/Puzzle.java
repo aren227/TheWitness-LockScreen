@@ -51,8 +51,6 @@ public class Puzzle {
     protected ArrayList<Shape> staticShapes = new ArrayList<>();
     protected ArrayList<Shape> dynamicShapes = new ArrayList<>();
 
-    protected PuzzleColorPalette color;
-
     protected float pathWidth;
 
     protected Cursor cursor;
@@ -61,11 +59,6 @@ public class Puzzle {
     protected BoundingBox originalBoundingBox;
     protected BoundingBox shadowBoundingBox;
 
-    protected ArrayList<Vertex> vertices = new ArrayList<>();
-    protected ArrayList<Edge> edges = new ArrayList<>();
-    protected Edge[][] edgeTable; // Indexed by two vertices pair
-    protected ArrayList<Tile> tiles = new ArrayList<>();
-
     protected PuzzleAnimationManager animation;
 
     protected boolean shadowPanel;
@@ -73,6 +66,8 @@ public class Puzzle {
     protected List<Integer> customPattern;
 
     protected boolean untouchable = false;
+
+    protected Value<Integer> actualCursorColor;
 
     protected Value<Float> fadeIntensity = new Value<>(1f);
 
@@ -178,10 +173,6 @@ public class Puzzle {
         }
 
         return vertexBuffer;
-    }
-
-    public PuzzleColorPalette getColorPalette() {
-        return color;
     }
 
     public void calcStaticShapes() {
@@ -506,115 +497,8 @@ public class Puzzle {
         }
     }
 
-    public Vertex addVertex(Vertex vertex) {
-        return addVertex(vertex, false);
-    }
-
-    public Vertex addVertex(Vertex vertex, boolean bypassBoundingBox) {
-        vertex.index = vertices.size();
-        vertices.add(vertex);
-        if (!bypassBoundingBox) boundingBox.addCircle(new Vector2(vertex.x, vertex.y), 0.5f);
-        return vertex;
-    }
-
-    public Vertex getVertex(int index) {
-        for (Vertex vertex : vertices) {
-            if (vertex.index == index) return vertex;
-        }
-        return null;
-    }
-
-    public List<Vertex> getConnectedVertices(Vertex vertex) {
-        List<Vertex> result = new ArrayList<>();
-        for (Edge edge : getEdges()) {
-            if (edge.from == vertex) {
-                result.add(edge.to);
-            } else if (edge.to == vertex) {
-                result.add(edge.from);
-            }
-        }
-        return result;
-    }
-
-    public Edge addEdge(int va, int vb){
-        Edge edge = new Edge(getVertex(va), getVertex(vb));
-        return addEdge(edge);
-    }
-
-    public Edge addEdge(Edge edge) {
-        edge.index = edges.size();
-        edges.add(edge);
-        edge.from.adj.add(edge.to);
-        edge.to.adj.add(edge.from);
-        return edge;
-    }
-
-    public Tile addTile(Tile tile) {
-        tile.index = tiles.size();
-        tiles.add(tile);
-        return tile;
-    }
-
-    public Edge getNearestEdge(Vector2 pos) {
-        float minDist = Float.MAX_VALUE;
-        Edge minEdge = null;
-        for (Edge edge : edges) {
-            float dist = edge.getDistance(pos);
-            if (dist < minDist) {
-                minDist = dist;
-                minEdge = edge;
-            }
-        }
-        return minEdge;
-    }
-
-    public ArrayList<Vertex> getVertices() {
-        return vertices;
-    }
-
-    public ArrayList<Edge> getEdges() {
-        return edges;
-    }
-
-    public ArrayList<Tile> getTiles() {
-        return tiles;
-    }
-
-    public void calcEdgeTable() {
-        edgeTable = new Edge[getVertices().size()][getVertices().size()];
-        for (Edge edge : getEdges()) {
-            edgeTable[edge.from.index][edge.to.index] = edge;
-            edgeTable[edge.to.index][edge.from.index] = edge;
-        }
-    }
-
-    public Edge getEdgeByVertex(Vertex from, Vertex to) {
-        if (edgeTable == null) calcEdgeTable();
-        return edgeTable[from.index][to.index];
-    }
-
     protected Cursor createCursor(Vertex start) {
         return new Cursor(this, start);
-    }
-
-    public List<Rule> getAllRules() {
-        List<Rule> rules = new ArrayList<>();
-        for (Vertex vertex : vertices) {
-            if (vertex.getRule() != null) {
-                rules.add(vertex.getRule());
-            }
-        }
-        for (Edge edge : edges) {
-            if (edge.getRule() != null) {
-                rules.add(edge.getRule());
-            }
-        }
-        for (Tile tile : tiles) {
-            if (tile.getRule() != null) {
-                rules.add(tile.getRule());
-            }
-        }
-        return rules;
     }
 
     // For debugging
@@ -624,10 +508,6 @@ public class Puzzle {
 
     public boolean hasShadowPanel() {
         return shadowPanel;
-    }
-
-    public void setColorPalette(PuzzleColorPalette color) {
-        this.color = color;
     }
 
     public void setCustomPattern(List<Integer> customPattern) {

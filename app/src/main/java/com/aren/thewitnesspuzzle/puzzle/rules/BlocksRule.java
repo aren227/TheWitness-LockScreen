@@ -7,9 +7,13 @@ import com.aren.thewitnesspuzzle.graphics.shape.Shape;
 import com.aren.thewitnesspuzzle.math.Vector2Int;
 import com.aren.thewitnesspuzzle.math.Vector3;
 import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
+import com.aren.thewitnesspuzzle.puzzle.base.PuzzleBase;
 import com.aren.thewitnesspuzzle.puzzle.cursor.area.Area;
 import com.aren.thewitnesspuzzle.puzzle.cursor.area.GridAreaSplitter;
 import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,6 +21,8 @@ import java.util.List;
 import java.util.Random;
 
 public class BlocksRule extends Colorable {
+
+    public static final String NAME = "blocks";
 
     public boolean[][] blocks;
     public long[] blockBits;
@@ -131,6 +137,46 @@ public class BlocksRule extends Colorable {
     @Override
     public boolean canValidateLocally() {
         return false;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    public void serialize(JSONObject jsonObject) throws JSONException {
+        super.serialize(jsonObject);
+        jsonObject.put("width", width);
+        jsonObject.put("height", height);
+
+        StringBuilder builder = new StringBuilder();
+        for(int i = 0; i < width; i++){
+            for(int j = 0; j < height; j++){
+                builder.append(blocks[i][j] ? '1' : '0');
+            }
+        }
+        jsonObject.put("blocks", builder.toString());
+        jsonObject.put("rotatable", rotatable);
+        jsonObject.put("subtractive", subtractive);
+    }
+
+    public static BlocksRule deserialize(PuzzleBase puzzleBase, JSONObject jsonObject) throws JSONException {
+        int width = jsonObject.getInt("width");
+        int height = jsonObject.getInt("height");
+        String blocksStr = jsonObject.getString("blocks");
+
+        boolean[][] blocks = new boolean[width][height];
+        for(int i = 0; i < width; i++){
+            for(int j = 0; j < height; j++){
+                blocks[i][j] = blocksStr.charAt(i * height + j) == '1';
+            }
+        }
+
+        boolean rotatable = jsonObject.getBoolean("rotatable");
+        boolean subtractive = jsonObject.getBoolean("subtractive");
+        Color color = Color.fromString(jsonObject.getString("color"));
+        return new BlocksRule(blocks, -1, rotatable, subtractive, color); // TODO: puzzleHeight
     }
 
     private static long board = 0;

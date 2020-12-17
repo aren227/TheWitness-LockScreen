@@ -4,10 +4,14 @@ import com.aren.thewitnesspuzzle.graphics.shape.EliminatorShape;
 import com.aren.thewitnesspuzzle.graphics.shape.Shape;
 import com.aren.thewitnesspuzzle.math.Vector2Int;
 import com.aren.thewitnesspuzzle.math.Vector3;
+import com.aren.thewitnesspuzzle.puzzle.base.PuzzleBase;
 import com.aren.thewitnesspuzzle.puzzle.cursor.area.Area;
 import com.aren.thewitnesspuzzle.puzzle.cursor.area.GridAreaSplitter;
 import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,6 +21,8 @@ import java.util.Random;
 import java.util.Set;
 
 public class EliminationRule extends Colorable {
+
+    public static final String NAME = "elimination";
 
     public static final int COLOR = android.graphics.Color.parseColor("#fafafa");
 
@@ -37,6 +43,16 @@ public class EliminationRule extends Colorable {
     @Override
     public boolean canValidateLocally() {
         return false;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
+    public static EliminationRule deserialize(JSONObject jsonObject) throws JSONException {
+        Color color = Color.fromString(jsonObject.getString("color"));
+        return new EliminationRule(color);
     }
 
     public static void generateFakeHexagon(GridAreaSplitter splitter, Random random) {
