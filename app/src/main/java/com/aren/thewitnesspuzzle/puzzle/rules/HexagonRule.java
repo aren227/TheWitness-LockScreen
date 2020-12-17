@@ -38,6 +38,10 @@ public class HexagonRule extends SymmetricColorable {
         super(symmetricColor);
     }
 
+    public HexagonRule(JSONObject jsonObject) throws JSONException {
+        super(jsonObject);
+    }
+
     @Override
     public Shape generateShape() {
         if (getGraphElement() instanceof Tile) return null;
@@ -72,11 +76,6 @@ public class HexagonRule extends SymmetricColorable {
     @Override
     public String getName() {
         return NAME;
-    }
-
-    public static HexagonRule deserialize(JSONObject jsonObject) throws JSONException {
-        SymmetricColor color = SymmetricColor.fromString(jsonObject.getString("color"));
-        return new HexagonRule(color);
     }
 
     public void setOverrideColor(int color){

@@ -26,6 +26,12 @@ public class TrianglesRule extends Rule {
         this.count = count;
     }
 
+    public TrianglesRule(JSONObject jsonObject) throws JSONException {
+        super(jsonObject);
+
+        count = jsonObject.getInt("count");
+    }
+
     @Override
     public Shape generateShape() {
         if (!(getGraphElement() instanceof Tile)) return null;
@@ -55,11 +61,6 @@ public class TrianglesRule extends Rule {
     @Override
     public void serialize(JSONObject jsonObject) throws JSONException {
         jsonObject.put("count", count);
-    }
-
-    public static TrianglesRule deserialize(JSONObject jsonObject) throws JSONException {
-        int count = jsonObject.getInt("count");
-        return new TrianglesRule(count);
     }
 
     public static void generate(Cursor solution, Random random, float spawnRate) {

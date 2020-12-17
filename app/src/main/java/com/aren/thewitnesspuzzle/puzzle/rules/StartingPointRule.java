@@ -3,12 +3,18 @@ package com.aren.thewitnesspuzzle.puzzle.rules;
 import com.aren.thewitnesspuzzle.graphics.shape.CircleShape;
 import com.aren.thewitnesspuzzle.graphics.shape.Shape;
 
+import org.json.JSONObject;
+
 public class StartingPointRule extends Rule {
 
     public static final String NAME = "start";
 
     public StartingPointRule() {
         super();
+    }
+
+    public StartingPointRule(JSONObject jsonObject) {
+        super(jsonObject);
     }
 
     @Override

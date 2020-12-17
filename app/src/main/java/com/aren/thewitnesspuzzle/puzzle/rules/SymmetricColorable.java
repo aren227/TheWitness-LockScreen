@@ -17,6 +17,11 @@ public abstract class SymmetricColorable extends Rule {
         this.color = color;
     }
 
+    public SymmetricColorable(JSONObject jsonObject) throws JSONException {
+        super(jsonObject);
+        color = SymmetricColor.fromString(jsonObject.getString("color"));
+    }
+
     public SymmetricColor getSymmetricColor() {
         return color;
     }

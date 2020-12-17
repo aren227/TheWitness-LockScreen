@@ -20,6 +20,10 @@ public abstract class Rule {
 
     }
 
+    public Rule(JSONObject jsonObject) {
+
+    }
+
     public GraphElement getGraphElement() {
         return graphElement;
     }
@@ -63,25 +67,25 @@ public abstract class Rule {
         String type = jsonObject.getString("type");
         switch (type) {
             case BlocksRule.NAME:
-                return BlocksRule.deserialize(null, jsonObject);
+                return new BlocksRule(jsonObject);
             case BrokenLineRule.NAME:
-                return new BrokenLineRule();
+                return new BrokenLineRule(jsonObject);
             case EliminationRule.NAME:
-                return EliminationRule.deserialize(jsonObject);
+                return new EliminationRule(jsonObject);
             case EndingPointRule.NAME:
-                return new EndingPointRule();
+                return new EndingPointRule(jsonObject);
             case HexagonRule.NAME:
-                return HexagonRule.deserialize(jsonObject);
+                return new HexagonRule(jsonObject);
             case SquareRule.NAME:
-                return SquareRule.deserialize(jsonObject);
+                return new SquareRule(jsonObject);
             case SquareVertexRule.NAME:
-                return new SquareVertexRule();
+                return new SquareVertexRule(jsonObject);
             case StartingPointRule.NAME:
-                return new StartingPointRule();
+                return new StartingPointRule(jsonObject);
             case SunRule.NAME:
-                return SunRule.deserialize(jsonObject);
+                return new SunRule(jsonObject);
             case TrianglesRule.NAME:
-                return TrianglesRule.deserialize(jsonObject);
+                return new TrianglesRule(jsonObject);
         }
         return null;
     }

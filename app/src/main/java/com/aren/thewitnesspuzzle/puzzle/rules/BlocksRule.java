@@ -49,7 +49,30 @@ public class BlocksRule extends Colorable {
         this.rotatable = rotatable;
         this.subtractive = subtractive;
 
-        // Pre-calculation for optimization
+        preCalculateBitMagic();
+    }
+
+    public BlocksRule(JSONObject jsonObject) throws JSONException {
+        super(jsonObject);
+
+        width = jsonObject.getInt("width");
+        height = jsonObject.getInt("height");
+        String blocksStr = jsonObject.getString("blocks");
+
+        blocks = new boolean[width][height];
+        for(int i = 0; i < width; i++){
+            for(int j = 0; j < height; j++){
+                blocks[i][j] = blocksStr.charAt(i * height + j) == '1';
+            }
+        }
+
+        rotatable = jsonObject.getBoolean("rotatable");
+        subtractive = jsonObject.getBoolean("subtractive");
+
+        preCalculateBitMagic();
+    }
+
+    public void preCalculateBitMagic() {
         if (rotatable) {
             blockBits = new long[4];
             firstBitY = new int[4];
@@ -159,24 +182,6 @@ public class BlocksRule extends Colorable {
         jsonObject.put("blocks", builder.toString());
         jsonObject.put("rotatable", rotatable);
         jsonObject.put("subtractive", subtractive);
-    }
-
-    public static BlocksRule deserialize(PuzzleBase puzzleBase, JSONObject jsonObject) throws JSONException {
-        int width = jsonObject.getInt("width");
-        int height = jsonObject.getInt("height");
-        String blocksStr = jsonObject.getString("blocks");
-
-        boolean[][] blocks = new boolean[width][height];
-        for(int i = 0; i < width; i++){
-            for(int j = 0; j < height; j++){
-                blocks[i][j] = blocksStr.charAt(i * height + j) == '1';
-            }
-        }
-
-        boolean rotatable = jsonObject.getBoolean("rotatable");
-        boolean subtractive = jsonObject.getBoolean("subtractive");
-        Color color = Color.fromString(jsonObject.getString("color"));
-        return new BlocksRule(blocks, -1, rotatable, subtractive, color); // TODO: puzzleHeight
     }
 
     private static long board = 0;

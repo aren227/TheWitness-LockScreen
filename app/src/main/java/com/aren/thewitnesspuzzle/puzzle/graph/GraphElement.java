@@ -3,6 +3,7 @@ package com.aren.thewitnesspuzzle.puzzle.graph;
 import com.aren.thewitnesspuzzle.math.Vector2;
 import com.aren.thewitnesspuzzle.math.Vector2Int;
 import com.aren.thewitnesspuzzle.puzzle.Puzzle;
+import com.aren.thewitnesspuzzle.puzzle.base.PuzzleBase;
 import com.aren.thewitnesspuzzle.puzzle.rules.Rule;
 
 import org.json.JSONException;
@@ -10,10 +11,42 @@ import org.json.JSONObject;
 
 public class GraphElement {
 
+    private PuzzleBase puzzleBase;
+
     public int index;
     public float x, y;
 
     private Rule rule;
+
+    protected GraphElement(PuzzleBase puzzleBase, int index, float x, float y) {
+        this(puzzleBase, index, x, y, null);
+    }
+
+    public GraphElement(PuzzleBase puzzleBase, int index, float x, float y, Rule rule) {
+        this.puzzleBase = puzzleBase;
+        this.index = index;
+        this.x = x;
+        this.y = y;
+        this.rule = rule;
+
+        puzzleBase.register(this);
+    }
+
+    public GraphElement(PuzzleBase puzzleBase, JSONObject jsonObject) {
+        this.puzzleBase = puzzleBase;
+        try {
+            index = jsonObject.getInt("index");
+            x = (float)jsonObject.getDouble("x");
+            y = (float)jsonObject.getDouble("y");
+
+            if(jsonObject.has("rule"))
+                rule = Rule.deserialize(jsonObject.getJSONObject("rule"));
+        } catch (JSONException ignored) {
+
+        }
+
+        puzzleBase.register(this);
+    }
 
     public void setRule(Rule rule) {
         if (rule == null) return;
@@ -45,6 +78,10 @@ public class GraphElement {
         return new Vector2Int(getGridX(), getGridY());
     }
 
+    public PuzzleBase getPuzzleBase() {
+        return puzzleBase;
+    }
+
     public JSONObject serialize() throws JSONException {
         JSONObject jsonObject = new JSONObject();
         serialize(jsonObject);
@@ -59,14 +96,4 @@ public class GraphElement {
         if(rule != null)
             jsonObject.put("rule", rule.serialize());
     }
-
-    protected void baseDeserialize(JSONObject jsonObject) throws JSONException {
-        index = jsonObject.getInt("index");
-        x = (float)jsonObject.getDouble("x");
-        y = (float)jsonObject.getDouble("y");
-
-        if(jsonObject.has("rule"))
-            rule = Rule.deserialize(jsonObject.getJSONObject("rule"));
-    }
-
 }

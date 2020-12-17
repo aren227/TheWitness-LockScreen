@@ -34,6 +34,10 @@ public class EliminationRule extends Colorable {
         super(color);
     }
 
+    public EliminationRule(JSONObject jsonObject) throws JSONException {
+        super(jsonObject);
+    }
+
     @Override
     public Shape generateShape() {
         if (!(getGraphElement() instanceof Tile)) return null;
@@ -48,11 +52,6 @@ public class EliminationRule extends Colorable {
     @Override
     public String getName() {
         return NAME;
-    }
-
-    public static EliminationRule deserialize(JSONObject jsonObject) throws JSONException {
-        Color color = Color.fromString(jsonObject.getString("color"));
-        return new EliminationRule(color);
     }
 
     public static void generateFakeHexagon(GridAreaSplitter splitter, Random random) {

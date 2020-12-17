@@ -3,6 +3,7 @@ package com.aren.thewitnesspuzzle.puzzle.base;
 import com.aren.thewitnesspuzzle.math.Vector2;
 import com.aren.thewitnesspuzzle.puzzle.color.PuzzleColorPalette;
 import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
+import com.aren.thewitnesspuzzle.puzzle.graph.GraphElement;
 import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
 import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.rules.Rule;
@@ -27,18 +28,33 @@ public class PuzzleBase {
         this.color = color;
     }
 
+    public PuzzleBase(JSONObject jsonObject) {
+        try {
+            this.color = PuzzleColorPalette.deserialize(jsonObject.getJSONObject("color"));
+
+            JSONArray vertexArray = jsonObject.getJSONArray("vertices");
+            for(int i = 0; i < vertexArray.length(); i++)
+                vertices.add(new Vertex(this, vertexArray.getJSONObject(i)));
+
+            JSONArray edgeArray = jsonObject.getJSONArray("edges");
+            for(int i = 0; i < edgeArray.length(); i++)
+                edges.add(new Edge(this, edgeArray.getJSONObject(i)));
+
+            JSONArray tileArray = jsonObject.getJSONArray("tiles");
+            for(int i = 0; i < tileArray.length(); i++)
+                tiles.add(new Tile(this, tileArray.getJSONObject(i)));
+
+        } catch (JSONException ignored) {
+
+        }
+    }
+
     public void setColorPalette(PuzzleColorPalette color) {
         this.color = color;
     }
 
     public PuzzleColorPalette getColorPalette() {
         return color;
-    }
-
-    public Vertex addVertex(Vertex vertex){
-        vertex.index = vertices.size();
-        vertices.add(vertex);
-        return vertex;
     }
 
     public Vertex getVertex(int index) {
@@ -61,22 +77,16 @@ public class PuzzleBase {
     }
 
     public Edge addEdge(int va, int vb){
-        Edge edge = new Edge(getVertex(va), getVertex(vb));
-        return addEdge(edge);
+        return new Edge(this, getVertex(va), getVertex(vb));
     }
 
-    public Edge addEdge(Edge edge) {
-        edge.index = edges.size();
-        edges.add(edge);
-        edge.from.adj.add(edge.to);
-        edge.to.adj.add(edge.from);
-        return edge;
-    }
-
-    public Tile addTile(Tile tile) {
-        tile.index = tiles.size();
-        tiles.add(tile);
-        return tile;
+    public void register(GraphElement graphElement) {
+        if(graphElement instanceof Vertex)
+            vertices.add((Vertex) graphElement);
+        else if(graphElement instanceof Edge)
+            edges.add((Edge) graphElement);
+        else if(graphElement instanceof Tile)
+            tiles.add((Tile) graphElement);
     }
 
     public Edge getNearestEdge(Vector2 pos) {
@@ -102,6 +112,18 @@ public class PuzzleBase {
 
     public ArrayList<Tile> getTiles() {
         return tiles;
+    }
+
+    public int getNextVertexIndex() {
+        return vertices.size();
+    }
+
+    public int getNextEdgeIndex() {
+        return edges.size();
+    }
+
+    public int getNextTileIndex() {
+        return tiles.size();
     }
 
     private void calcEdgeTable() {
@@ -159,24 +181,4 @@ public class PuzzleBase {
 
         return jsonObject;
     }
-
-    public static PuzzleBase deserialize(JSONObject jsonObject) throws JSONException {
-        PuzzleColorPalette color = PuzzleColorPalette.deserialize(jsonObject.getJSONObject("color"));
-        PuzzleBase puzzleBase = new PuzzleBase(color);
-
-        JSONArray vertexArray = jsonObject.getJSONArray("vertices");
-        for(int i = 0; i < vertexArray.length(); i++)
-            puzzleBase.vertices.add(Vertex.deserialize(vertexArray.getJSONObject(i)));
-
-        JSONArray edgeArray = jsonObject.getJSONArray("edges");
-        for(int i = 0; i < edgeArray.length(); i++)
-            puzzleBase.edges.add(Edge.deserialize(puzzleBase, edgeArray.getJSONObject(i)));
-
-        JSONArray tileArray = jsonObject.getJSONArray("tiles");
-        for(int i = 0; i < tileArray.length(); i++)
-            puzzleBase.tiles.add(Tile.deserialize(tileArray.getJSONObject(i)));
-
-        return puzzleBase;
-    }
-
 }

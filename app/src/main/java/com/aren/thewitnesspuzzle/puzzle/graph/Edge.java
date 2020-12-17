@@ -11,12 +11,25 @@ public class Edge extends GraphElement {
 
     public Vertex from, to;
 
-    public Edge(Vertex from, Vertex to) {
-        super();
+    public Edge(PuzzleBase puzzleBase, Vertex from, Vertex to) {
+        super(puzzleBase, puzzleBase.getNextEdgeIndex(), (from.x + to.x) / 2, (from.y + to.y) / 2);
         this.from = from;
         this.to = to;
-        this.x = getMiddlePoint().x;
-        this.y = getMiddlePoint().y;
+
+        from.adj.add(to);
+        to.adj.add(from);
+    }
+
+    public Edge(PuzzleBase puzzleBase, JSONObject jsonObject) {
+        super(puzzleBase, jsonObject);
+        try {
+            int from = jsonObject.getInt("from");
+            int to = jsonObject.getInt("to");
+            this.from = puzzleBase.getVertex(from);
+            this.to = puzzleBase.getVertex(to);
+        } catch (JSONException ignored) {
+
+        }
     }
 
     public boolean containsVertex(Vertex vertex) {
@@ -30,10 +43,6 @@ public class Edge extends GraphElement {
 
     public float getLength() {
         return (float) Math.sqrt((from.x - to.x) * (from.x - to.x) + (from.y - to.y) * (from.y - to.y));
-    }
-
-    public Vector2 getMiddlePoint() {
-        return new Vector2((from.x + to.x) / 2, (from.y + to.y) / 2);
     }
 
     public float getAngle() {
@@ -56,11 +65,6 @@ public class Edge extends GraphElement {
         return proj.subtract(startToPoint).length();
     }
 
-    @Override
-    public Vector2 getPosition() {
-        return getMiddlePoint();
-    }
-
     public boolean isEndingEdge() {
         return from.getRule() instanceof EndingPointRule || to.getRule() instanceof EndingPointRule;
     }
@@ -75,13 +79,4 @@ public class Edge extends GraphElement {
         jsonObject.put("from", from.index);
         jsonObject.put("to", to.index);
     }
-
-    public static Edge deserialize(PuzzleBase puzzleBase, JSONObject jsonObject) throws JSONException {
-        int from = jsonObject.getInt("from");
-        int to = jsonObject.getInt("to");
-        Edge edge = new Edge(puzzleBase.getVertex(from), puzzleBase.getVertex(to));
-        edge.baseDeserialize(jsonObject);
-        return edge;
-    }
-
 }

@@ -26,6 +26,10 @@ public class SunRule extends Colorable {
         super(color);
     }
 
+    public SunRule(JSONObject jsonObject) throws JSONException {
+        super(jsonObject);
+    }
+
     @Override
     public Shape generateShape() {
         if (!(getGraphElement() instanceof Tile)) return null;
@@ -40,11 +44,6 @@ public class SunRule extends Colorable {
     @Override
     public String getName() {
         return NAME;
-    }
-
-    public static SunRule deserialize(JSONObject jsonObject) throws JSONException {
-        Color color = Color.fromString(jsonObject.getString("color"));
-        return new SunRule(color);
     }
 
     public static List<Rule> areaValidate(Area area) {

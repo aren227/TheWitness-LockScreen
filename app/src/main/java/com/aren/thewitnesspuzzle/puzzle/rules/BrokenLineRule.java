@@ -26,6 +26,10 @@ public class BrokenLineRule extends Rule {
         super();
     }
 
+    public BrokenLineRule(JSONObject jsonObject) {
+        super(jsonObject);
+    }
+
     @Override
     public Shape generateShape() {
         if (getGraphElement() instanceof Edge) {

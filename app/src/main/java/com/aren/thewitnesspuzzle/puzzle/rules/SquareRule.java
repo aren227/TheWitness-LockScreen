@@ -33,6 +33,10 @@ public class SquareRule extends Colorable {
         super(color);
     }
 
+    public SquareRule(JSONObject jsonObject) throws JSONException {
+        super(jsonObject);
+    }
+
     @Override
     public Shape generateShape() {
         if (!(getGraphElement() instanceof Tile)) return null;
@@ -47,11 +51,6 @@ public class SquareRule extends Colorable {
     @Override
     public String getName() {
         return NAME;
-    }
-
-    public static SquareRule deserialize(JSONObject jsonObject) throws JSONException {
-        Color color = Color.fromString(jsonObject.getString("color"));
-        return new SquareRule(color);
     }
 
     public static List<Rule> areaValidate(Area area) {
