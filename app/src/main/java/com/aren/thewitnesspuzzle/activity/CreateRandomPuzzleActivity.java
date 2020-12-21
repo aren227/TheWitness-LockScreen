@@ -16,26 +16,26 @@ import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.aren.thewitnesspuzzle.R;
-import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
-import com.aren.thewitnesspuzzle.puzzle.color.PalettePreset;
-import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
-import com.aren.thewitnesspuzzle.puzzle.cursor.area.GridAreaSplitter;
+import com.aren.thewitnesspuzzle.puzzle.base.GridPuzzle;
+import com.aren.thewitnesspuzzle.puzzle.base.color.PalettePreset;
+import com.aren.thewitnesspuzzle.puzzle.base.cursor.Cursor;
+import com.aren.thewitnesspuzzle.puzzle.base.cursor.area.GridAreaSplitter;
 import com.aren.thewitnesspuzzle.puzzle.factory.Difficulty;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactory;
-import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
-import com.aren.thewitnesspuzzle.puzzle.graph.EdgeProportion;
-import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
-import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
-import com.aren.thewitnesspuzzle.puzzle.rules.BlocksRule;
-import com.aren.thewitnesspuzzle.puzzle.rules.BrokenLineRule;
-import com.aren.thewitnesspuzzle.puzzle.rules.Color;
-import com.aren.thewitnesspuzzle.puzzle.rules.EliminationRule;
-import com.aren.thewitnesspuzzle.puzzle.rules.EndingPointRule;
-import com.aren.thewitnesspuzzle.puzzle.rules.HexagonRule;
-import com.aren.thewitnesspuzzle.puzzle.rules.SquareRule;
-import com.aren.thewitnesspuzzle.puzzle.rules.StartingPointRule;
-import com.aren.thewitnesspuzzle.puzzle.rules.SunRule;
-import com.aren.thewitnesspuzzle.puzzle.rules.TrianglesRule;
+import com.aren.thewitnesspuzzle.puzzle.base.graph.Edge;
+import com.aren.thewitnesspuzzle.puzzle.base.graph.EdgeProportion;
+import com.aren.thewitnesspuzzle.puzzle.base.graph.Tile;
+import com.aren.thewitnesspuzzle.puzzle.base.graph.Vertex;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.BlocksRule;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.BrokenLineRule;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.Color;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.EliminationRule;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.EndingPointRule;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.HexagonRule;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.SquareRule;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.StartingPointRule;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.SunRule;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.TrianglesRule;
 import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridTreeWalker;
 
 import java.util.ArrayList;
@@ -657,17 +657,17 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
 
     protected void generateRules() {
         // Synchronize with Render thread
-        synchronized (puzzle) {
+        synchronized (puzzleRenderer) {
             // Clear previous rules
-            for (Vertex vertex : puzzle.getVertices()) {
+            for (Vertex vertex : puzzleRenderer.getPuzzleBase().getVertices()) {
                 if (vertex.getRule() instanceof StartingPointRule || vertex.getRule() instanceof EndingPointRule)
                     continue;
                 vertex.removeRule();
             }
-            for (Edge edge : puzzle.getEdges()) {
+            for (Edge edge : puzzleRenderer.getPuzzleBase().getEdges()) {
                 edge.removeRule();
             }
-            for (Tile tile : puzzle.getTiles()) {
+            for (Tile tile : puzzleRenderer.getPuzzleBase().getTiles()) {
                 tile.removeRule();
             }
 
@@ -720,7 +720,7 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
                 }
             }
 
-            puzzle.shouldUpdateStaticShapes();
+            puzzleRenderer.shouldUpdateStaticShapes();
 
             game.update();
         }
@@ -742,26 +742,27 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
 
         //RandomGridWalker walker = new RandomGridWalker((GridPuzzle)puzzle, random, 5, 0, 0, getWidth(), getHeight());
         //ArrayList<Vertex> vertexPositions = walker.getResult();
-        ArrayList<Vertex> vertexPositions = RandomGridTreeWalker.getLongest(((GridPuzzle) puzzle).getWidth(), ((GridPuzzle) puzzle).getHeight(), random, 5, 0, 0, getWidth(), getHeight()).getResult((GridPuzzle) puzzle, getWidth(), getHeight());
+        ArrayList<Vertex> vertexPositions = RandomGridTreeWalker.getLongest(((GridPuzzle) puzzleRenderer.getPuzzleBase()).getWidth(),
+                ((GridPuzzle) puzzleRenderer.getPuzzleBase()).getHeight(), random, 5, 0, 0, getWidth(), getHeight()).getResult((GridPuzzle) puzzleRenderer.getPuzzleBase(), getWidth(), getHeight());
 
         // Connect to the ending point
         Vertex vertex = null;
-        for (Vertex v : puzzle.getVertices()) {
+        for (Vertex v : puzzleRenderer.getPuzzleBase().getVertices()) {
             if (v.getRule() instanceof EndingPointRule) {
                 vertex = v;
                 break;
             }
         }
         EdgeProportion lastEdge = null;
-        if (vertex != null && puzzle.getEdgeByVertex(((GridPuzzle) puzzle).getVertexAt(getWidth(), getHeight()), vertex) != null) {
-            lastEdge = new EdgeProportion(puzzle.getEdgeByVertex(((GridPuzzle) puzzle).getVertexAt(getWidth(), getHeight()), vertex));
+        if (vertex != null && puzzleRenderer.getPuzzleBase().getEdgeByVertex(((GridPuzzle) puzzleRenderer.getPuzzleBase()).getVertexAt(getWidth(), getHeight()), vertex) != null) {
+            lastEdge = new EdgeProportion(puzzleRenderer.getPuzzleBase().getEdgeByVertex(((GridPuzzle) puzzleRenderer.getPuzzleBase()).getVertexAt(getWidth(), getHeight()), vertex));
             lastEdge.proportion = 1f;
         }
 
-        cursor = new Cursor(puzzle, vertexPositions, lastEdge);
+        cursor = new Cursor(puzzleRenderer.getPuzzleBase(), vertexPositions, lastEdge);
 
-        puzzle.setCursor(cursor);
-        puzzle.setUntouchable(true);
+        puzzleRenderer.setCursor(cursor);
+        puzzleRenderer.setUntouchable(true);
 
         game.update();
     }

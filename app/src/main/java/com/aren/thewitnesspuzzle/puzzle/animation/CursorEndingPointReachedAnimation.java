@@ -1,27 +1,30 @@
 package com.aren.thewitnesspuzzle.puzzle.animation;
 
 import com.aren.thewitnesspuzzle.math.MathUtils;
-import com.aren.thewitnesspuzzle.puzzle.Puzzle;
+import com.aren.thewitnesspuzzle.puzzle.base.color.PuzzleColorPalette;
+import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
 
 public class CursorEndingPointReachedAnimation extends Animation {
 
-    private Puzzle puzzle;
+    private PuzzleRenderer puzzleRenderer;
 
-    public CursorEndingPointReachedAnimation(Puzzle puzzle) {
+    public CursorEndingPointReachedAnimation(PuzzleRenderer puzzleRenderer) {
         super(500, 10000, false);
-        this.puzzle = puzzle;
+        this.puzzleRenderer = puzzleRenderer;
     }
 
     @Override
     protected void update(float rate) {
+        PuzzleColorPalette colorPalette = puzzleRenderer.getPuzzleBase().getColorPalette();
+
         float s = (float) (-Math.cos(rate * Math.PI * 2) + 1) / 2f;
-        int rr = android.graphics.Color.red(puzzle.getColorPalette().actualCursorColor.getOriginalValue());
-        int gg = android.graphics.Color.green(puzzle.getColorPalette().actualCursorColor.getOriginalValue());
-        int bb = android.graphics.Color.blue(puzzle.getColorPalette().actualCursorColor.getOriginalValue());
+        int rr = android.graphics.Color.red(colorPalette.getCursorColor());
+        int gg = android.graphics.Color.green(colorPalette.getCursorColor());
+        int bb = android.graphics.Color.blue(colorPalette.getCursorColor());
         int c = android.graphics.Color.rgb(
                 (int) MathUtils.lerp(rr, 255, s),
                 (int) MathUtils.lerp(gg, 255, s),
                 (int) MathUtils.lerp(bb, 255, s));
-        puzzle.getColorPalette().actualCursorColor.setAnimationValue(this, c);
+        puzzleRenderer.getCursorColor().setAnimationValue(this, c);
     }
 }

@@ -3,14 +3,13 @@ package com.aren.thewitnesspuzzle.puzzle.factory;
 import android.content.Context;
 
 import com.aren.thewitnesspuzzle.game.Game;
-import com.aren.thewitnesspuzzle.puzzle.GridSymmetryPuzzle;
-import com.aren.thewitnesspuzzle.puzzle.Puzzle;
-import com.aren.thewitnesspuzzle.puzzle.color.PalettePreset;
-import com.aren.thewitnesspuzzle.puzzle.cursor.SymmetryCursor;
-import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
-import com.aren.thewitnesspuzzle.puzzle.rules.BrokenLineRule;
+import com.aren.thewitnesspuzzle.puzzle.base.GridSymmetryPuzzle;
+import com.aren.thewitnesspuzzle.puzzle.base.color.PalettePreset;
+import com.aren.thewitnesspuzzle.puzzle.base.cursor.SymmetryCursor;
+import com.aren.thewitnesspuzzle.puzzle.base.graph.Vertex;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.BrokenLineRule;
 import com.aren.thewitnesspuzzle.puzzle.walker.FastGridTreeWalker;
-import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridWalker;
+import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -22,14 +21,14 @@ public class VSymmetryPuzzleFactory extends PuzzleFactory {
     }
 
     @Override
-    public Puzzle generate(Game game, Random random) {
+    public PuzzleRenderer generate(Game game, Random random) {
         GridSymmetryPuzzle.SymmetryType symmetryType = GridSymmetryPuzzle.SymmetryType.VLINE;
 
         GridSymmetryPuzzle symmetryPuzzle;
 
         int startX, startY, endX, endY;
 
-        symmetryPuzzle = new GridSymmetryPuzzle(game, PalettePreset.get("GlassFactory_1"), 5, 7, symmetryType, false);
+        symmetryPuzzle = new GridSymmetryPuzzle(PalettePreset.get("GlassFactory_1"), 5, 7, symmetryType, false);
 
         startX = random.nextInt(2);
         startY = 0;
@@ -46,7 +45,7 @@ public class VSymmetryPuzzleFactory extends PuzzleFactory {
 
         BrokenLineRule.generate(cursor, random, 0.7f);
 
-        return symmetryPuzzle;
+        return new PuzzleRenderer(game, symmetryPuzzle);
     }
 
     @Override

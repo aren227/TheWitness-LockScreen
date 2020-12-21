@@ -1,20 +1,20 @@
 package com.aren.thewitnesspuzzle.puzzle.animation;
 
-import com.aren.thewitnesspuzzle.puzzle.Puzzle;
+import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
 
 public class PuzzleFadeOutAnimation extends Animation {
 
-    private Puzzle puzzle;
+    private PuzzleRenderer puzzleRenderer;
 
-    public PuzzleFadeOutAnimation(Puzzle puzzle, long duration){
+    public PuzzleFadeOutAnimation(PuzzleRenderer puzzleRenderer, long duration){
         super(duration, 1, true);
-        this.puzzle = puzzle;
+        this.puzzleRenderer = puzzleRenderer;
     }
 
     @Override
     protected void update(float rate) {
         float s = -rate * rate + 1;
-        puzzle.getFadeIntensity().setAnimationValue(this, s);
+        puzzleRenderer.getFadeIntensity().setAnimationValue(this, s);
     }
 
 }

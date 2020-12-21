@@ -3,17 +3,17 @@ package com.aren.thewitnesspuzzle.puzzle.factory;
 import android.content.Context;
 
 import com.aren.thewitnesspuzzle.game.Game;
-import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
-import com.aren.thewitnesspuzzle.puzzle.Puzzle;
-import com.aren.thewitnesspuzzle.puzzle.color.PalettePreset;
-import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
-import com.aren.thewitnesspuzzle.puzzle.cursor.area.GridAreaSplitter;
-import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
-import com.aren.thewitnesspuzzle.puzzle.rules.BlocksRule;
-import com.aren.thewitnesspuzzle.puzzle.rules.BrokenLineRule;
-import com.aren.thewitnesspuzzle.puzzle.rules.Color;
+import com.aren.thewitnesspuzzle.puzzle.base.GridPuzzle;
+import com.aren.thewitnesspuzzle.puzzle.base.PuzzleBase;
+import com.aren.thewitnesspuzzle.puzzle.base.color.PalettePreset;
+import com.aren.thewitnesspuzzle.puzzle.base.cursor.Cursor;
+import com.aren.thewitnesspuzzle.puzzle.base.cursor.area.GridAreaSplitter;
+import com.aren.thewitnesspuzzle.puzzle.base.graph.Vertex;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.BlocksRule;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.BrokenLineRule;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.Color;
 import com.aren.thewitnesspuzzle.puzzle.walker.FastGridTreeWalker;
-import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridWalker;
+import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -25,8 +25,8 @@ public class BlocksPuzzleFactory extends PuzzleFactory {
     }
 
     @Override
-    public Puzzle generate(Game game, Random random) {
-        GridPuzzle puzzle = new GridPuzzle(game, PalettePreset.get("Swamp_1"), 4, 4);
+    public PuzzleRenderer generate(Game game, Random random) {
+        GridPuzzle puzzle = new GridPuzzle(PalettePreset.get("Swamp_1"), 4, 4);
 
         puzzle.addStartingPoint(0, 0);
         puzzle.addEndingPoint(4, 4);
@@ -41,7 +41,7 @@ public class BlocksPuzzleFactory extends PuzzleFactory {
         BrokenLineRule.generate(cursor, random, 0.2f);
         BlocksRule.generate(splitter, random, Color.YELLOW, 0.4f, 0);
 
-        return puzzle;
+        return new PuzzleRenderer(game, puzzle);
     }
 
     @Override

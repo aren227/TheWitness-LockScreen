@@ -1,19 +1,12 @@
 package com.aren.thewitnesspuzzle.puzzle.walker;
 
-import android.util.Log;
-
 import com.aren.thewitnesspuzzle.math.Vector2Int;
-import com.aren.thewitnesspuzzle.math.Vector3;
-import com.aren.thewitnesspuzzle.math.Vector4Int;
-import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
-import com.aren.thewitnesspuzzle.puzzle.GridSymmetryPuzzle;
-import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
+import com.aren.thewitnesspuzzle.puzzle.base.GridPuzzle;
+import com.aren.thewitnesspuzzle.puzzle.base.GridSymmetryPuzzle;
+import com.aren.thewitnesspuzzle.puzzle.base.graph.Vertex;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Random;
-import java.util.Stack;
 
 public class FastGridTreeWalker {
 

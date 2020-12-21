@@ -15,16 +15,17 @@ import android.widget.TextView;
 import com.aren.thewitnesspuzzle.R;
 import com.aren.thewitnesspuzzle.dialog.ColorPaletteDialog;
 import com.aren.thewitnesspuzzle.game.Game;
-import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
-import com.aren.thewitnesspuzzle.puzzle.HexagonPuzzle;
-import com.aren.thewitnesspuzzle.puzzle.JunglePuzzle;
-import com.aren.thewitnesspuzzle.puzzle.Puzzle;
-import com.aren.thewitnesspuzzle.puzzle.VideoRoomPuzzle;
-import com.aren.thewitnesspuzzle.puzzle.color.PalettePreset;
-import com.aren.thewitnesspuzzle.puzzle.color.PuzzleColorPalette;
+import com.aren.thewitnesspuzzle.puzzle.base.GridPuzzle;
+import com.aren.thewitnesspuzzle.puzzle.base.HexagonPuzzle;
+import com.aren.thewitnesspuzzle.puzzle.base.JunglePuzzle;
+import com.aren.thewitnesspuzzle.puzzle.base.PuzzleBase;
+import com.aren.thewitnesspuzzle.puzzle.base.VideoRoomPuzzle;
+import com.aren.thewitnesspuzzle.puzzle.base.color.PalettePreset;
+import com.aren.thewitnesspuzzle.puzzle.base.color.PuzzleColorPalette;
 import com.aren.thewitnesspuzzle.puzzle.factory.Difficulty;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryConfig;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;
+import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
 import com.aren.thewitnesspuzzle.view.ColorPaletteView;
 
 import java.util.UUID;
@@ -36,7 +37,7 @@ public class PuzzleEditorActivity extends AppCompatActivity {
     protected static final Difficulty[] DIFFICULTIES = new Difficulty[]{Difficulty.ALWAYS_SOLVABLE, Difficulty.VERY_EASY, Difficulty.EASY, Difficulty.NORMAL, Difficulty.HARD, Difficulty.VERY_HARD};
 
     Game game;
-    Puzzle puzzle;
+    PuzzleRenderer puzzleRenderer;
 
     String puzzleType = "grid";
     PuzzleColorPalette palette;
@@ -143,7 +144,7 @@ public class PuzzleEditorActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         paletteView.invalidate();
-                        puzzle.shouldUpdateStaticShapes();
+                        puzzleRenderer.shouldUpdateStaticShapes();
                         game.update();
                     }
                 });
@@ -191,18 +192,22 @@ public class PuzzleEditorActivity extends AppCompatActivity {
     }
 
     protected void resetPuzzle() {
+        PuzzleBase puzzleBase = null;
         if (puzzleType.equals("grid")) {
-            puzzle = new GridPuzzle(game, palette, getWidth(), getHeight(), false);
-            ((GridPuzzle) puzzle).addStartingPoint(0, 0);
-            ((GridPuzzle) puzzle).addEndingPoint(getWidth(), getHeight());
+            puzzleBase = new GridPuzzle(palette, getWidth(), getHeight());
+            ((GridPuzzle) puzzleBase).addStartingPoint(0, 0);
+            ((GridPuzzle) puzzleBase).addEndingPoint(getWidth(), getHeight());
         } else if (puzzleType.equals("hexagon")) {
-            puzzle = new HexagonPuzzle(game, palette, false);
+            puzzleBase = new HexagonPuzzle(palette);
         } else if (puzzleType.equals("jungle")) {
-            puzzle = new JunglePuzzle(game, palette, getWidth());
+            puzzleBase = new JunglePuzzle(palette, getWidth());
         } else if (puzzleType.equals("video_room")) {
-            puzzle = new VideoRoomPuzzle(game, palette);
+            puzzleBase = new VideoRoomPuzzle(palette);
         }
-        game.setPuzzle(puzzle);
+
+        puzzleRenderer = new PuzzleRenderer(game, puzzleBase, false);
+
+        game.setPuzzle(puzzleRenderer);
         game.update();
     }
 

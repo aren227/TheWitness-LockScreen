@@ -1,12 +1,14 @@
 package com.aren.thewitnesspuzzle.puzzle.base;
 
+import com.aren.thewitnesspuzzle.math.BoundingBox;
 import com.aren.thewitnesspuzzle.math.Vector2;
-import com.aren.thewitnesspuzzle.puzzle.color.PuzzleColorPalette;
-import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
-import com.aren.thewitnesspuzzle.puzzle.graph.GraphElement;
-import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
-import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
-import com.aren.thewitnesspuzzle.puzzle.rules.Rule;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.RuleBase;
+import com.aren.thewitnesspuzzle.puzzle.base.color.PuzzleColorPalette;
+import com.aren.thewitnesspuzzle.puzzle.base.graph.Edge;
+import com.aren.thewitnesspuzzle.puzzle.base.graph.GraphElement;
+import com.aren.thewitnesspuzzle.puzzle.base.graph.Tile;
+import com.aren.thewitnesspuzzle.puzzle.base.graph.Vertex;
+import com.aren.thewitnesspuzzle.puzzle.base.cursor.Cursor;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,6 +26,11 @@ public class PuzzleBase {
 
     protected PuzzleColorPalette color;
 
+    protected BoundingBox boundingBox = new BoundingBox();
+
+    // Manipulate path width (not serialized)
+    protected float overridePathWidth = 0;
+
     public PuzzleBase(PuzzleColorPalette color){
         this.color = color;
     }
@@ -34,15 +41,18 @@ public class PuzzleBase {
 
             JSONArray vertexArray = jsonObject.getJSONArray("vertices");
             for(int i = 0; i < vertexArray.length(); i++)
-                vertices.add(new Vertex(this, vertexArray.getJSONObject(i)));
+                new Vertex(this, vertexArray.getJSONObject(i));
 
             JSONArray edgeArray = jsonObject.getJSONArray("edges");
             for(int i = 0; i < edgeArray.length(); i++)
-                edges.add(new Edge(this, edgeArray.getJSONObject(i)));
+                new Edge(this, edgeArray.getJSONObject(i));
 
             JSONArray tileArray = jsonObject.getJSONArray("tiles");
             for(int i = 0; i < tileArray.length(); i++)
-                tiles.add(new Tile(this, tileArray.getJSONObject(i)));
+                new Tile(this, tileArray.getJSONObject(i));
+
+            for(Vertex vertex : vertices)
+                boundingBox.addCircle(vertex.getPosition(), 0.5f);
 
         } catch (JSONException ignored) {
 
@@ -55,6 +65,19 @@ public class PuzzleBase {
 
     public PuzzleColorPalette getColorPalette() {
         return color;
+    }
+
+    public BoundingBox getBoundingBox() {
+        return boundingBox;
+    }
+
+    public float getPathWidth() {
+        if(overridePathWidth > 0) return overridePathWidth;
+        return Math.max(getBoundingBox().getWidth(), getBoundingBox().getHeight()) * 0.05f + 0.05f;
+    }
+
+    public void setOverridePathWidth(float pathWidth){
+        overridePathWidth = pathWidth;
     }
 
     public Vertex getVertex(int index) {
@@ -87,6 +110,8 @@ public class PuzzleBase {
             edges.add((Edge) graphElement);
         else if(graphElement instanceof Tile)
             tiles.add((Tile) graphElement);
+
+        boundingBox.addCircle(graphElement.getPosition(), 0.5f);
     }
 
     public Edge getNearestEdge(Vector2 pos) {
@@ -139,8 +164,8 @@ public class PuzzleBase {
         return edgeTable[from.index][to.index];
     }
 
-    public List<Rule> getAllRules() {
-        List<Rule> rules = new ArrayList<>();
+    public List<RuleBase> getAllRules() {
+        List<RuleBase> rules = new ArrayList<>();
         for (Vertex vertex : vertices) {
             if (vertex.getRule() != null) {
                 rules.add(vertex.getRule());
@@ -157,6 +182,10 @@ public class PuzzleBase {
             }
         }
         return rules;
+    }
+
+    public Cursor createCursor(Vertex start) {
+        return new Cursor(this, start);
     }
 
     public JSONObject serialize() throws JSONException {

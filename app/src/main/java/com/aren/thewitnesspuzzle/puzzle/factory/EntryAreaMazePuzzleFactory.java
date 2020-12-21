@@ -4,14 +4,15 @@ import android.content.Context;
 
 import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.math.Vector2Int;
-import com.aren.thewitnesspuzzle.puzzle.Puzzle;
-import com.aren.thewitnesspuzzle.puzzle.color.PalettePreset;
-import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
-import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
-import com.aren.thewitnesspuzzle.puzzle.rules.EndingPointRule;
-import com.aren.thewitnesspuzzle.puzzle.rules.SquareVertexRule;
-import com.aren.thewitnesspuzzle.puzzle.rules.StartingPointRule;
+import com.aren.thewitnesspuzzle.puzzle.base.PuzzleBase;
+import com.aren.thewitnesspuzzle.puzzle.base.color.PalettePreset;
+import com.aren.thewitnesspuzzle.puzzle.base.graph.Edge;
+import com.aren.thewitnesspuzzle.puzzle.base.graph.Vertex;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.EndingPointRule;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.SquareVertexRule;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.StartingPointRule;
 import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridTreeWalker;
+import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,12 +26,12 @@ public class EntryAreaMazePuzzleFactory extends PuzzleFactory {
     }
 
     @Override
-    public Puzzle generate(Game game, Random random) {
-        Puzzle puzzle = new Puzzle(game, PalettePreset.get("Entry_1"));
+    public PuzzleRenderer generate(Game game, Random random) {
+        PuzzleBase puzzle = new PuzzleBase(PalettePreset.get("Entry_1"));
 
         int width = 6;
         int height = 6;
-        puzzle.setPathWidth(Math.min(width, height) * 0.05f + 0.05f);
+        puzzle.setOverridePathWidth(Math.min(width, height) * 0.05f + 0.05f);
 
         int startX = random.nextInt(width + 1);
         int startY = random.nextInt(height + 1);
@@ -55,7 +56,7 @@ public class EntryAreaMazePuzzleFactory extends PuzzleFactory {
 
         for (int i = 0; i <= width; i++) {
             for (int j = 0; j <= height; j++) {
-                gridVertices[i][j] = puzzle.addVertex(new Vertex(puzzle, i, j));
+                gridVertices[i][j] = new Vertex(puzzle, i, j);
             }
         }
 
@@ -65,7 +66,7 @@ public class EntryAreaMazePuzzleFactory extends PuzzleFactory {
                     if (((tree.direction[i][j] >> k) & 1) > 0) {
                         Vertex from = gridVertices[i][j];
                         Vertex to = gridVertices[i + tree.delta[k][0]][j + tree.delta[k][1]];
-                        puzzle.addEdge(new Edge(from, to));
+                        new Edge(puzzle, from, to);
                     }
                 }
             }
@@ -97,16 +98,16 @@ public class EntryAreaMazePuzzleFactory extends PuzzleFactory {
 
         Vertex end = null;
         if (endY == 0) {
-            end = puzzle.addVertex(new Vertex(puzzle, endX, endY - puzzle.getPathWidth()), true);
+            end = new Vertex(puzzle, endX, endY - puzzle.getPathWidth());
         } else if (endY == height) {
-            end = puzzle.addVertex(new Vertex(puzzle, endX, endY + puzzle.getPathWidth()), true);
+            end = new Vertex(puzzle, endX, endY + puzzle.getPathWidth());
         } else if (endX == 0) {
-            end = puzzle.addVertex(new Vertex(puzzle, endX - puzzle.getPathWidth(), endY), true);
+            end = new Vertex(puzzle, endX - puzzle.getPathWidth(), endY);
         } else if (endX == width) {
-            end = puzzle.addVertex(new Vertex(puzzle, endX + puzzle.getPathWidth(), endY), true);
+            end = new Vertex(puzzle, endX + puzzle.getPathWidth(), endY);
         }
 
-        puzzle.addEdge(new Edge(gridVertices[endX][endY], end));
+        new Edge(puzzle, gridVertices[endX][endY], end);
         end.setRule(new EndingPointRule());
 
         for (int i = 0; i <= width; i++) {
@@ -117,7 +118,7 @@ public class EntryAreaMazePuzzleFactory extends PuzzleFactory {
             }
         }
 
-        return puzzle;
+        return new PuzzleRenderer(game, puzzle);
     }
 
     @Override

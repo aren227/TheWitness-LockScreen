@@ -1,6 +1,6 @@
 package com.aren.thewitnesspuzzle.puzzle.animation;
 
-import com.aren.thewitnesspuzzle.puzzle.Puzzle;
+import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -13,7 +13,7 @@ public class PuzzleAnimationManager {
     private List<Animation> tempRemoveQueue;
     private boolean lock;
 
-    public PuzzleAnimationManager(Puzzle puzzle) {
+    public PuzzleAnimationManager(PuzzleRenderer puzzle) {
         animations = new ArrayList<>();
         tempAddQueue = new ArrayList<>();
         tempRemoveQueue = new ArrayList<>();

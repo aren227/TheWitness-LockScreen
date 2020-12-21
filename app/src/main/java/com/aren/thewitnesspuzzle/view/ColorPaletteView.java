@@ -7,7 +7,7 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 
 import com.aren.thewitnesspuzzle.math.MathUtils;
-import com.aren.thewitnesspuzzle.puzzle.color.PuzzleColorPalette;
+import com.aren.thewitnesspuzzle.puzzle.base.color.PuzzleColorPalette;
 
 public class ColorPaletteView extends androidx.appcompat.widget.AppCompatImageView {
 
@@ -30,7 +30,7 @@ public class ColorPaletteView extends androidx.appcompat.widget.AppCompatImageVi
     protected void onDraw(Canvas canvas) {
         canvas.drawColor(Color.BLACK);
         if (palette != null) {
-            int[] colors = new int[]{palette.getBackgroundColor(), palette.getPathColor(), palette.actualCursorColor.getOriginalValue(), palette.getCursorSucceededColor(), palette.getCursorFailedColor()};
+            int[] colors = new int[]{palette.getBackgroundColor(), palette.getPathColor(), palette.getCursorColor(), palette.getCursorSucceededColor(), palette.getCursorFailedColor()};
             paint.setStyle(Paint.Style.FILL);
             for (int i = 0; i < 5; i++) {
                 paint.setColor(colors[i]);

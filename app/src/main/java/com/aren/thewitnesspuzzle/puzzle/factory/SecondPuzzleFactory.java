@@ -3,12 +3,13 @@ package com.aren.thewitnesspuzzle.puzzle.factory;
 import android.content.Context;
 
 import com.aren.thewitnesspuzzle.game.Game;
-import com.aren.thewitnesspuzzle.puzzle.Puzzle;
-import com.aren.thewitnesspuzzle.puzzle.color.PalettePreset;
-import com.aren.thewitnesspuzzle.puzzle.graph.Edge;
-import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
-import com.aren.thewitnesspuzzle.puzzle.rules.EndingPointRule;
-import com.aren.thewitnesspuzzle.puzzle.rules.StartingPointRule;
+import com.aren.thewitnesspuzzle.puzzle.base.PuzzleBase;
+import com.aren.thewitnesspuzzle.puzzle.base.color.PalettePreset;
+import com.aren.thewitnesspuzzle.puzzle.base.graph.Edge;
+import com.aren.thewitnesspuzzle.puzzle.base.graph.Vertex;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.EndingPointRule;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.StartingPointRule;
+import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
 
 import java.util.Random;
 
@@ -19,19 +20,19 @@ public class SecondPuzzleFactory extends PuzzleFactory {
     }
 
     @Override
-    public Puzzle generate(Game game, Random random) {
-        Puzzle puzzle = new Puzzle(game, PalettePreset.get("Entry_1"));
+    public PuzzleRenderer generate(Game game, Random random) {
+        PuzzleBase puzzle = new PuzzleBase(PalettePreset.get("Entry_1"));
 
-        Vertex a = puzzle.addVertex(new Vertex(puzzle, 3, 0));
-        Vertex b = puzzle.addVertex(new Vertex(puzzle, 3, 3));
-        Vertex c = puzzle.addVertex(new Vertex(puzzle, 0, 3));
-        puzzle.addEdge(new Edge(a, b));
-        puzzle.addEdge(new Edge(b, c));
+        Vertex a = new Vertex(puzzle, 3, 0);
+        Vertex b = new Vertex(puzzle, 3, 3);
+        Vertex c = new Vertex(puzzle, 0, 3);
+        new Edge(puzzle, a, b);
+        new Edge(puzzle, b, c);
 
         a.setRule(new StartingPointRule());
         c.setRule(new EndingPointRule());
 
-        return puzzle;
+        return new PuzzleRenderer(game, puzzle);
     }
 
     @Override

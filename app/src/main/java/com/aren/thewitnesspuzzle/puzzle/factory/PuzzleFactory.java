@@ -4,7 +4,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 
 import com.aren.thewitnesspuzzle.game.Game;
-import com.aren.thewitnesspuzzle.puzzle.Puzzle;
+import com.aren.thewitnesspuzzle.puzzle.base.PuzzleBase;
+import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +32,7 @@ public abstract class PuzzleFactory {
         onPreviewRenderedCallbackQueue = new ArrayList<>();
     }
 
-    public abstract Puzzle generate(Game game, Random random);
+    public abstract PuzzleRenderer generate(Game game, Random random);
 
     public Difficulty getDifficulty() {
         return null;

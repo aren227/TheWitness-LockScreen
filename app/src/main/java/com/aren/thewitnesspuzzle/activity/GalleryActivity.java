@@ -11,11 +11,9 @@ import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,13 +34,12 @@ import com.aren.thewitnesspuzzle.gallery.OnPreviewClick;
 import com.aren.thewitnesspuzzle.gallery.OnUpdate;
 import com.aren.thewitnesspuzzle.gallery.PuzzleOrderAdapter;
 import com.aren.thewitnesspuzzle.game.Game;
-import com.aren.thewitnesspuzzle.puzzle.ErrorPuzzle;
-import com.aren.thewitnesspuzzle.puzzle.Puzzle;
+import com.aren.thewitnesspuzzle.puzzle.base.ErrorPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.factory.CustomPatternPuzzleFactory;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactory;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;
+import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -50,7 +47,6 @@ import java.util.List;
 import java.util.Random;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.loader.content.CursorLoader;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -640,15 +636,15 @@ public class GalleryActivity extends AppCompatActivity {
             @Override
             public void run() {
                 for (GalleryPreview preview : previewsToRender) {
-                    Puzzle puzzle;
+                    PuzzleRenderer puzzleRenderer;
                     if (preview.puzzleFactory instanceof CustomPatternPuzzleFactory)
-                        puzzle = ((CustomPatternPuzzleFactory) preview.puzzleFactory).generateWithPattern(tempGame, new Random(), true);
-                    else puzzle = preview.puzzleFactory.generate(tempGame, new Random());
+                        puzzleRenderer = ((CustomPatternPuzzleFactory) preview.puzzleFactory).generateWithPattern(tempGame, new Random(), true);
+                    else puzzleRenderer = preview.puzzleFactory.generate(tempGame, new Random());
 
                     // Load Failed
-                    if (puzzle == null) puzzle = new ErrorPuzzle(tempGame);
+                    if (puzzleRenderer == null) puzzleRenderer = new PuzzleRenderer(tempGame, new ErrorPuzzle());
 
-                    tempGame.getSurfaceView().glRenderer.addRenderQueue(puzzle);
+                    tempGame.getSurfaceView().glRenderer.addRenderQueue(puzzleRenderer);
                 }
             }
         });

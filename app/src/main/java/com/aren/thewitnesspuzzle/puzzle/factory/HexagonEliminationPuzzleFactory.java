@@ -3,17 +3,16 @@ package com.aren.thewitnesspuzzle.puzzle.factory;
 import android.content.Context;
 
 import com.aren.thewitnesspuzzle.game.Game;
-import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
-import com.aren.thewitnesspuzzle.puzzle.Puzzle;
-import com.aren.thewitnesspuzzle.puzzle.color.PalettePreset;
-import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
-import com.aren.thewitnesspuzzle.puzzle.cursor.area.GridAreaSplitter;
-import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
-import com.aren.thewitnesspuzzle.puzzle.rules.BrokenLineRule;
-import com.aren.thewitnesspuzzle.puzzle.rules.EliminationRule;
-import com.aren.thewitnesspuzzle.puzzle.rules.HexagonRule;
+import com.aren.thewitnesspuzzle.puzzle.base.GridPuzzle;
+import com.aren.thewitnesspuzzle.puzzle.base.color.PalettePreset;
+import com.aren.thewitnesspuzzle.puzzle.base.cursor.Cursor;
+import com.aren.thewitnesspuzzle.puzzle.base.cursor.area.GridAreaSplitter;
+import com.aren.thewitnesspuzzle.puzzle.base.graph.Vertex;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.BrokenLineRule;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.EliminationRule;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.HexagonRule;
 import com.aren.thewitnesspuzzle.puzzle.walker.FastGridTreeWalker;
-import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridWalker;
+import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -24,8 +23,8 @@ public class HexagonEliminationPuzzleFactory extends PuzzleFactory {
     }
 
     @Override
-    public Puzzle generate(Game game, Random random) {
-        GridPuzzle puzzle = new GridPuzzle(game, PalettePreset.get("Quarry_1"), 3, 3);
+    public PuzzleRenderer generate(Game game, Random random) {
+        GridPuzzle puzzle = new GridPuzzle(PalettePreset.get("Quarry_1"), 3, 3);
 
         puzzle.addStartingPoint(0, 0);
         puzzle.addEndingPoint(3, 3);
@@ -41,7 +40,7 @@ public class HexagonEliminationPuzzleFactory extends PuzzleFactory {
         HexagonRule.generate(cursor, random, 0.75f);
         EliminationRule.generateFakeHexagon(splitter, random);
 
-        return puzzle;
+        return new PuzzleRenderer(game, puzzle);
     }
 
     @Override

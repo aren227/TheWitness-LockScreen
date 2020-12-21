@@ -11,8 +11,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.aren.thewitnesspuzzle.R;
-import com.aren.thewitnesspuzzle.puzzle.color.PalettePreset;
-import com.aren.thewitnesspuzzle.puzzle.color.PuzzleColorPalette;
+import com.aren.thewitnesspuzzle.puzzle.base.color.PalettePreset;
+import com.aren.thewitnesspuzzle.puzzle.base.color.PuzzleColorPalette;
 import com.aren.thewitnesspuzzle.view.ColorPaletteView;
 
 import androidx.annotation.NonNull;
@@ -123,7 +123,7 @@ public class ColorPaletteDialog extends Dialog {
                 public void onClick(View v) {
                     backgroundColorRef[0] = palette.getBackgroundColor();
                     pathColorRef[0] = palette.getPathColor();
-                    lineColorRef[0] = palette.actualCursorColor.getOriginalValue();
+                    lineColorRef[0] = palette.getCursorColor();
                     successColorRef[0] = palette.getCursorSucceededColor();
                     failureColorRef[0] = palette.getCursorFailedColor();
                     updateColors();
@@ -159,7 +159,7 @@ public class ColorPaletteDialog extends Dialog {
 
         backgroundColorRef = new int[]{palette.getBackgroundColor()};
         pathColorRef = new int[]{palette.getPathColor()};
-        lineColorRef = new int[]{palette.actualCursorColor.getOriginalValue()};
+        lineColorRef = new int[]{palette.getCursorColor()};
         successColorRef = new int[]{palette.getCursorSucceededColor()};
         failureColorRef = new int[]{palette.getCursorFailedColor()};
     }

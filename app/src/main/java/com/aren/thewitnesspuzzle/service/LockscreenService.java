@@ -17,21 +17,17 @@ import android.os.IBinder;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.aren.thewitnesspuzzle.R;
 import com.aren.thewitnesspuzzle.activity.MainActivity;
 import com.aren.thewitnesspuzzle.game.Game;
-import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 import com.aren.thewitnesspuzzle.puzzle.animation.PuzzleFadeInAnimation;
 import com.aren.thewitnesspuzzle.puzzle.animation.PuzzleFadeOutAnimation;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactory;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;
 import com.aren.thewitnesspuzzle.puzzle.sound.Sounds;
+import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
 
 import java.util.Random;
 
@@ -43,7 +39,7 @@ public class LockscreenService extends Service {
 
     public PuzzleFactoryManager puzzleFactoryManager;
 
-    public Puzzle puzzle;
+    public PuzzleRenderer puzzle;
 
     public int phoneState = TelephonyManager.CALL_STATE_IDLE;
     public boolean interrupted = false;

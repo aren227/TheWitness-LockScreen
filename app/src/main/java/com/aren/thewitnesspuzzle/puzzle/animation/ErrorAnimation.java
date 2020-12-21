@@ -1,23 +1,24 @@
 package com.aren.thewitnesspuzzle.puzzle.animation;
 
+import com.aren.thewitnesspuzzle.graphics.shape.HexagonShape;
 import com.aren.thewitnesspuzzle.graphics.shape.Shape;
 import com.aren.thewitnesspuzzle.math.MathUtils;
-import com.aren.thewitnesspuzzle.puzzle.rules.HexagonRule;
-import com.aren.thewitnesspuzzle.puzzle.rules.Rule;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.HexagonRule;
+import com.aren.thewitnesspuzzle.render.RuleShape;
 
 public class ErrorAnimation extends Animation {
 
     private Shape shape;
     private boolean shouldFloat;
 
-    public ErrorAnimation(Rule rule) {
-        this(rule, 10);
+    public ErrorAnimation(Shape shape) {
+        this(shape, 10);
     }
 
-    public ErrorAnimation(Rule rule, int repeat) {
+    public ErrorAnimation(Shape shape, int repeat) {
         super(500, repeat, false);
-        shape = rule.getShape();
-        if (rule instanceof HexagonRule) shouldFloat = true;
+        this.shape = shape;
+        if (shape instanceof HexagonShape) shouldFloat = true;
     }
 
     @Override
@@ -33,7 +34,7 @@ public class ErrorAnimation extends Animation {
         shape.color.setAnimationValue(this, c);
 
         if (shouldFloat) {
-            shape.zIndex.setAnimationValue(this, HexagonRule.Z_INDEX_FLOAT);
+            shape.zIndex.setAnimationValue(this, RuleShape.Z_INDEX_FLOAT);
         }
     }
 }

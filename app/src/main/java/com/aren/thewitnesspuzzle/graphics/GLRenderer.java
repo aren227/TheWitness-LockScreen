@@ -6,13 +6,12 @@ import android.graphics.Color;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
-import android.util.Log;
 
 import com.aren.thewitnesspuzzle.R;
 import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.math.BoundingBox;
 import com.aren.thewitnesspuzzle.math.Vector2;
-import com.aren.thewitnesspuzzle.puzzle.Puzzle;
+import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -65,7 +64,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     private short[] quadIndex = {0, 1, 2, 0, 2, 3}; // order to draw vertices
     private ShortBuffer quadIndexBuffer;
 
-    private ConcurrentLinkedQueue<Puzzle> renderQueue = new ConcurrentLinkedQueue<>(); // only used in gallery
+    private ConcurrentLinkedQueue<PuzzleRenderer> renderQueue = new ConcurrentLinkedQueue<>(); // only used in gallery
     private ConcurrentLinkedQueue<Bitmap> renderResults = new ConcurrentLinkedQueue<>();
     private boolean renderMode = false;
 
@@ -196,7 +195,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
             setupTextures();
         }
 
-        Puzzle puzzle = game.getPuzzle();
+        PuzzleRenderer puzzle = game.getPuzzle();
         if (renderMode) {
             puzzle = renderQueue.poll();
         }
@@ -232,7 +231,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
             if (bloom) GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer.get(0));
             else GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
 
-            int backgroundColor = puzzle.getColorPalette().getBackgroundColor();
+            int backgroundColor = puzzle.getPuzzleBase().getColorPalette().getBackgroundColor();
             float fi = puzzle.getFadeIntensity().get();
 
             GLES20.glClearColor(Color.red(backgroundColor) / 255f * fi, Color.green(backgroundColor) / 255f * fi, Color.blue(backgroundColor) / 255f * fi, 1.0f);
@@ -287,7 +286,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
                     blurUpInit.setVertexAttrib("aTextureCoord", 2, quadUVBuffer);
                     blurUpInit.setUniform1i("tex", i - 4);
                     blurUpInit.setUniform1i("source", 0);
-                    blurUpInit.setUniform1f("amount", puzzle.getColorPalette().getBloomIntensity() * 0.25f);
+                    blurUpInit.setUniform1f("amount", puzzle.getPuzzleBase().getColorPalette().getBloomIntensity() * 0.25f);
                     blurUpInit.setUniform1f("division", 1.0f);
 
                     GLES20.glDrawElements(GLES20.GL_TRIANGLES, quadIndex.length, GLES20.GL_UNSIGNED_SHORT, quadIndexBuffer);
@@ -305,7 +304,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
                     blurUp.setVertexAttrib("aTextureCoord", 2, quadUVBuffer);
                     blurUp.setUniform1i("tex", i - 4);
                     blurUp.setUniform1i("source", lastBufferIdx == 0 ? 5 : 0);
-                    blurUp.setUniform1f("amount", puzzle.getColorPalette().getBloomIntensity() * 0.25f);
+                    blurUp.setUniform1f("amount", puzzle.getPuzzleBase().getColorPalette().getBloomIntensity() * 0.25f);
 
                     GLES20.glDrawElements(GLES20.GL_TRIANGLES, quadIndex.length, GLES20.GL_UNSIGNED_SHORT, quadIndexBuffer);
                 }
@@ -323,7 +322,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         }
     }
 
-    public float getFrustumWidth(Puzzle puzzle) {
+    public float getFrustumWidth(PuzzleRenderer puzzle) {
         BoundingBox boundingBox = puzzle.getBoundingBox();
 
         float bbWidth = boundingBox.getWidth() + puzzle.getPadding() * 2;
@@ -333,7 +332,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         return bbHeight / ratio;
     }
 
-    public BoundingBox getFrustumBoundingBox(Puzzle puzzle) {
+    public BoundingBox getFrustumBoundingBox(PuzzleRenderer puzzle) {
         BoundingBox boundingBox = new BoundingBox();
         boundingBox.min = new Vector2(puzzle.getBoundingBox().getCenter().x - getFrustumWidth(puzzle) * 0.5f, puzzle.getBoundingBox().getCenter().y - getFrustumWidth(puzzle) * ratio * 0.5f);
         boundingBox.max = new Vector2(puzzle.getBoundingBox().getCenter().x + getFrustumWidth(puzzle) * 0.5f, puzzle.getBoundingBox().getCenter().y + getFrustumWidth(puzzle) * ratio * 0.5f);
@@ -341,7 +340,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     }
 
     // https://stackoverflow.com/questions/5514149/capture-screen-of-glsurfaceview-to-bitmap
-    public void saveToBitmap(Puzzle puzzle) {
+    public void saveToBitmap(PuzzleRenderer puzzle) {
         int[] bitmapBuffer = new int[width * height];
         int[] bitmapSource = new int[width * height];
         IntBuffer intBuffer = IntBuffer.wrap(bitmapBuffer);
@@ -365,7 +364,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         renderResults.add(Bitmap.createBitmap(bitmapSource, width, height, Bitmap.Config.ARGB_8888));
     }
 
-    public void addRenderQueue(Puzzle puzzle) {
+    public void addRenderQueue(PuzzleRenderer puzzle) {
         renderQueue.add(puzzle);
     }
 

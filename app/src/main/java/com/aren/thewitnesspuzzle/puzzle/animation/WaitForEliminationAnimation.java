@@ -1,19 +1,21 @@
 package com.aren.thewitnesspuzzle.puzzle.animation;
 
-import com.aren.thewitnesspuzzle.puzzle.Puzzle;
+import com.aren.thewitnesspuzzle.puzzle.base.color.PuzzleColorPalette;
+import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
 
 public class WaitForEliminationAnimation extends Animation {
 
-    private Puzzle puzzle;
+    private PuzzleRenderer puzzleRenderer;
 
-    public WaitForEliminationAnimation(Puzzle puzzle, Runnable runnable) {
+    public WaitForEliminationAnimation(PuzzleRenderer puzzleRenderer, Runnable runnable) {
         super(1000, 1, true);
-        this.puzzle = puzzle;
+        this.puzzleRenderer = puzzleRenderer;
         whenDone(runnable);
     }
 
     @Override
     protected void update(float rate) {
-        puzzle.getColorPalette().actualCursorColor.setAnimationValue(this, puzzle.getColorPalette().getCursorFailedColor());
+        PuzzleColorPalette colorPalette = puzzleRenderer.getPuzzleBase().getColorPalette();
+        puzzleRenderer.getCursorColor().setAnimationValue(this, colorPalette.getCursorFailedColor());
     }
 }

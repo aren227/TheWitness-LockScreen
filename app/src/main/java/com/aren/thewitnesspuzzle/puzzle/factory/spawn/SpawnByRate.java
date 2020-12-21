@@ -1,15 +1,8 @@
 package com.aren.thewitnesspuzzle.puzzle.factory.spawn;
 
-import com.aren.thewitnesspuzzle.puzzle.cursor.area.Area;
-import com.aren.thewitnesspuzzle.puzzle.cursor.area.GridAreaSplitter;
-import com.aren.thewitnesspuzzle.puzzle.graph.GraphElement;
-import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
-
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 public class SpawnByRate implements SpawnSelector {

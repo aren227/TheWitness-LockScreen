@@ -3,19 +3,18 @@ package com.aren.thewitnesspuzzle.puzzle.factory;
 import android.content.Context;
 
 import com.aren.thewitnesspuzzle.game.Game;
-import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
-import com.aren.thewitnesspuzzle.puzzle.Puzzle;
-import com.aren.thewitnesspuzzle.puzzle.color.PalettePreset;
-import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
-import com.aren.thewitnesspuzzle.puzzle.cursor.area.Area;
-import com.aren.thewitnesspuzzle.puzzle.cursor.area.GridAreaSplitter;
-import com.aren.thewitnesspuzzle.puzzle.graph.Tile;
-import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
-import com.aren.thewitnesspuzzle.puzzle.rules.BlocksRule;
-import com.aren.thewitnesspuzzle.puzzle.rules.Color;
-import com.aren.thewitnesspuzzle.puzzle.rules.SunRule;
+import com.aren.thewitnesspuzzle.puzzle.base.GridPuzzle;
+import com.aren.thewitnesspuzzle.puzzle.base.color.PalettePreset;
+import com.aren.thewitnesspuzzle.puzzle.base.cursor.Cursor;
+import com.aren.thewitnesspuzzle.puzzle.base.cursor.area.Area;
+import com.aren.thewitnesspuzzle.puzzle.base.cursor.area.GridAreaSplitter;
+import com.aren.thewitnesspuzzle.puzzle.base.graph.Tile;
+import com.aren.thewitnesspuzzle.puzzle.base.graph.Vertex;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.BlocksRule;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.Color;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.SunRule;
 import com.aren.thewitnesspuzzle.puzzle.walker.FastGridTreeWalker;
-import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridWalker;
+import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,8 +27,8 @@ public class SunBlockPuzzleFactory extends PuzzleFactory {
     }
 
     @Override
-    public Puzzle generate(Game game, Random random) {
-        GridPuzzle puzzle = new GridPuzzle(game, PalettePreset.get("Treehouse_3"), 5, 5);
+    public PuzzleRenderer generate(Game game, Random random) {
+        GridPuzzle puzzle = new GridPuzzle(PalettePreset.get("Treehouse_3"), 5, 5);
 
         puzzle.addStartingPoint(0, 0);
         puzzle.addEndingPoint(5, 5);
@@ -58,7 +57,7 @@ public class SunBlockPuzzleFactory extends PuzzleFactory {
 
         SunRule.generate(splitter, random, Arrays.asList(Color.PURPLE), 1f, 0.8f, 1.0f);
 
-        return puzzle;
+        return new PuzzleRenderer(game, puzzle);
     }
 
     @Override

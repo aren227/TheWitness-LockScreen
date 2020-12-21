@@ -9,12 +9,12 @@ import android.widget.TextView;
 
 import com.aren.thewitnesspuzzle.R;
 import com.aren.thewitnesspuzzle.game.Game;
-import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 import com.aren.thewitnesspuzzle.puzzle.animation.PuzzleFadeInAnimation;
 import com.aren.thewitnesspuzzle.puzzle.animation.PuzzleFadeOutAnimation;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactory;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;
 import com.aren.thewitnesspuzzle.puzzle.sound.Sounds;
+import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
 
 import java.util.Random;
 import java.util.UUID;
@@ -56,10 +56,9 @@ public class PlayActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         PuzzleFactoryManager.Profile profile = puzzleFactoryManager.getPlayProfile();
-                        if(profile.getType() == PuzzleFactoryManager.ProfileType.SEQUENCE){
+                        if (profile.getType() == PuzzleFactoryManager.ProfileType.SEQUENCE) {
                             nextPuzzle();
-                        }
-                        else if(profile.getType() == PuzzleFactoryManager.ProfileType.DEFAULT){
+                        } else if (profile.getType() == PuzzleFactoryManager.ProfileType.DEFAULT) {
                             nextImage.setVisibility(View.VISIBLE);
                             skipImage.setVisibility(View.GONE);
                         }
@@ -98,7 +97,7 @@ public class PlayActivity extends AppCompatActivity {
             factoryUuid = null;
         } else {
             seed = savedInstanceState.getLong("seed");
-            if(puzzleFactoryManager.getLastViewedProfile().getType() == PuzzleFactoryManager.ProfileType.DEFAULT){
+            if (puzzleFactoryManager.getLastViewedProfile().getType() == PuzzleFactoryManager.ProfileType.DEFAULT) {
                 factoryUuid = UUID.fromString(savedInstanceState.getString("uuid"));
             }
             sequenceIndex = savedInstanceState.getInt("sequenceIndex");
@@ -122,7 +121,7 @@ public class PlayActivity extends AppCompatActivity {
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putLong("seed", seed);
-        if(puzzleFactoryManager.getLastViewedProfile().getType() == PuzzleFactoryManager.ProfileType.DEFAULT){
+        if (puzzleFactoryManager.getLastViewedProfile().getType() == PuzzleFactoryManager.ProfileType.DEFAULT) {
             savedInstanceState.putString("uuid", factoryUuid.toString());
         }
         savedInstanceState.putInt("sequenceIndex", sequenceIndex);
@@ -146,8 +145,8 @@ public class PlayActivity extends AppCompatActivity {
         factoryUuid = null;
 
         PuzzleFactoryManager.Profile profile = puzzleFactoryManager.getPlayProfile();
-        if(profile.getType() == PuzzleFactoryManager.ProfileType.SEQUENCE){
-            if(sequenceIndex >= profile.getSequence().size()){
+        if (profile.getType() == PuzzleFactoryManager.ProfileType.SEQUENCE) {
+            if (sequenceIndex >= profile.getSequence().size()) {
                 // SUCCESS!
                 nextImage.setVisibility(View.VISIBLE);
                 skipImage.setVisibility(View.GONE);
@@ -171,7 +170,7 @@ public class PlayActivity extends AppCompatActivity {
 
     public boolean generatePuzzle() {
         PuzzleFactoryManager.Profile profile = puzzleFactoryManager.getPlayProfile();
-        if(profile.getType() == PuzzleFactoryManager.ProfileType.DEFAULT){
+        if (profile.getType() == PuzzleFactoryManager.ProfileType.DEFAULT) {
             PuzzleFactory factory = null;
             if (factoryUuid == null) {
                 factory = puzzleFactoryManager.getPlayProfile().getRandomPuzzleFactory(new Random());
@@ -185,21 +184,20 @@ public class PlayActivity extends AppCompatActivity {
             }
             if (factory == null) return false;
             factoryUuid = factory.getUuid();
-            Puzzle puzzle = factory.generate(game, new Random(seed));
-            game.setPuzzle(puzzle);
+            PuzzleRenderer puzzleRenderer = factory.generate(game, new Random(seed));
+            game.setPuzzle(puzzleRenderer);
             game.update();
             return true;
-        }
-        else if(profile.getType() == PuzzleFactoryManager.ProfileType.SEQUENCE){
-            if(profile.getSequence().size() == 0) return false;
+        } else if (profile.getType() == PuzzleFactoryManager.ProfileType.SEQUENCE) {
+            if (profile.getSequence().size() == 0) return false;
 
-            if(sequenceIndex >= profile.getSequence().size()){
+            if (sequenceIndex >= profile.getSequence().size()) {
                 sequenceIndex = 0;
             }
 
-            if(sequenceIndex == 0){
+            if (sequenceIndex == 0) {
                 game.playSound(Sounds.CHALLENGE_START);
-                if(profile.getMusicFile().exists()){
+                if (profile.getMusicFile().exists()) {
                     game.playExternalSound(profile.getMusicFile().getPath());
                 }
                 game.setTimerMode(profile.getTimeLength(), new Runnable() {
@@ -222,11 +220,11 @@ public class PlayActivity extends AppCompatActivity {
                 });
             }
 
-            Puzzle puzzle = profile.getSequence().get(sequenceIndex).generate(game, new Random(seed));
-            game.setPuzzle(puzzle);
+            PuzzleRenderer puzzleRenderer = profile.getSequence().get(sequenceIndex).generate(game, new Random(seed));
+            game.setPuzzle(puzzleRenderer);
 
-            if(sequenceIndex == 0){
-                puzzle.addAnimation(new PuzzleFadeInAnimation(puzzle, 2000));
+            if (sequenceIndex == 0) {
+                puzzleRenderer.addAnimation(new PuzzleFadeInAnimation(puzzleRenderer, 2000));
             }
 
             game.update();

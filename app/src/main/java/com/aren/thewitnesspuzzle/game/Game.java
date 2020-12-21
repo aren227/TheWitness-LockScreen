@@ -6,8 +6,8 @@ import android.media.MediaPlayer;
 import android.view.MotionEvent;
 
 import com.aren.thewitnesspuzzle.math.BoundingBox;
-import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 import com.aren.thewitnesspuzzle.puzzle.sound.Sounds;
+import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
 import com.aren.thewitnesspuzzle.view.PuzzleGLSurfaceView;
 
 import java.io.IOException;
@@ -23,7 +23,7 @@ public class Game {
 
     private PuzzleGLSurfaceView surfaceView;
 
-    private Puzzle puzzle;
+    private PuzzleRenderer puzzle;
 
     private HashMap<Integer, MediaPlayer> mediaPlayers = new HashMap<>();
 
@@ -89,18 +89,18 @@ public class Game {
         onClicked = runnable;
     }
 
-    public void setPuzzle(Puzzle puzzle) {
+    public void setPuzzle(PuzzleRenderer puzzle) {
         this.puzzle = puzzle;
 
         //update();
     }
 
-    public Puzzle getPuzzle() {
+    public PuzzleRenderer getPuzzle() {
         return puzzle;
     }
 
     public int getBackgroundColor() {
-        if (puzzle != null) return puzzle.getColorPalette().getBackgroundColor();
+        if (puzzle != null) return puzzle.getPuzzleBase().getColorPalette().getBackgroundColor();
         return Color.BLACK;
     }
 

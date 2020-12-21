@@ -10,8 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aren.thewitnesspuzzle.R;
-import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
-import com.aren.thewitnesspuzzle.puzzle.color.PalettePreset;
+import com.aren.thewitnesspuzzle.puzzle.base.color.PalettePreset;
 import com.aren.thewitnesspuzzle.puzzle.factory.Difficulty;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactory;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;
@@ -77,8 +76,8 @@ public class CreatePatternActivity extends PuzzleEditorActivity {
             @Override
             public void onClick(View v) {
                 if (state == State.FIRST_DRAWN) {
-                    puzzle.setCustomPattern(pattern);
-                    puzzle.setCursor(null);
+                    puzzleRenderer.setCustomPattern(pattern);
+                    puzzleRenderer.setCursor(null);
                     game.update();
 
                     state = State.VALIDATE;
@@ -94,10 +93,10 @@ public class CreatePatternActivity extends PuzzleEditorActivity {
         game.setOnSolved(new Runnable() {
             @Override
             public void run() {
-                if (puzzle.getCustomPattern() != null) {
+                if (puzzleRenderer.getCustomPattern() != null) {
                     state = State.DONE;
                 } else {
-                    pattern = puzzle.getCursor().getVisitedVertexIndices();
+                    pattern = puzzleRenderer.getCursor().getVisitedVertexIndices();
                     state = State.FIRST_DRAWN;
                 }
                 runOnUiThread(new Runnable() {
@@ -150,8 +149,8 @@ public class CreatePatternActivity extends PuzzleEditorActivity {
     }
 
     protected void deletePattern() {
-        puzzle.setCustomPattern(null);
-        puzzle.setCursor(null);
+        puzzleRenderer.setCustomPattern(null);
+        puzzleRenderer.setCursor(null);
         game.update();
 
         state = State.INIT;

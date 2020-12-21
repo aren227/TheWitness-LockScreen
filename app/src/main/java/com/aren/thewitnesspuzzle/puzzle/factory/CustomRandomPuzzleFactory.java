@@ -3,23 +3,22 @@ package com.aren.thewitnesspuzzle.puzzle.factory;
 import android.content.Context;
 
 import com.aren.thewitnesspuzzle.game.Game;
-import com.aren.thewitnesspuzzle.puzzle.GridPuzzle;
-import com.aren.thewitnesspuzzle.puzzle.Puzzle;
-import com.aren.thewitnesspuzzle.puzzle.color.PalettePreset;
-import com.aren.thewitnesspuzzle.puzzle.color.PuzzleColorPalette;
-import com.aren.thewitnesspuzzle.puzzle.cursor.Cursor;
-import com.aren.thewitnesspuzzle.puzzle.cursor.area.GridAreaSplitter;
-import com.aren.thewitnesspuzzle.puzzle.graph.Vertex;
-import com.aren.thewitnesspuzzle.puzzle.rules.BlocksRule;
-import com.aren.thewitnesspuzzle.puzzle.rules.BrokenLineRule;
-import com.aren.thewitnesspuzzle.puzzle.rules.Color;
-import com.aren.thewitnesspuzzle.puzzle.rules.EliminationRule;
-import com.aren.thewitnesspuzzle.puzzle.rules.HexagonRule;
-import com.aren.thewitnesspuzzle.puzzle.rules.SquareRule;
-import com.aren.thewitnesspuzzle.puzzle.rules.SunRule;
-import com.aren.thewitnesspuzzle.puzzle.rules.TrianglesRule;
+import com.aren.thewitnesspuzzle.puzzle.base.GridPuzzle;
+import com.aren.thewitnesspuzzle.puzzle.base.color.PalettePreset;
+import com.aren.thewitnesspuzzle.puzzle.base.color.PuzzleColorPalette;
+import com.aren.thewitnesspuzzle.puzzle.base.cursor.Cursor;
+import com.aren.thewitnesspuzzle.puzzle.base.cursor.area.GridAreaSplitter;
+import com.aren.thewitnesspuzzle.puzzle.base.graph.Vertex;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.BlocksRule;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.BrokenLineRule;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.Color;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.EliminationRule;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.HexagonRule;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.SquareRule;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.SunRule;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.TrianglesRule;
 import com.aren.thewitnesspuzzle.puzzle.walker.FastGridTreeWalker;
-import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridWalker;
+import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,7 +32,7 @@ public class CustomRandomPuzzleFactory extends PuzzleFactory {
     }
 
     @Override
-    public Puzzle generate(Game game, Random random) {
+    public PuzzleRenderer generate(Game game, Random random) {
         GridPuzzle puzzle = null;
 
         String puzzleType = getConfig().getString("puzzleType", "null");
@@ -46,7 +45,7 @@ public class CustomRandomPuzzleFactory extends PuzzleFactory {
         if (!getConfig().containsKey("width") || !getConfig().containsKey("height")) return null;
         int width = getConfig().getInt("width", 4);
         int height = getConfig().getInt("height", 4);
-        puzzle = new GridPuzzle(game, palette, width, height);
+        puzzle = new GridPuzzle(palette, width, height);
         puzzle.addStartingPoint(0, 0);
         puzzle.addEndingPoint(width, height);
 
@@ -104,7 +103,7 @@ public class CustomRandomPuzzleFactory extends PuzzleFactory {
             }
         }
 
-        return puzzle;
+        return new PuzzleRenderer(game, puzzle);
     }
 
     @Override

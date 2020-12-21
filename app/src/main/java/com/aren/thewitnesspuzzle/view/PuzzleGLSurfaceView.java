@@ -9,7 +9,6 @@ import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.graphics.GLRenderer;
 import com.aren.thewitnesspuzzle.math.BoundingBox;
 import com.aren.thewitnesspuzzle.math.MathUtils;
-import com.aren.thewitnesspuzzle.puzzle.Puzzle;
 
 public class PuzzleGLSurfaceView extends GLSurfaceView {
 
@@ -65,7 +64,7 @@ public class PuzzleGLSurfaceView extends GLSurfaceView {
         return true;
     }
 
-    public void capture(Puzzle puzzle) {
+    public void capture() {
         // Why It needs to draw several times to get a rendered result?
         // First one or two results are always black. wtf?
         // idk but i think it's buffer related issue.

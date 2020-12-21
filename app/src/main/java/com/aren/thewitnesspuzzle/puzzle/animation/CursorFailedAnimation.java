@@ -1,36 +1,38 @@
 package com.aren.thewitnesspuzzle.puzzle.animation;
 
 import com.aren.thewitnesspuzzle.math.MathUtils;
-import com.aren.thewitnesspuzzle.puzzle.Puzzle;
+import com.aren.thewitnesspuzzle.puzzle.base.color.PuzzleColorPalette;
+import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
 
 public class CursorFailedAnimation extends Animation {
 
-    private Puzzle puzzle;
+    private PuzzleRenderer puzzleRenderer;
 
-    public CursorFailedAnimation(final Puzzle puzzle) {
+    public CursorFailedAnimation(final PuzzleRenderer puzzleRenderer) {
         super(5000, 1, false);
-        this.puzzle = puzzle;
+        this.puzzleRenderer = puzzleRenderer;
 
         whenDone(new Runnable() {
             @Override
             public void run() {
-                puzzle.clearCursor();
+                puzzleRenderer.clearCursor();
             }
         });
     }
 
     @Override
     protected void update(float rate) {
-        int rr = android.graphics.Color.red(puzzle.getColorPalette().getCursorFailedColor());
-        int gg = android.graphics.Color.green(puzzle.getColorPalette().getCursorFailedColor());
-        int bb = android.graphics.Color.blue(puzzle.getColorPalette().getCursorFailedColor());
-        int r = android.graphics.Color.red(puzzle.getColorPalette().getPathColor());
-        int g = android.graphics.Color.green(puzzle.getColorPalette().getPathColor());
-        int b = android.graphics.Color.blue(puzzle.getColorPalette().getPathColor());
+        PuzzleColorPalette colorPalette = puzzleRenderer.getPuzzleBase().getColorPalette();
+        int rr = android.graphics.Color.red(colorPalette.getCursorFailedColor());
+        int gg = android.graphics.Color.green(colorPalette.getCursorFailedColor());
+        int bb = android.graphics.Color.blue(colorPalette.getCursorFailedColor());
+        int r = android.graphics.Color.red(colorPalette.getPathColor());
+        int g = android.graphics.Color.green(colorPalette.getPathColor());
+        int b = android.graphics.Color.blue(colorPalette.getPathColor());
         int c = android.graphics.Color.rgb(
                 (int) MathUtils.lerp(rr, r, rate),
                 (int) MathUtils.lerp(gg, g, rate),
                 (int) MathUtils.lerp(bb, b, rate));
-        puzzle.getColorPalette().actualCursorColor.setAnimationValue(this, c);
+        puzzleRenderer.getCursorColor().setAnimationValue(this, c);
     }
 }

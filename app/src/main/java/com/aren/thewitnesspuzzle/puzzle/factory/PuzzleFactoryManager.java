@@ -2,16 +2,11 @@ package com.aren.thewitnesspuzzle.puzzle.factory;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.net.Uri;
-
-import com.aren.thewitnesspuzzle.puzzle.rules.Color;
 
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.InputStream;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
