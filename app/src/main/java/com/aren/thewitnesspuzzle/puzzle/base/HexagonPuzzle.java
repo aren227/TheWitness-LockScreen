@@ -6,9 +6,12 @@ import com.aren.thewitnesspuzzle.puzzle.base.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.base.rules.EndingPointRule;
 import com.aren.thewitnesspuzzle.puzzle.base.rules.StartingPointRule;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class HexagonPuzzle extends PuzzleBase {
+
+    public static final String NAME = "hexagon";
 
     public HexagonPuzzle(PuzzleColorPalette color) {
         super(color);
@@ -44,5 +47,15 @@ public class HexagonPuzzle extends PuzzleBase {
 
     public HexagonPuzzle(JSONObject jsonObject) {
         super(jsonObject);
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    public void serialize(JSONObject jsonObject) throws JSONException {
+        super.serialize(jsonObject);
     }
 }

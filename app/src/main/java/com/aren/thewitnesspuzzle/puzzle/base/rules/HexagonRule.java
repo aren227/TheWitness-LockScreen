@@ -25,8 +25,8 @@ public class HexagonRule extends SymmetricColorable {
         super();
     }
 
-    public HexagonRule(SymmetricColor symmetricColor) {
-        super(symmetricColor);
+    public HexagonRule(SymmetryColor symmetryColor) {
+        super(symmetryColor);
     }
 
     public HexagonRule(JSONObject jsonObject) throws JSONException {

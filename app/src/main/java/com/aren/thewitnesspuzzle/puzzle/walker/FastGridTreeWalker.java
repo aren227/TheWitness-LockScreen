@@ -4,6 +4,7 @@ import com.aren.thewitnesspuzzle.math.Vector2Int;
 import com.aren.thewitnesspuzzle.puzzle.base.GridPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.base.GridSymmetryPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.base.graph.Vertex;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.SymmetryType;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -21,25 +22,25 @@ public class FastGridTreeWalker {
     public int[][] areaVisited;
     public int finalLength;
     public GridPuzzle gridPuzzle;
-    public GridSymmetryPuzzle.SymmetryType symmetryType;
+    public SymmetryType symmetryType;
 
     public int[][] travelOrder = {{0, 1, 2, 3}, {0, 1, 3, 2}, {0, 2, 1, 3}, {0, 2, 3, 1}, {0, 3, 1, 2}, {0, 3, 2, 1}, {1, 0, 2, 3}, {1, 0, 3, 2}, {1, 2, 0, 3}, {1, 2, 3, 0}, {1, 3, 0, 2}, {1, 3, 2, 0}, {2, 0, 1, 3}, {2, 0, 3, 1}, {2, 1, 0, 3}, {2, 1, 3, 0}, {2, 3, 0, 1}, {2, 3, 1, 0}, {3, 0, 1, 2}, {3, 0, 2, 1}, {3, 1, 0, 2}, {3, 1, 2, 0}, {3, 2, 0, 1}, {3, 2, 1, 0}};
     public int[][] delta = {{-1, 0}, {1, 0}, {0, 1}, {0, -1}};
     public int[] opposite = {1, 0, 3, 2};
 
     public boolean walk(int x, int y, int depth) {
-        if(symmetryType == GridSymmetryPuzzle.SymmetryType.VLINE && width % 2 == 0 && width / 2 == x)
+        if(symmetryType == SymmetryType.VLINE && width % 2 == 0 && width / 2 == x)
             return false;
-        if(symmetryType == GridSymmetryPuzzle.SymmetryType.POINT && width % 2 == 0 && height % 2 == 0 && width / 2 == x && height / 2 == y)
+        if(symmetryType == SymmetryType.POINT && width % 2 == 0 && height % 2 == 0 && width / 2 == x && height / 2 == y)
             return false;
 
         visited[x][y] = true;
         dist[x][y] = depth;
         direction[x][y] = 0;
 
-        if(symmetryType == GridSymmetryPuzzle.SymmetryType.VLINE)
+        if(symmetryType == SymmetryType.VLINE)
             visited[width - x][y] = true;
-        if(symmetryType == GridSymmetryPuzzle.SymmetryType.POINT)
+        if(symmetryType == SymmetryType.POINT)
             visited[width - x][height - y] = true;
 
         if(x == endX && y == endY){
@@ -76,7 +77,7 @@ public class FastGridTreeWalker {
         direction = new int[width + 1][height + 1];
 
         if(gridPuzzle instanceof GridSymmetryPuzzle)
-            symmetryType = ((GridSymmetryPuzzle)gridPuzzle).getSymmetryType();
+            symmetryType = ((GridSymmetryPuzzle)gridPuzzle).getSymmetry().getType();
 
         walk(startX, startY, 0);
     }

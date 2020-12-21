@@ -198,7 +198,7 @@ public class PuzzleFactoryConfig {
     public PuzzleColorPalette getColorPalette(String key, PuzzleColorPalette def) {
         try {
             JSONObject colorObj = jsonObject.getJSONObject(key);
-            def.set(PuzzleColorPalette.deserialize(colorObj));
+            def.set(new PuzzleColorPalette(colorObj));
         } catch (JSONException ignored) {
 
         }

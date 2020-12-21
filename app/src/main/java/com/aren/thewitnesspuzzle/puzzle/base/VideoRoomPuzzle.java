@@ -5,12 +5,15 @@ import com.aren.thewitnesspuzzle.puzzle.base.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.base.rules.EndingPointRule;
 import com.aren.thewitnesspuzzle.puzzle.base.rules.StartingPointRule;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class VideoRoomPuzzle extends PuzzleBase {
+
+    public static final String NAME = "video-room";
 
     public VideoRoomPuzzle(PuzzleColorPalette color) {
         super(color);
@@ -149,5 +152,15 @@ public class VideoRoomPuzzle extends PuzzleBase {
     @Override
     public float getPathWidth() {
         return 0.26f;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    public void serialize(JSONObject jsonObject) throws JSONException {
+        super.serialize(jsonObject);
     }
 }

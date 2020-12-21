@@ -8,6 +8,9 @@ import com.aren.thewitnesspuzzle.puzzle.base.GridSymmetryPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.base.PuzzleBase;
 import com.aren.thewitnesspuzzle.puzzle.base.color.PalettePreset;
 import com.aren.thewitnesspuzzle.puzzle.base.cursor.SymmetryCursor;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.Symmetry;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.SymmetryColor;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.SymmetryType;
 import com.aren.thewitnesspuzzle.puzzle.factory.spawn.SpawnByCount;
 import com.aren.thewitnesspuzzle.puzzle.base.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.base.rules.BrokenLineRule;
@@ -25,7 +28,7 @@ public class ChallengeSymmetryPuzzleFactory extends PuzzleFactory {
 
     @Override
     public PuzzleRenderer generate(Game game, Random random) {
-        GridSymmetryPuzzle symmetryPuzzle = new GridSymmetryPuzzle(PalettePreset.get("Challenge_1"), 6, 6, GridSymmetryPuzzle.SymmetryType.POINT, true);
+        GridSymmetryPuzzle symmetryPuzzle = new GridSymmetryPuzzle(PalettePreset.get("Challenge_1"), 6, 6, new Symmetry(SymmetryType.POINT, SymmetryColor.CYAN2));
 
         symmetryPuzzle.addStartingPoint(0, 0);
 

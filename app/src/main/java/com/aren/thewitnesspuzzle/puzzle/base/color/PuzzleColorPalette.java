@@ -34,6 +34,15 @@ public class PuzzleColorPalette {
         this.bloomIntensity = bloomIntensity;
     }
 
+    public PuzzleColorPalette(JSONObject jsonObject) throws JSONException {
+        background = jsonObject.getInt("background");
+        path = jsonObject.getInt("path");
+        cursor = jsonObject.getInt("cursor");
+        cursorSucceeded = jsonObject.getInt("success");
+        cursorFailed = jsonObject.getInt("failure");
+        bloomIntensity = (float) jsonObject.getDouble("bloom");
+    }
+
     @Override
     public PuzzleColorPalette clone() {
         return new PuzzleColorPalette(background, path, cursor, cursorSucceeded, cursorFailed, bloomIntensity);
@@ -99,21 +108,10 @@ public class PuzzleColorPalette {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("background", getBackgroundColor());
         jsonObject.put("path", getPathColor());
-        jsonObject.put("line", getCursorColor());
+        jsonObject.put("cursor", getCursorColor());
         jsonObject.put("success", getCursorSucceededColor());
         jsonObject.put("failure", getCursorFailedColor());
         jsonObject.put("bloom", getBloomIntensity());
         return jsonObject;
     }
-
-    public static PuzzleColorPalette deserialize(JSONObject jsonObject) throws JSONException {
-        int background = jsonObject.getInt("background");
-        int path = jsonObject.getInt("path");
-        int line = jsonObject.getInt("line");
-        int success = jsonObject.getInt("success");
-        int failure = jsonObject.getInt("failure");
-        float bloom = (float) jsonObject.getDouble("bloom");
-        return new PuzzleColorPalette(background, path, line, success, failure, bloom);
-    }
-
 }

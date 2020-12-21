@@ -19,7 +19,6 @@ import com.aren.thewitnesspuzzle.puzzle.animation.ErrorAnimation;
 import com.aren.thewitnesspuzzle.puzzle.animation.PuzzleAnimationManager;
 import com.aren.thewitnesspuzzle.puzzle.animation.WaitForEliminationAnimation;
 import com.aren.thewitnesspuzzle.puzzle.animation.value.Value;
-import com.aren.thewitnesspuzzle.puzzle.base.GridPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.base.GridSymmetryPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.base.PuzzleBase;
 import com.aren.thewitnesspuzzle.puzzle.base.graph.Edge;
@@ -27,15 +26,13 @@ import com.aren.thewitnesspuzzle.puzzle.base.graph.EdgeProportion;
 import com.aren.thewitnesspuzzle.puzzle.base.graph.Tile;
 import com.aren.thewitnesspuzzle.puzzle.base.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.base.rules.BrokenLineRule;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.EliminationRule;
 import com.aren.thewitnesspuzzle.puzzle.base.rules.EndingPointRule;
 import com.aren.thewitnesspuzzle.puzzle.base.rules.RuleBase;
 import com.aren.thewitnesspuzzle.puzzle.base.rules.StartingPointRule;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.SymmetricColor;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.Symmetry;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.SymmetryColor;
 import com.aren.thewitnesspuzzle.puzzle.base.color.ColorUtils;
 import com.aren.thewitnesspuzzle.puzzle.base.cursor.Cursor;
-import com.aren.thewitnesspuzzle.puzzle.base.cursor.area.Area;
-import com.aren.thewitnesspuzzle.puzzle.base.cursor.area.GridAreaSplitter;
 import com.aren.thewitnesspuzzle.puzzle.base.validation.PuzzleValidator;
 import com.aren.thewitnesspuzzle.puzzle.base.validation.ValidationResult;
 import com.aren.thewitnesspuzzle.puzzle.sound.Sounds;
@@ -274,8 +271,15 @@ public class PuzzleRenderer {
 
         if (cursor != null) {
             int cursorColor = getCursorColor().get();
-            if(puzzleBase instanceof GridSymmetryPuzzle && ((GridSymmetryPuzzle) puzzleBase).hasSymmetricColor()) {
-                cursorColor = SymmetricColor.CYAN.getRGB();
+            int secondaryCursorColor = cursorColor;
+
+            if (puzzleBase instanceof GridSymmetryPuzzle) {
+                Symmetry symmetry = ((GridSymmetryPuzzle) puzzleBase).getSymmetry();
+
+                if (symmetry.hasColor()) {
+                    cursorColor = symmetry.getPrimaryColor().getRGB();
+                    secondaryCursorColor = symmetry.getSecondaryColor().getRGB();
+                }
             }
 
             dynamicShapes.add(new CircleShape(cursor.getFirstVisitedVertex().getPosition().toVector3(), ((StartingPointRule) cursor.getFirstVisitedVertex().getRule()).getRadius(), cursorColor));
@@ -286,8 +290,7 @@ public class PuzzleRenderer {
             if(puzzleBase instanceof GridSymmetryPuzzle) {
                 Vertex opVertex = ((GridSymmetryPuzzle) puzzleBase).getOppositeVertex(cursor.getFirstVisitedVertex());
                 dynamicShapes.add(new CircleShape(opVertex.getPosition().toVector3(),
-                        ((StartingPointRule) opVertex.getRule()).getRadius(),
-                        ((GridSymmetryPuzzle) puzzleBase).hasSymmetricColor() ? SymmetricColor.YELLOW.getRGB() : cursorColor));
+                        ((StartingPointRule) opVertex.getRule()).getRadius(), secondaryCursorColor));
             }
 
             ArrayList<EdgeProportion> visitedEdges = cursor.getVisitedEdgesWithProportion(true);
@@ -298,9 +301,8 @@ public class PuzzleRenderer {
 
                 if(puzzleBase instanceof GridSymmetryPuzzle) {
                     EdgeProportion opEdgeProportion = ((GridSymmetryPuzzle) puzzleBase).getOppositeEdgeProportion(edgeProportion);
-                    int opCursorColor = ((GridSymmetryPuzzle) puzzleBase).hasSymmetricColor() ? SymmetricColor.YELLOW.getRGB() : cursorColor;
-                    dynamicShapes.add(new CircleShape(new Vector3(opEdgeProportion.getProportionPoint().x, opEdgeProportion.getProportionPoint().y, 0), puzzleBase.getPathWidth() * 0.5f, opCursorColor));
-                    dynamicShapes.add(new RectangleShape(opEdgeProportion.getProportionMiddlePoint().toVector3(), opEdgeProportion.getProportionLength(), puzzleBase.getPathWidth(), opEdgeProportion.edge.getAngle(), opCursorColor));
+                    dynamicShapes.add(new CircleShape(new Vector3(opEdgeProportion.getProportionPoint().x, opEdgeProportion.getProportionPoint().y, 0), puzzleBase.getPathWidth() * 0.5f, secondaryCursorColor));
+                    dynamicShapes.add(new RectangleShape(opEdgeProportion.getProportionMiddlePoint().toVector3(), opEdgeProportion.getProportionLength(), puzzleBase.getPathWidth(), opEdgeProportion.edge.getAngle(), secondaryCursorColor));
                 }
 
                 if (shadowPanel) {

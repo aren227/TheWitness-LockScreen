@@ -9,6 +9,9 @@ import com.aren.thewitnesspuzzle.puzzle.base.cursor.SymmetryCursor;
 import com.aren.thewitnesspuzzle.puzzle.base.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.base.rules.BrokenLineRule;
 import com.aren.thewitnesspuzzle.puzzle.base.rules.HexagonRule;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.Symmetry;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.SymmetryColor;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.SymmetryType;
 import com.aren.thewitnesspuzzle.puzzle.walker.FastGridTreeWalker;
 import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
 
@@ -24,7 +27,7 @@ public class SymmetryHexagonPuzzleFactory extends PuzzleFactory {
 
     @Override
     public PuzzleRenderer generate(Game game, Random random) {
-        GridSymmetryPuzzle symmetryPuzzle = new GridSymmetryPuzzle(PalettePreset.get("SymmetryIsland_1"), 5, 5, GridSymmetryPuzzle.SymmetryType.POINT, true);
+        GridSymmetryPuzzle symmetryPuzzle = new GridSymmetryPuzzle(PalettePreset.get("SymmetryIsland_1"), 5, 5, new Symmetry(SymmetryType.POINT, SymmetryColor.CYAN));
 
         List<Vertex> borderVertices = symmetryPuzzle.getBorderVertices();
         borderVertices.remove(symmetryPuzzle.getVertexAt(0, 0));

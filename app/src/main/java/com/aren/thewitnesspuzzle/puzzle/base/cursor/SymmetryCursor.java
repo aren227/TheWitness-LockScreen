@@ -6,7 +6,7 @@ import com.aren.thewitnesspuzzle.puzzle.base.graph.EdgeProportion;
 import com.aren.thewitnesspuzzle.puzzle.base.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.base.rules.BrokenLineRule;
 import com.aren.thewitnesspuzzle.puzzle.base.rules.StartingPointRule;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.SymmetricColor;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.SymmetryColor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,7 +78,7 @@ public class SymmetryCursor extends Cursor {
     }
 
     public boolean hasSymmetricColor() {
-        return getPuzzle().hasSymmetricColor();
+        return getPuzzle().getSymmetry().hasColor();
     }
 
     @Override
@@ -87,9 +87,9 @@ public class SymmetryCursor extends Cursor {
         return edges.contains(edge) || edges.contains(((GridSymmetryPuzzle) puzzle).getOppositeEdge(edge));
     }
 
-    public SymmetricColor getSymmetricColor(Edge edge) {
-        if (getFullyVisitedEdges().contains(edge)) return SymmetricColor.CYAN;
-        return SymmetricColor.YELLOW;
+    public SymmetryColor getSymmetricColor(Edge edge) {
+        if (getFullyVisitedEdges().contains(edge)) return ((GridSymmetryPuzzle) puzzle).getSymmetry().getPrimaryColor();
+        return ((GridSymmetryPuzzle) puzzle).getSymmetry().getSecondaryColor();
     }
 
     @Override
@@ -98,9 +98,9 @@ public class SymmetryCursor extends Cursor {
         return vertices.contains(vertex) || vertices.contains(((GridSymmetryPuzzle) puzzle).getOppositeVertex(vertex));
     }
 
-    public SymmetricColor getSymmetricColor(Vertex vertex) {
-        if (getVisitedVertices().contains(vertex)) return SymmetricColor.CYAN;
-        return SymmetricColor.YELLOW;
+    public SymmetryColor getSymmetricColor(Vertex vertex) {
+        if (getVisitedVertices().contains(vertex)) return ((GridSymmetryPuzzle) puzzle).getSymmetry().getPrimaryColor();
+        return ((GridSymmetryPuzzle) puzzle).getSymmetry().getSecondaryColor();
     }
 
     @Override

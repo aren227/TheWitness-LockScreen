@@ -44,7 +44,7 @@ public abstract class RuleBase {
         return jsonObject;
     }
 
-    public void serialize(JSONObject jsonObject) throws JSONException {
+    protected void serialize(JSONObject jsonObject) throws JSONException {
         jsonObject.put("type", getName());
     }
 

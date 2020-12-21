@@ -5,33 +5,33 @@ import org.json.JSONObject;
 
 public abstract class SymmetricColorable extends RuleBase {
 
-    public SymmetricColor color;
+    public SymmetryColor color;
 
     public SymmetricColorable() {
         super();
-        this.color = null;
+        this.color = SymmetryColor.NONE;
     }
 
-    public SymmetricColorable(SymmetricColor color) {
+    public SymmetricColorable(SymmetryColor color) {
         super();
         this.color = color;
     }
 
     public SymmetricColorable(JSONObject jsonObject) throws JSONException {
         super(jsonObject);
-        color = SymmetricColor.fromString(jsonObject.getString("color"));
+        color = SymmetryColor.fromString(jsonObject.getString("color"));
     }
 
-    public SymmetricColor getSymmetricColor() {
+    public SymmetryColor getSymmetricColor() {
         return color;
     }
 
-    public void setSymmetricColor(SymmetricColor color) {
+    public void setSymmetricColor(SymmetryColor color) {
         this.color = color;
     }
 
     public boolean hasSymmetricColor() {
-        return color != null;
+        return color != SymmetryColor.NONE;
     }
 
     @Override

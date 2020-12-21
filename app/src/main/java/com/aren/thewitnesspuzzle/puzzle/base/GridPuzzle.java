@@ -17,6 +17,8 @@ import java.util.List;
 
 public class GridPuzzle extends PuzzleBase {
 
+    public static final String NAME = "grid";
+
     protected int width, height;
 
     protected Vertex[][] gridVerticies;
@@ -77,10 +79,23 @@ public class GridPuzzle extends PuzzleBase {
         width = jsonObject.getInt("width");
         height = jsonObject.getInt("height");
 
-        for(Vertex vertex : vertices)
+        gridVerticies = new Vertex[width + 1][height + 1];
+        gridHorizontalEdges = new Edge[width][height + 1];
+        gridVerticalEdges = new Edge[width + 1][height];
+        gridTiles = new Tile[width][height];
+
+        for(Vertex vertex : vertices) {
+            // Not aligned to grid
+            if (vertex.getRule() instanceof EndingPointRule)
+                continue;
             gridVerticies[vertex.getGridX()][vertex.getGridY()] = vertex;
+        }
 
         for(Edge edge : edges) {
+            // Not aligned to grid
+            if (edge.from.getRule() instanceof EndingPointRule || edge.to.getRule() instanceof EndingPointRule)
+                continue;
+
             if(edge.isHorizontal())
                 gridHorizontalEdges[edge.getGridX()][edge.getGridY()] = edge;
             else
@@ -204,6 +219,18 @@ public class GridPuzzle extends PuzzleBase {
             }
         }
         return vertices;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    public void serialize(JSONObject jsonObject) throws JSONException {
+        super.serialize(jsonObject);
+        jsonObject.put("width", width);
+        jsonObject.put("height", height);
     }
 
 }

@@ -38,8 +38,9 @@ public class GraphElement {
             x = (float)jsonObject.getDouble("x");
             y = (float)jsonObject.getDouble("y");
 
-            if(jsonObject.has("rule"))
-                rule = RuleBase.deserialize(jsonObject.getJSONObject("rule"));
+            if(jsonObject.has("rule")) {
+                setRule(RuleBase.deserialize(jsonObject.getJSONObject("rule")));
+            }
         } catch (JSONException ignored) {
 
         }

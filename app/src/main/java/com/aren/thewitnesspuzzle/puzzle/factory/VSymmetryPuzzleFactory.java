@@ -8,6 +8,8 @@ import com.aren.thewitnesspuzzle.puzzle.base.color.PalettePreset;
 import com.aren.thewitnesspuzzle.puzzle.base.cursor.SymmetryCursor;
 import com.aren.thewitnesspuzzle.puzzle.base.graph.Vertex;
 import com.aren.thewitnesspuzzle.puzzle.base.rules.BrokenLineRule;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.Symmetry;
+import com.aren.thewitnesspuzzle.puzzle.base.rules.SymmetryType;
 import com.aren.thewitnesspuzzle.puzzle.walker.FastGridTreeWalker;
 import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
 
@@ -22,18 +24,12 @@ public class VSymmetryPuzzleFactory extends PuzzleFactory {
 
     @Override
     public PuzzleRenderer generate(Game game, Random random) {
-        GridSymmetryPuzzle.SymmetryType symmetryType = GridSymmetryPuzzle.SymmetryType.VLINE;
+        GridSymmetryPuzzle symmetryPuzzle = new GridSymmetryPuzzle(PalettePreset.get("GlassFactory_1"), 5, 7, new Symmetry(SymmetryType.VLINE));
 
-        GridSymmetryPuzzle symmetryPuzzle;
-
-        int startX, startY, endX, endY;
-
-        symmetryPuzzle = new GridSymmetryPuzzle(PalettePreset.get("GlassFactory_1"), 5, 7, symmetryType, false);
-
-        startX = random.nextInt(2);
-        startY = 0;
-        endX = random.nextInt(2);
-        endY = 7;
+        int startX = random.nextInt(2);
+        int startY = 0;
+        int endX = random.nextInt(2);
+        int endY = 7;
 
         symmetryPuzzle.addStartingPoint(startX, startY);
         symmetryPuzzle.addEndingPoint(endX, endY);

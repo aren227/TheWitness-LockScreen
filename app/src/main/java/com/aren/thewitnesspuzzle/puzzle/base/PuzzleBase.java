@@ -19,6 +19,8 @@ import java.util.List;
 
 public class PuzzleBase {
 
+    public static final String NAME = "general";
+
     protected ArrayList<Vertex> vertices = new ArrayList<>();
     protected ArrayList<Edge> edges = new ArrayList<>();
     protected Edge[][] edgeTable; // Indexed by two vertices pair
@@ -37,7 +39,7 @@ public class PuzzleBase {
 
     public PuzzleBase(JSONObject jsonObject) {
         try {
-            this.color = PuzzleColorPalette.deserialize(jsonObject.getJSONObject("color"));
+            this.color = new PuzzleColorPalette(jsonObject.getJSONObject("color"));
 
             JSONArray vertexArray = jsonObject.getJSONArray("vertices");
             for(int i = 0; i < vertexArray.length(); i++)
@@ -188,9 +190,17 @@ public class PuzzleBase {
         return new Cursor(this, start);
     }
 
+    public String getName() {
+        return NAME;
+    }
+
     public JSONObject serialize() throws JSONException {
         JSONObject jsonObject = new JSONObject();
+        serialize(jsonObject);
+        return jsonObject;
+    }
 
+    protected void serialize(JSONObject jsonObject) throws JSONException {
         JSONArray vertexArray = new JSONArray();
         for(Vertex vertex : vertices)
             vertexArray.put(vertex.serialize());
@@ -208,6 +218,25 @@ public class PuzzleBase {
 
         jsonObject.put("color", color.serialize());
 
-        return jsonObject;
+        jsonObject.put("type", getName());
+    }
+
+    public static PuzzleBase deserialize(JSONObject jsonObject) throws JSONException {
+        String type = jsonObject.getString("type");
+        switch (type) {
+            case PuzzleBase.NAME:
+                return new PuzzleBase(jsonObject);
+            case GridPuzzle.NAME:
+                return new GridPuzzle(jsonObject);
+            case GridSymmetryPuzzle.NAME:
+                return new GridSymmetryPuzzle(jsonObject);
+            case HexagonPuzzle.NAME:
+                return new HexagonPuzzle(jsonObject);
+            case JunglePuzzle.NAME:
+                return new JunglePuzzle(jsonObject);
+            case VideoRoomPuzzle.NAME:
+                return new VideoRoomPuzzle(jsonObject);
+        }
+        return null;
     }
 }

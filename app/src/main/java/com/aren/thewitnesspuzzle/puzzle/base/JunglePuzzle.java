@@ -11,6 +11,8 @@ import org.json.JSONObject;
 
 public class JunglePuzzle extends PuzzleBase {
 
+    public static final String NAME = "jungle";
+
     protected int width;
 
     public JunglePuzzle(PuzzleColorPalette color, int width) {
@@ -72,5 +74,16 @@ public class JunglePuzzle extends PuzzleBase {
     @Override
     public float getPathWidth() {
         return width * 0.035f + 0.1f;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    public void serialize(JSONObject jsonObject) throws JSONException {
+        super.serialize(jsonObject);
+        jsonObject.put("width", width);
     }
 }
