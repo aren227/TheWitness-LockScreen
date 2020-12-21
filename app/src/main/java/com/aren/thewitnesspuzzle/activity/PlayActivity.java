@@ -14,6 +14,7 @@ import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.puzzle.animation.PuzzleFadeInAnimation;
 import com.aren.thewitnesspuzzle.puzzle.animation.PuzzleFadeOutAnimation;
 import com.aren.thewitnesspuzzle.puzzle.base.PuzzleBase;
+import com.aren.thewitnesspuzzle.puzzle.factory.CustomFixedPuzzleFactory;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactory;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;
 import com.aren.thewitnesspuzzle.puzzle.sound.Sounds;
@@ -37,6 +38,7 @@ public class PlayActivity extends AppCompatActivity {
     private ImageView skipImage;
     private ImageView retryImage;
     private TextView warningText;
+    private ImageView favImage;
 
     private long seed;
     private UUID factoryUuid;
@@ -53,6 +55,7 @@ public class PlayActivity extends AppCompatActivity {
         skipImage = findViewById(R.id.skip_puzzle);
         retryImage = findViewById(R.id.retry_puzzle);
         warningText = findViewById(R.id.no_puzzle_warn);
+        favImage = findViewById(R.id.favorite);
 
         game = new Game(this, Game.Mode.PLAY);
         game.setOnSolved(new Runnable() {
@@ -96,6 +99,25 @@ public class PlayActivity extends AppCompatActivity {
             }
         });
 
+        favImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CustomFixedPuzzleFactory factory = new CustomFixedPuzzleFactory(PlayActivity.this, game.getPuzzle().getUuid());
+                if(game.getPuzzle().isFavorite()) {
+                    puzzleFactoryManager.remove(factory);
+                } else {
+                    try {
+                        factory.setLiked(game.getPuzzle().getPuzzleBase());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                game.getPuzzle().setFavorite(!game.getPuzzle().isFavorite());
+                favImage.setImageResource(game.getPuzzle().isFavorite() ? R.drawable.ic_baseline_favorite : R.drawable.ic_baseline_favorite_border);
+            }
+        });
+
         puzzleFactoryManager = new PuzzleFactoryManager(this);
 
         if (savedInstanceState == null) {
@@ -121,6 +143,11 @@ public class PlayActivity extends AppCompatActivity {
 
             retryImage.setVisibility(View.GONE);
             retryImage.bringToFront();
+
+            if (puzzleFactoryManager.getLastViewedProfile().getType() == PuzzleFactoryManager.ProfileType.DEFAULT) {
+                favImage.setVisibility(View.VISIBLE);
+                favImage.bringToFront();
+            }
         }
     }
 
@@ -172,6 +199,8 @@ public class PlayActivity extends AppCompatActivity {
         nextImage.setVisibility(View.GONE);
         skipImage.setVisibility(View.VISIBLE);
         retryImage.setVisibility(View.GONE);
+
+        favImage.setImageResource(R.drawable.ic_baseline_favorite_border);
     }
 
     public boolean generatePuzzle() {

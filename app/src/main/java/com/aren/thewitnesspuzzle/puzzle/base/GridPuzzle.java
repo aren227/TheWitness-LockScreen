@@ -102,8 +102,16 @@ public class GridPuzzle extends PuzzleBase {
                 gridVerticalEdges[edge.getGridX()][edge.getGridY()] = edge;
         }
 
-        for(Tile tile : tiles)
-            gridTiles[tile.getGridX()][tile.getGridY()] = tile;
+        for(Tile tile : tiles) {
+            int i = tile.getGridX();
+            int j = tile.getGridY();
+            gridTiles[i][j] = tile;
+
+            tile.edges.add(getEdgeAt(i, j, true));
+            tile.edges.add(getEdgeAt(i, j, false));
+            tile.edges.add(getEdgeAt(i, j + 1, true));
+            tile.edges.add(getEdgeAt(i + 1, j, false));
+        }
     }
 
     @Override

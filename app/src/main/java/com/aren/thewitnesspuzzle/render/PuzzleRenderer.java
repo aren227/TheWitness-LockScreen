@@ -43,6 +43,7 @@ import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class PuzzleRenderer {
 
@@ -70,6 +71,10 @@ public class PuzzleRenderer {
 
     protected Value<Float> fadeIntensity = new Value<>(1f);
 
+    protected UUID uuid;
+
+    protected boolean isFavorite = false;
+
     public PuzzleRenderer(Game game, PuzzleBase puzzleBase) {
         this(game, puzzleBase, game.isPlayMode() && game.getSettings().getShadowPanelEnabled());
     }
@@ -84,6 +89,8 @@ public class PuzzleRenderer {
         animation = new PuzzleAnimationManager(this);
 
         actualCursorColor = new Value<>(puzzleBase.getColorPalette().getCursorColor());
+
+        uuid = UUID.randomUUID();
     }
 
     public Game getGame() {
@@ -510,6 +517,18 @@ public class PuzzleRenderer {
 
     public Value<Float> getFadeIntensity(){
         return fadeIntensity;
+    }
+
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(boolean isFavorite) {
+        this.isFavorite = isFavorite;
+    }
+
+    public UUID getUuid() {
+        return uuid;
     }
 
 }

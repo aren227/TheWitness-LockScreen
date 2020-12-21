@@ -108,8 +108,10 @@ public class PuzzleBase {
     public void register(GraphElement graphElement) {
         if(graphElement instanceof Vertex)
             vertices.add((Vertex) graphElement);
-        else if(graphElement instanceof Edge)
+        else if(graphElement instanceof Edge) {
             edges.add((Edge) graphElement);
+            edgeTable = null; // Needs to be recalculated
+        }
         else if(graphElement instanceof Tile)
             tiles.add((Tile) graphElement);
 
@@ -151,6 +153,15 @@ public class PuzzleBase {
 
     public int getNextTileIndex() {
         return tiles.size();
+    }
+
+    public Vertex getVertexByPosition(float x, float y) {
+        Vector2 targetPosition = new Vector2(x, y);
+        for (Vertex v : vertices) {
+            if (v.getPosition().distance(targetPosition) < 1e-5)
+                return v;
+        }
+        return null;
     }
 
     private void calcEdgeTable() {

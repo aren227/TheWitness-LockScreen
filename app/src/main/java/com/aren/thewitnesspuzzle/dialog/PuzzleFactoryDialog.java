@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.aren.thewitnesspuzzle.R;
 import com.aren.thewitnesspuzzle.activity.CreatePatternActivity;
@@ -42,8 +43,10 @@ public class PuzzleFactoryDialog extends Dialog {
         if (factory.getConfig().getFactoryType() != null) {
             if (factory.getConfig().getFactoryType().equals("pattern")) {
                 nameTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_baseline_gesture_24, 0);
-            } else {
+            } else if (factory.getConfig().getFactoryType().equals("random")) {
                 nameTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_baseline_casino_24, 0);
+            } else {
+                nameTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_baseline_create_24, 0);
             }
         }
 
@@ -64,6 +67,8 @@ public class PuzzleFactoryDialog extends Dialog {
                         Intent intent = new Intent(getContext(), CreateRandomPuzzleActivity.class);
                         intent.putExtra("uuid", factory.getUuid());
                         getContext().startActivity(intent);
+                    } else {
+                        Toast.makeText(getContext(), "Puzzle Editor is not yet supported", Toast.LENGTH_LONG).show();
                     }
                 }
             });

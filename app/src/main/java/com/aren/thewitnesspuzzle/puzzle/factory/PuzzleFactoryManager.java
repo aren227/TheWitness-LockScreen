@@ -168,6 +168,9 @@ public class PuzzleFactoryManager {
                 } else if (config.getFactoryType().equals("random")) {
                     CustomRandomPuzzleFactory factory = new CustomRandomPuzzleFactory(context, uuid);
                     register(factory);
+                } else if (config.getFactoryType().equals("fixed")) {
+                    CustomFixedPuzzleFactory factory = new CustomFixedPuzzleFactory(context, uuid);
+                    register(factory);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

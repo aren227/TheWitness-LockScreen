@@ -20,9 +20,9 @@
         android:gravity="center" />
 
     <ImageView
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:layout_margin="16dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_margin="8dp"
         android:id="@+id/next_puzzle"
         android:src="@drawable/ic_navigate_next_black_24dp"
         android:layout_alignParentBottom="true"
@@ -30,9 +30,9 @@
         android:visibility="gone" />
 
     <ImageView
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:layout_margin="16dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_margin="8dp"
         android:id="@+id/retry_puzzle"
         android:src="@drawable/ic_baseline_refresh_24"
         android:layout_alignParentBottom="true"
@@ -40,13 +40,23 @@
         android:visibility="gone" />
 
     <ImageView
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:layout_margin="16dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_margin="8dp"
         android:id="@+id/skip_puzzle"
         android:src="@drawable/ic_baseline_skip_next_24"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:visibility="gone" />
+    
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_margin="8dp"
+        android:id="@+id/favorite"
+        android:src="@drawable/ic_baseline_favorite_border"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:visibility="gone"/>
 
 </RelativeLayout>

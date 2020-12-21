@@ -76,6 +76,38 @@ public class GridSymmetryPuzzle extends GridPuzzle {
                 }
             }
         }
+
+        // Other vertices
+        for (Vertex vertex : vertices) {
+            if (!oppositeVertex.containsKey(vertex.index)) {
+                Vertex op = null;
+                if (symmetry.getType() == SymmetryType.VLINE) {
+                    op = getVertexByPosition(width - vertex.x, vertex.y);
+                } else if (symmetry.getType() == SymmetryType.POINT) {
+                    op = getVertexByPosition(width - vertex.x, height - vertex.y);
+                }
+
+                if(op != null)
+                    oppositeVertex.put(vertex.index, op);
+                else
+                    throw new RuntimeException("Invalid symmetry puzzle.");
+            }
+        }
+
+        // Other lines
+        for (Edge edge : edges) {
+            if (!oppositeEdge.containsKey(edge.index)) {
+                Vertex opFrom = getOppositeVertex(edge.from);
+                Vertex opTo = getOppositeVertex(edge.to);
+
+                Edge opEdge = getEdgeByVertex(opFrom, opTo);
+
+                if (opEdge != null)
+                    oppositeEdge.put(edge.index, opEdge);
+                else
+                    throw new RuntimeException("Invalid symmetry puzzle.");
+            }
+        }
     }
 
     public Symmetry getSymmetry() {
