@@ -54,34 +54,4 @@ public class TrianglesRule extends RuleBase {
     public void serialize(JSONObject jsonObject) throws JSONException {
         jsonObject.put("count", count);
     }
-
-    public static void generate(Cursor solution, Random random, float spawnRate) {
-        ArrayList<Tile> tiles = new ArrayList<>();
-        for (Tile tile : solution.getPuzzle().getTiles()) {
-            if (tile.getRule() == null) {
-                // Only add tiles that have one or more edges
-                boolean haveEdge = false;
-                for (Edge edge : tile.edges) {
-                    if (solution.containsEdge(edge)) {
-                        haveEdge = true;
-                        break;
-                    }
-                }
-                if (haveEdge) tiles.add(tile);
-            }
-        }
-
-        int triangleCount = Math.min((int) (solution.getPuzzle().getTiles().size() * spawnRate), tiles.size());
-
-        Collections.shuffle(tiles, random);
-
-        for (int i = 0; i < triangleCount; i++) {
-            int edgeCount = 0;
-            for (Edge edge : tiles.get(i).edges) {
-                if (solution.containsEdge(edge)) edgeCount++;
-            }
-            tiles.get(i).setRule(new TrianglesRule(edgeCount));
-        }
-    }
-
 }
