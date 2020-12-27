@@ -2,20 +2,21 @@ package com.aren.thewitnesspuzzle.puzzle.factory;
 
 import android.content.Context;
 
+import com.aren.thewitnesspuzzle.core.color.PalettePreset;
+import com.aren.thewitnesspuzzle.core.cursor.Cursor;
+import com.aren.thewitnesspuzzle.core.cursor.area.Area;
+import com.aren.thewitnesspuzzle.core.cursor.area.GridAreaSplitter;
+import com.aren.thewitnesspuzzle.core.graph.Edge;
+import com.aren.thewitnesspuzzle.core.graph.Tile;
+import com.aren.thewitnesspuzzle.core.graph.Vertex;
+import com.aren.thewitnesspuzzle.core.puzzle.GridPuzzle;
+import com.aren.thewitnesspuzzle.core.rules.BrokenLineRule;
+import com.aren.thewitnesspuzzle.core.rules.Color;
+import com.aren.thewitnesspuzzle.core.rules.SunRule;
 import com.aren.thewitnesspuzzle.game.Game;
-import com.aren.thewitnesspuzzle.puzzle.base.GridPuzzle;
-import com.aren.thewitnesspuzzle.puzzle.base.PuzzleBase;
-import com.aren.thewitnesspuzzle.puzzle.base.color.PalettePreset;
-import com.aren.thewitnesspuzzle.puzzle.base.cursor.Cursor;
-import com.aren.thewitnesspuzzle.puzzle.base.cursor.area.Area;
-import com.aren.thewitnesspuzzle.puzzle.base.cursor.area.GridAreaSplitter;
-import com.aren.thewitnesspuzzle.puzzle.base.graph.Edge;
-import com.aren.thewitnesspuzzle.puzzle.base.graph.Tile;
-import com.aren.thewitnesspuzzle.puzzle.base.graph.Vertex;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.BrokenLineRule;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.Color;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.HexagonRule;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.SunRule;
+import com.aren.thewitnesspuzzle.puzzle.generator.BrokenLineRuleGenerator;
+import com.aren.thewitnesspuzzle.puzzle.generator.HexagonRuleGenerator;
+import com.aren.thewitnesspuzzle.puzzle.generator.SunRuleGenerator;
 import com.aren.thewitnesspuzzle.puzzle.walker.FastGridTreeWalker;
 import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
 
@@ -44,7 +45,7 @@ public class ChallengeSunHexagonPuzzleFactory extends PuzzleFactory {
 
         GridAreaSplitter splitter = new GridAreaSplitter(cursor);
 
-        BrokenLineRule.generate(cursor, random, 1.0f);
+        BrokenLineRuleGenerator.generate(cursor, random, 1.0f);
         // Make sure that only 8 broken lines exist
         List<Edge> brokenLines = new ArrayList<>();
         for (Edge edge : puzzle.getEdges()) {
@@ -56,7 +57,7 @@ public class ChallengeSunHexagonPuzzleFactory extends PuzzleFactory {
             brokenLines.get(i).removeRule();
         }
 
-        SunRule.generate(splitter, random, Arrays.asList(Color.PURPLE), 1f, 1f, 0);
+        SunRuleGenerator.generate(splitter, random, Arrays.asList(Color.PURPLE), 1f, 1f, 0);
         // Make sure that only 4 suns exist
         List<Area> sunApplied = new ArrayList<>();
         for (Area area : splitter.areaList) {
@@ -78,7 +79,7 @@ public class ChallengeSunHexagonPuzzleFactory extends PuzzleFactory {
             }
         }
 
-        HexagonRule.generate(cursor, random, 0.17f);
+        HexagonRuleGenerator.generate(cursor, random, 0.17f);
 
         return new PuzzleRenderer(game, puzzle);
     }

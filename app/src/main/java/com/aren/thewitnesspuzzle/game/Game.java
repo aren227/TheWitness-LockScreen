@@ -5,7 +5,7 @@ import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.view.MotionEvent;
 
-import com.aren.thewitnesspuzzle.math.BoundingBox;
+import com.aren.thewitnesspuzzle.core.math.BoundingBox;
 import com.aren.thewitnesspuzzle.puzzle.sound.Sounds;
 import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
 import com.aren.thewitnesspuzzle.view.PuzzleGLSurfaceView;

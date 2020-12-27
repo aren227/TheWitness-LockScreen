@@ -1,11 +1,11 @@
 package com.aren.thewitnesspuzzle.puzzle.generator;
 
-import com.aren.thewitnesspuzzle.puzzle.base.GridPuzzle;
-import com.aren.thewitnesspuzzle.puzzle.base.PuzzleBase;
-import com.aren.thewitnesspuzzle.puzzle.base.cursor.Cursor;
-import com.aren.thewitnesspuzzle.puzzle.base.graph.Edge;
-import com.aren.thewitnesspuzzle.puzzle.base.graph.Vertex;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.BrokenLineRule;
+import com.aren.thewitnesspuzzle.core.cursor.Cursor;
+import com.aren.thewitnesspuzzle.core.graph.Edge;
+import com.aren.thewitnesspuzzle.core.graph.Vertex;
+import com.aren.thewitnesspuzzle.core.puzzle.GridPuzzle;
+import com.aren.thewitnesspuzzle.core.puzzle.PuzzleBase;
+import com.aren.thewitnesspuzzle.core.rules.BrokenLineRule;
 import com.aren.thewitnesspuzzle.puzzle.factory.spawn.SpawnByRate;
 import com.aren.thewitnesspuzzle.puzzle.factory.spawn.SpawnSelector;
 import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridTreeWalker;

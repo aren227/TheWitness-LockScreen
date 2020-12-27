@@ -2,13 +2,13 @@ package com.aren.thewitnesspuzzle.puzzle.factory;
 
 import android.content.Context;
 
+import com.aren.thewitnesspuzzle.core.color.PalettePreset;
+import com.aren.thewitnesspuzzle.core.cursor.Cursor;
+import com.aren.thewitnesspuzzle.core.graph.Vertex;
+import com.aren.thewitnesspuzzle.core.puzzle.GridPuzzle;
 import com.aren.thewitnesspuzzle.game.Game;
-import com.aren.thewitnesspuzzle.puzzle.base.GridPuzzle;
-import com.aren.thewitnesspuzzle.puzzle.base.color.PalettePreset;
-import com.aren.thewitnesspuzzle.puzzle.base.cursor.Cursor;
-import com.aren.thewitnesspuzzle.puzzle.base.graph.Vertex;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.BrokenLineRule;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.HexagonRule;
+import com.aren.thewitnesspuzzle.puzzle.generator.BrokenLineRuleGenerator;
+import com.aren.thewitnesspuzzle.puzzle.generator.HexagonRuleGenerator;
 import com.aren.thewitnesspuzzle.puzzle.walker.FastGridTreeWalker;
 import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
 
@@ -42,8 +42,8 @@ public class HexagonPuzzleFactory extends PuzzleFactory {
 
         Cursor cursor = new Cursor(puzzle, vertexPositions, null);
 
-        HexagonRule.generate(cursor, random, 0.5f);
-        BrokenLineRule.generate(cursor, random, 0.4f);
+        HexagonRuleGenerator.generate(cursor, random, 0.5f);
+        BrokenLineRuleGenerator.generate(cursor, random, 0.4f);
 
         return new PuzzleRenderer(game, puzzle);
     }

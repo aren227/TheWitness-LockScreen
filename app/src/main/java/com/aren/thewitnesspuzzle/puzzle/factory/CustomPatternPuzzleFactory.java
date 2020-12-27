@@ -2,19 +2,19 @@ package com.aren.thewitnesspuzzle.puzzle.factory;
 
 import android.content.Context;
 
+import com.aren.thewitnesspuzzle.core.color.PalettePreset;
+import com.aren.thewitnesspuzzle.core.color.PuzzleColorPalette;
+import com.aren.thewitnesspuzzle.core.cursor.Cursor;
+import com.aren.thewitnesspuzzle.core.graph.Edge;
+import com.aren.thewitnesspuzzle.core.graph.EdgeProportion;
+import com.aren.thewitnesspuzzle.core.graph.Vertex;
+import com.aren.thewitnesspuzzle.core.puzzle.GridPuzzle;
+import com.aren.thewitnesspuzzle.core.puzzle.HexagonPuzzle;
+import com.aren.thewitnesspuzzle.core.puzzle.JunglePuzzle;
+import com.aren.thewitnesspuzzle.core.puzzle.PuzzleBase;
+import com.aren.thewitnesspuzzle.core.puzzle.VideoRoomPuzzle;
+import com.aren.thewitnesspuzzle.core.rules.EndingPointRule;
 import com.aren.thewitnesspuzzle.game.Game;
-import com.aren.thewitnesspuzzle.puzzle.base.GridPuzzle;
-import com.aren.thewitnesspuzzle.puzzle.base.HexagonPuzzle;
-import com.aren.thewitnesspuzzle.puzzle.base.JunglePuzzle;
-import com.aren.thewitnesspuzzle.puzzle.base.PuzzleBase;
-import com.aren.thewitnesspuzzle.puzzle.base.VideoRoomPuzzle;
-import com.aren.thewitnesspuzzle.puzzle.base.color.PalettePreset;
-import com.aren.thewitnesspuzzle.puzzle.base.color.PuzzleColorPalette;
-import com.aren.thewitnesspuzzle.puzzle.base.cursor.Cursor;
-import com.aren.thewitnesspuzzle.puzzle.base.graph.Edge;
-import com.aren.thewitnesspuzzle.puzzle.base.graph.EdgeProportion;
-import com.aren.thewitnesspuzzle.puzzle.base.graph.Vertex;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.EndingPointRule;
 import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
 
 import java.util.ArrayList;

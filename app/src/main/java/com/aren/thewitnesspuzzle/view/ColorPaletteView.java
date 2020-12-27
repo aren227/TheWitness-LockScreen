@@ -6,8 +6,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 
-import com.aren.thewitnesspuzzle.math.MathUtils;
-import com.aren.thewitnesspuzzle.puzzle.base.color.PuzzleColorPalette;
+import com.aren.thewitnesspuzzle.core.color.PuzzleColorPalette;
+import com.aren.thewitnesspuzzle.core.math.MathUtils;
 
 public class ColorPaletteView extends androidx.appcompat.widget.AppCompatImageView {
 

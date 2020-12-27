@@ -16,26 +16,26 @@ import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.aren.thewitnesspuzzle.R;
-import com.aren.thewitnesspuzzle.puzzle.base.GridPuzzle;
-import com.aren.thewitnesspuzzle.puzzle.base.color.PalettePreset;
-import com.aren.thewitnesspuzzle.puzzle.base.cursor.Cursor;
-import com.aren.thewitnesspuzzle.puzzle.base.cursor.area.GridAreaSplitter;
+import com.aren.thewitnesspuzzle.core.color.PalettePreset;
+import com.aren.thewitnesspuzzle.core.cursor.Cursor;
+import com.aren.thewitnesspuzzle.core.cursor.area.GridAreaSplitter;
+import com.aren.thewitnesspuzzle.core.graph.Edge;
+import com.aren.thewitnesspuzzle.core.graph.EdgeProportion;
+import com.aren.thewitnesspuzzle.core.graph.Tile;
+import com.aren.thewitnesspuzzle.core.graph.Vertex;
+import com.aren.thewitnesspuzzle.core.puzzle.GridPuzzle;
+import com.aren.thewitnesspuzzle.core.rules.Color;
+import com.aren.thewitnesspuzzle.core.rules.EndingPointRule;
+import com.aren.thewitnesspuzzle.core.rules.StartingPointRule;
 import com.aren.thewitnesspuzzle.puzzle.factory.Difficulty;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactory;
-import com.aren.thewitnesspuzzle.puzzle.base.graph.Edge;
-import com.aren.thewitnesspuzzle.puzzle.base.graph.EdgeProportion;
-import com.aren.thewitnesspuzzle.puzzle.base.graph.Tile;
-import com.aren.thewitnesspuzzle.puzzle.base.graph.Vertex;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.BlocksRule;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.BrokenLineRule;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.Color;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.EliminationRule;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.EndingPointRule;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.HexagonRule;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.SquareRule;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.StartingPointRule;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.SunRule;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.TrianglesRule;
+import com.aren.thewitnesspuzzle.puzzle.generator.BlocksRuleGenerator;
+import com.aren.thewitnesspuzzle.puzzle.generator.BrokenLineRuleGenerator;
+import com.aren.thewitnesspuzzle.puzzle.generator.EliminationRuleGenerator;
+import com.aren.thewitnesspuzzle.puzzle.generator.HexagonRuleGenerator;
+import com.aren.thewitnesspuzzle.puzzle.generator.SquareRuleGenerator;
+import com.aren.thewitnesspuzzle.puzzle.generator.SunRuleGenerator;
+import com.aren.thewitnesspuzzle.puzzle.generator.TrianglesRuleGenerator;
 import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridTreeWalker;
 
 import java.util.ArrayList;
@@ -675,33 +675,33 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
 
             // Broken Line
             if (isBrokenLineUsed()) {
-                BrokenLineRule.generate(cursor, new Random(brokenLineSeed), getBrokenLineSpawnRate());
+                BrokenLineRuleGenerator.generate(cursor, new Random(brokenLineSeed), getBrokenLineSpawnRate());
             }
 
             // Hexagon
             if (isHexagonUsed()) {
-                HexagonRule.generate(cursor, new Random(hexagonSeed), getHexagonSpawnRate());
+                HexagonRuleGenerator.generate(cursor, new Random(hexagonSeed), getHexagonSpawnRate());
             }
 
             // Square
             if (isSquareUsed()) {
                 splitter.assignAreaColorRandomly(new Random(squareAreaSeed), getSquareColors());
-                SquareRule.generate(splitter, new Random(squareSeed), getSquareSpawnRate());
+                SquareRuleGenerator.generate(splitter, new Random(squareSeed), getSquareSpawnRate());
             }
 
             // Blocks
             if (isBlocksUsed()) {
-                BlocksRule.generate(splitter, new Random(blocksSeed), getBlocksColor(), getBlocksSpawnRate(), getBlocksRotatableRate());
+                BlocksRuleGenerator.generate(splitter, new Random(blocksSeed), getBlocksColor(), getBlocksSpawnRate(), getBlocksRotatableRate());
             }
 
             // Sun
             if (isSunUsed()) {
-                SunRule.generate(splitter, new Random(sunSeed), getSunColors(), getSunAreaRate(), getSunSpawnRate(), getSunPairWithSquareRate());
+                SunRuleGenerator.generate(splitter, new Random(sunSeed), getSunColors(), getSunAreaRate(), getSunSpawnRate(), getSunPairWithSquareRate());
             }
 
             // Triangles
             if (isTrianglesUsed()) {
-                TrianglesRule.generate(cursor, new Random(trianglesSeed), getTrianglesSpawnRate());
+                TrianglesRuleGenerator.generate(cursor, new Random(trianglesSeed), getTrianglesSpawnRate());
             }
 
             // Elimination
@@ -709,13 +709,13 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
                 String fake = getEliminationFakeRule();
                 if (fake != null) {
                     if (fake.equals("hexagon")) {
-                        EliminationRule.generateFakeHexagon(splitter, new Random(eliminationSeed));
+                        EliminationRuleGenerator.generateFakeHexagon(splitter, new Random(eliminationSeed));
                     } else if (fake.equals("square") && isSquareUsed()) {
-                        EliminationRule.generateFakeSquare(splitter, new Random(eliminationSeed), getSquareColors());
+                        EliminationRuleGenerator.generateFakeSquare(splitter, new Random(eliminationSeed), getSquareColors());
                     } else if (fake.equals("blocks")) {
-                        EliminationRule.generateFakeBlocks(splitter, new Random(eliminationSeed), getBlocksColor(), 0f);
+                        EliminationRuleGenerator.generateFakeBlocks(splitter, new Random(eliminationSeed), getBlocksColor(), 0f);
                     } else if (fake.equals("sun") && isSunUsed()) {
-                        EliminationRule.generateFakeSun(splitter, new Random(eliminationSeed), getSunColors());
+                        EliminationRuleGenerator.generateFakeSun(splitter, new Random(eliminationSeed), getSunColors());
                     }
                 }
             }

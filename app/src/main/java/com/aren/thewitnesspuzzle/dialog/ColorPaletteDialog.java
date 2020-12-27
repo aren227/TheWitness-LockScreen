@@ -11,8 +11,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.aren.thewitnesspuzzle.R;
-import com.aren.thewitnesspuzzle.puzzle.base.color.PalettePreset;
-import com.aren.thewitnesspuzzle.puzzle.base.color.PuzzleColorPalette;
+import com.aren.thewitnesspuzzle.core.color.PalettePreset;
+import com.aren.thewitnesspuzzle.core.color.PuzzleColorPalette;
 import com.aren.thewitnesspuzzle.view.ColorPaletteView;
 
 import androidx.annotation.NonNull;

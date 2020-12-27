@@ -2,19 +2,18 @@ package com.aren.thewitnesspuzzle.puzzle.factory;
 
 import android.content.Context;
 
+import com.aren.thewitnesspuzzle.core.color.PalettePreset;
+import com.aren.thewitnesspuzzle.core.cursor.SymmetryCursor;
+import com.aren.thewitnesspuzzle.core.graph.Vertex;
+import com.aren.thewitnesspuzzle.core.math.Vector2Int;
+import com.aren.thewitnesspuzzle.core.puzzle.GridSymmetryPuzzle;
+import com.aren.thewitnesspuzzle.core.rules.Symmetry;
+import com.aren.thewitnesspuzzle.core.rules.SymmetryColor;
+import com.aren.thewitnesspuzzle.core.rules.SymmetryType;
 import com.aren.thewitnesspuzzle.game.Game;
-import com.aren.thewitnesspuzzle.math.Vector2Int;
-import com.aren.thewitnesspuzzle.puzzle.base.GridSymmetryPuzzle;
-import com.aren.thewitnesspuzzle.puzzle.base.PuzzleBase;
-import com.aren.thewitnesspuzzle.puzzle.base.color.PalettePreset;
-import com.aren.thewitnesspuzzle.puzzle.base.cursor.SymmetryCursor;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.Symmetry;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.SymmetryColor;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.SymmetryType;
 import com.aren.thewitnesspuzzle.puzzle.factory.spawn.SpawnByCount;
-import com.aren.thewitnesspuzzle.puzzle.base.graph.Vertex;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.BrokenLineRule;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.HexagonRule;
+import com.aren.thewitnesspuzzle.puzzle.generator.BrokenLineRuleGenerator;
+import com.aren.thewitnesspuzzle.puzzle.generator.HexagonRuleGenerator;
 import com.aren.thewitnesspuzzle.puzzle.walker.FastGridTreeWalker;
 import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
 
@@ -43,8 +42,8 @@ public class ChallengeSymmetryPuzzleFactory extends PuzzleFactory {
 
         SymmetryCursor cursor = new SymmetryCursor(symmetryPuzzle, vertexPositions, null);
 
-        HexagonRule.generate(cursor, random, new SpawnByCount(2), new SpawnByCount(2), new SpawnByCount(2));
-        BrokenLineRule.generate(cursor, random, new SpawnByCount(6));
+        HexagonRuleGenerator.generate(cursor, random, new SpawnByCount(2), new SpawnByCount(2), new SpawnByCount(2));
+        BrokenLineRuleGenerator.generate(cursor, random, new SpawnByCount(6));
 
         return new PuzzleRenderer(game, symmetryPuzzle);
     }

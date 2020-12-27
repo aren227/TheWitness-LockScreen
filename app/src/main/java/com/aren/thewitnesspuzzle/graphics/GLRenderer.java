@@ -8,9 +8,9 @@ import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 
 import com.aren.thewitnesspuzzle.R;
+import com.aren.thewitnesspuzzle.core.math.BoundingBox;
+import com.aren.thewitnesspuzzle.core.math.Vector2;
 import com.aren.thewitnesspuzzle.game.Game;
-import com.aren.thewitnesspuzzle.math.BoundingBox;
-import com.aren.thewitnesspuzzle.math.Vector2;
 import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
 
 import java.nio.ByteBuffer;

@@ -2,13 +2,13 @@ package com.aren.thewitnesspuzzle.puzzle.generator;
 
 import android.util.Log;
 
-import com.aren.thewitnesspuzzle.math.Vector2Int;
-import com.aren.thewitnesspuzzle.puzzle.base.GridPuzzle;
-import com.aren.thewitnesspuzzle.puzzle.base.cursor.area.Area;
-import com.aren.thewitnesspuzzle.puzzle.base.cursor.area.GridAreaSplitter;
-import com.aren.thewitnesspuzzle.puzzle.base.graph.Tile;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.BlocksRule;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.Color;
+import com.aren.thewitnesspuzzle.core.cursor.area.Area;
+import com.aren.thewitnesspuzzle.core.cursor.area.GridAreaSplitter;
+import com.aren.thewitnesspuzzle.core.graph.Tile;
+import com.aren.thewitnesspuzzle.core.math.Vector2Int;
+import com.aren.thewitnesspuzzle.core.puzzle.GridPuzzle;
+import com.aren.thewitnesspuzzle.core.rules.BlocksRule;
+import com.aren.thewitnesspuzzle.core.rules.Color;
 
 import java.util.ArrayList;
 import java.util.Collections;

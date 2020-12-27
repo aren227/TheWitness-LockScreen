@@ -1,9 +1,8 @@
 package com.aren.thewitnesspuzzle.puzzle.animation;
 
+import com.aren.thewitnesspuzzle.core.math.MathUtils;
 import com.aren.thewitnesspuzzle.graphics.shape.HexagonShape;
 import com.aren.thewitnesspuzzle.graphics.shape.Shape;
-import com.aren.thewitnesspuzzle.math.MathUtils;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.HexagonRule;
 import com.aren.thewitnesspuzzle.render.RuleShape;
 
 public class ErrorAnimation extends Animation {

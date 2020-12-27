@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aren.thewitnesspuzzle.R;
+import com.aren.thewitnesspuzzle.core.puzzle.ErrorPuzzle;
 import com.aren.thewitnesspuzzle.dialog.NewProfileDialog;
 import com.aren.thewitnesspuzzle.gallery.GalleryAdapter;
 import com.aren.thewitnesspuzzle.gallery.GalleryPreview;
@@ -34,7 +35,6 @@ import com.aren.thewitnesspuzzle.gallery.OnPreviewClick;
 import com.aren.thewitnesspuzzle.gallery.OnUpdate;
 import com.aren.thewitnesspuzzle.gallery.PuzzleOrderAdapter;
 import com.aren.thewitnesspuzzle.game.Game;
-import com.aren.thewitnesspuzzle.puzzle.base.ErrorPuzzle;
 import com.aren.thewitnesspuzzle.puzzle.factory.CustomPatternPuzzleFactory;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactory;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;

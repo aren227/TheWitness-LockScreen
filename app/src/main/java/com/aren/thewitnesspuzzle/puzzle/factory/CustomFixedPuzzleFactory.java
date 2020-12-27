@@ -2,8 +2,8 @@ package com.aren.thewitnesspuzzle.puzzle.factory;
 
 import android.content.Context;
 
+import com.aren.thewitnesspuzzle.core.puzzle.PuzzleBase;
 import com.aren.thewitnesspuzzle.game.Game;
-import com.aren.thewitnesspuzzle.puzzle.base.PuzzleBase;
 import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
 
 import org.json.JSONException;

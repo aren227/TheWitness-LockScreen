@@ -1,17 +1,17 @@
 package com.aren.thewitnesspuzzle.puzzle.generator;
 
-import com.aren.thewitnesspuzzle.math.Vector2Int;
-import com.aren.thewitnesspuzzle.puzzle.base.cursor.area.Area;
-import com.aren.thewitnesspuzzle.puzzle.base.cursor.area.GridAreaSplitter;
-import com.aren.thewitnesspuzzle.puzzle.base.graph.Tile;
-import com.aren.thewitnesspuzzle.puzzle.base.graph.Vertex;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.BlocksRule;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.Color;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.Colorable;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.EliminationRule;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.HexagonRule;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.SquareRule;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.SunRule;
+import com.aren.thewitnesspuzzle.core.cursor.area.Area;
+import com.aren.thewitnesspuzzle.core.cursor.area.GridAreaSplitter;
+import com.aren.thewitnesspuzzle.core.graph.Tile;
+import com.aren.thewitnesspuzzle.core.graph.Vertex;
+import com.aren.thewitnesspuzzle.core.math.Vector2Int;
+import com.aren.thewitnesspuzzle.core.rules.BlocksRule;
+import com.aren.thewitnesspuzzle.core.rules.Color;
+import com.aren.thewitnesspuzzle.core.rules.Colorable;
+import com.aren.thewitnesspuzzle.core.rules.EliminationRule;
+import com.aren.thewitnesspuzzle.core.rules.HexagonRule;
+import com.aren.thewitnesspuzzle.core.rules.SquareRule;
+import com.aren.thewitnesspuzzle.core.rules.SunRule;
 
 import java.util.ArrayList;
 import java.util.Collections;

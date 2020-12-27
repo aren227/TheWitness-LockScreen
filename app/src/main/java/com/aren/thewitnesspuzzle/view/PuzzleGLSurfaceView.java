@@ -5,10 +5,10 @@ import android.graphics.Bitmap;
 import android.opengl.GLSurfaceView;
 import android.view.MotionEvent;
 
+import com.aren.thewitnesspuzzle.core.math.BoundingBox;
+import com.aren.thewitnesspuzzle.core.math.MathUtils;
 import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.graphics.GLRenderer;
-import com.aren.thewitnesspuzzle.math.BoundingBox;
-import com.aren.thewitnesspuzzle.math.MathUtils;
 
 public class PuzzleGLSurfaceView extends GLSurfaceView {
 

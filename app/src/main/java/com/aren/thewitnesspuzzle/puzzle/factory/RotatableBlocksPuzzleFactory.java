@@ -2,15 +2,15 @@ package com.aren.thewitnesspuzzle.puzzle.factory;
 
 import android.content.Context;
 
+import com.aren.thewitnesspuzzle.core.color.PalettePreset;
+import com.aren.thewitnesspuzzle.core.cursor.Cursor;
+import com.aren.thewitnesspuzzle.core.cursor.area.GridAreaSplitter;
+import com.aren.thewitnesspuzzle.core.graph.Vertex;
+import com.aren.thewitnesspuzzle.core.puzzle.GridPuzzle;
+import com.aren.thewitnesspuzzle.core.rules.Color;
 import com.aren.thewitnesspuzzle.game.Game;
-import com.aren.thewitnesspuzzle.puzzle.base.GridPuzzle;
-import com.aren.thewitnesspuzzle.puzzle.base.color.PalettePreset;
-import com.aren.thewitnesspuzzle.puzzle.base.cursor.Cursor;
-import com.aren.thewitnesspuzzle.puzzle.base.cursor.area.GridAreaSplitter;
-import com.aren.thewitnesspuzzle.puzzle.base.graph.Vertex;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.BlocksRule;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.BrokenLineRule;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.Color;
+import com.aren.thewitnesspuzzle.puzzle.generator.BlocksRuleGenerator;
+import com.aren.thewitnesspuzzle.puzzle.generator.BrokenLineRuleGenerator;
 import com.aren.thewitnesspuzzle.puzzle.walker.FastGridTreeWalker;
 import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
 
@@ -36,8 +36,8 @@ public class RotatableBlocksPuzzleFactory extends PuzzleFactory {
 
         GridAreaSplitter splitter = new GridAreaSplitter(cursor);
 
-        BrokenLineRule.generate(cursor, random, 0.2f);
-        BlocksRule.generate(splitter, random, Color.YELLOW, 0.4f, 1f);
+        BrokenLineRuleGenerator.generate(cursor, random, 0.2f);
+        BlocksRuleGenerator.generate(splitter, random, Color.YELLOW, 0.4f, 1f);
 
         return new PuzzleRenderer(game, puzzle);
     }

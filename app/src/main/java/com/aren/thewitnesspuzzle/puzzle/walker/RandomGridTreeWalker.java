@@ -1,9 +1,9 @@
 package com.aren.thewitnesspuzzle.puzzle.walker;
 
-import com.aren.thewitnesspuzzle.math.Vector2Int;
-import com.aren.thewitnesspuzzle.math.Vector4Int;
-import com.aren.thewitnesspuzzle.puzzle.base.GridPuzzle;
-import com.aren.thewitnesspuzzle.puzzle.base.graph.Vertex;
+import com.aren.thewitnesspuzzle.core.graph.Vertex;
+import com.aren.thewitnesspuzzle.core.math.Vector2Int;
+import com.aren.thewitnesspuzzle.core.math.Vector4Int;
+import com.aren.thewitnesspuzzle.core.puzzle.GridPuzzle;
 
 import java.util.ArrayList;
 import java.util.Collections;

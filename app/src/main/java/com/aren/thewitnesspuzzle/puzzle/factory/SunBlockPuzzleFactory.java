@@ -2,17 +2,18 @@ package com.aren.thewitnesspuzzle.puzzle.factory;
 
 import android.content.Context;
 
+import com.aren.thewitnesspuzzle.core.color.PalettePreset;
+import com.aren.thewitnesspuzzle.core.cursor.Cursor;
+import com.aren.thewitnesspuzzle.core.cursor.area.Area;
+import com.aren.thewitnesspuzzle.core.cursor.area.GridAreaSplitter;
+import com.aren.thewitnesspuzzle.core.graph.Tile;
+import com.aren.thewitnesspuzzle.core.graph.Vertex;
+import com.aren.thewitnesspuzzle.core.puzzle.GridPuzzle;
+import com.aren.thewitnesspuzzle.core.rules.BlocksRule;
+import com.aren.thewitnesspuzzle.core.rules.Color;
 import com.aren.thewitnesspuzzle.game.Game;
-import com.aren.thewitnesspuzzle.puzzle.base.GridPuzzle;
-import com.aren.thewitnesspuzzle.puzzle.base.color.PalettePreset;
-import com.aren.thewitnesspuzzle.puzzle.base.cursor.Cursor;
-import com.aren.thewitnesspuzzle.puzzle.base.cursor.area.Area;
-import com.aren.thewitnesspuzzle.puzzle.base.cursor.area.GridAreaSplitter;
-import com.aren.thewitnesspuzzle.puzzle.base.graph.Tile;
-import com.aren.thewitnesspuzzle.puzzle.base.graph.Vertex;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.BlocksRule;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.Color;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.SunRule;
+import com.aren.thewitnesspuzzle.puzzle.generator.BlocksRuleGenerator;
+import com.aren.thewitnesspuzzle.puzzle.generator.SunRuleGenerator;
 import com.aren.thewitnesspuzzle.puzzle.walker.FastGridTreeWalker;
 import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
 
@@ -40,7 +41,7 @@ public class SunBlockPuzzleFactory extends PuzzleFactory {
 
         GridAreaSplitter splitter = new GridAreaSplitter(cursor);
 
-        BlocksRule.generate(splitter, random, Color.ORANGE, 0.3f, 0.5f);
+        BlocksRuleGenerator.generate(splitter, random, Color.ORANGE, 0.3f, 0.5f);
         List<BlocksRule> blocks = new ArrayList<>();
         for (Area area : splitter.areaList) {
             for (Tile tile : area.tiles) {
@@ -55,7 +56,7 @@ public class SunBlockPuzzleFactory extends PuzzleFactory {
             blocks.get(random.nextInt(blocks.size())).color = Color.PURPLE;
         }
 
-        SunRule.generate(splitter, random, Arrays.asList(Color.PURPLE), 1f, 0.8f, 1.0f);
+        SunRuleGenerator.generate(splitter, random, Arrays.asList(Color.PURPLE), 1f, 0.8f, 1.0f);
 
         return new PuzzleRenderer(game, puzzle);
     }

@@ -1,8 +1,6 @@
 package com.aren.thewitnesspuzzle.activity;
 
 import android.os.Bundle;
-import android.util.JsonReader;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -13,7 +11,6 @@ import com.aren.thewitnesspuzzle.R;
 import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.puzzle.animation.PuzzleFadeInAnimation;
 import com.aren.thewitnesspuzzle.puzzle.animation.PuzzleFadeOutAnimation;
-import com.aren.thewitnesspuzzle.puzzle.base.PuzzleBase;
 import com.aren.thewitnesspuzzle.puzzle.factory.CustomFixedPuzzleFactory;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactory;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;
@@ -21,7 +18,6 @@ import com.aren.thewitnesspuzzle.puzzle.sound.Sounds;
 import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.Random;
 import java.util.UUID;

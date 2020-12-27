@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aren.thewitnesspuzzle.R;
-import com.aren.thewitnesspuzzle.puzzle.base.color.PalettePreset;
+import com.aren.thewitnesspuzzle.core.color.PalettePreset;
 import com.aren.thewitnesspuzzle.puzzle.factory.Difficulty;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactory;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;

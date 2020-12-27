@@ -1,7 +1,7 @@
 package com.aren.thewitnesspuzzle.puzzle.animation;
 
-import com.aren.thewitnesspuzzle.math.MathUtils;
-import com.aren.thewitnesspuzzle.puzzle.base.color.PuzzleColorPalette;
+import com.aren.thewitnesspuzzle.core.color.PuzzleColorPalette;
+import com.aren.thewitnesspuzzle.core.math.MathUtils;
 import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
 
 public class CursorSucceededAnimation extends Animation {

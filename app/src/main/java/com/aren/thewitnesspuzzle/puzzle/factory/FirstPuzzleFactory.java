@@ -2,13 +2,13 @@ package com.aren.thewitnesspuzzle.puzzle.factory;
 
 import android.content.Context;
 
+import com.aren.thewitnesspuzzle.core.color.PalettePreset;
+import com.aren.thewitnesspuzzle.core.graph.Edge;
+import com.aren.thewitnesspuzzle.core.graph.Vertex;
+import com.aren.thewitnesspuzzle.core.puzzle.PuzzleBase;
+import com.aren.thewitnesspuzzle.core.rules.EndingPointRule;
+import com.aren.thewitnesspuzzle.core.rules.StartingPointRule;
 import com.aren.thewitnesspuzzle.game.Game;
-import com.aren.thewitnesspuzzle.puzzle.base.PuzzleBase;
-import com.aren.thewitnesspuzzle.puzzle.base.color.PalettePreset;
-import com.aren.thewitnesspuzzle.puzzle.base.graph.Edge;
-import com.aren.thewitnesspuzzle.puzzle.base.graph.Vertex;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.EndingPointRule;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.StartingPointRule;
 import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
 
 import java.util.Random;

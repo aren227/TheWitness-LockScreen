@@ -2,11 +2,11 @@ package com.aren.thewitnesspuzzle.puzzle.factory;
 
 import android.content.Context;
 
+import com.aren.thewitnesspuzzle.core.color.PalettePreset;
+import com.aren.thewitnesspuzzle.core.cursor.Cursor;
+import com.aren.thewitnesspuzzle.core.puzzle.GridPuzzle;
 import com.aren.thewitnesspuzzle.game.Game;
-import com.aren.thewitnesspuzzle.puzzle.base.GridPuzzle;
-import com.aren.thewitnesspuzzle.puzzle.base.color.PalettePreset;
-import com.aren.thewitnesspuzzle.puzzle.base.cursor.Cursor;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.BrokenLineRule;
+import com.aren.thewitnesspuzzle.puzzle.generator.BrokenLineRuleGenerator;
 import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridTreeWalker;
 import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
 
@@ -29,7 +29,7 @@ public class MazePuzzleFactory extends PuzzleFactory {
 
         Cursor cursor = new Cursor(puzzle, walker.getResult(puzzle, 6, 6), null);
 
-        BrokenLineRule.generate(puzzle, walker, random, 0.9f);
+        BrokenLineRuleGenerator.generate(puzzle, walker, random, 0.9f);
 
         return new PuzzleRenderer(game, puzzle);
     }

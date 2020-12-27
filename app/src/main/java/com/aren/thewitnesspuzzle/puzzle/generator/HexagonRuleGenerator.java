@@ -1,10 +1,10 @@
 package com.aren.thewitnesspuzzle.puzzle.generator;
 
-import com.aren.thewitnesspuzzle.puzzle.base.cursor.Cursor;
-import com.aren.thewitnesspuzzle.puzzle.base.cursor.SymmetryCursor;
-import com.aren.thewitnesspuzzle.puzzle.base.graph.Edge;
-import com.aren.thewitnesspuzzle.puzzle.base.graph.Vertex;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.HexagonRule;
+import com.aren.thewitnesspuzzle.core.cursor.Cursor;
+import com.aren.thewitnesspuzzle.core.cursor.SymmetryCursor;
+import com.aren.thewitnesspuzzle.core.graph.Edge;
+import com.aren.thewitnesspuzzle.core.graph.Vertex;
+import com.aren.thewitnesspuzzle.core.rules.HexagonRule;
 import com.aren.thewitnesspuzzle.puzzle.factory.spawn.SpawnByRate;
 import com.aren.thewitnesspuzzle.puzzle.factory.spawn.SpawnSelector;
 
