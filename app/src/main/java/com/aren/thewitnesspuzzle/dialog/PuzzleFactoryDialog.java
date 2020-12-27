@@ -16,6 +16,7 @@ import com.aren.thewitnesspuzzle.R;
 import com.aren.thewitnesspuzzle.activity.CreatePatternActivity;
 import com.aren.thewitnesspuzzle.activity.CreateRandomPuzzleActivity;
 import com.aren.thewitnesspuzzle.activity.GalleryActivity;
+import com.aren.thewitnesspuzzle.activity.PlayActivity;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactory;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;
 
@@ -101,6 +102,15 @@ public class PuzzleFactoryDialog extends Dialog {
             findViewById(R.id.puzzle_settings).setVisibility(View.GONE);
             findViewById(R.id.puzzle_remove).setVisibility(View.GONE);
         }
+
+        findViewById(R.id.puzzle_play).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), PlayActivity.class);
+                intent.putExtra("factory-uuid", factory.getUuid().toString());
+                getContext().startActivity(intent);
+            }
+        });
     }
 
     public PuzzleFactoryDialog(@NonNull Context context, PuzzleFactory factory) {

@@ -24,25 +24,37 @@
         android:scaleType="fitXY"
         android:layout_below="@id/name" />
 
-    <TextView
-        android:id="@+id/puzzle_cant_be_removed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="left"
-        android:text="This puzzle cannot be modified or removed."
-        android:textColor="@color/colorPrimary"
-        android:textStyle="italic"
-        android:fontFamily="serif"
-        android:textSize="20dp"
-        android:layout_below="@id/thumbnail"
-        android:paddingTop="16dp" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_below="@id/thumbnail"
         android:paddingTop="16dp">
+
+        <TextView
+            android:id="@+id/puzzle_play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:text="Play"
+            android:textColor="@color/colorPrimary"
+            android:fontFamily="serif"
+            android:textSize="20dp"
+            android:drawableLeft="@drawable/ic_baseline_play_circle_filled_24"
+            android:drawableTint="@color/colorPrimary"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/puzzle_cant_be_removed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:text="This puzzle cannot be modified or removed."
+            android:textColor="@color/colorPrimary"
+            android:textStyle="italic"
+            android:fontFamily="serif"
+            android:textSize="20dp"
+            android:layout_below="@id/thumbnail" />
 
         <TextView
             android:id="@+id/puzzle_settings"

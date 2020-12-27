@@ -33,6 +33,7 @@ public class PlayActivity extends AppCompatActivity {
     private Game game;
     private PuzzleFactoryManager puzzleFactoryManager;
     private PuzzleFactory currentPuzzleFactory;
+    private PuzzleFactory overridePuzzleFactory; // Playing with single a single puzzle.
 
     private RelativeLayout root;
     private ImageView nextImage;
@@ -51,6 +52,13 @@ public class PlayActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
 
+        puzzleFactoryManager = new PuzzleFactoryManager(this);
+
+        if (getIntent().hasExtra("factory-uuid")) {
+            UUID uuid = UUID.fromString(getIntent().getStringExtra("factory-uuid"));
+            overridePuzzleFactory = puzzleFactoryManager.getPuzzleFactoryByUuid(uuid);
+        }
+
         root = findViewById(R.id.play_root);
         nextImage = findViewById(R.id.next_puzzle);
         skipImage = findViewById(R.id.skip_puzzle);
@@ -66,9 +74,9 @@ public class PlayActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         PuzzleFactoryManager.Profile profile = puzzleFactoryManager.getPlayProfile();
-                        if (profile.getType() == PuzzleFactoryManager.ProfileType.SEQUENCE) {
+                        if (!isOverride() && profile.getType() == PuzzleFactoryManager.ProfileType.SEQUENCE) {
                             nextPuzzle();
-                        } else if (profile.getType() == PuzzleFactoryManager.ProfileType.DEFAULT) {
+                        } else {
                             nextImage.setVisibility(View.VISIBLE);
                             skipImage.setVisibility(View.GONE);
                         }
@@ -120,8 +128,6 @@ public class PlayActivity extends AppCompatActivity {
                 favImage.setImageResource(game.getPuzzle().isFavorite() ? R.drawable.ic_baseline_favorite : R.drawable.ic_baseline_favorite_border);
             }
         });
-
-        puzzleFactoryManager = new PuzzleFactoryManager(this);
 
         if (savedInstanceState == null) {
             seed = new Random().nextLong();
@@ -215,7 +221,14 @@ public class PlayActivity extends AppCompatActivity {
 
     public boolean generatePuzzle() {
         PuzzleFactoryManager.Profile profile = puzzleFactoryManager.getPlayProfile();
-        if (profile.getType() == PuzzleFactoryManager.ProfileType.DEFAULT) {
+        if (isOverride()) {
+            currentPuzzleFactory = overridePuzzleFactory;
+            factoryUuid = currentPuzzleFactory.getUuid();
+            PuzzleRenderer puzzleRenderer = currentPuzzleFactory.generate(game, new Random(seed));
+            game.setPuzzle(puzzleRenderer);
+            game.update();
+            return true;
+        } else if (profile.getType() == PuzzleFactoryManager.ProfileType.DEFAULT) {
             currentPuzzleFactory = null;
             if (factoryUuid == null) {
                 currentPuzzleFactory = puzzleFactoryManager.getPlayProfile().getRandomPuzzleFactory(new Random());
@@ -279,5 +292,9 @@ public class PlayActivity extends AppCompatActivity {
             return true;
         }
         return false;
+    }
+
+    private boolean isOverride() {
+        return overridePuzzleFactory != null;
     }
 }
