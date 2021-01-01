@@ -21,6 +21,10 @@
             android:name=".activity.CreateRandomPuzzleActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.CreateCustomPuzzleActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
         <activity android:name=".activity.DisclaimerActivity" />
         <activity android:name=".activity.SettingsActivity" />
         <activity android:name=".activity.PlayActivity"

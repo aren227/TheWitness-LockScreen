@@ -10,6 +10,7 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.aren.thewitnesspuzzle.R;
+import com.aren.thewitnesspuzzle.activity.CreateCustomPuzzleActivity;
 import com.aren.thewitnesspuzzle.activity.CreatePatternActivity;
 import com.aren.thewitnesspuzzle.activity.CreateRandomPuzzleActivity;
 
@@ -30,6 +31,7 @@ public class NewPuzzleDialog extends Dialog {
 
         final RadioButton patternRadioButton = findViewById(R.id.new_puzzle_radio_pattern);
         final RadioButton randomRadioButton = findViewById(R.id.new_puzzle_random);
+        final RadioButton customRadioButton = findViewById(R.id.new_puzzle_custom);
 
         TextView cancelText = findViewById(R.id.new_puzzle_cancel);
         cancelText.setOnClickListener(new View.OnClickListener() {
@@ -50,6 +52,10 @@ public class NewPuzzleDialog extends Dialog {
                 } else if (randomRadioButton.isChecked()) {
                     dismiss();
                     Intent intent = new Intent(getContext(), CreateRandomPuzzleActivity.class);
+                    getContext().startActivity(intent);
+                } else if (customRadioButton.isChecked()) {
+                    dismiss();
+                    Intent intent = new Intent(getContext(), CreateCustomPuzzleActivity.class);
                     getContext().startActivity(intent);
                 }
             }

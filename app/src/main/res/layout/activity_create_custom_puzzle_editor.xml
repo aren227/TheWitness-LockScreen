@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="6">
+
+        <ImageView
+            android:id="@+id/tool_play"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="5dp"
+            android:layout_columnWeight="1"
+            android:src="@drawable/ic_baseline_play_circle_filled_24"/>
+
+        <ImageView
+            android:id="@+id/tool_erase"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="5dp"
+            android:layout_columnWeight="1"
+            android:src="@drawable/ic_erase"/>
+
+        <ImageView
+            android:id="@+id/tool_start"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="5dp"
+            android:layout_columnWeight="1"
+            android:src="@drawable/ic_rule_start"/>
+
+        <ImageView
+            android:id="@+id/tool_broken_line"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="5dp"
+            android:layout_columnWeight="1"
+            android:src="@drawable/ic_rule_broken_line"/>
+
+        <ImageView
+            android:id="@+id/tool_end"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="5dp"
+            android:layout_columnWeight="1"
+            android:src="@drawable/ic_rule_end"/>
+
+        <ImageView
+            android:id="@+id/tool_hexagon"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="5dp"
+            android:layout_columnWeight="1"
+            android:src="@drawable/ic_rule_hexagon"/>
+
+        <ImageView
+            android:id="@+id/tool_square"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="5dp"
+            android:layout_columnWeight="1"
+            android:src="@drawable/ic_rule_square"/>
+
+        <ImageView
+            android:id="@+id/tool_sun"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="5dp"
+            android:layout_columnWeight="1"
+            android:src="@drawable/ic_rule_sun"/>
+
+        <ImageView
+            android:id="@+id/tool_blocks"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="5dp"
+            android:layout_columnWeight="1"
+            android:src="@drawable/ic_rule_block"/>
+
+        <ImageView
+            android:id="@+id/tool_elimination"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="5dp"
+            android:layout_columnWeight="1"
+            android:src="@drawable/ic_rule_elimination"/>
+
+        <ImageView
+            android:id="@+id/tool_triangles"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="5dp"
+            android:layout_columnWeight="1"
+            android:src="@drawable/ic_rule_triangle"/>
+
+    </GridLayout>
+
+</LinearLayout>
