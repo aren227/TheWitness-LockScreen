@@ -6,12 +6,15 @@ import android.media.MediaPlayer;
 import android.view.MotionEvent;
 
 import com.aren.thewitnesspuzzle.core.math.BoundingBox;
+import com.aren.thewitnesspuzzle.game.event.ClickEvent;
 import com.aren.thewitnesspuzzle.puzzle.sound.Sounds;
 import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
 import com.aren.thewitnesspuzzle.view.PuzzleGLSurfaceView;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -30,6 +33,7 @@ public class Game {
     private Runnable onSolved;
     private Runnable onPreTouched;
     private Runnable onClicked;
+    private List<ClickEvent> clickEvents = new ArrayList<>();
 
     public enum Mode {PLAY, GALLERY, EDITOR}
 
@@ -59,6 +63,11 @@ public class Game {
     public void touchEvent(float x, float y, int action) {
         if (onPreTouched != null) onPreTouched.run();
         if (action == MotionEvent.ACTION_DOWN && onClicked != null) onClicked.run();
+
+        for (ClickEvent clickEvent : clickEvents) {
+            clickEvent.onClick(x, y, action);
+        }
+
         puzzle.touchEvent(x, y, action);
         update();
     }
@@ -87,6 +96,14 @@ public class Game {
 
     public void setOnClicked(Runnable runnable){
         onClicked = runnable;
+    }
+
+    public void addClickListener(ClickEvent listener) {
+        clickEvents.add(listener);
+    }
+
+    public void removeClickListener(ClickEvent listener) {
+        clickEvents.remove(listener);
     }
 
     public void setPuzzle(PuzzleRenderer puzzle) {
