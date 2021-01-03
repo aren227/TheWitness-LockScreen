@@ -241,6 +241,39 @@
                     android:layout_gravity="center"
                     android:layout_marginLeft="8dp" />
 
+                <LinearLayout
+                    android:id="@+id/symmetry_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="24dp"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:id="@+id/no_symmetry"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_baseline_border_clear_24"
+                        android:layout_margin="8dp"/>
+
+                    <ImageView
+                        android:id="@+id/v_symmetry"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_baseline_border_vertical_24"
+                        android:layout_gravity="center"
+                        android:layout_margin="8dp"/>
+
+                    <ImageView
+                        android:id="@+id/r_symmetry"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_baseline_border_inner_24"
+                        android:layout_gravity="center"
+                        android:layout_margin="8dp"/>
+
+                </LinearLayout>
+
             </LinearLayout>
 
         </LinearLayout>

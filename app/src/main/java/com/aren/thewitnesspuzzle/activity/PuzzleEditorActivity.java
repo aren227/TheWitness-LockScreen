@@ -102,6 +102,8 @@ public class PuzzleEditorActivity extends AppCompatActivity {
         gridPuzzleRadioButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (puzzleType.equals("grid"))
+                    return;
                 puzzleType = "grid";
                 resetPuzzle();
                 updateGridSizeUI();
@@ -111,6 +113,8 @@ public class PuzzleEditorActivity extends AppCompatActivity {
         hexagonPuzzleRadioButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (puzzleType.equals("hexagon"))
+                    return;
                 puzzleType = "hexagon";
                 resetPuzzle();
                 updateGridSizeUI();
@@ -120,6 +124,8 @@ public class PuzzleEditorActivity extends AppCompatActivity {
         junglePuzzleRadioButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (puzzleType.equals("jungle"))
+                    return;
                 puzzleType = "jungle";
                 resetPuzzle();
                 updateGridSizeUI();
@@ -129,6 +135,8 @@ public class PuzzleEditorActivity extends AppCompatActivity {
         videoRoomPuzzleRadioButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (puzzleType.equals("video_room"))
+                    return;
                 puzzleType = "video_room";
                 resetPuzzle();
                 updateGridSizeUI();

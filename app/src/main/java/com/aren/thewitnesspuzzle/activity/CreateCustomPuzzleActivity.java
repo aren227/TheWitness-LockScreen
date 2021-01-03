@@ -1,8 +1,11 @@
 package com.aren.thewitnesspuzzle.activity;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -10,13 +13,17 @@ import android.view.ViewGroup;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.aren.thewitnesspuzzle.R;
 import com.aren.thewitnesspuzzle.core.color.PalettePreset;
+import com.aren.thewitnesspuzzle.core.color.PuzzleColorPalette;
+import com.aren.thewitnesspuzzle.core.graph.Edge;
 import com.aren.thewitnesspuzzle.core.graph.GraphElement;
 import com.aren.thewitnesspuzzle.core.graph.Vertex;
 import com.aren.thewitnesspuzzle.core.math.Vector2;
 import com.aren.thewitnesspuzzle.core.puzzle.GridPuzzle;
+import com.aren.thewitnesspuzzle.core.puzzle.GridSymmetryPuzzle;
 import com.aren.thewitnesspuzzle.core.rules.BlocksRule;
 import com.aren.thewitnesspuzzle.core.rules.BrokenLineRule;
 import com.aren.thewitnesspuzzle.core.rules.EliminationRule;
@@ -24,9 +31,15 @@ import com.aren.thewitnesspuzzle.core.rules.HexagonRule;
 import com.aren.thewitnesspuzzle.core.rules.SquareRule;
 import com.aren.thewitnesspuzzle.core.rules.StartingPointRule;
 import com.aren.thewitnesspuzzle.core.rules.SunRule;
+import com.aren.thewitnesspuzzle.core.rules.Symmetry;
+import com.aren.thewitnesspuzzle.core.rules.SymmetryColor;
+import com.aren.thewitnesspuzzle.core.rules.SymmetryType;
 import com.aren.thewitnesspuzzle.core.rules.TrianglesRule;
+import com.aren.thewitnesspuzzle.dialog.SymmetryDialog;
 import com.aren.thewitnesspuzzle.game.event.ClickEvent;
 import com.aren.thewitnesspuzzle.puzzle.factory.Difficulty;
+import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactory;
+import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,34 +59,108 @@ public class CreateCustomPuzzleActivity extends PuzzleEditorActivity implements 
     EliminationRule eliminationRule = new EliminationRule();
     TrianglesRule trianglesRule = new TrianglesRule(1);
 
+    PuzzleRenderer puzzleRenderer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setGridPuzzle(new GridPuzzle(PalettePreset.get("Entry_1"), 4, 4));
+
         sizeRefreshImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO
+                if (getSymmetry() != null && getSymmetry().type == SymmetryType.POINT && getWidth() != getHeight()) {
+                    Toast.makeText(CreateCustomPuzzleActivity.this, "Width and height should be equal in rotational symmetry mode.", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(CreateCustomPuzzleActivity.this)
+                        .setTitle("Change Dimensions")
+                        .setMessage("Some symbols will be discarded!")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                apply(getWidth(), getHeight(), getSymmetry());
+                                widthEditText.setText(getGridPuzzle().getWidth() + "");
+                                heightEditText.setText(getGridPuzzle().getHeight() + "");
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                widthEditText.setText(getGridPuzzle().getWidth() + "");
+                                heightEditText.setText(getGridPuzzle().getHeight() + "");
+                            }
+                        });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(0xff000000);
+                dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(0xff000000);
             }
         });
 
         nameEditText.setText(config.getString("name", "My Puzzle"));
 
-        palette.set(config.getColorPalette("color", PalettePreset.get("Entry_1")));
+        palette.set(getGridPuzzle().getColorPalette());
         paletteView.invalidate();
 
-        Difficulty difficulty = Difficulty.fromString(config.getString("difficulty", "ALWAYS_SOLVABLE"));
-        int difficultyIndex = 0;
-        for (int i = 0; i < DIFFICULTIES.length; i++) {
-            if (DIFFICULTIES[i] == difficulty) {
-                difficultyIndex = i;
-                break;
-            }
-        }
-        difficultySeekBar.setProgress(difficultyIndex);
+        difficultyView.setVisibility(View.GONE);
 
-        widthEditText.setText(config.getInt("width", 4) + "");
-        heightEditText.setText(config.getInt("height", 4) + "");
+        widthEditText.setText(getGridPuzzle().getWidth() + "");
+        heightEditText.setText(getGridPuzzle().getHeight() + "");
+
+        findViewById(R.id.symmetry_container).setVisibility(View.VISIBLE);
+
+        findViewById(R.id.no_symmetry).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SymmetryDialog dialog = new SymmetryDialog(CreateCustomPuzzleActivity.this, null, new SymmetryDialog.SymmetryDialogResult() {
+                    @Override
+                    public void result(boolean apply, Symmetry symmetry) {
+                        if (apply)
+                            apply(getGridPuzzle().getWidth(), getGridPuzzle().getHeight(), symmetry);
+                    }
+                });
+                dialog.show();
+            }
+        });
+
+        findViewById(R.id.v_symmetry).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SymmetryDialog dialog = new SymmetryDialog(CreateCustomPuzzleActivity.this, new Symmetry(SymmetryType.VLINE), new SymmetryDialog.SymmetryDialogResult() {
+                    @Override
+                    public void result(boolean apply, Symmetry symmetry) {
+                        if (apply)
+                            apply(getGridPuzzle().getWidth(), getGridPuzzle().getHeight(), symmetry);
+                    }
+                });
+                dialog.show();
+            }
+        });
+
+        findViewById(R.id.r_symmetry).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (getGridPuzzle().getWidth() != getGridPuzzle().getHeight()) {
+                    Toast.makeText(CreateCustomPuzzleActivity.this, "Width and height should be equal in rotational symmetry mode.", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                SymmetryDialog dialog = new SymmetryDialog(CreateCustomPuzzleActivity.this, new Symmetry(SymmetryType.POINT), new SymmetryDialog.SymmetryDialogResult() {
+                    @Override
+                    public void result(boolean apply, Symmetry symmetry) {
+                        if (apply)
+                            apply(getGridPuzzle().getWidth(), getGridPuzzle().getHeight(), symmetry);
+                    }
+                });
+                dialog.show();
+            }
+        });
+
+        ((ImageView) findViewById(R.id.no_symmetry)).setColorFilter(Color.WHITE);
+        ((ImageView) findViewById(R.id.v_symmetry)).setColorFilter(Color.DKGRAY);
+        ((ImageView) findViewById(R.id.r_symmetry)).setColorFilter(Color.DKGRAY);
 
         // Disable other puzzle types
         hexagonPuzzleRadioButton.setVisibility(View.GONE);
@@ -132,6 +219,73 @@ public class CreateCustomPuzzleActivity extends PuzzleEditorActivity implements 
         }
     }
 
+    private void apply(int w, int h, Symmetry newSymmetry) {
+        GridPuzzle gridPuzzle = getGridPuzzle();
+
+        if (newSymmetry == null || newSymmetry.type != SymmetryType.POINT || newSymmetry.color == SymmetryColor.NONE) {
+            for (Vertex vertex : gridPuzzle.getVertices()) {
+                if (vertex.getRule() instanceof HexagonRule && ((HexagonRule) vertex.getRule()).hasSymmetricColor())
+                    ((HexagonRule) vertex.getRule()).setSymmetricColor(SymmetryColor.NONE);
+            }
+            for (Edge edge : gridPuzzle.getEdges()) {
+                if (edge.getRule() instanceof HexagonRule && ((HexagonRule) edge.getRule()).hasSymmetricColor())
+                    ((HexagonRule) edge.getRule()).setSymmetricColor(SymmetryColor.NONE);
+            }
+        }
+
+        if (newSymmetry != null) {
+            for (int i = 0; i <= gridPuzzle.getWidth(); i++) {
+                for (int j = 0; j <= gridPuzzle.getHeight(); j++) {
+                    if (gridPuzzle.getVertexAt(i, j).getRule() instanceof StartingPointRule)
+                        gridPuzzle.removeStartingPoint(i, j);
+                    // Ending points are not copied
+                }
+            }
+        }
+
+        // Assert
+        if (newSymmetry != null && newSymmetry.type == SymmetryType.POINT && w != h)
+            return;
+
+        int ow = gridPuzzle.getWidth();
+        int oh = gridPuzzle.getHeight();
+
+        PuzzleColorPalette colorPalette = gridPuzzle.getColorPalette();
+
+        GridPuzzle newGridPuzzle;
+        if (newSymmetry == null)
+            newGridPuzzle = new GridPuzzle(colorPalette, w, h);
+        else
+            newGridPuzzle = new GridSymmetryPuzzle(colorPalette, w, h, newSymmetry);
+
+        for (int i = 0; i <= Math.min(ow, w); i++) {
+            for (int j = 0; j <= Math.min(oh, h); j++) {
+                newGridPuzzle.getVertexAt(i, j).setRule(gridPuzzle.getVertexAt(i, j).getRule());
+            }
+        }
+
+        for (int i = 0; i < Math.min(ow, w); i++) {
+            for (int j = 0; j <= Math.min(oh, h); j++) {
+                newGridPuzzle.getEdgeAt(i, j, true).setRule(gridPuzzle.getEdgeAt(i, j, true).getRule());
+            }
+        }
+
+        for (int i = 0; i <= Math.min(ow, w); i++) {
+            for (int j = 0; j < Math.min(oh, h); j++) {
+                newGridPuzzle.getEdgeAt(i, j, false).setRule(gridPuzzle.getEdgeAt(i, j, false).getRule());
+            }
+        }
+
+        for (int i = 0; i < Math.min(ow, w); i++) {
+            for (int j = 0; j < Math.min(oh, h); j++) {
+                newGridPuzzle.getTileAt(i, j).setRule(gridPuzzle.getTileAt(i, j).getRule());
+            }
+        }
+
+        setGridPuzzle(newGridPuzzle);
+        selectTool(currentToolType);
+    }
+
     private void selectTool(ToolType toolType) {
         if (currentToolType != null)
             toolTypeImageViewMap.get(currentToolType).setColorFilter(Color.DKGRAY);
@@ -164,6 +318,22 @@ public class CreateCustomPuzzleActivity extends PuzzleEditorActivity implements 
             eliminationRule.color = color;
 
         selectTool(currentToolType); // Update tool icons
+    }
+
+    private GridPuzzle getGridPuzzle() {
+        return (GridPuzzle) game.getPuzzle().getPuzzleBase();
+    }
+
+    private void setGridPuzzle(GridPuzzle gridPuzzle) {
+        puzzleRenderer = new PuzzleRenderer(game, gridPuzzle);
+        game.setPuzzle(puzzleRenderer);
+        game.update();
+    }
+
+    private Symmetry getSymmetry() {
+        if (getGridPuzzle() instanceof GridSymmetryPuzzle)
+            return ((GridSymmetryPuzzle) getGridPuzzle()).getSymmetry();
+        return null;
     }
 
     @Override
@@ -231,7 +401,7 @@ public class CreateCustomPuzzleActivity extends PuzzleEditorActivity implements 
 
             gridPuzzle.addStartingPoint(gx, gy);
         } else if (currentToolType == ToolType.END) {
-            if (gx == 0 || gy == 0 || gx == gridPuzzle.getWidth() - 1 || gy == gridPuzzle.getHeight() - 1) {
+            if (gx == 0 || gy == 0 || gx == gridPuzzle.getWidth() || gy == gridPuzzle.getHeight()) {
                 graphElement.removeRule();
 
                 gridPuzzle.addEndingPoint(gx, gy);
