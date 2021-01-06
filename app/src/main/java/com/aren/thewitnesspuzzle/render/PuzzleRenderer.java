@@ -2,6 +2,7 @@ package com.aren.thewitnesspuzzle.render;
 
 import android.util.Log;
 import android.view.MotionEvent;
+import android.widget.Toast;
 
 import com.aren.thewitnesspuzzle.core.color.ColorUtils;
 import com.aren.thewitnesspuzzle.core.cursor.Cursor;
@@ -399,6 +400,9 @@ public class PuzzleRenderer {
                     }
                     addAnimation(new CursorFailedAnimation(this));
                     game.playSound(Sounds.FAILURE);
+
+                    if (result.timedOut)
+                        game.makeToast("Timed out validating rules.");
                 } else {
                     addAnimation(new CursorSucceededAnimation(this));
                     game.playSound(Sounds.SUCCESS);

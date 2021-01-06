@@ -3,7 +3,10 @@ package com.aren.thewitnesspuzzle.game;
 import android.content.Context;
 import android.graphics.Color;
 import android.media.MediaPlayer;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.MotionEvent;
+import android.widget.Toast;
 
 import com.aren.thewitnesspuzzle.core.math.BoundingBox;
 import com.aren.thewitnesspuzzle.game.event.ClickEvent;
@@ -21,6 +24,7 @@ import java.util.TimerTask;
 public class Game {
 
     private Context context;
+    private Handler handler;
 
     private GameSettings settings;
 
@@ -48,6 +52,7 @@ public class Game {
     public Game(Context context, Mode mode) {
         this.context = context;
         this.mode = mode;
+        handler = new Handler(Looper.getMainLooper());
         settings = new GameSettings(context);
         surfaceView = new PuzzleGLSurfaceView(this, context);
 
@@ -169,6 +174,15 @@ public class Game {
             mediaPlayers.put(sound.getId(), mp);
             mp.start();
         }
+    }
+
+    public void makeToast(final String message) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     public boolean isPlayMode() {
