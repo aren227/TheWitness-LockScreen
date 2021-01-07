@@ -45,14 +45,19 @@ import com.aren.thewitnesspuzzle.core.rules.TrianglesRule;
 import com.aren.thewitnesspuzzle.dialog.ColorPaletteDialog;
 import com.aren.thewitnesspuzzle.dialog.SymmetryDialog;
 import com.aren.thewitnesspuzzle.game.event.ClickEvent;
+import com.aren.thewitnesspuzzle.puzzle.factory.CustomFixedPuzzleFactory;
 import com.aren.thewitnesspuzzle.puzzle.factory.Difficulty;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactory;
 import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
+
+import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
 
 public class CreateCustomPuzzleActivity extends PuzzleEditorActivity implements ClickEvent {
 
@@ -78,11 +83,20 @@ public class CreateCustomPuzzleActivity extends PuzzleEditorActivity implements 
 
     ImageView noSymmetryImageView, vSymmetryImageView, rSymmetryImageView;
 
+    CustomFixedPuzzleFactory factory;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setGridPuzzle(new GridPuzzle(PalettePreset.get("Entry_1"), 4, 4));
+        if (getIntent().hasExtra("factoryUuid")) {
+            factory = new CustomFixedPuzzleFactory(this, UUID.fromString(getIntent().getStringExtra("factoryUuid")));
+            setGridPuzzle((GridPuzzle) factory.generate(game, new Random()).getPuzzleBase());
+        } else {
+            setGridPuzzle(new GridPuzzle(PalettePreset.get("Entry_1"), 4, 4));
+        }
+
+
 
         paletteView.setPalette(getGridPuzzle().getColorPalette());
 
@@ -325,6 +339,35 @@ public class CreateCustomPuzzleActivity extends PuzzleEditorActivity implements 
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 blocksRule.rotatable = isChecked;
+            }
+        });
+
+        findViewById(R.id.save).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(CreateCustomPuzzleActivity.this)
+                        .setTitle("Save & Exit")
+                        .setMessage("Are you sure?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if (factory == null)
+                                    factory = new CustomFixedPuzzleFactory(CreateCustomPuzzleActivity.this, UUID.randomUUID());
+
+                                try {
+                                    factory.setEdited(nameEditText.getText().toString(), puzzleRenderer.getPuzzleBase());
+                                    finish();
+                                } catch (JSONException e) {
+                                    Toast.makeText(CreateCustomPuzzleActivity.this, e.toString(), Toast.LENGTH_LONG).show();
+                                    e.printStackTrace();
+                                }
+                            }
+                        })
+                        .setNegativeButton("No", null);
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(0xff000000);
+                dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(0xff000000);
             }
         });
 

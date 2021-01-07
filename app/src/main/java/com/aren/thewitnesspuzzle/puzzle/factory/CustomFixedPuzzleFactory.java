@@ -57,4 +57,12 @@ public class CustomFixedPuzzleFactory extends PuzzleFactory {
         getConfig().setString("content", puzzleBase.serialize().toString());
         getConfig().save();
     }
+
+    public void setEdited(String name, PuzzleBase puzzleBase) throws JSONException {
+        getConfig().setFactoryType("fixed");
+        getConfig().setString("name", name);
+        getConfig().setString("source", "ME");
+        getConfig().setString("content", puzzleBase.serialize().toString());
+        getConfig().save();
+    }
 }
