@@ -65,7 +65,7 @@ public class PuzzleFactoryManager {
     }*/
 
     public PuzzleFactory getPuzzleFactoryByUuid(UUID uuid) {
-        updateFactoryList();
+        // updateFactoryList();
 
         if (!factories.containsKey(uuid)) return null;
         return factories.get(uuid);
