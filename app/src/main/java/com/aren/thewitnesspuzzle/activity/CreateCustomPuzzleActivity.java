@@ -146,7 +146,10 @@ public class CreateCustomPuzzleActivity extends PuzzleEditorActivity implements 
             }
         });
 
-        nameEditText.setText(factory.getConfig().getString("name", "My Puzzle"));
+        if (factory != null)
+            nameEditText.setText(factory.getConfig().getString("name", "My Puzzle"));
+        else
+            nameEditText.setText("My Puzzle");
 
         palette.set(getGridPuzzle().getColorPalette());
         paletteView.invalidate();
@@ -272,22 +275,16 @@ public class CreateCustomPuzzleActivity extends PuzzleEditorActivity implements 
         }
 
         hexColorViewGroup = findViewById(R.id.hex_color_grid);
-        for (final SymmetryColor symmetryColor : new SymmetryColor[]{SymmetryColor.NONE, SymmetryColor.CYAN, SymmetryColor.YELLOW}) {
+        for (int i = 0; i < 3; i++) {
             ImageView colorImageView = new ImageView(this);
             colorImageView.setImageResource(R.drawable.circle_image);
-            colorImageView.setColorFilter(symmetryColor == SymmetryColor.NONE ? ColorUtils.RGB(1, 1, 1) : symmetryColor.getRGB());
-            colorImageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    hexagonRule.setSymmetricColor(symmetryColor);
-                }
-            });
 
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             params.setMargins(10, 10, 10, 10);
 
             hexColorViewGroup.addView(colorImageView, params);
         }
+        updateHexColors();
 
         trianglesViewGroup = findViewById(R.id.triangles_container);
 
@@ -393,6 +390,19 @@ public class CreateCustomPuzzleActivity extends PuzzleEditorActivity implements 
                 if (edge.getRule() instanceof HexagonRule && ((HexagonRule) edge.getRule()).hasSymmetricColor())
                     ((HexagonRule) edge.getRule()).setSymmetricColor(SymmetryColor.NONE);
             }
+        } else {
+            for (Vertex vertex : gridPuzzle.getVertices()) {
+                if (vertex.getRule() instanceof HexagonRule && ((HexagonRule) vertex.getRule()).hasSymmetricColor()) {
+                    HexagonRule rule = (HexagonRule) vertex.getRule();
+                    rule.setSymmetricColor(rule.getSymmetricColor().changeColorTheme(newSymmetry.color));
+                }
+            }
+            for (Edge edge : gridPuzzle.getEdges()) {
+                if (edge.getRule() instanceof HexagonRule && ((HexagonRule) edge.getRule()).hasSymmetricColor()) {
+                    HexagonRule rule = (HexagonRule) edge.getRule();
+                    rule.setSymmetricColor(rule.getSymmetricColor().changeColorTheme(newSymmetry.color));
+                }
+            }
         }
 
         if (newSymmetry != null) {
@@ -470,6 +480,8 @@ public class CreateCustomPuzzleActivity extends PuzzleEditorActivity implements 
             vSymmetryImageView.setColorFilter(Color.WHITE);
         else
             rSymmetryImageView.setColorFilter(Color.WHITE);
+
+        updateHexColors();
     }
 
     private void selectTool(ToolType toolType) {
@@ -499,7 +511,7 @@ public class CreateCustomPuzzleActivity extends PuzzleEditorActivity implements 
 
         if (toolType == ToolType.SQUARE || toolType == ToolType.SUN || toolType == ToolType.BLOCKS || toolType == ToolType.ELIMINATION)
             colorViewGroup.setVisibility(View.VISIBLE);
-        if (toolType == ToolType.HEXAGON)
+        if (toolType == ToolType.HEXAGON && getSymmetry() != null && getSymmetry().color != SymmetryColor.NONE)
             hexColorViewGroup.setVisibility(View.VISIBLE);
         if (toolType == ToolType.TRIANGLES)
             trianglesViewGroup.setVisibility(View.VISIBLE);
@@ -518,6 +530,30 @@ public class CreateCustomPuzzleActivity extends PuzzleEditorActivity implements 
             eliminationRule.color = color;
 
         selectTool(currentToolType); // Update tool icons
+    }
+
+    private void updateHexColors() {
+        if (getSymmetry() == null)
+            return;
+
+        SymmetryColor[] colors;
+        if (getSymmetry().color == SymmetryColor.CYAN || getSymmetry().color == SymmetryColor.YELLOW)
+            colors = new SymmetryColor[] {SymmetryColor.NONE, SymmetryColor.CYAN, SymmetryColor.YELLOW};
+        else
+            colors = new SymmetryColor[] {SymmetryColor.NONE, SymmetryColor.CYAN2, SymmetryColor.YELLOW2};
+
+        for (int i = 0; i < 3; i++) {
+            ImageView colorImageView = (ImageView) hexColorViewGroup.getChildAt(i);
+            colorImageView.setImageResource(R.drawable.circle_image);
+            colorImageView.setColorFilter(colors[i] == SymmetryColor.NONE ? ColorUtils.RGB(1, 1, 1) : colors[i].getRGB());
+            final SymmetryColor finalColor = colors[i];
+            colorImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    hexagonRule.setSymmetricColor(finalColor);
+                }
+            });
+        }
     }
 
     private void updateBlocks() {
