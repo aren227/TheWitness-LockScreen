@@ -358,6 +358,7 @@ public class CreateCustomPuzzleActivity extends PuzzleEditorActivity implements 
 
                                 try {
                                     factory.setEdited(nameEditText.getText().toString(), puzzleRenderer.getPuzzleBase());
+                                    factory.clearThumbnailCache();
                                     finish();
                                 } catch (JSONException e) {
                                     Toast.makeText(CreateCustomPuzzleActivity.this, e.toString(), Toast.LENGTH_LONG).show();
