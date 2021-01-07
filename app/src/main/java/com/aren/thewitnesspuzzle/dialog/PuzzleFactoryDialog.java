@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aren.thewitnesspuzzle.R;
+import com.aren.thewitnesspuzzle.activity.CreateCustomPuzzleActivity;
 import com.aren.thewitnesspuzzle.activity.CreatePatternActivity;
 import com.aren.thewitnesspuzzle.activity.CreateRandomPuzzleActivity;
 import com.aren.thewitnesspuzzle.activity.GalleryActivity;
@@ -69,7 +70,9 @@ public class PuzzleFactoryDialog extends Dialog {
                         intent.putExtra("uuid", factory.getUuid());
                         getContext().startActivity(intent);
                     } else {
-                        Toast.makeText(getContext(), "Puzzle Editor is not yet supported", Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(getContext(), CreateCustomPuzzleActivity.class);
+                        intent.putExtra("uuid", factory.getUuid());
+                        getContext().startActivity(intent);
                     }
                 }
             });

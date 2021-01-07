@@ -89,14 +89,12 @@ public class CreateCustomPuzzleActivity extends PuzzleEditorActivity implements 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getIntent().hasExtra("factoryUuid")) {
-            factory = new CustomFixedPuzzleFactory(this, UUID.fromString(getIntent().getStringExtra("factoryUuid")));
+        if (getIntent().getExtras() != null && getIntent().getExtras().getSerializable("uuid") != null) {
+            factory = (CustomFixedPuzzleFactory) puzzleFactoryManager.getPuzzleFactoryByUuid((UUID) getIntent().getExtras().getSerializable("uuid"));
             setGridPuzzle((GridPuzzle) factory.generate(game, new Random()).getPuzzleBase());
         } else {
             setGridPuzzle(new GridPuzzle(PalettePreset.get("Entry_1"), 4, 4));
         }
-
-
 
         paletteView.setPalette(getGridPuzzle().getColorPalette());
 
@@ -148,7 +146,7 @@ public class CreateCustomPuzzleActivity extends PuzzleEditorActivity implements 
             }
         });
 
-        nameEditText.setText(config.getString("name", "My Puzzle"));
+        nameEditText.setText(factory.getConfig().getString("name", "My Puzzle"));
 
         palette.set(getGridPuzzle().getColorPalette());
         paletteView.invalidate();
@@ -210,9 +208,16 @@ public class CreateCustomPuzzleActivity extends PuzzleEditorActivity implements 
         vSymmetryImageView = findViewById(R.id.v_symmetry);
         rSymmetryImageView = findViewById(R.id.r_symmetry);
 
-        noSymmetryImageView.setColorFilter(Color.WHITE);
+        noSymmetryImageView.setColorFilter(Color.DKGRAY);
         vSymmetryImageView.setColorFilter(Color.DKGRAY);
         rSymmetryImageView.setColorFilter(Color.DKGRAY);
+
+        if (getSymmetry() == null)
+            noSymmetryImageView.setColorFilter(Color.WHITE);
+        else if (getSymmetry().type == SymmetryType.VLINE)
+            vSymmetryImageView.setColorFilter(Color.WHITE);
+        else
+            rSymmetryImageView.setColorFilter(Color.WHITE);
 
         // Disable other puzzle types
         hexagonPuzzleRadioButton.setVisibility(View.GONE);
