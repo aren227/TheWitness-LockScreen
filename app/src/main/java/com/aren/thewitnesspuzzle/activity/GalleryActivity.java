@@ -636,10 +636,14 @@ public class GalleryActivity extends AppCompatActivity {
             @Override
             public void run() {
                 for (GalleryPreview preview : previewsToRender) {
-                    PuzzleRenderer puzzleRenderer;
-                    if (preview.puzzleFactory instanceof CustomPatternPuzzleFactory)
-                        puzzleRenderer = ((CustomPatternPuzzleFactory) preview.puzzleFactory).generateWithPattern(tempGame, new Random(), true);
-                    else puzzleRenderer = preview.puzzleFactory.generate(tempGame, new Random());
+                    PuzzleRenderer puzzleRenderer = null;
+                    try {
+                        if (preview.puzzleFactory instanceof CustomPatternPuzzleFactory)
+                            puzzleRenderer = ((CustomPatternPuzzleFactory) preview.puzzleFactory).generateWithPattern(tempGame, new Random(), true);
+                        else puzzleRenderer = preview.puzzleFactory.generate(tempGame, new Random());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 
                     // Load Failed
                     if (puzzleRenderer == null) puzzleRenderer = new PuzzleRenderer(tempGame, new ErrorPuzzle());

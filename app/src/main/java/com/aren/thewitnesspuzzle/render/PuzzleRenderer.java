@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import com.aren.thewitnesspuzzle.core.color.ColorUtils;
 import com.aren.thewitnesspuzzle.core.cursor.Cursor;
+import com.aren.thewitnesspuzzle.core.exception.InvalidPatternException;
 import com.aren.thewitnesspuzzle.core.graph.Edge;
 import com.aren.thewitnesspuzzle.core.graph.EdgeProportion;
 import com.aren.thewitnesspuzzle.core.graph.Tile;
@@ -502,7 +503,15 @@ public class PuzzleRenderer {
         return shadowPanel;
     }
 
-    public void setCustomPattern(List<Integer> customPattern) {
+    public void setCustomPattern(List<Integer> customPattern) throws InvalidPatternException {
+        for (Integer index : customPattern) {
+            if (puzzleBase.getVertex(index) == null)
+                throw new InvalidPatternException();
+        }
+        for (int i = 0; i < customPattern.size() - 1; i++) {
+            if (puzzleBase.getEdgeByVertex(puzzleBase.getVertex(customPattern.get(i)), puzzleBase.getVertex(customPattern.get(i + 1))) == null)
+                throw new InvalidPatternException();
+        }
         this.customPattern = customPattern;
     }
 

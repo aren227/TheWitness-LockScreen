@@ -8,6 +8,7 @@ import com.aren.thewitnesspuzzle.core.cursor.Cursor;
 import com.aren.thewitnesspuzzle.core.graph.Edge;
 import com.aren.thewitnesspuzzle.core.graph.EdgeProportion;
 import com.aren.thewitnesspuzzle.core.graph.Vertex;
+import com.aren.thewitnesspuzzle.core.puzzle.ErrorPuzzle;
 import com.aren.thewitnesspuzzle.core.puzzle.GridPuzzle;
 import com.aren.thewitnesspuzzle.core.puzzle.HexagonPuzzle;
 import com.aren.thewitnesspuzzle.core.puzzle.JunglePuzzle;
@@ -64,7 +65,12 @@ public class CustomPatternPuzzleFactory extends PuzzleFactory {
 
         List<Integer> pattern = getConfig().getIntList("pattern", new ArrayList<Integer>());
         PuzzleRenderer puzzleRenderer = new PuzzleRenderer(game, puzzle);
-        puzzleRenderer.setCustomPattern(pattern);
+        try {
+            puzzleRenderer.setCustomPattern(pattern);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new PuzzleRenderer(game, new ErrorPuzzle());
+        }
 
         if (showPattern) {
             ArrayList<Vertex> vertices = new ArrayList<>();
