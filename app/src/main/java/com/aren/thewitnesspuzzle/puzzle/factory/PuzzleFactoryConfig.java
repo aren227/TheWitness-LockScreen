@@ -3,8 +3,8 @@ package com.aren.thewitnesspuzzle.puzzle.factory;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.aren.thewitnesspuzzle.puzzle.base.color.PuzzleColorPalette;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.Color;
+import com.aren.thewitnesspuzzle.core.color.PuzzleColorPalette;
+import com.aren.thewitnesspuzzle.core.rules.Color;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -198,7 +198,7 @@ public class PuzzleFactoryConfig {
     public PuzzleColorPalette getColorPalette(String key, PuzzleColorPalette def) {
         try {
             JSONObject colorObj = jsonObject.getJSONObject(key);
-            def.set(PuzzleColorPalette.deserialize(colorObj));
+            def.set(new PuzzleColorPalette(colorObj));
         } catch (JSONException ignored) {
 
         }

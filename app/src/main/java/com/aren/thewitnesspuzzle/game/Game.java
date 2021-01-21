@@ -3,21 +3,28 @@ package com.aren.thewitnesspuzzle.game;
 import android.content.Context;
 import android.graphics.Color;
 import android.media.MediaPlayer;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.MotionEvent;
+import android.widget.Toast;
 
-import com.aren.thewitnesspuzzle.math.BoundingBox;
+import com.aren.thewitnesspuzzle.core.math.BoundingBox;
+import com.aren.thewitnesspuzzle.game.event.ClickEvent;
 import com.aren.thewitnesspuzzle.puzzle.sound.Sounds;
 import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
 import com.aren.thewitnesspuzzle.view.PuzzleGLSurfaceView;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class Game {
 
     private Context context;
+    private Handler handler;
 
     private GameSettings settings;
 
@@ -30,6 +37,7 @@ public class Game {
     private Runnable onSolved;
     private Runnable onPreTouched;
     private Runnable onClicked;
+    private List<ClickEvent> clickEvents = new ArrayList<>();
 
     public enum Mode {PLAY, GALLERY, EDITOR}
 
@@ -44,6 +52,7 @@ public class Game {
     public Game(Context context, Mode mode) {
         this.context = context;
         this.mode = mode;
+        handler = new Handler(Looper.getMainLooper());
         settings = new GameSettings(context);
         surfaceView = new PuzzleGLSurfaceView(this, context);
 
@@ -59,6 +68,11 @@ public class Game {
     public void touchEvent(float x, float y, int action) {
         if (onPreTouched != null) onPreTouched.run();
         if (action == MotionEvent.ACTION_DOWN && onClicked != null) onClicked.run();
+
+        for (ClickEvent clickEvent : clickEvents) {
+            clickEvent.onClick(x, y, action);
+        }
+
         puzzle.touchEvent(x, y, action);
         update();
     }
@@ -87,6 +101,14 @@ public class Game {
 
     public void setOnClicked(Runnable runnable){
         onClicked = runnable;
+    }
+
+    public void addClickListener(ClickEvent listener) {
+        clickEvents.add(listener);
+    }
+
+    public void removeClickListener(ClickEvent listener) {
+        clickEvents.remove(listener);
     }
 
     public void setPuzzle(PuzzleRenderer puzzle) {
@@ -152,6 +174,15 @@ public class Game {
             mediaPlayers.put(sound.getId(), mp);
             mp.start();
         }
+    }
+
+    public void makeToast(final String message) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     public boolean isPlayMode() {

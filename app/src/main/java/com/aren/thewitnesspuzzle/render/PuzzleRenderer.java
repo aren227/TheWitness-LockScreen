@@ -2,14 +2,31 @@ package com.aren.thewitnesspuzzle.render;
 
 import android.util.Log;
 import android.view.MotionEvent;
+import android.widget.Toast;
 
+import com.aren.thewitnesspuzzle.core.color.ColorUtils;
+import com.aren.thewitnesspuzzle.core.cursor.Cursor;
+import com.aren.thewitnesspuzzle.core.exception.InvalidPatternException;
+import com.aren.thewitnesspuzzle.core.graph.Edge;
+import com.aren.thewitnesspuzzle.core.graph.EdgeProportion;
+import com.aren.thewitnesspuzzle.core.graph.Tile;
+import com.aren.thewitnesspuzzle.core.graph.Vertex;
+import com.aren.thewitnesspuzzle.core.math.BoundingBox;
+import com.aren.thewitnesspuzzle.core.math.Vector2;
+import com.aren.thewitnesspuzzle.core.math.Vector3;
+import com.aren.thewitnesspuzzle.core.puzzle.GridSymmetryPuzzle;
+import com.aren.thewitnesspuzzle.core.puzzle.PuzzleBase;
+import com.aren.thewitnesspuzzle.core.rules.BrokenLineRule;
+import com.aren.thewitnesspuzzle.core.rules.EndingPointRule;
+import com.aren.thewitnesspuzzle.core.rules.RuleBase;
+import com.aren.thewitnesspuzzle.core.rules.StartingPointRule;
+import com.aren.thewitnesspuzzle.core.rules.Symmetry;
+import com.aren.thewitnesspuzzle.core.validation.PuzzleValidator;
+import com.aren.thewitnesspuzzle.core.validation.ValidationResult;
 import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.graphics.shape.CircleShape;
 import com.aren.thewitnesspuzzle.graphics.shape.RectangleShape;
 import com.aren.thewitnesspuzzle.graphics.shape.Shape;
-import com.aren.thewitnesspuzzle.math.BoundingBox;
-import com.aren.thewitnesspuzzle.math.Vector2;
-import com.aren.thewitnesspuzzle.math.Vector3;
 import com.aren.thewitnesspuzzle.puzzle.animation.Animation;
 import com.aren.thewitnesspuzzle.puzzle.animation.CursorEndingPointReachedAnimation;
 import com.aren.thewitnesspuzzle.puzzle.animation.CursorFailedAnimation;
@@ -19,25 +36,6 @@ import com.aren.thewitnesspuzzle.puzzle.animation.ErrorAnimation;
 import com.aren.thewitnesspuzzle.puzzle.animation.PuzzleAnimationManager;
 import com.aren.thewitnesspuzzle.puzzle.animation.WaitForEliminationAnimation;
 import com.aren.thewitnesspuzzle.puzzle.animation.value.Value;
-import com.aren.thewitnesspuzzle.puzzle.base.GridPuzzle;
-import com.aren.thewitnesspuzzle.puzzle.base.GridSymmetryPuzzle;
-import com.aren.thewitnesspuzzle.puzzle.base.PuzzleBase;
-import com.aren.thewitnesspuzzle.puzzle.base.graph.Edge;
-import com.aren.thewitnesspuzzle.puzzle.base.graph.EdgeProportion;
-import com.aren.thewitnesspuzzle.puzzle.base.graph.Tile;
-import com.aren.thewitnesspuzzle.puzzle.base.graph.Vertex;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.BrokenLineRule;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.EliminationRule;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.EndingPointRule;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.RuleBase;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.StartingPointRule;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.SymmetricColor;
-import com.aren.thewitnesspuzzle.puzzle.base.color.ColorUtils;
-import com.aren.thewitnesspuzzle.puzzle.base.cursor.Cursor;
-import com.aren.thewitnesspuzzle.puzzle.base.cursor.area.Area;
-import com.aren.thewitnesspuzzle.puzzle.base.cursor.area.GridAreaSplitter;
-import com.aren.thewitnesspuzzle.puzzle.base.validation.PuzzleValidator;
-import com.aren.thewitnesspuzzle.puzzle.base.validation.ValidationResult;
 import com.aren.thewitnesspuzzle.puzzle.sound.Sounds;
 
 import java.nio.ByteBuffer;
@@ -46,6 +44,7 @@ import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class PuzzleRenderer {
 
@@ -73,6 +72,10 @@ public class PuzzleRenderer {
 
     protected Value<Float> fadeIntensity = new Value<>(1f);
 
+    protected UUID uuid;
+
+    protected boolean isFavorite = false;
+
     public PuzzleRenderer(Game game, PuzzleBase puzzleBase) {
         this(game, puzzleBase, game.isPlayMode() && game.getSettings().getShadowPanelEnabled());
     }
@@ -87,6 +90,8 @@ public class PuzzleRenderer {
         animation = new PuzzleAnimationManager(this);
 
         actualCursorColor = new Value<>(puzzleBase.getColorPalette().getCursorColor());
+
+        uuid = UUID.randomUUID();
     }
 
     public Game getGame() {
@@ -274,8 +279,15 @@ public class PuzzleRenderer {
 
         if (cursor != null) {
             int cursorColor = getCursorColor().get();
-            if(puzzleBase instanceof GridSymmetryPuzzle && ((GridSymmetryPuzzle) puzzleBase).hasSymmetricColor()) {
-                cursorColor = SymmetricColor.CYAN.getRGB();
+            int secondaryCursorColor = cursorColor;
+
+            if (puzzleBase instanceof GridSymmetryPuzzle) {
+                Symmetry symmetry = ((GridSymmetryPuzzle) puzzleBase).getSymmetry();
+
+                if (symmetry.hasColor()) {
+                    cursorColor = symmetry.getPrimaryColor().getRGB();
+                    secondaryCursorColor = symmetry.getSecondaryColor().getRGB();
+                }
             }
 
             dynamicShapes.add(new CircleShape(cursor.getFirstVisitedVertex().getPosition().toVector3(), ((StartingPointRule) cursor.getFirstVisitedVertex().getRule()).getRadius(), cursorColor));
@@ -286,8 +298,7 @@ public class PuzzleRenderer {
             if(puzzleBase instanceof GridSymmetryPuzzle) {
                 Vertex opVertex = ((GridSymmetryPuzzle) puzzleBase).getOppositeVertex(cursor.getFirstVisitedVertex());
                 dynamicShapes.add(new CircleShape(opVertex.getPosition().toVector3(),
-                        ((StartingPointRule) opVertex.getRule()).getRadius(),
-                        ((GridSymmetryPuzzle) puzzleBase).hasSymmetricColor() ? SymmetricColor.YELLOW.getRGB() : cursorColor));
+                        ((StartingPointRule) opVertex.getRule()).getRadius(), secondaryCursorColor));
             }
 
             ArrayList<EdgeProportion> visitedEdges = cursor.getVisitedEdgesWithProportion(true);
@@ -298,9 +309,8 @@ public class PuzzleRenderer {
 
                 if(puzzleBase instanceof GridSymmetryPuzzle) {
                     EdgeProportion opEdgeProportion = ((GridSymmetryPuzzle) puzzleBase).getOppositeEdgeProportion(edgeProportion);
-                    int opCursorColor = ((GridSymmetryPuzzle) puzzleBase).hasSymmetricColor() ? SymmetricColor.YELLOW.getRGB() : cursorColor;
-                    dynamicShapes.add(new CircleShape(new Vector3(opEdgeProportion.getProportionPoint().x, opEdgeProportion.getProportionPoint().y, 0), puzzleBase.getPathWidth() * 0.5f, opCursorColor));
-                    dynamicShapes.add(new RectangleShape(opEdgeProportion.getProportionMiddlePoint().toVector3(), opEdgeProportion.getProportionLength(), puzzleBase.getPathWidth(), opEdgeProportion.edge.getAngle(), opCursorColor));
+                    dynamicShapes.add(new CircleShape(new Vector3(opEdgeProportion.getProportionPoint().x, opEdgeProportion.getProportionPoint().y, 0), puzzleBase.getPathWidth() * 0.5f, secondaryCursorColor));
+                    dynamicShapes.add(new RectangleShape(opEdgeProportion.getProportionMiddlePoint().toVector3(), opEdgeProportion.getProportionLength(), puzzleBase.getPathWidth(), opEdgeProportion.edge.getAngle(), secondaryCursorColor));
                 }
 
                 if (shadowPanel) {
@@ -391,6 +401,9 @@ public class PuzzleRenderer {
                     }
                     addAnimation(new CursorFailedAnimation(this));
                     game.playSound(Sounds.FAILURE);
+
+                    if (result.timedOut)
+                        game.makeToast("Timed out validating rules.");
                 } else {
                     addAnimation(new CursorSucceededAnimation(this));
                     game.playSound(Sounds.SUCCESS);
@@ -490,7 +503,17 @@ public class PuzzleRenderer {
         return shadowPanel;
     }
 
-    public void setCustomPattern(List<Integer> customPattern) {
+    public void setCustomPattern(List<Integer> customPattern) throws InvalidPatternException {
+        if (customPattern != null) {
+            for (Integer index : customPattern) {
+                if (puzzleBase.getVertex(index) == null)
+                    throw new InvalidPatternException();
+            }
+            for (int i = 0; i < customPattern.size() - 1; i++) {
+                if (puzzleBase.getEdgeByVertex(puzzleBase.getVertex(customPattern.get(i)), puzzleBase.getVertex(customPattern.get(i + 1))) == null)
+                    throw new InvalidPatternException();
+            }
+        }
         this.customPattern = customPattern;
     }
 
@@ -508,6 +531,18 @@ public class PuzzleRenderer {
 
     public Value<Float> getFadeIntensity(){
         return fadeIntensity;
+    }
+
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(boolean isFavorite) {
+        this.isFavorite = isFavorite;
+    }
+
+    public UUID getUuid() {
+        return uuid;
     }
 
 }

@@ -42,6 +42,15 @@
             android:text="Random"
             android:buttonTint="@color/colorPrimary" />
 
+        <RadioButton
+            android:id="@+id/new_puzzle_custom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="serif"
+            android:textSize="20dp"
+            android:text="Editor"
+            android:buttonTint="@color/colorPrimary" />
+
     </RadioGroup>
 
     <LinearLayout

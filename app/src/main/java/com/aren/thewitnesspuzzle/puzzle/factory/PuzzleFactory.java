@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 
 import com.aren.thewitnesspuzzle.game.Game;
-import com.aren.thewitnesspuzzle.puzzle.base.PuzzleBase;
 import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
 
 import java.util.ArrayList;

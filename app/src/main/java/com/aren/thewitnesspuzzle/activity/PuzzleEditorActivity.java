@@ -13,15 +13,15 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.aren.thewitnesspuzzle.R;
+import com.aren.thewitnesspuzzle.core.color.PalettePreset;
+import com.aren.thewitnesspuzzle.core.color.PuzzleColorPalette;
+import com.aren.thewitnesspuzzle.core.puzzle.GridPuzzle;
+import com.aren.thewitnesspuzzle.core.puzzle.HexagonPuzzle;
+import com.aren.thewitnesspuzzle.core.puzzle.JunglePuzzle;
+import com.aren.thewitnesspuzzle.core.puzzle.PuzzleBase;
+import com.aren.thewitnesspuzzle.core.puzzle.VideoRoomPuzzle;
 import com.aren.thewitnesspuzzle.dialog.ColorPaletteDialog;
 import com.aren.thewitnesspuzzle.game.Game;
-import com.aren.thewitnesspuzzle.puzzle.base.GridPuzzle;
-import com.aren.thewitnesspuzzle.puzzle.base.HexagonPuzzle;
-import com.aren.thewitnesspuzzle.puzzle.base.JunglePuzzle;
-import com.aren.thewitnesspuzzle.puzzle.base.PuzzleBase;
-import com.aren.thewitnesspuzzle.puzzle.base.VideoRoomPuzzle;
-import com.aren.thewitnesspuzzle.puzzle.base.color.PalettePreset;
-import com.aren.thewitnesspuzzle.puzzle.base.color.PuzzleColorPalette;
 import com.aren.thewitnesspuzzle.puzzle.factory.Difficulty;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryConfig;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;
@@ -102,6 +102,8 @@ public class PuzzleEditorActivity extends AppCompatActivity {
         gridPuzzleRadioButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (puzzleType.equals("grid"))
+                    return;
                 puzzleType = "grid";
                 resetPuzzle();
                 updateGridSizeUI();
@@ -111,6 +113,8 @@ public class PuzzleEditorActivity extends AppCompatActivity {
         hexagonPuzzleRadioButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (puzzleType.equals("hexagon"))
+                    return;
                 puzzleType = "hexagon";
                 resetPuzzle();
                 updateGridSizeUI();
@@ -120,6 +124,8 @@ public class PuzzleEditorActivity extends AppCompatActivity {
         junglePuzzleRadioButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (puzzleType.equals("jungle"))
+                    return;
                 puzzleType = "jungle";
                 resetPuzzle();
                 updateGridSizeUI();
@@ -129,6 +135,8 @@ public class PuzzleEditorActivity extends AppCompatActivity {
         videoRoomPuzzleRadioButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (puzzleType.equals("video_room"))
+                    return;
                 puzzleType = "video_room";
                 resetPuzzle();
                 updateGridSizeUI();

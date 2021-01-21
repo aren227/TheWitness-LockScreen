@@ -37,7 +37,7 @@ TODOs
 - [x] Implement basic puzzle panels and rules.
 - [x] Implement Bloom effect.
 - [ ] Implement the subtractive blocks rule.
-- [ ] Clearly implement the elimination rule.
+- [x] Clearly implement the elimination rule.
 - [ ] Add more random puzzle generators.
 - [x] Implement a puzzle that can be validated with user registered pattern.
 - [ ] Implement a custom puzzle editor.

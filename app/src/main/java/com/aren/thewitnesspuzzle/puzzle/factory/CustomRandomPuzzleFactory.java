@@ -2,21 +2,21 @@ package com.aren.thewitnesspuzzle.puzzle.factory;
 
 import android.content.Context;
 
+import com.aren.thewitnesspuzzle.core.color.PalettePreset;
+import com.aren.thewitnesspuzzle.core.color.PuzzleColorPalette;
+import com.aren.thewitnesspuzzle.core.cursor.Cursor;
+import com.aren.thewitnesspuzzle.core.cursor.area.GridAreaSplitter;
+import com.aren.thewitnesspuzzle.core.graph.Vertex;
+import com.aren.thewitnesspuzzle.core.puzzle.GridPuzzle;
+import com.aren.thewitnesspuzzle.core.rules.Color;
 import com.aren.thewitnesspuzzle.game.Game;
-import com.aren.thewitnesspuzzle.puzzle.base.GridPuzzle;
-import com.aren.thewitnesspuzzle.puzzle.base.color.PalettePreset;
-import com.aren.thewitnesspuzzle.puzzle.base.color.PuzzleColorPalette;
-import com.aren.thewitnesspuzzle.puzzle.base.cursor.Cursor;
-import com.aren.thewitnesspuzzle.puzzle.base.cursor.area.GridAreaSplitter;
-import com.aren.thewitnesspuzzle.puzzle.base.graph.Vertex;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.BlocksRule;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.BrokenLineRule;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.Color;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.EliminationRule;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.HexagonRule;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.SquareRule;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.SunRule;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.TrianglesRule;
+import com.aren.thewitnesspuzzle.puzzle.generator.BlocksRuleGenerator;
+import com.aren.thewitnesspuzzle.puzzle.generator.BrokenLineRuleGenerator;
+import com.aren.thewitnesspuzzle.puzzle.generator.EliminationRuleGenerator;
+import com.aren.thewitnesspuzzle.puzzle.generator.HexagonRuleGenerator;
+import com.aren.thewitnesspuzzle.puzzle.generator.SquareRuleGenerator;
+import com.aren.thewitnesspuzzle.puzzle.generator.SunRuleGenerator;
+import com.aren.thewitnesspuzzle.puzzle.generator.TrianglesRuleGenerator;
 import com.aren.thewitnesspuzzle.puzzle.walker.FastGridTreeWalker;
 import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
 
@@ -58,33 +58,33 @@ public class CustomRandomPuzzleFactory extends PuzzleFactory {
 
         // Broken Line
         if (getConfig().getBoolean("brokenline", false)) {
-            BrokenLineRule.generate(cursor, random, getConfig().getFloat("brokenline_spawnrate", 0f));
+            BrokenLineRuleGenerator.generate(cursor, random, getConfig().getFloat("brokenline_spawnrate", 0f));
         }
 
         // Hexagon
         if (getConfig().getBoolean("hexagon", false)) {
-            HexagonRule.generate(cursor, random, getConfig().getFloat("hexagon_spawnrate", 0f));
+            HexagonRuleGenerator.generate(cursor, random, getConfig().getFloat("hexagon_spawnrate", 0f));
         }
 
         // Square
         if (getConfig().getBoolean("square", false)) {
             splitter.assignAreaColorRandomly(random, getConfig().getColorList("square_colors", new ArrayList<Color>()));
-            SquareRule.generate(splitter, random, getConfig().getFloat("square_spawnrate", 0f));
+            SquareRuleGenerator.generate(splitter, random, getConfig().getFloat("square_spawnrate", 0f));
         }
 
         // Blocks
         if (getConfig().getBoolean("blocks", false)) {
-            BlocksRule.generate(splitter, random, getConfig().getColorList("blocks_colors", Arrays.asList(Color.YELLOW)).get(0), getConfig().getFloat("blocks_spawnrate", 0f), getConfig().getFloat("blocks_rotatablerate", 0f));
+            BlocksRuleGenerator.generate(splitter, random, getConfig().getColorList("blocks_colors", Arrays.asList(Color.YELLOW)).get(0), getConfig().getFloat("blocks_spawnrate", 0f), getConfig().getFloat("blocks_rotatablerate", 0f));
         }
 
         // Sun
         if (getConfig().getBoolean("sun", false)) {
-            SunRule.generate(splitter, random, getConfig().getColorList("sun_colors", new ArrayList<Color>()), getConfig().getFloat("sun_arearate", 0f), getConfig().getFloat("sun_spawnrate", 0f), getConfig().getFloat("sun_pairwithsquare", 0f));
+            SunRuleGenerator.generate(splitter, random, getConfig().getColorList("sun_colors", new ArrayList<Color>()), getConfig().getFloat("sun_arearate", 0f), getConfig().getFloat("sun_spawnrate", 0f), getConfig().getFloat("sun_pairwithsquare", 0f));
         }
 
         // Triangles
         if (getConfig().getBoolean("triangles", false)) {
-            TrianglesRule.generate(cursor, random, getConfig().getFloat("triangles_spawnrate", 0f));
+            TrianglesRuleGenerator.generate(cursor, random, getConfig().getFloat("triangles_spawnrate", 0f));
         }
 
         // Elimination
@@ -92,13 +92,13 @@ public class CustomRandomPuzzleFactory extends PuzzleFactory {
             String fake = getConfig().getString("elimination_fakerule", null);
             if (fake != null) {
                 if (fake.equals("hexagon")) {
-                    EliminationRule.generateFakeHexagon(splitter, random);
+                    EliminationRuleGenerator.generateFakeHexagon(splitter, random);
                 } else if (fake.equals("square") && getConfig().getBoolean("square", false) && getConfig().getColorList("square_colors", new ArrayList<Color>()).size() > 1) {
-                    EliminationRule.generateFakeSquare(splitter, random, getConfig().getColorList("square_colors", new ArrayList<Color>()));
+                    EliminationRuleGenerator.generateFakeSquare(splitter, random, getConfig().getColorList("square_colors", new ArrayList<Color>()));
                 } else if (fake.equals("blocks")) {
-                    EliminationRule.generateFakeBlocks(splitter, random, getConfig().getColorList("blocks_colors", Arrays.asList(Color.YELLOW)).get(0), 0f);
+                    EliminationRuleGenerator.generateFakeBlocks(splitter, random, getConfig().getColorList("blocks_colors", Arrays.asList(Color.YELLOW)).get(0), 0f);
                 } else if (fake.equals("sun") && getConfig().getBoolean("sun", false)) {
-                    EliminationRule.generateFakeSun(splitter, random, getConfig().getColorList("sun_colors", new ArrayList<Color>()));
+                    EliminationRuleGenerator.generateFakeSun(splitter, random, getConfig().getColorList("sun_colors", new ArrayList<Color>()));
                 }
             }
         }

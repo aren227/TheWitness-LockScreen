@@ -1,6 +1,6 @@
 package com.aren.thewitnesspuzzle.puzzle.animation;
 
-import com.aren.thewitnesspuzzle.puzzle.base.color.PuzzleColorPalette;
+import com.aren.thewitnesspuzzle.core.color.PuzzleColorPalette;
 import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
 
 public class WaitForEliminationAnimation extends Animation {

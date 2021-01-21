@@ -1,10 +1,10 @@
 package com.aren.thewitnesspuzzle.puzzle.animation;
 
+import com.aren.thewitnesspuzzle.core.graph.Tile;
+import com.aren.thewitnesspuzzle.core.math.MathUtils;
+import com.aren.thewitnesspuzzle.core.rules.EliminationRule;
+import com.aren.thewitnesspuzzle.core.rules.RuleBase;
 import com.aren.thewitnesspuzzle.graphics.shape.Shape;
-import com.aren.thewitnesspuzzle.math.MathUtils;
-import com.aren.thewitnesspuzzle.puzzle.base.graph.Tile;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.EliminationRule;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.RuleBase;
 import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
 
 public class EliminatedAnimation extends Animation {

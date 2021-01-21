@@ -2,12 +2,14 @@ package com.aren.thewitnesspuzzle.puzzle.factory;
 
 import android.content.Context;
 
+import com.aren.thewitnesspuzzle.core.color.PalettePreset;
+import com.aren.thewitnesspuzzle.core.cursor.SymmetryCursor;
+import com.aren.thewitnesspuzzle.core.graph.Vertex;
+import com.aren.thewitnesspuzzle.core.puzzle.GridSymmetryPuzzle;
+import com.aren.thewitnesspuzzle.core.rules.Symmetry;
+import com.aren.thewitnesspuzzle.core.rules.SymmetryType;
 import com.aren.thewitnesspuzzle.game.Game;
-import com.aren.thewitnesspuzzle.puzzle.base.GridSymmetryPuzzle;
-import com.aren.thewitnesspuzzle.puzzle.base.color.PalettePreset;
-import com.aren.thewitnesspuzzle.puzzle.base.cursor.SymmetryCursor;
-import com.aren.thewitnesspuzzle.puzzle.base.graph.Vertex;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.BrokenLineRule;
+import com.aren.thewitnesspuzzle.puzzle.generator.BrokenLineRuleGenerator;
 import com.aren.thewitnesspuzzle.puzzle.walker.FastGridTreeWalker;
 import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
 
@@ -22,18 +24,12 @@ public class VSymmetryPuzzleFactory extends PuzzleFactory {
 
     @Override
     public PuzzleRenderer generate(Game game, Random random) {
-        GridSymmetryPuzzle.SymmetryType symmetryType = GridSymmetryPuzzle.SymmetryType.VLINE;
+        GridSymmetryPuzzle symmetryPuzzle = new GridSymmetryPuzzle(PalettePreset.get("GlassFactory_1"), 5, 7, new Symmetry(SymmetryType.VLINE));
 
-        GridSymmetryPuzzle symmetryPuzzle;
-
-        int startX, startY, endX, endY;
-
-        symmetryPuzzle = new GridSymmetryPuzzle(PalettePreset.get("GlassFactory_1"), 5, 7, symmetryType, false);
-
-        startX = random.nextInt(2);
-        startY = 0;
-        endX = random.nextInt(2);
-        endY = 7;
+        int startX = random.nextInt(2);
+        int startY = 0;
+        int endX = random.nextInt(2);
+        int endY = 7;
 
         symmetryPuzzle.addStartingPoint(startX, startY);
         symmetryPuzzle.addEndingPoint(endX, endY);
@@ -43,7 +39,7 @@ public class VSymmetryPuzzleFactory extends PuzzleFactory {
 
         SymmetryCursor cursor = new SymmetryCursor(symmetryPuzzle, vertexPositions, null);
 
-        BrokenLineRule.generate(cursor, random, 0.7f);
+        BrokenLineRuleGenerator.generate(cursor, random, 0.7f);
 
         return new PuzzleRenderer(game, symmetryPuzzle);
     }

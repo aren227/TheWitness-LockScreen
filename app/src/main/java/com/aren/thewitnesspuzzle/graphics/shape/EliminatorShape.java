@@ -1,8 +1,8 @@
 package com.aren.thewitnesspuzzle.graphics.shape;
 
-import com.aren.thewitnesspuzzle.math.Matrix2x2;
-import com.aren.thewitnesspuzzle.math.Vector2;
-import com.aren.thewitnesspuzzle.math.Vector3;
+import com.aren.thewitnesspuzzle.core.math.Matrix2x2;
+import com.aren.thewitnesspuzzle.core.math.Vector2;
+import com.aren.thewitnesspuzzle.core.math.Vector3;
 
 public class EliminatorShape extends Shape {
 

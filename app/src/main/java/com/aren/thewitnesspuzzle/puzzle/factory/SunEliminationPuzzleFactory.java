@@ -2,15 +2,15 @@ package com.aren.thewitnesspuzzle.puzzle.factory;
 
 import android.content.Context;
 
+import com.aren.thewitnesspuzzle.core.color.PalettePreset;
+import com.aren.thewitnesspuzzle.core.cursor.Cursor;
+import com.aren.thewitnesspuzzle.core.cursor.area.GridAreaSplitter;
+import com.aren.thewitnesspuzzle.core.graph.Vertex;
+import com.aren.thewitnesspuzzle.core.puzzle.GridPuzzle;
+import com.aren.thewitnesspuzzle.core.rules.Color;
 import com.aren.thewitnesspuzzle.game.Game;
-import com.aren.thewitnesspuzzle.puzzle.base.GridPuzzle;
-import com.aren.thewitnesspuzzle.puzzle.base.color.PalettePreset;
-import com.aren.thewitnesspuzzle.puzzle.base.cursor.Cursor;
-import com.aren.thewitnesspuzzle.puzzle.base.cursor.area.GridAreaSplitter;
-import com.aren.thewitnesspuzzle.puzzle.base.graph.Vertex;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.Color;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.EliminationRule;
-import com.aren.thewitnesspuzzle.puzzle.base.rules.SunRule;
+import com.aren.thewitnesspuzzle.puzzle.generator.EliminationRuleGenerator;
+import com.aren.thewitnesspuzzle.puzzle.generator.SunRuleGenerator;
 import com.aren.thewitnesspuzzle.puzzle.walker.FastGridTreeWalker;
 import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
 
@@ -37,8 +37,8 @@ public class SunEliminationPuzzleFactory extends PuzzleFactory {
 
         GridAreaSplitter splitter = new GridAreaSplitter(cursor);
 
-        SunRule.generate(splitter, random, Arrays.asList(Color.ORANGE, Color.PURPLE), 1f, 1f, 0);
-        EliminationRule.generateFakeSun(splitter, random, Arrays.asList(Color.ORANGE, Color.PURPLE));
+        SunRuleGenerator.generate(splitter, random, Arrays.asList(Color.ORANGE, Color.PURPLE), 1f, 1f, 0);
+        EliminationRuleGenerator.generateFakeSun(splitter, random, Arrays.asList(Color.ORANGE, Color.PURPLE));
 
         return new PuzzleRenderer(game, puzzle);
     }

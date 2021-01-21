@@ -65,7 +65,7 @@ public class PuzzleFactoryManager {
     }*/
 
     public PuzzleFactory getPuzzleFactoryByUuid(UUID uuid) {
-        updateFactoryList();
+        // updateFactoryList();
 
         if (!factories.containsKey(uuid)) return null;
         return factories.get(uuid);
@@ -167,6 +167,9 @@ public class PuzzleFactoryManager {
                     register(factory);
                 } else if (config.getFactoryType().equals("random")) {
                     CustomRandomPuzzleFactory factory = new CustomRandomPuzzleFactory(context, uuid);
+                    register(factory);
+                } else if (config.getFactoryType().equals("fixed")) {
+                    CustomFixedPuzzleFactory factory = new CustomFixedPuzzleFactory(context, uuid);
                     register(factory);
                 }
             } catch (Exception e) {

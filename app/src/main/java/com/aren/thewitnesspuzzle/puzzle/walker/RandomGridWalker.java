@@ -2,10 +2,11 @@ package com.aren.thewitnesspuzzle.puzzle.walker;
 
 import android.util.Log;
 
-import com.aren.thewitnesspuzzle.math.Vector2Int;
-import com.aren.thewitnesspuzzle.puzzle.base.GridPuzzle;
-import com.aren.thewitnesspuzzle.puzzle.base.GridSymmetryPuzzle;
-import com.aren.thewitnesspuzzle.puzzle.base.graph.Vertex;
+import com.aren.thewitnesspuzzle.core.graph.Vertex;
+import com.aren.thewitnesspuzzle.core.math.Vector2Int;
+import com.aren.thewitnesspuzzle.core.puzzle.GridPuzzle;
+import com.aren.thewitnesspuzzle.core.puzzle.GridSymmetryPuzzle;
+import com.aren.thewitnesspuzzle.core.rules.SymmetryType;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -35,16 +36,16 @@ public class RandomGridWalker {
 
     private ArrayList<Vector2Int> result;
 
-    private GridSymmetryPuzzle.SymmetryType symmetryType;
+    private SymmetryType symmetryType;
 
     private boolean walk() {
         if (x < 0 || y < 0 || x > width || y > height) return false;
 
-        if (symmetryType == GridSymmetryPuzzle.SymmetryType.VLINE && width % 2 == 0 && width / 2 == x) {
+        if (symmetryType == SymmetryType.VLINE && width % 2 == 0 && width / 2 == x) {
             return false;
         }
 
-        if (symmetryType == GridSymmetryPuzzle.SymmetryType.POINT && width % 2 == 0 && width / 2 == x && height / 2 == y) {
+        if (symmetryType == SymmetryType.POINT && width % 2 == 0 && width / 2 == x && height / 2 == y) {
             return false;
         }
 
@@ -60,10 +61,10 @@ public class RandomGridWalker {
         hist |= bit;
 
         long vSymBit = 0, pSymBit = 0;
-        if (symmetryType == GridSymmetryPuzzle.SymmetryType.VLINE) {
+        if (symmetryType == SymmetryType.VLINE) {
             vSymBit = 1L << ((width - x + y * (width + 1)));
             hist |= vSymBit;
-        } else if (symmetryType == GridSymmetryPuzzle.SymmetryType.POINT) {
+        } else if (symmetryType == SymmetryType.POINT) {
             pSymBit = 1L << ((width - x + (height - y) * (width + 1)));
             hist |= pSymBit;
         }
@@ -82,9 +83,9 @@ public class RandomGridWalker {
         }
 
         hist ^= bit;
-        if (symmetryType == GridSymmetryPuzzle.SymmetryType.VLINE) {
+        if (symmetryType == SymmetryType.VLINE) {
             hist ^= vSymBit;
-        } else if (symmetryType == GridSymmetryPuzzle.SymmetryType.POINT) {
+        } else if (symmetryType == SymmetryType.POINT) {
             hist ^= pSymBit;
         }
 
@@ -106,7 +107,7 @@ public class RandomGridWalker {
         this.endY = endY;
 
         if (gridPuzzle instanceof GridSymmetryPuzzle) {
-            this.symmetryType = ((GridSymmetryPuzzle) gridPuzzle).getSymmetryType();
+            this.symmetryType = ((GridSymmetryPuzzle) gridPuzzle).getSymmetry().getType();
         }
     }
 

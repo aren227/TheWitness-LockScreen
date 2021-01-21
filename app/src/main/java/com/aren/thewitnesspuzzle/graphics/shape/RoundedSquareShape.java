@@ -1,9 +1,7 @@
 package com.aren.thewitnesspuzzle.graphics.shape;
 
-import com.aren.thewitnesspuzzle.math.Vector2;
-import com.aren.thewitnesspuzzle.math.Vector3;
-
-import java.util.ArrayList;
+import com.aren.thewitnesspuzzle.core.math.Vector2;
+import com.aren.thewitnesspuzzle.core.math.Vector3;
 
 public class RoundedSquareShape extends Shape {
 
