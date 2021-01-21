@@ -504,13 +504,15 @@ public class PuzzleRenderer {
     }
 
     public void setCustomPattern(List<Integer> customPattern) throws InvalidPatternException {
-        for (Integer index : customPattern) {
-            if (puzzleBase.getVertex(index) == null)
-                throw new InvalidPatternException();
-        }
-        for (int i = 0; i < customPattern.size() - 1; i++) {
-            if (puzzleBase.getEdgeByVertex(puzzleBase.getVertex(customPattern.get(i)), puzzleBase.getVertex(customPattern.get(i + 1))) == null)
-                throw new InvalidPatternException();
+        if (customPattern != null) {
+            for (Integer index : customPattern) {
+                if (puzzleBase.getVertex(index) == null)
+                    throw new InvalidPatternException();
+            }
+            for (int i = 0; i < customPattern.size() - 1; i++) {
+                if (puzzleBase.getEdgeByVertex(puzzleBase.getVertex(customPattern.get(i)), puzzleBase.getVertex(customPattern.get(i + 1))) == null)
+                    throw new InvalidPatternException();
+            }
         }
         this.customPattern = customPattern;
     }
