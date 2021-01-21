@@ -12,6 +12,7 @@ import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.puzzle.animation.PuzzleFadeInAnimation;
 import com.aren.thewitnesspuzzle.puzzle.animation.PuzzleFadeOutAnimation;
 import com.aren.thewitnesspuzzle.puzzle.factory.CustomFixedPuzzleFactory;
+import com.aren.thewitnesspuzzle.puzzle.factory.CustomPatternPuzzleFactory;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactory;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;
 import com.aren.thewitnesspuzzle.puzzle.sound.Sounds;
@@ -149,7 +150,7 @@ public class PlayActivity extends AppCompatActivity {
             retryImage.setVisibility(View.GONE);
             retryImage.bringToFront();
 
-            if (currentPuzzleFactory instanceof CustomFixedPuzzleFactory) {
+            if (currentPuzzleFactory instanceof CustomFixedPuzzleFactory || currentPuzzleFactory instanceof CustomPatternPuzzleFactory) {
                 favImage.setVisibility(View.GONE);
             } else {
                 favImage.setVisibility(View.VISIBLE);
@@ -208,7 +209,7 @@ public class PlayActivity extends AppCompatActivity {
         retryImage.setVisibility(View.GONE);
 
         favImage.setImageResource(R.drawable.ic_baseline_favorite_border);
-        if (currentPuzzleFactory instanceof CustomFixedPuzzleFactory) {
+        if (currentPuzzleFactory instanceof CustomFixedPuzzleFactory || currentPuzzleFactory instanceof CustomPatternPuzzleFactory) {
             favImage.setVisibility(View.GONE);
         } else {
             favImage.setVisibility(View.VISIBLE);
