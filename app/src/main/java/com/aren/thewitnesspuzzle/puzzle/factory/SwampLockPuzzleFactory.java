@@ -22,7 +22,7 @@ public class SwampLockPuzzleFactory extends PuzzleFactory {
         puzzle.addStartingPoint(0, 0);
         puzzle.addEndingPoint(1, 1);
 
-        puzzle.getTileAt(0, 0).setRule(new BlocksRule(new boolean[][]{{true}}, puzzle.getHeight(), false, false));
+        puzzle.getTileAt(0, 0).setRule(new BlocksRule(new boolean[][]{{true}}, false, false));
 
         return new PuzzleRenderer(game, puzzle);
     }

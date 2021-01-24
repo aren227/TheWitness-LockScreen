@@ -127,7 +127,7 @@ public class BlocksRuleGenerator {
                     result[v.x - minX][v.y - minY] = true;
                 }
 
-                BlocksRule rule = new BlocksRule(result, puzzle.getHeight(), rotatableCount > j, false, color);
+                BlocksRule rule = new BlocksRule(result, rotatableCount > j, false, color);
                 // Rotate randomly to hide original shape
                 if (rule.rotatable) rule = BlocksRule.rotateRule(rule, rotatableRandom.nextInt(4));
 
@@ -146,7 +146,7 @@ public class BlocksRuleGenerator {
 
             for (int j = 0; j < blocksRuleList.size(); j++) {
                 placing.get(j).setRule(blocksRuleList.get(j));
-                filled += blocksRuleList.get(j).getBlockSize();
+                filled += blocksRuleList.get(j).getBlockCount();
             }
         }
     }

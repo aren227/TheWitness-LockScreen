@@ -357,7 +357,9 @@ public class PuzzleRenderer {
                 return;
             }
 
+            long st = System.currentTimeMillis();
             final ValidationResult result = PuzzleValidator.validate(cursor, puzzleBase);
+            System.out.println("Validation took " + (System.currentTimeMillis() - st) + "ms.");
 
             if (result.hasEliminatedRule()) {
                 game.playSound(Sounds.POTENTIAL_FAILURE);

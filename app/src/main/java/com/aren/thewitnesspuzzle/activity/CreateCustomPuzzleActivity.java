@@ -71,7 +71,7 @@ public class CreateCustomPuzzleActivity extends PuzzleEditorActivity implements 
     HexagonRule hexagonRule = new HexagonRule();
     SquareRule squareRule = new SquareRule(com.aren.thewitnesspuzzle.core.rules.Color.BLACK);
     SunRule sunRule = new SunRule(com.aren.thewitnesspuzzle.core.rules.Color.ORANGE);
-    BlocksRule blocksRule = new BlocksRule(new boolean[][]{{true, true}}, 4, false, false);
+    BlocksRule blocksRule = new BlocksRule(new boolean[][]{{true, true}}, false, false);
     EliminationRule eliminationRule = new EliminationRule();
     TrianglesRule trianglesRule = new TrianglesRule(1);
 
@@ -310,7 +310,7 @@ public class CreateCustomPuzzleActivity extends PuzzleEditorActivity implements 
         });
 
         blocksViewGroup = findViewById(R.id.blocks_container);
-        ViewGroup blocksGrid = findViewById(R.id.blocks_grid);
+        final ViewGroup blocksGrid = findViewById(R.id.blocks_grid);
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 5; j++) {
                 final ImageView colorImageView = new ImageView(this);
@@ -340,7 +340,17 @@ public class CreateCustomPuzzleActivity extends PuzzleEditorActivity implements 
         ((CheckBox) findViewById(R.id.blocks_rotatable_checkbox)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                blocksRule.rotatable = isChecked;
+                blocksRule = new BlocksRule(blocksRule.blocks, isChecked, blocksRule.subtractive, blocksRule.color);
+            }
+        });
+        ((CheckBox) findViewById(R.id.blocks_subtractive_checkbox)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                blocksRule = new BlocksRule(blocksRule.blocks, blocksRule.rotatable, isChecked, blocksRule.color);
+                if (isChecked)
+                    selectColor(com.aren.thewitnesspuzzle.core.rules.Color.BLUE);
+                else
+                    selectColor(com.aren.thewitnesspuzzle.core.rules.Color.YELLOW);
             }
         });
 
@@ -462,12 +472,12 @@ public class CreateCustomPuzzleActivity extends PuzzleEditorActivity implements 
             hexagonRule.setSymmetricColor(SymmetryColor.NONE);
 
         // Update puzzle height of the block rule
-        blocksRule = new BlocksRule(blocksRule.blocks, getGridPuzzle().getHeight(), blocksRule.rotatable, blocksRule.subtractive, blocksRule.color);
+        blocksRule = new BlocksRule(blocksRule.blocks, blocksRule.rotatable, blocksRule.subtractive, blocksRule.color);
         for (int i = 0; i < Math.min(ow, w); i++) {
             for (int j = 0; j < Math.min(oh, h); j++) {
                 if (newGridPuzzle.getTileAt(i, j).getRule() instanceof BlocksRule) {
                     BlocksRule prevBlocksRule = (BlocksRule) newGridPuzzle.getTileAt(i, j).getRule();
-                    newGridPuzzle.getTileAt(i, j).setRule(new BlocksRule(prevBlocksRule.blocks, getGridPuzzle().getHeight(), prevBlocksRule.rotatable, prevBlocksRule.subtractive, prevBlocksRule.color));
+                    newGridPuzzle.getTileAt(i, j).setRule(new BlocksRule(prevBlocksRule.blocks, prevBlocksRule.rotatable, prevBlocksRule.subtractive, prevBlocksRule.color));
                 }
             }
         }
@@ -565,7 +575,7 @@ public class CreateCustomPuzzleActivity extends PuzzleEditorActivity implements 
                     list.add(new Vector2Int(i, j));
             }
         }
-        blocksRule = new BlocksRule(BlocksRule.listToGridArray(list), getGridPuzzle().getHeight(), blocksRule.rotatable, blocksRule.subtractive, blocksRule.color);
+        blocksRule = new BlocksRule(BlocksRule.listToGridArray(list), blocksRule.rotatable, blocksRule.subtractive, blocksRule.color);
     }
 
     private GridPuzzle getGridPuzzle() {

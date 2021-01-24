@@ -8,14 +8,16 @@ public class BlocksShape extends Shape {
 
     private static final float BLOCK_SIZE = 0.13f;
     private static final float PADDING = 0.015f;
+    private static final float SUBTRACTIVE_STROKE = 0.032f;
 
     public boolean[][] blocks;
     public int width;
     public int height;
     public int blockCount;
     public boolean rotatable;
+    public boolean subtractive;
 
-    public BlocksShape(boolean[][] blocks, boolean rotatable, Vector3 center, int color) {
+    public BlocksShape(boolean[][] blocks, boolean rotatable, boolean subtractive, Vector3 center, int color) {
         super(center, 1, color);
 
         this.blocks = blocks;
@@ -27,6 +29,7 @@ public class BlocksShape extends Shape {
             }
         }
         this.rotatable = rotatable;
+        this.subtractive = subtractive;
     }
 
     @Override
@@ -41,26 +44,49 @@ public class BlocksShape extends Shape {
             for (int j = 0; j < height; j++) {
                 if (!blocks[i][j]) continue;
                 Vector2 blockCenter = new Vector2(-width * bs * 0.5f + (i + 0.5f) * bs, -height * bs * 0.5f + (j + 0.5f) * bs);
-                Vector2 a = new Vector2(blockCenter.x - BLOCK_SIZE * 0.5f, blockCenter.y - BLOCK_SIZE * 0.5f);
-                Vector2 b = new Vector2(blockCenter.x - BLOCK_SIZE * 0.5f, blockCenter.y + BLOCK_SIZE * 0.5f);
-                Vector2 c = new Vector2(blockCenter.x + BLOCK_SIZE * 0.5f, blockCenter.y + BLOCK_SIZE * 0.5f);
-                Vector2 d = new Vector2(blockCenter.x + BLOCK_SIZE * 0.5f, blockCenter.y - BLOCK_SIZE * 0.5f);
 
-                if (rotatable) {
-                    a = rot.multiply(a);
-                    b = rot.multiply(b);
-                    c = rot.multiply(c);
-                    d = rot.multiply(d);
+                if (subtractive) {
+                    Vector2 a = new Vector2(blockCenter.x - BLOCK_SIZE * 0.5f, blockCenter.y + BLOCK_SIZE * 0.5f);
+                    Vector2 b = new Vector2(blockCenter.x + BLOCK_SIZE * 0.5f - SUBTRACTIVE_STROKE, blockCenter.y + BLOCK_SIZE * 0.5f);
+                    Vector2 c = new Vector2(blockCenter.x + BLOCK_SIZE * 0.5f, blockCenter.y + BLOCK_SIZE * 0.5f - SUBTRACTIVE_STROKE);
+
+                    Vector2 d = new Vector2(blockCenter.x - BLOCK_SIZE * 0.5f, blockCenter.y - BLOCK_SIZE * 0.5f + SUBTRACTIVE_STROKE);
+                    Vector2 e = new Vector2(blockCenter.x - BLOCK_SIZE * 0.5f + SUBTRACTIVE_STROKE, blockCenter.y - BLOCK_SIZE * 0.5f);
+                    Vector2 f = new Vector2(blockCenter.x + BLOCK_SIZE * 0.5f, blockCenter.y - BLOCK_SIZE * 0.5f);
+
+                    drawRectangle(a, c, rot);
+                    drawRectangle(d, f, rot);
+                    drawRectangle(a, e, rot);
+                    drawRectangle(b, f, rot);
+                } else {
+                    Vector2 a = new Vector2(blockCenter.x - BLOCK_SIZE * 0.5f, blockCenter.y - BLOCK_SIZE * 0.5f);
+                    Vector2 b = new Vector2(blockCenter.x + BLOCK_SIZE * 0.5f, blockCenter.y + BLOCK_SIZE * 0.5f);
+
+                    drawRectangle(a, b, rot);
                 }
-
-                int idx = addVertex(a);
-                addVertex(b);
-                addVertex(c);
-                addVertex(d);
-
-                addTriangle(idx, idx + 1, idx + 2);
-                addTriangle(idx, idx + 2, idx + 3);
             }
         }
+    }
+
+    public void drawRectangle(Vector2 a, Vector2 b, Matrix2x2 rot) {
+        Vector2 ll = new Vector2(Math.min(a.x, b.x), Math.min(a.y, b.y));
+        Vector2 lr = new Vector2(Math.max(a.x, b.x), Math.min(a.y, b.y));
+        Vector2 ul = new Vector2(Math.min(a.x, b.x), Math.max(a.y, b.y));
+        Vector2 ur = new Vector2(Math.max(a.x, b.x), Math.max(a.y, b.y));
+
+        if (rot != null) {
+            ll = rot.multiply(ll);
+            lr = rot.multiply(lr);
+            ul = rot.multiply(ul);
+            ur = rot.multiply(ur);
+        }
+
+        int idx = addVertex(ll);
+        addVertex(ul);
+        addVertex(ur);
+        addVertex(lr);
+
+        addTriangle(idx, idx + 1, idx + 2);
+        addTriangle(idx, idx + 2, idx + 3);
     }
 }

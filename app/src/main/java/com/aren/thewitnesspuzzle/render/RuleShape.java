@@ -61,7 +61,7 @@ public class RuleShape {
 
         if(ruleBase instanceof BlocksRule) {
             BlocksRule blocksRule = (BlocksRule) ruleBase;
-            return new BlocksShape(blocksRule.blocks, blocksRule.rotatable,
+            return new BlocksShape(blocksRule.blocks, blocksRule.rotatable, blocksRule.subtractive,
                     graphElement.getPosition().toVector3(), blocksRule.color.getRGB());
         }
         else if(ruleBase instanceof BrokenLineRule) {

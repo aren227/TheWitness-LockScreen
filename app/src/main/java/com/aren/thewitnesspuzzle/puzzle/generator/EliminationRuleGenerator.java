@@ -103,23 +103,22 @@ public class EliminationRuleGenerator {
             BlocksRuleGenerator.connectTiles(result, random, grid, 4, 4, 0, 0, random.nextInt(3) + 2);
 
             boolean rotatable = random.nextFloat() < rotatableProb;
-            BlocksRule rule = new BlocksRule(BlocksRule.listToGridArray(result), splitter.getPuzzle().getHeight(), rotatable, false, color);
+            BlocksRule rule = new BlocksRule(BlocksRule.listToGridArray(result), rotatable, false, color);
 
             // Check if this one block matches with the area
             List<Vector2Int> areaList = new ArrayList<>();
             for (Tile tile : area.tiles) {
                 areaList.add(tile.getGridPosition());
             }
-            BlocksRule areaRule = new BlocksRule(BlocksRule.listToGridArray(areaList), splitter.getPuzzle().getHeight(), false, false);
+            BlocksRule areaRule = new BlocksRule(BlocksRule.listToGridArray(areaList), false, false);
             boolean pass = true;
             if (rotatable) {
                 for (int i = 0; i < 4; i++) {
-                    if (rule.blockBits[i] == areaRule.blockBits[i]) {
+                    if (BlocksRule.equalBlocks(rule.rotatedBlocks.get(i), areaRule.blocks))
                         pass = false;
-                    }
                     rule = BlocksRule.rotateRule(rule, 1);
                 }
-            } else if (rule.blockBits[0] == areaRule.blockBits[0]) {
+            } else if (BlocksRule.equalBlocks(rule.blocks, areaRule.blocks)) {
                 pass = false;
             }
 
