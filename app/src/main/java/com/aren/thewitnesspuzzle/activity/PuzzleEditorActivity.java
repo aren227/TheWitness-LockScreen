@@ -153,6 +153,7 @@ public class PuzzleEditorActivity extends AppCompatActivity {
                     public void run() {
                         paletteView.invalidate();
                         puzzleRenderer.shouldUpdateStaticShapes();
+                        puzzleRenderer.updateCursorColor();
                         game.update();
                     }
                 });

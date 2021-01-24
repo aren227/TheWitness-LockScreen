@@ -75,8 +75,6 @@ public class CreateCustomPuzzleActivity extends PuzzleEditorActivity implements 
     EliminationRule eliminationRule = new EliminationRule();
     TrianglesRule trianglesRule = new TrianglesRule(1);
 
-    PuzzleRenderer puzzleRenderer;
-
     boolean[][] blocks = new boolean[5][5];
 
     ViewGroup colorViewGroup, hexColorViewGroup, trianglesViewGroup, blocksViewGroup;
@@ -92,26 +90,12 @@ public class CreateCustomPuzzleActivity extends PuzzleEditorActivity implements 
         if (getIntent().getExtras() != null && getIntent().getExtras().getSerializable("uuid") != null) {
             factory = (CustomFixedPuzzleFactory) puzzleFactoryManager.getPuzzleFactoryByUuid((UUID) getIntent().getExtras().getSerializable("uuid"));
             setGridPuzzle((GridPuzzle) factory.generate(game, new Random()).getPuzzleBase());
+            palette.set(getGridPuzzle().getColorPalette());
         } else {
-            setGridPuzzle(new GridPuzzle(PalettePreset.get("Entry_1"), 4, 4));
+            setGridPuzzle(new GridPuzzle(palette, 4, 4));
         }
 
-        paletteView.setPalette(getGridPuzzle().getColorPalette());
-
-        paletteView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ColorPaletteDialog dialog = new ColorPaletteDialog(CreateCustomPuzzleActivity.this, getGridPuzzle().getColorPalette(), new Runnable() {
-                    @Override
-                    public void run() {
-                        paletteView.invalidate();
-                        puzzleRenderer.shouldUpdateStaticShapes();
-                        game.update();
-                    }
-                });
-                dialog.show();
-            }
-        });
+        paletteView.invalidate();
 
         sizeRefreshImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,9 +134,6 @@ public class CreateCustomPuzzleActivity extends PuzzleEditorActivity implements 
             nameEditText.setText(factory.getConfig().getString("name", "My Puzzle"));
         else
             nameEditText.setText("My Puzzle");
-
-        palette.set(getGridPuzzle().getColorPalette());
-        paletteView.invalidate();
 
         difficultyView.setVisibility(View.GONE);
 
@@ -433,13 +414,11 @@ public class CreateCustomPuzzleActivity extends PuzzleEditorActivity implements 
         int ow = gridPuzzle.getWidth();
         int oh = gridPuzzle.getHeight();
 
-        PuzzleColorPalette colorPalette = gridPuzzle.getColorPalette();
-
         GridPuzzle newGridPuzzle;
         if (newSymmetry == null)
-            newGridPuzzle = new GridPuzzle(colorPalette, w, h);
+            newGridPuzzle = new GridPuzzle(palette, w, h);
         else
-            newGridPuzzle = new GridSymmetryPuzzle(colorPalette, w, h, newSymmetry);
+            newGridPuzzle = new GridSymmetryPuzzle(palette, w, h, newSymmetry);
 
         for (int i = 0; i <= Math.min(ow, w); i++) {
             for (int j = 0; j <= Math.min(oh, h); j++) {

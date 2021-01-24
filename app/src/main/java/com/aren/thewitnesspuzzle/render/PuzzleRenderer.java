@@ -501,6 +501,10 @@ public class PuzzleRenderer {
         return actualCursorColor;
     }
 
+    public void updateCursorColor() {
+        actualCursorColor.set(puzzleBase.getColorPalette().getCursorColor());
+    }
+
     public boolean hasShadowPanel() {
         return shadowPanel;
     }
