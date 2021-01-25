@@ -82,16 +82,16 @@ public class RuleShape {
             if(hexagonRule.getOverrideColor() != 0)
                 return new HexagonShape(new Vector3(graphElement.x, graphElement.y,
                         puzzle.getGame().isEditorMode() ? Z_INDEX_FLOAT : Z_INDEX_NORMAL),
-                        puzzleBase.getPathWidth() * 0.4f,
+                        puzzleBase.getPathWidth() * 0.5f,
                         hexagonRule.getOverrideColor());
             if (hexagonRule.hasSymmetricColor())
                 return new HexagonShape(new Vector3(graphElement.x, graphElement.y,
                         puzzle.getGame().isEditorMode() ? Z_INDEX_FLOAT : Z_INDEX_NORMAL),
-                        puzzleBase.getPathWidth() * 0.4f,
+                        puzzleBase.getPathWidth() * 0.5f,
                         hexagonRule.getSymmetricColor().getRGB());
             return new HexagonShape(new Vector3(graphElement.x, graphElement.y,
                     puzzle.getGame().isEditorMode() ? Z_INDEX_FLOAT : Z_INDEX_NORMAL),
-                    puzzleBase.getPathWidth() * 0.4f, Color.BLACK);
+                    puzzleBase.getPathWidth() * 0.5f, Color.BLACK);
         }
         else if(ruleBase instanceof SquareRule) {
             SquareRule squareRule = (SquareRule) ruleBase;
