@@ -206,10 +206,22 @@ public class PuzzleRenderer {
         }
 
         for (Vertex vertex : puzzleBase.getVertices()) {
-            staticShapes.add(new CircleShape(new Vector3(vertex.x, vertex.y, 0), puzzleBase.getPathWidth() * 0.5f,
-                    puzzleBase.getColorPalette().getPathColor()));
-            if (shadowPanel) {
-                shadow.add(new CircleShape(new Vector3(vertex.x, vertex.y - puzzleBase.getBoundingBox().getHeight(), 0), puzzleBase.getPathWidth() * 0.5f, shadowPathColor));
+            if (vertex.adj.size() != 1 || vertex.getRule() instanceof EndingPointRule) {
+                staticShapes.add(new CircleShape(new Vector3(vertex.x, vertex.y, 0), puzzleBase.getPathWidth() * 0.5f,
+                        puzzleBase.getColorPalette().getPathColor()));
+                if (shadowPanel) {
+                    shadow.add(new CircleShape(new Vector3(vertex.x, vertex.y - puzzleBase.getBoundingBox().getHeight(), 0), puzzleBase.getPathWidth() * 0.5f, shadowPathColor));
+                }
+            }
+            else {
+                Edge edge = puzzleBase.getEdgeByVertex(vertex, vertex.adj.iterator().next());
+                if (edge == null)
+                    continue;
+
+                staticShapes.add(new RectangleShape(vertex.getPosition().toVector3(), puzzleBase.getPathWidth(), puzzleBase.getPathWidth(), edge.getAngle(), puzzleBase.getColorPalette().getPathColor()));
+                if (shadowPanel) {
+                    shadow.add(new RectangleShape(new Vector3(vertex.x, vertex.y - puzzleBase.getBoundingBox().getHeight(), 0), puzzleBase.getPathWidth(), puzzleBase.getPathWidth(), edge.getAngle(), puzzleBase.getColorPalette().getPathColor()));
+                }
             }
         }
 

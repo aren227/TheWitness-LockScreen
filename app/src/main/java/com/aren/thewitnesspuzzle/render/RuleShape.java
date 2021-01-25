@@ -12,7 +12,6 @@ import com.aren.thewitnesspuzzle.core.rules.EliminationRule;
 import com.aren.thewitnesspuzzle.core.rules.HexagonRule;
 import com.aren.thewitnesspuzzle.core.rules.RuleBase;
 import com.aren.thewitnesspuzzle.core.rules.SquareRule;
-import com.aren.thewitnesspuzzle.core.rules.SquareVertexRule;
 import com.aren.thewitnesspuzzle.core.rules.StartingPointRule;
 import com.aren.thewitnesspuzzle.core.rules.SunRule;
 import com.aren.thewitnesspuzzle.core.rules.TrianglesRule;
@@ -98,11 +97,6 @@ public class RuleShape {
             SquareRule squareRule = (SquareRule) ruleBase;
             return new RoundedSquareShape(graphElement.getPosition().toVector3(), 0.18f,
                     squareRule.color.getRGB());
-        }
-        else if(ruleBase instanceof SquareVertexRule) {
-            return new RectangleShape(graphElement.getPosition().toVector3(),
-                    puzzleBase.getPathWidth(), puzzleBase.getPathWidth(), 0,
-                    puzzleBase.getColorPalette().getPathColor());
         }
         else if(ruleBase instanceof StartingPointRule) {
             StartingPointRule startingPointRule = (StartingPointRule) ruleBase;

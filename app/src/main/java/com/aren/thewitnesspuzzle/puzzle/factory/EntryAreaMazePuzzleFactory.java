@@ -8,7 +8,6 @@ import com.aren.thewitnesspuzzle.core.graph.Vertex;
 import com.aren.thewitnesspuzzle.core.math.Vector2Int;
 import com.aren.thewitnesspuzzle.core.puzzle.PuzzleBase;
 import com.aren.thewitnesspuzzle.core.rules.EndingPointRule;
-import com.aren.thewitnesspuzzle.core.rules.SquareVertexRule;
 import com.aren.thewitnesspuzzle.core.rules.StartingPointRule;
 import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.puzzle.walker.RandomGridTreeWalker;
@@ -109,14 +108,6 @@ public class EntryAreaMazePuzzleFactory extends PuzzleFactory {
 
         new Edge(puzzle, gridVertices[endX][endY], end);
         end.setRule(new EndingPointRule());
-
-        for (int i = 0; i <= width; i++) {
-            for (int j = 0; j <= height; j++) {
-                if (tree.direction[i][j] == 0 && !(i == endX && j == endY)) {
-                    gridVertices[i][j].setRule(new SquareVertexRule());
-                }
-            }
-        }
 
         return new PuzzleRenderer(game, puzzle);
     }
