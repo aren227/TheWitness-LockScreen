@@ -59,16 +59,33 @@
                 android:layout_marginBottom="8dp"
                 android:weightSum="2">
 
-                <TextView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:gravity="left"
-                    android:text="Tile:"
-                    android:textColor="@color/colorPrimary"
-                    android:fontFamily="serif"
-                    android:textSize="20dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:layout_marginRight="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text="Tile:"
+                        android:textColor="@color/colorPrimary"
+                        android:fontFamily="serif"
+                        android:textSize="20dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_weight="1" />
+
+                    <ImageView
+                        android:id="@+id/copy_from_bg"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:src="@drawable/ic_baseline_subdirectory_arrow_right_24"
+                        android:tint="@color/colorPrimary"
+                        android:gravity="center_vertical"/>
+
+                </LinearLayout>
 
                 <View
                     android:id="@+id/tile_color"

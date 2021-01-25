@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.GridLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -37,6 +38,7 @@ public class ColorPaletteDialog extends Dialog {
     int[] failureColorRef;
 
     public TextView cancelTextView, applyTextView;
+    public ImageView copyFromBGImageView;
 
     public GridLayout presetList;
 
@@ -64,6 +66,8 @@ public class ColorPaletteDialog extends Dialog {
         cancelTextView = findViewById(R.id.cancel);
         applyTextView = findViewById(R.id.apply);
         applyTextView = findViewById(R.id.apply);
+
+        copyFromBGImageView = findViewById(R.id.copy_from_bg);
 
         final Runnable onColorPickerExit = new Runnable() {
             @Override
@@ -115,6 +119,14 @@ public class ColorPaletteDialog extends Dialog {
         });
         bloomIntensitySeekBar.setMax(100);
         bloomIntensitySeekBar.setProgress((int) (palette.getBloomIntensity() * 100));
+
+        copyFromBGImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tileColorRef[0] = backgroundColorRef[0];
+                updateColors();
+            }
+        });
 
         updateColors();
 
