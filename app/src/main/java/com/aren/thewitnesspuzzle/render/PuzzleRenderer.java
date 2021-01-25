@@ -201,6 +201,10 @@ public class PuzzleRenderer {
         int shadowPathColor = ColorUtils.lerp(puzzleBase.getColorPalette().getBackgroundColor(),
                 puzzleBase.getColorPalette().getPathColor(), 0.4f);
 
+        for (Tile tile : puzzleBase.getTiles()) {
+            staticShapes.add(new RectangleShape(new Vector3(tile.x, tile.y, 0), 1, 1, 0, puzzleBase.getColorPalette().getTileColor()));
+        }
+
         for (Vertex vertex : puzzleBase.getVertices()) {
             staticShapes.add(new CircleShape(new Vector3(vertex.x, vertex.y, 0), puzzleBase.getPathWidth() * 0.5f,
                     puzzleBase.getColorPalette().getPathColor()));
@@ -210,8 +214,20 @@ public class PuzzleRenderer {
         }
 
         for (Edge edge : puzzleBase.getEdges()) {
-            staticShapes.add(new RectangleShape(edge.getPosition().toVector3(), edge.getLength(),
-                    puzzleBase.getPathWidth(), edge.getAngle(), puzzleBase.getColorPalette().getPathColor()));
+            if (edge.getRule() instanceof BrokenLineRule) {
+                Vector2 start = edge.from.getPosition();
+                Vector2 end = edge.to.getPosition();
+                float len = edge.getLength() / 2 - ((BrokenLineRule) edge.getRule()).getCollisionCircleRadius();
+                Vector2 a = end.subtract(start).normalize().multiply(len / 2).add(start);
+                Vector2 b = end.subtract(start).normalize().multiply(edge.getLength() - len / 2).add(start);
+                staticShapes.add(new RectangleShape(a.toVector3(), len,
+                        puzzleBase.getPathWidth(), edge.getAngle(), puzzleBase.getColorPalette().getPathColor()));
+                staticShapes.add(new RectangleShape(b.toVector3(), len,
+                        puzzleBase.getPathWidth(), edge.getAngle(), puzzleBase.getColorPalette().getPathColor()));
+            } else {
+                staticShapes.add(new RectangleShape(edge.getPosition().toVector3(), edge.getLength(),
+                        puzzleBase.getPathWidth(), edge.getAngle(), puzzleBase.getColorPalette().getPathColor()));
+            }
             if (shadowPanel) {
                 shadow.add(new RectangleShape(edge.getPosition().toVector3().add(new Vector3(0, -puzzleBase.getBoundingBox().getHeight(), 0)), edge.getLength(), puzzleBase.getPathWidth(), edge.getAngle(), shadowPathColor));
             }

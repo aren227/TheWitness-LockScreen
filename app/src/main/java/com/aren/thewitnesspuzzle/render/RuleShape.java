@@ -65,13 +65,13 @@ public class RuleShape {
                     graphElement.getPosition().toVector3(), blocksRule.color.getRGB());
         }
         else if(ruleBase instanceof BrokenLineRule) {
-            BrokenLineRule brokenLineRule = (BrokenLineRule) ruleBase;
+            /*BrokenLineRule brokenLineRule = (BrokenLineRule) ruleBase;
             Edge edge = (Edge) graphElement;
             return new RectangleShape(edge.getPosition().toVector3(),
                     brokenLineRule.getCollisionCircleRadius() * 2f / edge.getLength(),
                     puzzleBase.getPathWidth(),
                     edge.getAngle(),
-                    puzzleBase.getColorPalette().getBackgroundColor());
+                    puzzleBase.getColorPalette().getBackgroundColor());*/
         }
         else if(ruleBase instanceof EliminationRule) {
             EliminationRule eliminationRule = (EliminationRule) ruleBase;

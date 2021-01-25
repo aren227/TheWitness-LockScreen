@@ -63,6 +63,33 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:gravity="left"
+                    android:text="Tile:"
+                    android:textColor="@color/colorPrimary"
+                    android:fontFamily="serif"
+                    android:textSize="20dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_weight="1" />
+
+                <View
+                    android:id="@+id/tile_color"
+                    android:layout_width="0dp"
+                    android:layout_height="24dp"
+                    android:background="@color/colorPrimary"
+                    android:layout_weight="1" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp"
+                android:weightSum="2">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
                     android:text="Path:"
                     android:textColor="@color/colorPrimary"
                     android:fontFamily="serif"

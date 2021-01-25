@@ -22,6 +22,7 @@ public class ColorPaletteDialog extends Dialog {
     public PuzzleColorPalette palette;
 
     public View backgroundColorView;
+    public View tileColorView;
     public View pathColorView;
     public View lineColorView;
     public View successColorView;
@@ -29,6 +30,7 @@ public class ColorPaletteDialog extends Dialog {
     public SeekBar bloomIntensitySeekBar;
 
     int[] backgroundColorRef;
+    int[] tileColorRef;
     int[] pathColorRef;
     int[] lineColorRef;
     int[] successColorRef;
@@ -52,6 +54,7 @@ public class ColorPaletteDialog extends Dialog {
         setContentView(R.layout.color_palette_dialog);
 
         backgroundColorView = findViewById(R.id.background_color);
+        tileColorView = findViewById(R.id.tile_color);
         pathColorView = findViewById(R.id.path_color);
         lineColorView = findViewById(R.id.line_color);
         successColorView = findViewById(R.id.success_color);
@@ -72,6 +75,13 @@ public class ColorPaletteDialog extends Dialog {
             @Override
             public void onClick(View v) {
                 ColorPickerDialog dialog = new ColorPickerDialog(getContext(), backgroundColorRef, onColorPickerExit);
+                dialog.show();
+            }
+        });
+        tileColorView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ColorPickerDialog dialog = new ColorPickerDialog(getContext(), tileColorRef, onColorPickerExit);
                 dialog.show();
             }
         });
@@ -122,6 +132,7 @@ public class ColorPaletteDialog extends Dialog {
                 @Override
                 public void onClick(View v) {
                     backgroundColorRef[0] = palette.getBackgroundColor();
+                    tileColorRef[0] = palette.getTileColor();
                     pathColorRef[0] = palette.getPathColor();
                     lineColorRef[0] = palette.getCursorColor();
                     successColorRef[0] = palette.getCursorSucceededColor();
@@ -141,6 +152,7 @@ public class ColorPaletteDialog extends Dialog {
             @Override
             public void onClick(View v) {
                 palette.setBackgroundColor(backgroundColorRef[0]);
+                palette.setTileColor(tileColorRef[0]);
                 palette.setPathColor(pathColorRef[0]);
                 palette.setCursorColor(lineColorRef[0]);
                 palette.setCursorSucceededColor(successColorRef[0]);
@@ -158,6 +170,7 @@ public class ColorPaletteDialog extends Dialog {
         this.onExit = onExit;
 
         backgroundColorRef = new int[]{palette.getBackgroundColor()};
+        tileColorRef = new int[]{palette.getTileColor()};
         pathColorRef = new int[]{palette.getPathColor()};
         lineColorRef = new int[]{palette.getCursorColor()};
         successColorRef = new int[]{palette.getCursorSucceededColor()};
@@ -166,6 +179,7 @@ public class ColorPaletteDialog extends Dialog {
 
     public void updateColors() {
         backgroundColorView.setBackgroundColor(backgroundColorRef[0]);
+        tileColorView.setBackgroundColor(tileColorRef[0]);
         pathColorView.setBackgroundColor(pathColorRef[0]);
         lineColorView.setBackgroundColor(lineColorRef[0]);
         successColorView.setBackgroundColor(successColorRef[0]);
