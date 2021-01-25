@@ -91,7 +91,9 @@ public class CreateCustomPuzzleActivity extends PuzzleEditorActivity implements 
         if (getIntent().getExtras() != null && getIntent().getExtras().getSerializable("uuid") != null) {
             factory = (CustomFixedPuzzleFactory) puzzleFactoryManager.getPuzzleFactoryByUuid((UUID) getIntent().getExtras().getSerializable("uuid"));
             setGridPuzzle((GridPuzzle) factory.generate(game, new Random()).getPuzzleBase());
+
             palette.set(getGridPuzzle().getColorPalette());
+            getGridPuzzle().setColorPalette(palette); // Must use this.palette so that color change properly
         } else {
             setGridPuzzle(new GridPuzzle(palette, 4, 4));
         }
