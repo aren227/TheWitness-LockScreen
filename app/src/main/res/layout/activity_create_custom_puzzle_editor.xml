@@ -41,6 +41,14 @@
             android:src="@drawable/ic_rule_broken_line"/>
 
         <ImageView
+            android:id="@+id/tool_remove_line"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="5dp"
+            android:layout_columnWeight="1"
+            android:src="@drawable/ic_rule_remove_line"/>
+
+        <ImageView
             android:id="@+id/tool_end"
             android:layout_width="50dp"
             android:layout_height="50dp"

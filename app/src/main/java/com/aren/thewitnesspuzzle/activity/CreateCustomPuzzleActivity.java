@@ -35,6 +35,7 @@ import com.aren.thewitnesspuzzle.core.rules.BlocksRule;
 import com.aren.thewitnesspuzzle.core.rules.BrokenLineRule;
 import com.aren.thewitnesspuzzle.core.rules.EliminationRule;
 import com.aren.thewitnesspuzzle.core.rules.HexagonRule;
+import com.aren.thewitnesspuzzle.core.rules.RemoveEdgeRule;
 import com.aren.thewitnesspuzzle.core.rules.SquareRule;
 import com.aren.thewitnesspuzzle.core.rules.StartingPointRule;
 import com.aren.thewitnesspuzzle.core.rules.SunRule;
@@ -62,7 +63,7 @@ import java.util.UUID;
 public class CreateCustomPuzzleActivity extends PuzzleEditorActivity implements ClickEvent {
 
     private enum ToolType {
-        PLAY, ERASE, START, BROKEN_LINE, END, HEXAGON, SQUARE, SUN, BLOCKS, ELIMINATION, TRIANGLES
+        PLAY, ERASE, START, BROKEN_LINE, REMOVE_LINE, END, HEXAGON, SQUARE, SUN, BLOCKS, ELIMINATION, TRIANGLES
     }
 
     Map<ToolType, ImageView> toolTypeImageViewMap;
@@ -222,6 +223,7 @@ public class CreateCustomPuzzleActivity extends PuzzleEditorActivity implements 
         toolTypeImageViewMap.put(ToolType.ERASE, (ImageView) findViewById(R.id.tool_erase));
         toolTypeImageViewMap.put(ToolType.START, (ImageView) findViewById(R.id.tool_start));
         toolTypeImageViewMap.put(ToolType.BROKEN_LINE, (ImageView) findViewById(R.id.tool_broken_line));
+        toolTypeImageViewMap.put(ToolType.REMOVE_LINE, (ImageView) findViewById(R.id.tool_remove_line));
         toolTypeImageViewMap.put(ToolType.END, (ImageView) findViewById(R.id.tool_end));
         toolTypeImageViewMap.put(ToolType.HEXAGON, (ImageView) findViewById(R.id.tool_hexagon));
         toolTypeImageViewMap.put(ToolType.SQUARE, (ImageView) findViewById(R.id.tool_square));
@@ -450,17 +452,6 @@ public class CreateCustomPuzzleActivity extends PuzzleEditorActivity implements 
         if (hexagonRule.hasSymmetricColor() && getSymmetry() == null)
             hexagonRule.setSymmetricColor(SymmetryColor.NONE);
 
-        // Update puzzle height of the block rule
-        blocksRule = new BlocksRule(blocksRule.blocks, blocksRule.rotatable, blocksRule.subtractive, blocksRule.color);
-        for (int i = 0; i < Math.min(ow, w); i++) {
-            for (int j = 0; j < Math.min(oh, h); j++) {
-                if (newGridPuzzle.getTileAt(i, j).getRule() instanceof BlocksRule) {
-                    BlocksRule prevBlocksRule = (BlocksRule) newGridPuzzle.getTileAt(i, j).getRule();
-                    newGridPuzzle.getTileAt(i, j).setRule(new BlocksRule(prevBlocksRule.blocks, prevBlocksRule.rotatable, prevBlocksRule.subtractive, prevBlocksRule.color));
-                }
-            }
-        }
-
         noSymmetryImageView.setColorFilter(Color.DKGRAY);
         vSymmetryImageView.setColorFilter(Color.DKGRAY);
         rSymmetryImageView.setColorFilter(Color.DKGRAY);
@@ -562,6 +553,8 @@ public class CreateCustomPuzzleActivity extends PuzzleEditorActivity implements 
     }
 
     private void setGridPuzzle(GridPuzzle gridPuzzle) {
+        gridPuzzle.updateNotInAreaTiles();
+
         puzzleRenderer = new PuzzleRenderer(game, gridPuzzle);
         game.setPuzzle(puzzleRenderer);
         game.update();
@@ -616,6 +609,7 @@ public class CreateCustomPuzzleActivity extends PuzzleEditorActivity implements 
                 containsVertices = true;
                 break;
             case BROKEN_LINE:
+            case REMOVE_LINE:
                 containsEdges = true;
                 break;
             case HEXAGON:
@@ -668,9 +662,13 @@ public class CreateCustomPuzzleActivity extends PuzzleEditorActivity implements 
                 gridPuzzle.addEndingPoint(gx, gy);
             }
         } else if (currentToolType == ToolType.BROKEN_LINE) {
-            if (puzzleRenderer.getCursor() != null && puzzleRenderer.getCursor().containsEdge((Edge) graphElement))
+            if (puzzleRenderer.getCursor() != null && puzzleRenderer.getCursor().partiallyContainsEdge((Edge) graphElement))
                 puzzleRenderer.setCursor(null);
             graphElement.setRule(new BrokenLineRule());
+        } else if (currentToolType == ToolType.REMOVE_LINE) {
+            if (puzzleRenderer.getCursor() != null && puzzleRenderer.getCursor().partiallyContainsEdge((Edge) graphElement))
+                puzzleRenderer.setCursor(null);
+            graphElement.setRule(new RemoveEdgeRule());
         } else if (currentToolType == ToolType.HEXAGON) {
             graphElement.setRule(hexagonRule.clone());
         } else if (currentToolType == ToolType.SQUARE) {
@@ -699,6 +697,7 @@ public class CreateCustomPuzzleActivity extends PuzzleEditorActivity implements 
         }
 
         game.getPuzzle().shouldUpdateStaticShapes();
+        getGridPuzzle().updateNotInAreaTiles();
     }
 
 }

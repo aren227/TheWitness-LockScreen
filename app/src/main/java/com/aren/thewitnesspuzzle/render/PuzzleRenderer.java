@@ -18,6 +18,7 @@ import com.aren.thewitnesspuzzle.core.puzzle.GridSymmetryPuzzle;
 import com.aren.thewitnesspuzzle.core.puzzle.PuzzleBase;
 import com.aren.thewitnesspuzzle.core.rules.BrokenLineRule;
 import com.aren.thewitnesspuzzle.core.rules.EndingPointRule;
+import com.aren.thewitnesspuzzle.core.rules.RemoveEdgeRule;
 import com.aren.thewitnesspuzzle.core.rules.RuleBase;
 import com.aren.thewitnesspuzzle.core.rules.StartingPointRule;
 import com.aren.thewitnesspuzzle.core.rules.Symmetry;
@@ -202,18 +203,27 @@ public class PuzzleRenderer {
                 puzzleBase.getColorPalette().getPathColor(), 0.4f);
 
         for (Tile tile : puzzleBase.getTiles()) {
-            staticShapes.add(new RectangleShape(new Vector3(tile.x, tile.y, 0), 1, 1, 0, puzzleBase.getColorPalette().getTileColor()));
+            if (!tile.notInArea)
+                staticShapes.add(new RectangleShape(new Vector3(tile.x, tile.y, 0), 1, 1, 0, puzzleBase.getColorPalette().getTileColor()));
         }
 
         for (Vertex vertex : puzzleBase.getVertices()) {
-            if (vertex.adj.size() != 1 || vertex.getRule() instanceof EndingPointRule) {
+            int edgeCount = 0;
+            for (Vertex v : vertex.adj) {
+                Edge edge = puzzleBase.getEdgeByVertex(vertex, v);
+                if (edge != null && !(edge.getRule() instanceof RemoveEdgeRule)) {
+                    edgeCount++;
+                }
+            }
+
+            if (edgeCount > 1 || vertex.getRule() instanceof EndingPointRule) {
                 staticShapes.add(new CircleShape(new Vector3(vertex.x, vertex.y, 0), puzzleBase.getPathWidth() * 0.5f,
                         puzzleBase.getColorPalette().getPathColor()));
                 if (shadowPanel) {
                     shadow.add(new CircleShape(new Vector3(vertex.x, vertex.y - puzzleBase.getBoundingBox().getHeight(), 0), puzzleBase.getPathWidth() * 0.5f, shadowPathColor));
                 }
             }
-            else {
+            else if (edgeCount == 1) {
                 Edge edge = puzzleBase.getEdgeByVertex(vertex, vertex.adj.iterator().next());
                 if (edge == null)
                     continue;
@@ -226,6 +236,9 @@ public class PuzzleRenderer {
         }
 
         for (Edge edge : puzzleBase.getEdges()) {
+            if (edge.getRule() instanceof RemoveEdgeRule)
+                continue;
+
             if (edge.getRule() instanceof BrokenLineRule) {
                 Vector2 start = edge.from.getPosition();
                 Vector2 end = edge.to.getPosition();
