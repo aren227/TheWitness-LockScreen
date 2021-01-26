@@ -118,43 +118,51 @@ public class PuzzleFactoryManager {
 
     private void registerBuiltInFactories() {
         Folder locks = registerBuiltInFolder("Locks");
+        Folder entry = registerBuiltInFolder("Entry Area");
+        Folder glassFactory = registerBuiltInFolder("Glass Factory");
+        Folder symmetryIsland = registerBuiltInFolder("Symmetry Island");
+        Folder quarry = registerBuiltInFolder("Quarry");
+        Folder swamp = registerBuiltInFolder("Swamp");
+        Folder treehouse = registerBuiltInFolder("Treehouse");
+        Folder challenge = registerBuiltInFolder("Challenge");
 
-        register(new BlocksEliminationPuzzleFactory(context));
-        register(new BlocksRotatableBlocksPuzzleFactory(context));
-        register(new ChallengeMaze1PuzzleFactory(context));
-        register(new ChallengeMaze2PuzzleFactory(context));
-        register(new ChallengeMaze3PuzzleFactory(context));
-        register(new ChallengeTwoHexPuzzleFactory(context));
-        register(new ChallengeMazePuzzleFactory(context));
-        register(new ChallengeSymmetryPuzzleFactory(context));
-        register(new ChallengeSunBlocksPuzzleFactory(context));
-        register(new ChallengeSunHexagonPuzzleFactory(context));
-        register(new ChallengeTwoSquarePuzzleFactory(context));
-        register(new ChallengeThreeSquarePuzzleFactory(context));
-        register(new ChallengeTrianglesPuzzleFactory(context));
-        register(new EntryAreaMazePuzzleFactory(context));
+
+        register(new BlocksEliminationPuzzleFactory(context), quarry);
+        register(new BlocksRotatableBlocksPuzzleFactory(context), swamp);
+        register(new ChallengeMaze1PuzzleFactory(context), challenge);
+        register(new ChallengeMaze2PuzzleFactory(context), challenge);
+        register(new ChallengeMaze3PuzzleFactory(context), challenge);
+        register(new ChallengeTwoHexPuzzleFactory(context), challenge);
+        register(new ChallengeMazePuzzleFactory(context), challenge);
+        register(new ChallengeSymmetryPuzzleFactory(context), challenge);
+        register(new ChallengeSunBlocksPuzzleFactory(context), challenge);
+        register(new ChallengeSunHexagonPuzzleFactory(context), challenge);
+        register(new ChallengeTwoSquarePuzzleFactory(context), challenge);
+        register(new ChallengeThreeSquarePuzzleFactory(context), challenge);
+        register(new ChallengeTrianglesPuzzleFactory(context), challenge);
+        register(new EntryAreaMazePuzzleFactory(context), entry);
         register(new FirstPuzzleFactory(context), locks);
-        register(new MultipleSunColorsPuzzleFactory(context));
-        register(new RotatableBlocksPuzzleFactory(context));
+        register(new MultipleSunColorsPuzzleFactory(context), treehouse);
+        register(new RotatableBlocksPuzzleFactory(context), swamp);
         register(new SecondPuzzleFactory(context), locks);
-        register(new BlocksPuzzleFactory(context));
-        register(new HexagonEliminationPuzzleFactory(context));
+        register(new BlocksPuzzleFactory(context), swamp);
+        register(new HexagonEliminationPuzzleFactory(context), quarry);
         register(new HexagonPuzzleFactory(context));
-        register(new MazePuzzleFactory(context));
-        register(new PSymmetryPuzzleFactory(context));
-        register(new SquareEliminationPuzzleFactory(context));
+        register(new MazePuzzleFactory(context), entry);
+        register(new PSymmetryPuzzleFactory(context), glassFactory);
+        register(new SquareEliminationPuzzleFactory(context), quarry);
         register(new SquarePuzzleFactory(context));
-        register(new SunPuzzleFactory(context));
-        register(new SunSquarePuzzleFactory(context));
+        register(new SunPuzzleFactory(context), treehouse);
+        register(new SunSquarePuzzleFactory(context), treehouse);
         register(new SwampLockPuzzleFactory(context), locks);
         register(new TriangleLockPuzzleFactory(context), locks);
         register(new TrianglesPuzzleFactory(context));
-        register(new VSymmetryPuzzleFactory(context));
+        register(new VSymmetryPuzzleFactory(context), glassFactory);
         register(new SlidePuzzleFactory(context), locks);
-        register(new SunBlockPuzzleFactory(context));
-        register(new SunEliminationPuzzleFactory(context));
-        register(new SunPairWithSquarePuzzleFactory(context));
-        register(new SymmetryHexagonPuzzleFactory(context));
+        register(new SunBlockPuzzleFactory(context), treehouse);
+        register(new SunEliminationPuzzleFactory(context), quarry);
+        register(new SunPairWithSquarePuzzleFactory(context), treehouse);
+        register(new SymmetryHexagonPuzzleFactory(context), symmetryIsland);
     }
 
     private Folder registerBuiltInFolder(String name) {

@@ -40,7 +40,7 @@ public class SymmetryHexagonPuzzleFactory extends PuzzleFactory {
         symmetryPuzzle.addEndingPoint(end.getGridX(), end.getGridY());
 
         FastGridTreeWalker walker = FastGridTreeWalker.getLongest(symmetryPuzzle, random, 10, 0, 0, end.getGridX(), end.getGridY());
-        ArrayList<Vertex> vertexPositions = walker.getResult(); // FIXME: walker is null. WTF?
+        ArrayList<Vertex> vertexPositions = walker.getResult();
 
         SymmetryCursor cursor = new SymmetryCursor(symmetryPuzzle, vertexPositions, null);
 
