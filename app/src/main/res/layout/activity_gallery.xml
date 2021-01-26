@@ -228,6 +228,22 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/folder_path"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="5dp">
+
+            <ImageView
+                android:id="@+id/root_folder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_baseline_folder_open_24" />
+
+        </LinearLayout>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/gallery_grid"
             android:layout_width="match_parent"

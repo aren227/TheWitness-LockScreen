@@ -52,6 +52,21 @@ public class PuzzleFactoryConfig {
         return getLong("created_at", 0);
     }
 
+    public void setParentFolderUuid(UUID folderUuid) {
+        setString("folder", folderUuid.toString());
+    }
+
+    public UUID getParentFolderUuid() {
+        if (!containsKey("folder"))
+            return PuzzleFactoryManager.rootFolderUuid;
+        try {
+            return UUID.fromString(getString("folder", ""));
+        } catch (Exception ignored) {
+
+        }
+        return PuzzleFactoryManager.rootFolderUuid;
+    }
+
     public void setString(String key, String val) {
         try {
             jsonObject.put(key, val);

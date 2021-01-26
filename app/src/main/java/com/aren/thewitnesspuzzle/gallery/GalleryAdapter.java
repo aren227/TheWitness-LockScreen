@@ -20,13 +20,13 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHolder> {
+public class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context context;
     private LayoutInflater inflater;
     private PuzzleFactoryManager puzzleFactoryManager;
 
-    private List<GalleryPreview> previews;
+    private List<Object> previews;
 
     private OnPreviewClick onPreviewClick;
 
@@ -38,7 +38,11 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         previews = new ArrayList<>();
     }
 
-    public void addPreview(GalleryPreview preview) {
+    public void addPreview(GalleryPuzzlePreview preview) {
+        previews.add(preview);
+    }
+
+    public void addPreview(GalleryFolderPreview preview) {
         previews.add(preview);
     }
 
@@ -46,68 +50,122 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         previews.clear();
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        if (previews.get(position) instanceof GalleryPuzzlePreview)
+            return 0;
+        return 1;
+    }
+
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.gridview_layout, parent, false);
-        return new ViewHolder(view);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view;
+        if (viewType == 0) {
+            view = inflater.inflate(R.layout.gridview_layout, parent, false);
+            return new PuzzleViewHolder(view);
+        }
+        view = inflater.inflate(R.layout.gallery_folder_layout, parent, false);
+        return new FolderViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        final GalleryPreview preview = previews.get(position);
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        if (previews.get(position) instanceof GalleryPuzzlePreview) {
+            final GalleryPuzzlePreview preview = (GalleryPuzzlePreview) previews.get(position);
+            PuzzleViewHolder viewHolder = (PuzzleViewHolder) holder;
 
-        holder.imageView.setImageBitmap(preview.bitmap);
-        holder.imageView.setClipToOutline(true);
+            viewHolder.imageView.setImageBitmap(preview.bitmap);
+            viewHolder.imageView.setClipToOutline(true);
 
-        if (preview.isForAddBtn) {
-            holder.textView.setText("");
-            holder.imageView.setColorFilter(null);
-            holder.imageView.setImageAlpha(255);
-            holder.outlineView.setVisibility(View.INVISIBLE);
-            holder.imageView.setOnClickListener(new View.OnClickListener() {
+            if (preview.isForAddBtn) {
+                viewHolder.textView.setText("");
+                viewHolder.imageView.setColorFilter(null);
+                viewHolder.imageView.setImageAlpha(255);
+                viewHolder.outlineView.setVisibility(View.INVISIBLE);
+                viewHolder.root.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        NewPuzzleDialog dialog = new NewPuzzleDialog(context);
+                        dialog.show();
+                    }
+                });
+                viewHolder.root.setOnLongClickListener(null);
+                return;
+            }
+
+            if (puzzleFactoryManager.getLastViewedProfile().isActivated(preview.puzzleFactory)) {
+                viewHolder.imageView.setColorFilter(null);
+                viewHolder.imageView.setImageAlpha(255);
+                viewHolder.outlineView.setVisibility(View.VISIBLE);
+            } else {
+                ColorMatrix matrix = new ColorMatrix();
+                matrix.setSaturation(0);
+                ColorMatrixColorFilter cf = new ColorMatrixColorFilter(matrix);
+                viewHolder.imageView.setColorFilter(cf);
+                viewHolder.imageView.setImageAlpha(128);
+                viewHolder.outlineView.setVisibility(View.INVISIBLE);
+            }
+
+            viewHolder.textView.setText(preview.name);
+            if (preview.getDifficulty() != null)
+                viewHolder.textView.setTextColor(preview.getDifficulty().getColor());
+
+            viewHolder.root.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    NewPuzzleDialog dialog = new NewPuzzleDialog(context);
-                    dialog.show();
+                    onPreviewClick.onClick(preview);
                 }
             });
-            holder.imageView.setOnLongClickListener(null);
-            return;
-        }
 
-        if (puzzleFactoryManager.getLastViewedProfile().isActivated(preview.puzzleFactory)) {
-            holder.imageView.setColorFilter(null);
-            holder.imageView.setImageAlpha(255);
-            holder.outlineView.setVisibility(View.VISIBLE);
+            viewHolder.root.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    PuzzleFactoryDialog dialog = new PuzzleFactoryDialog(context, preview.puzzleFactory);
+                    dialog.show();
+                    return true;
+                }
+            });
         } else {
-            ColorMatrix matrix = new ColorMatrix();
-            matrix.setSaturation(0);
-            ColorMatrixColorFilter cf = new ColorMatrixColorFilter(matrix);
-            holder.imageView.setColorFilter(cf);
-            holder.imageView.setImageAlpha(128);
-            holder.outlineView.setVisibility(View.INVISIBLE);
+            final GalleryFolderPreview preview = (GalleryFolderPreview) previews.get(position);
+            FolderViewHolder viewHolder = (FolderViewHolder) holder;
+
+            PuzzleFactoryManager.Profile lastProfile = puzzleFactoryManager.getLastViewedProfile();
+
+            for (int i = 0; i < 4; i++) {
+                ImageView imageView = viewHolder.imageViewList.get(i);
+                View outlineView = viewHolder.outlineViewList.get(i);
+                if (i < preview.puzzlePreviews.size()) {
+                    imageView.setImageBitmap(preview.puzzlePreviews.get(i).bitmap);
+                    imageView.setClipToOutline(true);
+
+                    if (lastProfile.isActivated(preview.puzzlePreviews.get(i).puzzleFactory)) {
+                        imageView.setColorFilter(null);
+                        imageView.setImageAlpha(255);
+                        outlineView.setVisibility(View.VISIBLE);
+                    } else {
+                        ColorMatrix matrix = new ColorMatrix();
+                        matrix.setSaturation(0);
+                        ColorMatrixColorFilter cf = new ColorMatrixColorFilter(matrix);
+                        imageView.setColorFilter(cf);
+                        imageView.setImageAlpha(128);
+                        outlineView.setVisibility(View.INVISIBLE);
+                    }
+                } else {
+                    viewHolder.imageViewList.get(i).setImageBitmap(null);
+                    viewHolder.imageViewList.get(i).setColorFilter(null);
+                }
+            }
+
+            viewHolder.root.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onPreviewClick.onClick(preview);
+                }
+            });
+
+            viewHolder.textView.setText(preview.name);
         }
-
-        holder.textView.setText(preview.name);
-        if (preview.getDifficulty() != null)
-            holder.textView.setTextColor(preview.getDifficulty().getColor());
-
-        holder.imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onPreviewClick.onClick(preview);
-            }
-        });
-
-        holder.imageView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                PuzzleFactoryDialog dialog = new PuzzleFactoryDialog(context, preview.puzzleFactory);
-                dialog.show();
-                return true;
-            }
-        });
     }
 
     @Override
@@ -115,17 +173,50 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         return previews.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public List<Object> getItems() {
+        return previews;
+    }
+
+    public static class PuzzleViewHolder extends RecyclerView.ViewHolder {
+        ViewGroup root;
         ImageView imageView;
         TextView textView;
         View outlineView;
 
-        public ViewHolder(@NonNull View itemView) {
+        public PuzzleViewHolder(@NonNull View itemView) {
             super(itemView);
 
+            root = itemView.findViewById(R.id.preview_root);
             imageView = itemView.findViewById(R.id.puzzle_preview);
             textView = itemView.findViewById(R.id.puzzle_name);
             outlineView = itemView.findViewById(R.id.puzzle_selected);
         }
+    }
+
+    public static class FolderViewHolder extends RecyclerView.ViewHolder {
+        ViewGroup root;
+        List<ImageView> imageViewList = new ArrayList<>();
+        List<View> outlineViewList = new ArrayList<>();
+        TextView textView;
+
+        public FolderViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            root = itemView.findViewById(R.id.preview_root);
+
+            imageViewList.add((ImageView) itemView.findViewById(R.id.puzzle_preview_1));
+            imageViewList.add((ImageView) itemView.findViewById(R.id.puzzle_preview_2));
+            imageViewList.add((ImageView) itemView.findViewById(R.id.puzzle_preview_3));
+            imageViewList.add((ImageView) itemView.findViewById(R.id.puzzle_preview_4));
+
+            outlineViewList.add(itemView.findViewById(R.id.puzzle_selected_1));
+            outlineViewList.add(itemView.findViewById(R.id.puzzle_selected_2));
+            outlineViewList.add(itemView.findViewById(R.id.puzzle_selected_3));
+            outlineViewList.add(itemView.findViewById(R.id.puzzle_selected_4));
+
+            textView = itemView.findViewById(R.id.folder_name);
+        }
+
+
     }
 }

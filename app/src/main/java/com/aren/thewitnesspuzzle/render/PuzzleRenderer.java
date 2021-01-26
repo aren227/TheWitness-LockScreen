@@ -483,7 +483,10 @@ public class PuzzleRenderer {
         } else if (action == MotionEvent.ACTION_MOVE) {
             if (cursor == null) return;
 
-            Edge edge = puzzleBase.getNearestEdge(pos);
+            Edge edge = puzzleBase.getNearestEdge(pos, false);
+            if (edge == null)
+                return;
+
             EdgeProportion edgeProportion = new EdgeProportion(edge);
             edgeProportion.proportion = edgeProportion.getProportionFromPointOutside(pos);
             cursor.connectTo(edgeProportion);

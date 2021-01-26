@@ -2,6 +2,8 @@ package com.aren.thewitnesspuzzle.gallery;
 
 public interface OnPreviewClick {
 
-    void onClick(GalleryPreview preview);
+    void onClick(GalleryPuzzlePreview preview);
+
+    void onClick(GalleryFolderPreview preview);
 
 }

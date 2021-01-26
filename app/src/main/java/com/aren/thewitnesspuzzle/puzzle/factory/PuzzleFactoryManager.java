@@ -22,8 +22,10 @@ public class PuzzleFactoryManager {
 
     public static final String sharedPreferenceConfigKey = "com.aren.thewitnesspuzzle.puzzle.factory.config";
     public static final String sharedPreferenceProfilesKey = "com.aren.thewitnesspuzzle.puzzle.factory.profiles";
+    public static final String sharedPreferenceFoldersKey = "com.aren.thewitnesspuzzle.puzzle.factory.folders";
 
     public static final UUID defaultProfileUuid = new UUID(0, 0);
+    public static final UUID rootFolderUuid = new UUID(0, 0);
 
     private Context context;
     private static Map<UUID, PuzzleFactory> factories = new HashMap<>();
@@ -115,6 +117,8 @@ public class PuzzleFactoryManager {
     }
 
     private void registerBuiltInFactories() {
+        Folder locks = registerBuiltInFolder("Locks");
+
         register(new BlocksEliminationPuzzleFactory(context));
         register(new BlocksRotatableBlocksPuzzleFactory(context));
         register(new ChallengeMaze1PuzzleFactory(context));
@@ -129,10 +133,10 @@ public class PuzzleFactoryManager {
         register(new ChallengeThreeSquarePuzzleFactory(context));
         register(new ChallengeTrianglesPuzzleFactory(context));
         register(new EntryAreaMazePuzzleFactory(context));
-        register(new FirstPuzzleFactory(context));
+        register(new FirstPuzzleFactory(context), locks);
         register(new MultipleSunColorsPuzzleFactory(context));
         register(new RotatableBlocksPuzzleFactory(context));
-        register(new SecondPuzzleFactory(context));
+        register(new SecondPuzzleFactory(context), locks);
         register(new BlocksPuzzleFactory(context));
         register(new HexagonEliminationPuzzleFactory(context));
         register(new HexagonPuzzleFactory(context));
@@ -142,15 +146,22 @@ public class PuzzleFactoryManager {
         register(new SquarePuzzleFactory(context));
         register(new SunPuzzleFactory(context));
         register(new SunSquarePuzzleFactory(context));
-        register(new SwampLockPuzzleFactory(context));
-        register(new TriangleLockPuzzleFactory(context));
+        register(new SwampLockPuzzleFactory(context), locks);
+        register(new TriangleLockPuzzleFactory(context), locks);
         register(new TrianglesPuzzleFactory(context));
         register(new VSymmetryPuzzleFactory(context));
-        register(new SlidePuzzleFactory(context));
+        register(new SlidePuzzleFactory(context), locks);
         register(new SunBlockPuzzleFactory(context));
         register(new SunEliminationPuzzleFactory(context));
         register(new SunPairWithSquarePuzzleFactory(context));
         register(new SymmetryHexagonPuzzleFactory(context));
+    }
+
+    private Folder registerBuiltInFolder(String name) {
+        Folder folder = new Folder(context, UUID.nameUUIDFromBytes(name.getBytes()));
+        folder.setName(name);
+        folder.setImmutable(true);
+        return folder;
     }
 
     private void registerUserDefinedFactories() {
@@ -179,8 +190,15 @@ public class PuzzleFactoryManager {
     }
 
     private void register(PuzzleFactory puzzleFactory) {
+        register(puzzleFactory, null);
+    }
+
+    private void register(PuzzleFactory puzzleFactory, Folder folder) {
         if (factories.containsKey(puzzleFactory.getUuid())) return;
         factories.put(puzzleFactory.getUuid(), puzzleFactory);
+
+        if (folder != null)
+            puzzleFactory.getConfig().setParentFolderUuid(folder.uuid);
     }
 
     public void remove(PuzzleFactory puzzleFactory) {
@@ -228,7 +246,7 @@ public class PuzzleFactoryManager {
 
         SharedPreferences sharedPreferences = context.getSharedPreferences("com.aren.thewitnesspuzzle.puzzle.factory", Context.MODE_PRIVATE);
         List<Profile> list = new ArrayList<>();
-        for (String strUuid : sharedPreferences.getStringSet("profiles", defaultSet)) {
+        for (String strUuid : new HashSet<>(sharedPreferences.getStringSet("profiles", defaultSet))) {
             list.add(new Profile(context, UUID.fromString(strUuid)));
         }
 
@@ -260,7 +278,7 @@ public class PuzzleFactoryManager {
         }
 
         SharedPreferences sharedPreferences = context.getSharedPreferences("com.aren.thewitnesspuzzle.puzzle.factory", Context.MODE_PRIVATE);
-        Set<String> set = sharedPreferences.getStringSet("profiles", new HashSet<String>());
+        Set<String> set = new HashSet<>(sharedPreferences.getStringSet("profiles", new HashSet<String>()));
         set.remove(profile.uuid.toString());
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putStringSet("profiles", set);
@@ -278,6 +296,87 @@ public class PuzzleFactoryManager {
 
     public boolean isRemovedProfile(Profile profile) {
         return !getProfiles().contains(profile);
+    }
+
+    public List<Folder> getFolders() {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("com.aren.thewitnesspuzzle.puzzle.factory", Context.MODE_PRIVATE);
+        List<Folder> list = new ArrayList<>();
+        for (String strUuid : new HashSet<>(sharedPreferences.getStringSet("folders", new HashSet<String>()))) {
+            list.add(new Folder(context, UUID.fromString(strUuid)));
+        }
+
+        Collections.sort(list, new Comparator<Folder>() {
+            @Override
+            public int compare(Folder o1, Folder o2) {
+                return -Long.compare(o1.getCreationTime(), o2.getCreationTime());
+            }
+        });
+        return list;
+    }
+
+    public Folder createFolder(String name, UUID parentUuid) {
+        Folder folder = new Folder(context, UUID.randomUUID());
+        folder.setName(name);
+        folder.setCreationTime(System.currentTimeMillis());
+        folder.setParentFolderUuid(parentUuid);
+        return folder;
+    }
+
+    public Folder getFolder(UUID folderUuid) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("com.aren.thewitnesspuzzle.puzzle.factory", Context.MODE_PRIVATE);
+        if (!sharedPreferences.getStringSet("folders", new HashSet<String>()).contains(folderUuid.toString()))
+            return null;
+        return new Folder(context, folderUuid);
+    }
+
+    public List<Folder> getChildFolders(UUID folderUuid) {
+        List<Folder> childFolders = new ArrayList<>();
+        for (Folder folder : getFolders()) {
+            if (folder.getParentFolderUuid().equals(folderUuid))
+                childFolders.add(folder);
+        }
+        return childFolders;
+    }
+
+    public List<PuzzleFactory> getChildPuzzleFactories(UUID folderUuid) {
+        List<PuzzleFactory> childPuzzleFactories = new ArrayList<>();
+        for (PuzzleFactory puzzleFactory : getAllPuzzleFactories()) {
+            if (puzzleFactory.getConfig().getParentFolderUuid().equals(folderUuid))
+                childPuzzleFactories.add(puzzleFactory);
+        }
+        return childPuzzleFactories;
+    }
+
+    public void removeFolder(Folder folder) {
+        if (folder.uuid.equals(rootFolderUuid))
+            return;
+
+        List<Folder> childFolders = getChildFolders(folder.uuid);
+        List<PuzzleFactory> childPuzzleFactories = getChildPuzzleFactories(folder.uuid);
+
+        UUID parent = folder.getParentFolderUuid();
+        for (Folder child : childFolders)
+            child.setParentFolderUuid(parent);
+        for (PuzzleFactory child : childPuzzleFactories)
+            child.getConfig().setParentFolderUuid(parent);
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences("com.aren.thewitnesspuzzle.puzzle.factory", Context.MODE_PRIVATE);
+        Set<String> set = new HashSet<>(sharedPreferences.getStringSet("folders", new HashSet<String>()));
+        set.remove(folder.uuid.toString());
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putStringSet("folders", set);
+        editor.commit();
+
+        sharedPreferences = context.getSharedPreferences(PuzzleFactoryManager.sharedPreferenceFoldersKey, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        String strUuid = folder.uuid.toString();
+        for (String key : sharedPreferences.getAll().keySet()) {
+            if (key.startsWith(strUuid)) {
+                System.out.println("Delete Key = " + key);
+                editor.remove(key);
+            }
+        }
+        editor.commit();
     }
 
     public enum ProfileType{
@@ -298,7 +397,7 @@ public class PuzzleFactoryManager {
         private Context context;
         private UUID uuid;
 
-        public Profile(Context context, UUID uuid) {
+        private Profile(Context context, UUID uuid) {
             this.context = context;
             this.uuid = uuid;
 
@@ -512,6 +611,84 @@ public class PuzzleFactoryManager {
 
         public SharedPreferences getSharedPreferences() {
             return context.getSharedPreferences(PuzzleFactoryManager.sharedPreferenceProfilesKey, Context.MODE_PRIVATE);
+        }
+    }
+
+    public class Folder {
+
+        private Context context;
+        private UUID uuid;
+
+        private Folder(Context context, UUID uuid) {
+            this.context = context;
+            this.uuid = uuid;
+
+            SharedPreferences sharedPreferences = context.getSharedPreferences("com.aren.thewitnesspuzzle.puzzle.factory", Context.MODE_PRIVATE);
+            // Must clone it before use
+            Set<String> set = new HashSet<>(sharedPreferences.getStringSet("folders", new HashSet<String>()));
+            set.add(uuid.toString());
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putStringSet("folders", set);
+            editor.commit();
+        }
+
+        public String getName() {
+            if (uuid.equals(rootFolderUuid)) {
+                return getSharedPreferences().getString(uuid.toString() + "/name", "Root");
+            }
+            return getSharedPreferences().getString(uuid.toString() + "/name", "New Folder");
+        }
+
+        public void setName(String name) {
+            SharedPreferences.Editor editor = getSharedPreferences().edit();
+            editor.putString(uuid.toString() + "/name", name);
+            editor.commit();
+        }
+
+        public long getCreationTime() {
+            return getSharedPreferences().getLong(uuid.toString() + "/creation_time", 0);
+        }
+
+        public void setCreationTime(long time) {
+            SharedPreferences.Editor editor = getSharedPreferences().edit();
+            editor.putLong(uuid.toString() + "/creation_time", time);
+            editor.commit();
+        }
+
+        public SharedPreferences getSharedPreferences() {
+            return context.getSharedPreferences(PuzzleFactoryManager.sharedPreferenceFoldersKey, Context.MODE_PRIVATE);
+        }
+
+        public void setParentFolderUuid(UUID folderUuid) {
+            SharedPreferences.Editor editor = getSharedPreferences().edit();
+            editor.putString(uuid.toString() + "/folder", folderUuid.toString());
+            editor.commit();
+        }
+
+        public UUID getParentFolderUuid() {
+            SharedPreferences sharedPreferences = getSharedPreferences();
+            if (!sharedPreferences.contains(uuid.toString() + "/folder"))
+                return PuzzleFactoryManager.rootFolderUuid;
+            try {
+                return UUID.fromString(sharedPreferences.getString(uuid.toString() + "/folder", ""));
+            } catch (Exception ignored) {
+
+            }
+            return PuzzleFactoryManager.rootFolderUuid;
+        }
+
+        public boolean isImmutable() {
+            return getSharedPreferences().getBoolean(uuid.toString() + "/immutable", false);
+        }
+
+        public void setImmutable(boolean immutable) {
+            SharedPreferences.Editor editor = getSharedPreferences().edit();
+            editor.putBoolean(uuid.toString() + "/immutable", immutable);
+            editor.commit();
+        }
+
+        public UUID getUuid() {
+            return uuid;
         }
     }
 }

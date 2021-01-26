@@ -8,7 +8,7 @@ import android.graphics.Paint;
 import com.aren.thewitnesspuzzle.puzzle.factory.Difficulty;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactory;
 
-public class GalleryPreview {
+public class GalleryPuzzlePreview {
 
     public PuzzleFactory puzzleFactory;
     public Bitmap bitmap;
@@ -16,13 +16,13 @@ public class GalleryPreview {
     public Difficulty difficulty;
     public boolean isForAddBtn;
 
-    public GalleryPreview(PuzzleFactory puzzleFactory, Bitmap bitmap, String name) {
+    public GalleryPuzzlePreview(PuzzleFactory puzzleFactory, Bitmap bitmap, String name) {
         this.puzzleFactory = puzzleFactory;
         this.bitmap = bitmap;
         this.name = name;
     }
 
-    public static GalleryPreview addButton() {
+    public static GalleryPuzzlePreview addButton() {
         Bitmap add = Bitmap.createBitmap(512, 512, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(add);
         canvas.drawColor(Color.DKGRAY);
@@ -35,7 +35,7 @@ public class GalleryPreview {
         canvas.drawRect(128, 256 - 16, 512 - 128, 256 + 16, paint);
         canvas.drawBitmap(add, 0, 0, null);
 
-        GalleryPreview preview = new GalleryPreview(null, add, "");
+        GalleryPuzzlePreview preview = new GalleryPuzzlePreview(null, add, "");
         preview.isForAddBtn = true;
         return preview;
     }
