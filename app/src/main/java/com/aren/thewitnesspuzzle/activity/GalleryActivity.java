@@ -684,9 +684,6 @@ public class GalleryActivity extends AppCompatActivity {
             adapter.addPreview(preview);
         }*/
 
-        // A button for adding new puzzle
-        adapter.addPreview(GalleryPuzzlePreview.addButton());
-
         adapter.notifyDataSetChanged();
 
         // Generate and Query puzzles

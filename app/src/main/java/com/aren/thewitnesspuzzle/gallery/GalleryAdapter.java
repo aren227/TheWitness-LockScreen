@@ -52,6 +52,8 @@ public class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public int getItemViewType(int position) {
+        if (position >= previews.size())
+            return 2;
         if (previews.get(position) instanceof GalleryPuzzlePreview)
             return 0;
         return 1;
@@ -64,35 +66,32 @@ public class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         if (viewType == 0) {
             view = inflater.inflate(R.layout.gridview_layout, parent, false);
             return new PuzzleViewHolder(view);
+        } else if (viewType == 1) {
+            view = inflater.inflate(R.layout.gallery_folder_layout, parent, false);
+            return new FolderViewHolder(view);
         }
-        view = inflater.inflate(R.layout.gallery_folder_layout, parent, false);
-        return new FolderViewHolder(view);
+        view = inflater.inflate(R.layout.new_button_layout, parent, false);
+        return new AddButtonViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        if (previews.get(position) instanceof GalleryPuzzlePreview) {
+        if (position >= previews.size()) {
+            AddButtonViewHolder viewHolder = (AddButtonViewHolder) holder;
+
+            viewHolder.root.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    NewPuzzleDialog dialog = new NewPuzzleDialog(context);
+                    dialog.show();
+                }
+            });
+        } else if (previews.get(position) instanceof GalleryPuzzlePreview) {
             final GalleryPuzzlePreview preview = (GalleryPuzzlePreview) previews.get(position);
             PuzzleViewHolder viewHolder = (PuzzleViewHolder) holder;
 
             viewHolder.imageView.setImageBitmap(preview.bitmap);
             viewHolder.imageView.setClipToOutline(true);
-
-            if (preview.isForAddBtn) {
-                viewHolder.textView.setText("");
-                viewHolder.imageView.setColorFilter(null);
-                viewHolder.imageView.setImageAlpha(255);
-                viewHolder.outlineView.setVisibility(View.INVISIBLE);
-                viewHolder.root.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        NewPuzzleDialog dialog = new NewPuzzleDialog(context);
-                        dialog.show();
-                    }
-                });
-                viewHolder.root.setOnLongClickListener(null);
-                return;
-            }
 
             if (puzzleFactoryManager.getLastViewedProfile().isActivated(preview.puzzleFactory)) {
                 viewHolder.imageView.setColorFilter(null);
@@ -170,7 +169,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public int getItemCount() {
-        return previews.size();
+        return previews.size() + 1;
     }
 
     public List<Object> getItems() {
@@ -216,7 +215,15 @@ public class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
             textView = itemView.findViewById(R.id.folder_name);
         }
+    }
 
+    public static class AddButtonViewHolder extends RecyclerView.ViewHolder {
+        ViewGroup root;
 
+        public AddButtonViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            root = itemView.findViewById(R.id.preview_root);
+        }
     }
 }
