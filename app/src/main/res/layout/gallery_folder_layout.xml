@@ -6,124 +6,143 @@
     android:padding="5dp"
     android:id="@+id/preview_root">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content">
 
-        <RelativeLayout
-            android:layout_width="0dp"
+        <ImageView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="1.5dp"
-            android:layout_weight="1">
+            android:src="@drawable/rounded_square_dashed"
+            android:adjustViewBounds="true"/>
 
-            <ImageView
-                android:id="@+id/puzzle_preview_1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:adjustViewBounds="true"
-                android:background="@drawable/rounded_image" />
-
-            <View
-                android:id="@+id/puzzle_selected_1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/rounded_image_glowing_bg"
-                android:layout_alignTop="@id/puzzle_preview_1"
-                android:layout_alignBottom="@id/puzzle_preview_1"
-                android:layout_alignStart="@id/puzzle_preview_1"
-                android:layout_alignEnd="@id/puzzle_preview_1" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="0dp"
+        <LinearLayout
+            android:id="@+id/upper_container"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="1.5dp"
-            android:layout_weight="1">
+            android:orientation="horizontal"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_marginTop="2dp">
 
-            <ImageView
-                android:id="@+id/puzzle_preview_2"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:adjustViewBounds="true"
-                android:background="@drawable/rounded_image" />
+                android:layout_margin="1.5dp"
+                android:layout_weight="1">
 
-            <View
-                android:id="@+id/puzzle_selected_2"
-                android:layout_width="wrap_content"
+                <ImageView
+                    android:id="@+id/puzzle_preview_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/slightly_rounded_image_clip" />
+
+                <View
+                    android:id="@+id/puzzle_selected_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_image_glowing_bg"
+                    android:layout_alignTop="@id/puzzle_preview_1"
+                    android:layout_alignBottom="@id/puzzle_preview_1"
+                    android:layout_alignStart="@id/puzzle_preview_1"
+                    android:layout_alignEnd="@id/puzzle_preview_1" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:background="@drawable/rounded_image_glowing_bg"
-                android:layout_alignTop="@id/puzzle_preview_2"
-                android:layout_alignBottom="@id/puzzle_preview_2"
-                android:layout_alignStart="@id/puzzle_preview_2"
-                android:layout_alignEnd="@id/puzzle_preview_2" />
+                android:layout_margin="1.5dp"
+                android:layout_weight="1">
 
-        </RelativeLayout>
+                <ImageView
+                    android:id="@+id/puzzle_preview_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/slightly_rounded_image_clip" />
 
-    </LinearLayout>
+                <View
+                    android:id="@+id/puzzle_selected_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_image_glowing_bg"
+                    android:layout_alignTop="@id/puzzle_preview_2"
+                    android:layout_alignBottom="@id/puzzle_preview_2"
+                    android:layout_alignStart="@id/puzzle_preview_2"
+                    android:layout_alignEnd="@id/puzzle_preview_2" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="2dp">
+            </RelativeLayout>
 
-        <RelativeLayout
-            android:layout_width="0dp"
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="1.5dp"
-            android:layout_weight="1">
+            android:layout_below="@id/upper_container"
+            android:orientation="horizontal"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_marginBottom="4dp">
 
-            <ImageView
-                android:id="@+id/puzzle_preview_3"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:adjustViewBounds="true"
-                android:background="@drawable/rounded_image" />
+                android:layout_margin="1.5dp"
+                android:layout_weight="1">
 
-            <View
-                android:id="@+id/puzzle_selected_3"
-                android:layout_width="wrap_content"
+                <ImageView
+                    android:id="@+id/puzzle_preview_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/slightly_rounded_image_clip" />
+
+                <View
+                    android:id="@+id/puzzle_selected_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_image_glowing_bg"
+                    android:layout_alignTop="@id/puzzle_preview_3"
+                    android:layout_alignBottom="@id/puzzle_preview_3"
+                    android:layout_alignStart="@id/puzzle_preview_3"
+                    android:layout_alignEnd="@id/puzzle_preview_3" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:background="@drawable/rounded_image_glowing_bg"
-                android:layout_alignTop="@id/puzzle_preview_3"
-                android:layout_alignBottom="@id/puzzle_preview_3"
-                android:layout_alignStart="@id/puzzle_preview_3"
-                android:layout_alignEnd="@id/puzzle_preview_3" />
+                android:layout_margin="1.5dp"
+                android:layout_weight="1">
 
-        </RelativeLayout>
+                <ImageView
+                    android:id="@+id/puzzle_preview_4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/slightly_rounded_image_clip" />
 
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="1.5dp"
-            android:layout_weight="1">
+                <View
+                    android:id="@+id/puzzle_selected_4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_image_glowing_bg"
+                    android:layout_alignTop="@id/puzzle_preview_4"
+                    android:layout_alignBottom="@id/puzzle_preview_4"
+                    android:layout_alignStart="@id/puzzle_preview_4"
+                    android:layout_alignEnd="@id/puzzle_preview_4" />
 
-            <ImageView
-                android:id="@+id/puzzle_preview_4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:adjustViewBounds="true"
-                android:background="@drawable/rounded_image" />
+            </RelativeLayout>
 
-            <View
-                android:id="@+id/puzzle_selected_4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/rounded_image_glowing_bg"
-                android:layout_alignTop="@id/puzzle_preview_4"
-                android:layout_alignBottom="@id/puzzle_preview_4"
-                android:layout_alignStart="@id/puzzle_preview_4"
-                android:layout_alignEnd="@id/puzzle_preview_4" />
+        </LinearLayout>
 
-        </RelativeLayout>
-
-    </LinearLayout>
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/folder_name"
