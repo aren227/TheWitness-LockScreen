@@ -18,6 +18,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -29,6 +30,7 @@ import com.aren.thewitnesspuzzle.R;
 import com.aren.thewitnesspuzzle.core.puzzle.ErrorPuzzle;
 import com.aren.thewitnesspuzzle.dialog.NewProfileDialog;
 import com.aren.thewitnesspuzzle.gallery.GalleryAdapter;
+import com.aren.thewitnesspuzzle.gallery.GalleryFolderDropper;
 import com.aren.thewitnesspuzzle.gallery.GalleryFolderPreview;
 import com.aren.thewitnesspuzzle.gallery.GalleryPuzzlePreview;
 import com.aren.thewitnesspuzzle.gallery.ItemMoveCallback;
@@ -807,5 +809,12 @@ public class GalleryActivity extends AppCompatActivity implements Observer {
     public void update(Object arg) {
         removeSpinner();
         updateGallery();
+    }
+
+    public void enablePuzzleDropMode(PuzzleFactory puzzleFactory) {
+        new GalleryFolderDropper((ViewGroup) findViewById(R.id.drop_puzzle_container),
+                (TextView) findViewById(R.id.drop_puzzle_cancel),
+                (TextView) findViewById(R.id.drop_puzzle_drop),
+                currentFolder, puzzleFactoryManager, puzzleFactory);
     }
 }

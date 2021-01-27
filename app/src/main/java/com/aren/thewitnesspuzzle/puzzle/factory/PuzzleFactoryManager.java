@@ -218,6 +218,10 @@ public class PuzzleFactoryManager implements Observable {
         editor.commit();
     }
 
+    public boolean isLoaded(PuzzleFactory puzzleFactory) {
+        return factories.containsKey(puzzleFactory.getUuid());
+    }
+
     public PuzzleFactory getPuzzleFactoryByName(String name) {
         for (PuzzleFactory factory : factories.values()) {
             if (factory.getName().equals(name)) return factory;

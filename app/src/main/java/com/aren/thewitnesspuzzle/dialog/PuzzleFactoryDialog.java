@@ -77,6 +77,14 @@ public class PuzzleFactoryDialog extends Dialog {
                 }
             });
 
+            findViewById(R.id.puzzle_set_folder).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    galleryActivity.enablePuzzleDropMode(factory);
+                    dismiss();
+                }
+            });
+
             findViewById(R.id.puzzle_remove).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -103,6 +111,7 @@ public class PuzzleFactoryDialog extends Dialog {
             });
         } else {
             findViewById(R.id.puzzle_settings).setVisibility(View.GONE);
+            findViewById(R.id.puzzle_set_folder).setVisibility(View.GONE);
             findViewById(R.id.puzzle_remove).setVisibility(View.GONE);
         }
 

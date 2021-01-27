@@ -42,6 +42,7 @@
             android:textSize="20dp"
             android:drawableLeft="@drawable/ic_baseline_play_circle_filled_24"
             android:drawableTint="@color/colorPrimary"
+            android:drawablePadding="4dp"
             android:layout_marginBottom="8dp" />
 
         <TextView
@@ -67,6 +68,21 @@
             android:textSize="20dp"
             android:drawableLeft="@drawable/ic_baseline_settings_24"
             android:drawableTint="@color/colorPrimary"
+            android:drawablePadding="4dp"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/puzzle_set_folder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:text="Move into a folder"
+            android:textColor="@color/colorPrimary"
+            android:fontFamily="serif"
+            android:textSize="20dp"
+            android:drawableLeft="@drawable/ic_baseline_folder_open_24"
+            android:drawableTint="@color/colorPrimary"
+            android:drawablePadding="4dp"
             android:layout_marginBottom="8dp" />
 
         <TextView
@@ -79,6 +95,7 @@
             android:fontFamily="serif"
             android:textSize="20dp"
             android:drawableLeft="@drawable/ic_baseline_delete_24"
+            android:drawablePadding="4dp"
             android:drawableTint="@color/colorPrimary" />
 
     </LinearLayout>
