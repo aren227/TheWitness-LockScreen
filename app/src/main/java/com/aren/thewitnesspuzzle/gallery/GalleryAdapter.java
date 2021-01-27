@@ -10,12 +10,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aren.thewitnesspuzzle.R;
+import com.aren.thewitnesspuzzle.dialog.NewFolderDialog;
 import com.aren.thewitnesspuzzle.dialog.NewPuzzleDialog;
 import com.aren.thewitnesspuzzle.dialog.PuzzleFactoryDialog;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,10 +32,14 @@ public class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     private OnPreviewClick onPreviewClick;
 
-    public GalleryAdapter(Context context, PuzzleFactoryManager puzzleFactoryManager, OnPreviewClick onPreviewClick) {
+    private UUID[] currentFolder;
+
+    public GalleryAdapter(Context context, PuzzleFactoryManager puzzleFactoryManager, OnPreviewClick onPreviewClick, UUID[] currentFolder) {
         this.context = context;
         this.puzzleFactoryManager = puzzleFactoryManager;
         this.onPreviewClick = onPreviewClick;
+        this.currentFolder = currentFolder;
+
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         previews = new ArrayList<>();
     }
@@ -79,10 +85,18 @@ public class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         if (position >= previews.size()) {
             AddButtonViewHolder viewHolder = (AddButtonViewHolder) holder;
 
-            viewHolder.root.setOnClickListener(new View.OnClickListener() {
+            viewHolder.addPuzzleImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     NewPuzzleDialog dialog = new NewPuzzleDialog(context);
+                    dialog.show();
+                }
+            });
+            viewHolder.addFolderImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final UUID parent = currentFolder[0];
+                    NewFolderDialog dialog = new NewFolderDialog(context, puzzleFactoryManager, parent);
                     dialog.show();
                 }
             });
@@ -218,12 +232,13 @@ public class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     public static class AddButtonViewHolder extends RecyclerView.ViewHolder {
-        ViewGroup root;
+        ImageView addPuzzleImageView, addFolderImageView;
 
         public AddButtonViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            root = itemView.findViewById(R.id.preview_root);
+            addPuzzleImageView = itemView.findViewById(R.id.add_puzzle);
+            addFolderImageView = itemView.findViewById(R.id.add_folder);
         }
     }
 }

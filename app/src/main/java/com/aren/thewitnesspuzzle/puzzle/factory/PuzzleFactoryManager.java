@@ -3,6 +3,9 @@ package com.aren.thewitnesspuzzle.puzzle.factory;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.aren.thewitnesspuzzle.util.Observable;
+import com.aren.thewitnesspuzzle.util.Observer;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -18,7 +21,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 
-public class PuzzleFactoryManager {
+public class PuzzleFactoryManager implements Observable {
 
     public static final String sharedPreferenceConfigKey = "com.aren.thewitnesspuzzle.puzzle.factory.config";
     public static final String sharedPreferenceProfilesKey = "com.aren.thewitnesspuzzle.puzzle.factory.profiles";
@@ -30,7 +33,7 @@ public class PuzzleFactoryManager {
     private Context context;
     private static Map<UUID, PuzzleFactory> factories = new HashMap<>();
 
-    private Runnable onUpdate;
+    private List<Observer> observers = new ArrayList<>();
 
     public PuzzleFactoryManager(Context context) {
         this.context = context;
@@ -40,10 +43,6 @@ public class PuzzleFactoryManager {
     private void updateFactoryList() {
         registerBuiltInFactories();
         registerUserDefinedFactories();
-    }
-
-    public void setOnUpdate(Runnable runnable) {
-        onUpdate = runnable;
     }
 
     public List<PuzzleFactory> getAllPuzzleFactories() {
@@ -327,6 +326,9 @@ public class PuzzleFactoryManager {
         folder.setName(name);
         folder.setCreationTime(System.currentTimeMillis());
         folder.setParentFolderUuid(parentUuid);
+
+        notifyObservers();
+
         return folder;
     }
 
@@ -385,6 +387,22 @@ public class PuzzleFactoryManager {
             }
         }
         editor.commit();
+    }
+
+    @Override
+    public void addObserver(Observer observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void removeObserver(Observer observer) {
+        observers.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers() {
+        for (Observer observer : observers)
+            observer.update(null);
     }
 
     public enum ProfileType{
@@ -541,7 +559,7 @@ public class PuzzleFactoryManager {
             editor.putStringSet(uuid.toString() + "/activated", set);
             editor.commit();
 
-            if (onUpdate != null) onUpdate.run();
+
         }
 
         public boolean isActivated(PuzzleFactory factory) {
@@ -593,6 +611,8 @@ public class PuzzleFactoryManager {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("lock", uuid.toString());
             editor.commit();
+
+            notifyObservers();
         }
 
         public void assignToPlay() {
@@ -600,6 +620,8 @@ public class PuzzleFactoryManager {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("play", uuid.toString());
             editor.commit();
+
+            notifyObservers();
         }
 
         public void markAsLastViewed() {
@@ -607,6 +629,8 @@ public class PuzzleFactoryManager {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("last", uuid.toString());
             editor.commit();
+
+            notifyObservers();
         }
 
         @Override

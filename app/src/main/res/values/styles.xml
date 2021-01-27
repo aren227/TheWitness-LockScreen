@@ -17,4 +17,11 @@
         <item name="android:textColor">@color/colorAccent</item>
     </style>
 
+    <style name="EditThemeDark" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorControlNormal">@color/colorPrimary</item>
+        <item name="colorControlActivated">@color/colorPrimary</item>
+        <item name="android:textCursorDrawable">@color/colorPrimary</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+
 </resources>

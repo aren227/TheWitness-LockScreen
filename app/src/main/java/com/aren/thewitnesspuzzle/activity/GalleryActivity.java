@@ -40,6 +40,7 @@ import com.aren.thewitnesspuzzle.puzzle.factory.CustomPatternPuzzleFactory;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactory;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;
 import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
+import com.aren.thewitnesspuzzle.util.Observer;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -56,7 +57,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class GalleryActivity extends AppCompatActivity {
+public class GalleryActivity extends AppCompatActivity implements Observer {
 
     private PuzzleFactoryManager puzzleFactoryManager;
 
@@ -67,7 +68,6 @@ public class GalleryActivity extends AppCompatActivity {
     private ImageView profileDropdownImageView;
     private ImageView profileLockImageView;
     private ImageView profilePlayImageView;
-    private TextView profileCountTextView;
     private ImageView profileAddImageView;
     private ImageView profileDeleteImageView;
 
@@ -94,7 +94,7 @@ public class GalleryActivity extends AppCompatActivity {
 
     private static Bitmap notLoadedBitmap;
 
-    private UUID currentFolder = PuzzleFactoryManager.rootFolderUuid;
+    private UUID[] currentFolder = new UUID[]{ PuzzleFactoryManager.rootFolderUuid };
 
     private LinearLayout folderNavigator;
 
@@ -104,6 +104,7 @@ public class GalleryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_gallery);
 
         puzzleFactoryManager = new PuzzleFactoryManager(this);
+        puzzleFactoryManager.addObserver(this);
 
         OnPreviewClick onPreviewClick = new OnPreviewClick() {
             @Override
@@ -121,12 +122,12 @@ public class GalleryActivity extends AppCompatActivity {
 
             @Override
             public void onClick(GalleryFolderPreview preview) {
-                currentFolder = preview.folderUuid;
+                currentFolder[0] = preview.folderUuid;
                 updateGallery();
             }
         };
 
-        adapter = new GalleryAdapter(this, puzzleFactoryManager, onPreviewClick);
+        adapter = new GalleryAdapter(this, puzzleFactoryManager, onPreviewClick, currentFolder);
 
         RecyclerView recyclerView = findViewById(R.id.gallery_grid);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
@@ -169,7 +170,6 @@ public class GalleryActivity extends AppCompatActivity {
         profileDropdownImageView = findViewById(R.id.dropdown);
         profileLockImageView = findViewById(R.id.profile_lock);
         profilePlayImageView = findViewById(R.id.profile_play);
-        profileCountTextView = findViewById(R.id.profile_count);
         profileAddImageView = findViewById(R.id.profile_add);
         profileDeleteImageView = findViewById(R.id.profile_delete);
 
@@ -254,8 +254,6 @@ public class GalleryActivity extends AppCompatActivity {
                             public void onClick(View v) {
                                 if (!puzzleFactoryManager.isRemovedProfile(profile)) {
                                     profile.markAsLastViewed();
-                                    removeSpinner();
-                                    updateGallery();
                                 }
                             }
                         });
@@ -273,7 +271,6 @@ public class GalleryActivity extends AppCompatActivity {
                 Toast.makeText(GalleryActivity.this, "This profile will be used in the lock screen.", Toast.LENGTH_SHORT).show();
                 puzzleFactoryManager.getLastViewedProfile().assignToLock();
                 removeSpinner();
-                updateGallery();
             }
         });
 
@@ -283,7 +280,6 @@ public class GalleryActivity extends AppCompatActivity {
                 Toast.makeText(GalleryActivity.this, "This profile will be used in the play mode.", Toast.LENGTH_SHORT).show();
                 puzzleFactoryManager.getLastViewedProfile().assignToPlay();
                 removeSpinner();
-                updateGallery();
             }
         });
 
@@ -294,16 +290,12 @@ public class GalleryActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         puzzleFactoryManager.createProfile("New Profile", PuzzleFactoryManager.ProfileType.DEFAULT).markAsLastViewed();
-                        removeSpinner();
-                        updateGallery();
                     }
                 };
                 View.OnClickListener onSequenceClicked = new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         puzzleFactoryManager.createProfile("New Challenge", PuzzleFactoryManager.ProfileType.SEQUENCE).markAsLastViewed();
-                        removeSpinner();
-                        updateGallery();
                     }
                 };
                 NewProfileDialog dialog = new NewProfileDialog(GalleryActivity.this, onDefaultClicked, onSequenceClicked);
@@ -326,8 +318,6 @@ public class GalleryActivity extends AppCompatActivity {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 puzzleFactoryManager.removeProfile(puzzleFactoryManager.getLastViewedProfile());
-                                removeSpinner();
-                                updateGallery();
                             }
                         });
                 builder.setNegativeButton("No", null);
@@ -338,13 +328,6 @@ public class GalleryActivity extends AppCompatActivity {
                 dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(0xff000000);
 
                 removeSpinner();
-            }
-        });
-
-        puzzleFactoryManager.setOnUpdate(new Runnable() {
-            @Override
-            public void run() {
-                updateStatusText();
             }
         });
 
@@ -589,13 +572,7 @@ public class GalleryActivity extends AppCompatActivity {
             showSequenceTimeLength();
         }
 
-        updateStatusText();
         startRenderWorker();
-    }
-
-    public void updateStatusText() {
-        PuzzleFactoryManager.Profile profile = puzzleFactoryManager.getLastViewedProfile();
-        profileCountTextView.setText(String.format("%d/%d", profile.getActivatedPuzzleFactories().size(), puzzleFactoryManager.getAllPuzzleFactories().size()));
     }
 
     private void startRenderWorker() {
@@ -625,7 +602,7 @@ public class GalleryActivity extends AppCompatActivity {
         final List<GalleryPuzzlePreview> previewsToRender = new ArrayList<>();
 
         Map<UUID, GalleryFolderPreview> folderPreviewMap = new HashMap<>();
-        for (PuzzleFactoryManager.Folder folder : puzzleFactoryManager.getChildFolders(currentFolder)) {
+        for (PuzzleFactoryManager.Folder folder : puzzleFactoryManager.getChildFolders(currentFolder[0])) {
             GalleryFolderPreview preview = new GalleryFolderPreview(folder.getUuid(), new ArrayList<GalleryPuzzlePreview>(), folder.getName());
             folderPreviewMap.put(folder.getUuid(), preview);
             adapter.addPreview(preview);
@@ -663,7 +640,7 @@ public class GalleryActivity extends AppCompatActivity {
         }
 
         for (PuzzleFactory factory : puzzleFactoryManager.getAllPuzzleFactories()) {
-            if (factory.getConfig().getParentFolderUuid().equals(currentFolder)) {
+            if (factory.getConfig().getParentFolderUuid().equals(currentFolder[0])) {
                 GalleryPuzzlePreview puzzlePreview = new GalleryPuzzlePreview(factory, getNotLoadedBitmap(), factory.getName());
                 if (puzzlePreview.puzzleFactory.getThumbnailCache() != null) {
                     puzzlePreview.bitmap = puzzlePreview.puzzleFactory.getThumbnailCache();
@@ -749,29 +726,33 @@ public class GalleryActivity extends AppCompatActivity {
         });
         puzzleRenderThread.start();
 
-        for (int i = 1; i < folderNavigator.getChildCount(); i++) {
+        for (int i = folderNavigator.getChildCount() - 1; i >= 1; i--) {
             folderNavigator.removeViewAt(i);
         }
 
-        if (!currentFolder.equals(PuzzleFactoryManager.rootFolderUuid)) {
+        if (!currentFolder[0].equals(PuzzleFactoryManager.rootFolderUuid)) {
             folderNavigator.setVisibility(View.VISIBLE);
 
             folderNavigator.getChildAt(0).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    currentFolder = PuzzleFactoryManager.rootFolderUuid;
+                    currentFolder[0] = PuzzleFactoryManager.rootFolderUuid;
                     updateGallery();
                 }
             });
 
             List<PuzzleFactoryManager.Folder> path = new ArrayList<>();
 
-            PuzzleFactoryManager.Folder folder = puzzleFactoryManager.getFolder(currentFolder);
+            PuzzleFactoryManager.Folder folder = puzzleFactoryManager.getFolder(currentFolder[0]);
+            if (folder == null)
+                return;
             path.add(folder);
             UUID parent = folder.getParentFolderUuid();
 
-            while (parent != PuzzleFactoryManager.rootFolderUuid) {
+            while (!parent.equals(PuzzleFactoryManager.rootFolderUuid)) {
                 folder = puzzleFactoryManager.getFolder(parent);
+                if (folder == null)
+                    break;
                 path.add(folder);
                 parent = folder.getParentFolderUuid();
             }
@@ -779,7 +760,7 @@ public class GalleryActivity extends AppCompatActivity {
             LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
             if (inflater != null) {
                 for (int i = path.size() - 1; i >= 0; i--) {
-                    View view = inflater.inflate(R.layout.folder_navigation_element, folderNavigator, true);
+                    View view = inflater.inflate(R.layout.folder_navigation_element, folderNavigator, false);
 
                     final UUID folderUuid = path.get(i).getUuid();
                     TextView textView = view.findViewById(R.id.folder_name);
@@ -787,10 +768,12 @@ public class GalleryActivity extends AppCompatActivity {
                     textView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            currentFolder = folderUuid;
+                            currentFolder[0] = folderUuid;
                             updateGallery();
                         }
                     });
+
+                    folderNavigator.addView(view);
                 }
             }
         } else {
@@ -810,12 +793,19 @@ public class GalleryActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (currentFolder == PuzzleFactoryManager.rootFolderUuid)
+        if (currentFolder[0].equals(PuzzleFactoryManager.rootFolderUuid))
             finish();
         else {
-            PuzzleFactoryManager.Folder folder = puzzleFactoryManager.getFolder(currentFolder);
-            currentFolder = folder.getParentFolderUuid();
+            PuzzleFactoryManager.Folder folder = puzzleFactoryManager.getFolder(currentFolder[0]);
+            currentFolder[0] = folder.getParentFolderUuid();
             updateGallery();
         }
+    }
+
+    // Called when gallery must update whole data
+    @Override
+    public void update(Object arg) {
+        removeSpinner();
+        updateGallery();
     }
 }
