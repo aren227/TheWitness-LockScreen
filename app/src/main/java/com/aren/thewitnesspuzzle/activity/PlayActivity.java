@@ -115,7 +115,7 @@ public class PlayActivity extends AppCompatActivity {
                     puzzleFactoryManager.remove(factory);
                 } else {
                     try {
-                        factory.setLiked(game.getPuzzle().getPuzzleBase());
+                        factory.setLiked(game.getPuzzle().getPuzzleBase(), puzzleFactoryManager);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

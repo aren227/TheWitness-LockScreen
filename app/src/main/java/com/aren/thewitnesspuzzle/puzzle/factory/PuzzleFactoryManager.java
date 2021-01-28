@@ -37,16 +37,16 @@ public class PuzzleFactoryManager implements Observable {
 
     public PuzzleFactoryManager(Context context) {
         this.context = context;
-        updateFactoryList();
-    }
 
-    private void updateFactoryList() {
         registerBuiltInFactories();
         registerUserDefinedFactories();
+
+        deleteBuiltInFolders();
     }
 
     public List<PuzzleFactory> getAllPuzzleFactories() {
-        updateFactoryList();
+        // Only refresh user defined factories
+        registerUserDefinedFactories();
 
         List<PuzzleFactory> list = new ArrayList<>(factories.values());
         sort(list);
@@ -119,12 +119,11 @@ public class PuzzleFactoryManager implements Observable {
         Folder locks = registerBuiltInFolder("Locks");
         Folder entry = registerBuiltInFolder("Entry Area");
         Folder glassFactory = registerBuiltInFolder("Glass Factory");
-        Folder symmetryIsland = registerBuiltInFolder("Symmetry Island");
+        // Folder symmetryIsland = registerBuiltInFolder("Symmetry Island");
         Folder quarry = registerBuiltInFolder("Quarry");
         Folder swamp = registerBuiltInFolder("Swamp");
         Folder treehouse = registerBuiltInFolder("Treehouse");
         Folder challenge = registerBuiltInFolder("Challenge");
-
 
         register(new BlocksEliminationPuzzleFactory(context), quarry);
         register(new BlocksRotatableBlocksPuzzleFactory(context), swamp);
@@ -162,14 +161,28 @@ public class PuzzleFactoryManager implements Observable {
         register(new SunBlockPuzzleFactory(context), treehouse);
         register(new SunEliminationPuzzleFactory(context), quarry);
         register(new SunPairWithSquarePuzzleFactory(context), treehouse);
-        register(new SymmetryHexagonPuzzleFactory(context), symmetryIsland);
+        register(new SymmetryHexagonPuzzleFactory(context));
     }
 
-    private Folder registerBuiltInFolder(String name) {
+    public Folder registerBuiltInFolder(String name) {
         Folder folder = new Folder(context, UUID.nameUUIDFromBytes(name.getBytes()));
         folder.setName(name);
         folder.setImmutable(true);
         return folder;
+    }
+
+    private void deleteBuiltInFolders() {
+        // For future use
+        // deleteBuiltInFolder("Symmetry Island");
+    }
+
+    private void deleteBuiltInFolder(String name) {
+        Folder folder = new Folder(context, UUID.nameUUIDFromBytes(name.getBytes()));
+        removeFolder(folder);
+    }
+
+    public Folder getBuiltInFolder(String name) {
+        return getFolder(UUID.nameUUIDFromBytes(name.getBytes()));
     }
 
     private void registerUserDefinedFactories() {

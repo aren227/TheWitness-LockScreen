@@ -57,6 +57,6 @@ public class SymmetryHexagonPuzzleFactory extends PuzzleFactory {
 
     @Override
     public String getName() {
-        return "Symmetry Island #1";
+        return "Symmetry Island";
     }
 }

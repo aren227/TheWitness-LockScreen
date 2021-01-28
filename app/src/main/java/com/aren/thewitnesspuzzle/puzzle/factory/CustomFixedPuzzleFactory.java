@@ -50,11 +50,17 @@ public class CustomFixedPuzzleFactory extends PuzzleFactory {
         return Source.valueOf(getConfig().getString("source", "UNKNOWN"));
     }
 
-    public void setLiked(PuzzleBase puzzleBase) throws JSONException {
+    public void setLiked(PuzzleBase puzzleBase, PuzzleFactoryManager puzzleFactoryManager) throws JSONException {
         getConfig().setFactoryType("fixed");
         getConfig().setString("name", "Liked Puzzle");
         getConfig().setString("source", "RANDOM");
         getConfig().setString("content", puzzleBase.serialize().toString());
+
+        puzzleFactoryManager.registerBuiltInFolder("Liked");
+        PuzzleFactoryManager.Folder folder = puzzleFactoryManager.getBuiltInFolder("Liked");
+        if (folder != null)
+            getConfig().setParentFolderUuid(folder.getUuid());
+
         getConfig().save();
     }
 
