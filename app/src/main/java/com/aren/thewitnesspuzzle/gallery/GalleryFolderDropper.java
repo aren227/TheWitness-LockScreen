@@ -45,6 +45,7 @@ public class GalleryFolderDropper {
                     return;
 
                 puzzleFactory.getConfig().setParentFolderUuid(currentFolder[0]);
+                puzzleFactory.getConfig().save();
                 puzzleFactoryManager.notifyObservers(); // Not good...
             }
         });

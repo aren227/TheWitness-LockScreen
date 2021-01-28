@@ -192,6 +192,7 @@ public class PuzzleFactoryManager implements Observable {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                forceRemove(uuidStr);
             }
         }
     }
@@ -204,8 +205,11 @@ public class PuzzleFactoryManager implements Observable {
         if (factories.containsKey(puzzleFactory.getUuid())) return;
         factories.put(puzzleFactory.getUuid(), puzzleFactory);
 
-        if (folder != null)
+        if (folder != null) {
             puzzleFactory.getConfig().setParentFolderUuid(folder.uuid);
+            if (puzzleFactory.isCreatedByUser())
+                puzzleFactory.getConfig().save();
+        }
     }
 
     public void remove(PuzzleFactory puzzleFactory) {
@@ -215,6 +219,19 @@ public class PuzzleFactoryManager implements Observable {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PuzzleFactoryManager.sharedPreferenceConfigKey, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove(puzzleFactory.getUuid().toString());
+        editor.commit();
+    }
+
+    public void forceRemove(String uuidStr) {
+        try {
+            UUID uuid = UUID.fromString(uuidStr);
+            factories.remove(uuid);
+        } catch (Exception ignored) {
+
+        }
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PuzzleFactoryManager.sharedPreferenceConfigKey, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove(uuidStr);
         editor.commit();
     }
 
@@ -297,9 +314,12 @@ public class PuzzleFactoryManager implements Observable {
 
         sharedPreferences = context.getSharedPreferences(PuzzleFactoryManager.sharedPreferenceProfilesKey, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
-        editor.remove(profile.uuid.toString() + "/name");
-        editor.remove(profile.uuid.toString() + "/activated");
-        editor.remove(profile.uuid.toString() + "/sequence");
+        String strUuid = profile.uuid.toString();
+        for (String key : sharedPreferences.getAll().keySet()) {
+            if (key.startsWith(strUuid)) {
+                editor.remove(key);
+            }
+        }
         editor.commit();
 
         getProfiles().get(0).markAsLastViewed();
@@ -362,7 +382,7 @@ public class PuzzleFactoryManager implements Observable {
     }
 
     public void removeFolder(Folder folder) {
-        if (folder.uuid.equals(rootFolderUuid))
+        if (folder == null || folder.uuid.equals(rootFolderUuid))
             return;
 
         List<Folder> childFolders = getChildFolders(folder.uuid);
@@ -371,8 +391,10 @@ public class PuzzleFactoryManager implements Observable {
         UUID parent = folder.getParentFolderUuid();
         for (Folder child : childFolders)
             child.setParentFolderUuid(parent);
-        for (PuzzleFactory child : childPuzzleFactories)
+        for (PuzzleFactory child : childPuzzleFactories) {
             child.getConfig().setParentFolderUuid(parent);
+            child.getConfig().save();
+        }
 
         SharedPreferences sharedPreferences = context.getSharedPreferences("com.aren.thewitnesspuzzle.puzzle.factory", Context.MODE_PRIVATE);
         Set<String> set = new HashSet<>(sharedPreferences.getStringSet("folders", new HashSet<String>()));
@@ -386,7 +408,6 @@ public class PuzzleFactoryManager implements Observable {
         String strUuid = folder.uuid.toString();
         for (String key : sharedPreferences.getAll().keySet()) {
             if (key.startsWith(strUuid)) {
-                System.out.println("Delete Key = " + key);
                 editor.remove(key);
             }
         }

@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.aren.thewitnesspuzzle.R;
 import com.aren.thewitnesspuzzle.dialog.FolderDialog;
@@ -184,8 +185,12 @@ public class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     UUID folderUuid = preview.folderUuid;
                     PuzzleFactoryManager.Folder folder = puzzleFactoryManager.getFolder(folderUuid);
                     if (folder != null) {
-                        FolderDialog dialog = new FolderDialog(context, puzzleFactoryManager, folder);
-                        dialog.show();
+                        if (folder.isImmutable()) {
+                            Toast.makeText(context, "This folder cannot be modified.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            FolderDialog dialog = new FolderDialog(context, puzzleFactoryManager, folder);
+                            dialog.show();
+                        }
                     }
                     return true;
                 }
