@@ -691,7 +691,7 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
 
             // Blocks
             if (isBlocksUsed()) {
-                BlocksRuleGenerator.generate(splitter, new Random(blocksSeed), getBlocksColor(), getBlocksSpawnRate(), getBlocksRotatableRate());
+                BlocksRuleGenerator.generate(splitter, new Random(blocksSeed), getBlocksColor(), Color.BLUE, getBlocksSpawnRate(), getBlocksRotatableRate(), 0);
             }
 
             // Sun

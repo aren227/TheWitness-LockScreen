@@ -93,14 +93,14 @@ public class EliminationRuleGenerator {
 
             if (tiles.size() < 2) continue;
 
-            boolean[][] grid = new boolean[4][4];
+            int[][] grid = new int[4][4];
             for (int i = 0; i < 4; i++) {
                 for (int j = 0; j < 4; j++) {
-                    grid[i][j] = true;
+                    grid[i][j] = 1;
                 }
             }
             List<Vector2Int> result = new ArrayList<>();
-            BlocksRuleGenerator.connectTiles(result, random, grid, 4, 4, 0, 0, random.nextInt(3) + 2);
+            BlocksRuleGenerator.connectTiles(result, random, grid, 4, 4, 0, 0, random.nextInt(3) + 2, -1);
 
             boolean rotatable = random.nextFloat() < rotatableProb;
             BlocksRule rule = new BlocksRule(BlocksRule.listToGridArray(result), rotatable, false, color);

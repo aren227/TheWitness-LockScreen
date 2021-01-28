@@ -145,6 +145,7 @@ public class PuzzleFactoryManager implements Observable {
         register(new RotatableBlocksPuzzleFactory(context), swamp);
         register(new SecondPuzzleFactory(context), locks);
         register(new BlocksPuzzleFactory(context), swamp);
+        register(new SubtractiveBlocksPuzzleFactory(context), swamp);
         register(new HexagonEliminationPuzzleFactory(context), quarry);
         register(new HexagonPuzzleFactory(context));
         register(new MazePuzzleFactory(context), entry);

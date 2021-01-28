@@ -79,7 +79,7 @@ public class ChallengeSunBlocksPuzzleFactory extends PuzzleFactory {
             }
         }
 
-        BlocksRuleGenerator.generate(splitter, random, Color.YELLOW, 0.1f, 0f);
+        BlocksRuleGenerator.generate(splitter, random, Color.YELLOW, Color.BLUE, 0.1f, 0f, 0);
 
         return new PuzzleRenderer(game, puzzle);
     }

@@ -10,22 +10,22 @@ import com.aren.thewitnesspuzzle.core.puzzle.GridPuzzle;
 import com.aren.thewitnesspuzzle.core.rules.Color;
 import com.aren.thewitnesspuzzle.game.Game;
 import com.aren.thewitnesspuzzle.puzzle.generator.BlocksRuleGenerator;
-import com.aren.thewitnesspuzzle.puzzle.generator.EliminationRuleGenerator;
+import com.aren.thewitnesspuzzle.puzzle.generator.BrokenLineRuleGenerator;
 import com.aren.thewitnesspuzzle.puzzle.walker.FastGridTreeWalker;
 import com.aren.thewitnesspuzzle.render.PuzzleRenderer;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-public class BlocksEliminationPuzzleFactory extends PuzzleFactory {
+public class SubtractiveBlocksPuzzleFactory extends PuzzleFactory {
 
-    public BlocksEliminationPuzzleFactory(Context context) {
+    public SubtractiveBlocksPuzzleFactory(Context context) {
         super(context);
     }
 
     @Override
     public PuzzleRenderer generate(Game game, Random random) {
-        GridPuzzle puzzle = new GridPuzzle(PalettePreset.get("Quarry_1"), 4, 4);
+        GridPuzzle puzzle = new GridPuzzle(PalettePreset.get("Swamp_4"), 4, 4);
 
         puzzle.addStartingPoint(0, 0);
         puzzle.addEndingPoint(4, 4);
@@ -37,19 +37,18 @@ public class BlocksEliminationPuzzleFactory extends PuzzleFactory {
 
         GridAreaSplitter splitter = new GridAreaSplitter(cursor);
 
-        BlocksRuleGenerator.generate(splitter, random, Color.YELLOW, Color.BLUE, 0.3f, 0, 0);
-        EliminationRuleGenerator.generateFakeBlocks(splitter, random, Color.YELLOW, 0f);
+        BlocksRuleGenerator.generate(splitter, random, Color.YELLOW, Color.BLUE, 0.4f, 0, 1f);
 
         return new PuzzleRenderer(game, puzzle);
     }
 
     @Override
     public Difficulty getDifficulty() {
-        return Difficulty.HARD;
+        return Difficulty.VERY_HARD;
     }
 
     @Override
     public String getName() {
-        return "Quarry #3";
+        return "Swamp #4";
     }
 }

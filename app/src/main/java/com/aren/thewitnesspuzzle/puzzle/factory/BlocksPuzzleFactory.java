@@ -38,7 +38,7 @@ public class BlocksPuzzleFactory extends PuzzleFactory {
         GridAreaSplitter splitter = new GridAreaSplitter(cursor);
 
         BrokenLineRuleGenerator.generate(cursor, random, 0.2f);
-        BlocksRuleGenerator.generate(splitter, random, Color.YELLOW, 0.4f, 0);
+        BlocksRuleGenerator.generate(splitter, random, Color.YELLOW, Color.BLUE, 0.4f, 0, 0);
 
         return new PuzzleRenderer(game, puzzle);
     }

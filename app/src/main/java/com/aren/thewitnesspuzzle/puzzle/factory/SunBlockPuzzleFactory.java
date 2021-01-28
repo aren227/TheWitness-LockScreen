@@ -41,7 +41,7 @@ public class SunBlockPuzzleFactory extends PuzzleFactory {
 
         GridAreaSplitter splitter = new GridAreaSplitter(cursor);
 
-        BlocksRuleGenerator.generate(splitter, random, Color.ORANGE, 0.3f, 0.5f);
+        BlocksRuleGenerator.generate(splitter, random, Color.ORANGE, Color.BLUE, 0.3f, 0.5f, 0);
         List<BlocksRule> blocks = new ArrayList<>();
         for (Area area : splitter.areaList) {
             for (Tile tile : area.tiles) {

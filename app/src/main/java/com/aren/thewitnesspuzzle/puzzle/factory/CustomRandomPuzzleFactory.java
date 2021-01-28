@@ -74,7 +74,7 @@ public class CustomRandomPuzzleFactory extends PuzzleFactory {
 
         // Blocks
         if (getConfig().getBoolean("blocks", false)) {
-            BlocksRuleGenerator.generate(splitter, random, getConfig().getColorList("blocks_colors", Arrays.asList(Color.YELLOW)).get(0), getConfig().getFloat("blocks_spawnrate", 0f), getConfig().getFloat("blocks_rotatablerate", 0f));
+            BlocksRuleGenerator.generate(splitter, random, getConfig().getColorList("blocks_colors", Arrays.asList(Color.YELLOW)).get(0), Color.BLUE, getConfig().getFloat("blocks_spawnrate", 0f), getConfig().getFloat("blocks_rotatablerate", 0f), 0);
         }
 
         // Sun
