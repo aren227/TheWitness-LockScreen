@@ -62,14 +62,19 @@ public class PuzzleEditorActivity extends AppCompatActivity {
     PuzzleFactoryManager puzzleFactoryManager;
     PuzzleFactoryConfig config;
 
+    UUID folderUuid = PuzzleFactoryManager.rootFolderUuid;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_puzzle_editor);
 
         UUID uuid = UUID.randomUUID();
-        if (getIntent().getExtras() != null && getIntent().getExtras().getSerializable("uuid") != null) {
-            uuid = (UUID) getIntent().getExtras().getSerializable("uuid");
+        if (getIntent().getExtras() != null) {
+            if (getIntent().getExtras().getSerializable("uuid") != null)
+                uuid = (UUID) getIntent().getExtras().getSerializable("uuid");
+            if (getIntent().getExtras().getSerializable("folderUuid") != null)
+                folderUuid = (UUID) getIntent().getExtras().getSerializable("folderUuid");
         }
 
         puzzleFactoryManager = new PuzzleFactoryManager(this);

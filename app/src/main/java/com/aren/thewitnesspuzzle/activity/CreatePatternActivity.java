@@ -189,6 +189,8 @@ public class CreatePatternActivity extends PuzzleEditorActivity {
                             config.setInt("width", getWidth());
                         }
                         config.setIntList("pattern", pattern);
+
+                        config.setParentFolderUuid(folderUuid);
                         config.save();
 
                         // Clear thumbnail cache

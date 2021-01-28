@@ -64,11 +64,12 @@ public class CustomFixedPuzzleFactory extends PuzzleFactory {
         getConfig().save();
     }
 
-    public void setEdited(String name, PuzzleBase puzzleBase) throws JSONException {
+    public void setEdited(String name, PuzzleBase puzzleBase, UUID folderUuid) throws JSONException {
         getConfig().setFactoryType("fixed");
         getConfig().setString("name", name);
         getConfig().setString("source", "ME");
         getConfig().setString("content", puzzleBase.serialize().toString());
+        getConfig().setParentFolderUuid(folderUuid);
         getConfig().save();
     }
 }

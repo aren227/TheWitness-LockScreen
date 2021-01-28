@@ -14,9 +14,12 @@ import com.aren.thewitnesspuzzle.activity.CreateCustomPuzzleActivity;
 import com.aren.thewitnesspuzzle.activity.CreatePatternActivity;
 import com.aren.thewitnesspuzzle.activity.CreateRandomPuzzleActivity;
 
+import java.util.UUID;
+
 import androidx.annotation.NonNull;
 
 public class NewPuzzleDialog extends Dialog {
+    private UUID folderUuid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,24 +48,29 @@ public class NewPuzzleDialog extends Dialog {
         createText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = null;
                 if (patternRadioButton.isChecked()) {
                     dismiss();
-                    Intent intent = new Intent(getContext(), CreatePatternActivity.class);
-                    getContext().startActivity(intent);
+                    intent = new Intent(getContext(), CreatePatternActivity.class);
                 } else if (randomRadioButton.isChecked()) {
                     dismiss();
-                    Intent intent = new Intent(getContext(), CreateRandomPuzzleActivity.class);
-                    getContext().startActivity(intent);
+                    intent = new Intent(getContext(), CreateRandomPuzzleActivity.class);
                 } else if (customRadioButton.isChecked()) {
                     dismiss();
-                    Intent intent = new Intent(getContext(), CreateCustomPuzzleActivity.class);
+                    intent = new Intent(getContext(), CreateCustomPuzzleActivity.class);
+                }
+
+                if (intent != null) {
+                    intent.putExtra("folderUuid", folderUuid);
                     getContext().startActivity(intent);
                 }
             }
         });
     }
 
-    public NewPuzzleDialog(@NonNull Context context) {
+    public NewPuzzleDialog(@NonNull Context context, UUID folderUuid) {
         super(context);
+
+        this.folderUuid = folderUuid;
     }
 }

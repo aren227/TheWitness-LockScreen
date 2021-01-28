@@ -834,6 +834,8 @@ public class CreateRandomPuzzleActivity extends PuzzleEditorActivity {
                             config.setString("elimination_fakerule", getEliminationFakeRule());
                         }
 
+                        config.setParentFolderUuid(folderUuid);
+
                         config.save();
 
                         // Clear thumbnail cache

@@ -90,7 +90,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             viewHolder.addPuzzleImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    NewPuzzleDialog dialog = new NewPuzzleDialog(context);
+                    NewPuzzleDialog dialog = new NewPuzzleDialog(context, currentFolder[0]);
                     dialog.show();
                 }
             });

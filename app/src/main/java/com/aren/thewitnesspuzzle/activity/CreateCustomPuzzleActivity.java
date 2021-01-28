@@ -352,7 +352,7 @@ public class CreateCustomPuzzleActivity extends PuzzleEditorActivity implements 
                                     factory = new CustomFixedPuzzleFactory(CreateCustomPuzzleActivity.this, UUID.randomUUID());
 
                                 try {
-                                    factory.setEdited(nameEditText.getText().toString(), puzzleRenderer.getPuzzleBase());
+                                    factory.setEdited(nameEditText.getText().toString(), puzzleRenderer.getPuzzleBase(), folderUuid);
                                     factory.clearThumbnailCache();
                                     finish();
                                 } catch (JSONException e) {
