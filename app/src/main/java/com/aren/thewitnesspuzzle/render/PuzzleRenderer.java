@@ -479,6 +479,7 @@ public class PuzzleRenderer {
                 if (shadowPanel && !puzzleBase.getBoundingBox().test(pos) && (cursor.getCurrentCursorEdge() == null || cursor.getCurrentCursorEdge().getProportionPoint().distance(pos) > padding * 2)) {
                     cursor = null;
                 }
+                resetAnimation();
             }
         } else if (action == MotionEvent.ACTION_MOVE) {
             if (cursor == null) return;

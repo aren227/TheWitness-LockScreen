@@ -60,14 +60,14 @@ public class PuzzleAnimationManager {
         else animations.add(animation);
     }
 
-    public boolean isPlaying(Class cls) {
+    public boolean isPlaying(Class<?> cls) {
         for (Animation animation : animations) {
             if (animation.getClass().equals(cls)) return true;
         }
         return false;
     }
 
-    public List<Animation> getAnimations(Class cls) {
+    public List<Animation> getAnimations(Class<?> cls) {
         List<Animation> result = new ArrayList<>();
         for (Animation animation : animations) {
             if (animation.getClass().equals(cls)) result.add(animation);
@@ -81,7 +81,7 @@ public class PuzzleAnimationManager {
         else animations.remove(animation);
     }
 
-    public void stopAnimation(Class cls) {
+    public void stopAnimation(Class<?> cls) {
         List<Animation> list = getAnimations(cls);
         for (Animation animation : animations) animation.remove();
         if (lock) tempRemoveQueue.addAll(list);
