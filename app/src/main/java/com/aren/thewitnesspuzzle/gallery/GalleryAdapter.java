@@ -94,6 +94,13 @@ public class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     dialog.show();
                 }
             });
+
+            if (currentFolder[0] == PuzzleFactoryManager.rootFolderUuid || (puzzleFactoryManager.getFolder(currentFolder[0]) != null && puzzleFactoryManager.getFolder(currentFolder[0]).getDepth() < 2)){
+                viewHolder.addFolderImageView.setVisibility(View.VISIBLE);
+            } else {
+                viewHolder.addFolderImageView.setVisibility(View.GONE);
+            }
+
             viewHolder.addFolderImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

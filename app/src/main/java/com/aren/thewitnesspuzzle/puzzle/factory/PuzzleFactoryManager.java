@@ -761,5 +761,24 @@ public class PuzzleFactoryManager implements Observable {
         public UUID getUuid() {
             return uuid;
         }
+
+        // Root depth == 0
+        public int getDepth() {
+            // This is useless because root folder cannot be instantiated.
+            if (uuid == rootFolderUuid)
+                return 0;
+
+            int depth = 1;
+            UUID uuid = getParentFolderUuid();
+            while (uuid != rootFolderUuid) {
+                Folder folder = getFolder(uuid);
+                if (folder == null)
+                    break;
+
+                uuid = folder.getParentFolderUuid();
+                depth++;
+            }
+            return depth;
+        }
     }
 }
