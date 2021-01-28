@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aren.thewitnesspuzzle.R;
+import com.aren.thewitnesspuzzle.dialog.FolderDialog;
 import com.aren.thewitnesspuzzle.dialog.NewFolderDialog;
 import com.aren.thewitnesspuzzle.dialog.NewPuzzleDialog;
 import com.aren.thewitnesspuzzle.dialog.PuzzleFactoryDialog;
@@ -174,6 +175,19 @@ public class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 @Override
                 public void onClick(View v) {
                     onPreviewClick.onClick(preview);
+                }
+            });
+
+            viewHolder.root.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    UUID folderUuid = preview.folderUuid;
+                    PuzzleFactoryManager.Folder folder = puzzleFactoryManager.getFolder(folderUuid);
+                    if (folder != null) {
+                        FolderDialog dialog = new FolderDialog(context, puzzleFactoryManager, folder);
+                        dialog.show();
+                    }
+                    return true;
                 }
             });
 

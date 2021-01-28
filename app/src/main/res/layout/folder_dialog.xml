@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="12dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Folder Name:"
+        android:textColor="@color/colorPrimary"
+        android:fontFamily="serif"
+        android:textSize="18dp" />
+
+    <EditText
+        android:id="@+id/folder_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:textStyle="italic"
+        android:inputType="text"
+        android:maxLines="1"
+        android:textColor="@color/colorPrimary"
+        android:theme="@style/EditThemeDark" />
+
+    <TextView
+        android:id="@+id/error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:textSize="16dp"
+        android:textColor="@color/colorError"
+        android:text="Ohh... An error occurred." />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp">
+
+        <TextView
+            android:id="@+id/folder_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="30dp"
+            android:gravity="center"
+            android:text="Cancel"
+            android:textColor="@color/colorPrimary"
+            android:fontFamily="serif"
+            android:textSize="24dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/folder_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="30dp"
+            android:gravity="center"
+            android:text="Delete"
+            android:textColor="@color/colorPrimary"
+            android:fontFamily="serif"
+            android:textSize="24dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/folder_apply"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Apply"
+            android:textColor="@color/colorPrimary"
+            android:fontFamily="serif"
+            android:textSize="24dp"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+</LinearLayout>
