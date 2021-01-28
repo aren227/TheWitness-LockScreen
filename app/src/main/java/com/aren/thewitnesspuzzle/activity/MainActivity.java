@@ -20,6 +20,7 @@ import com.aren.thewitnesspuzzle.BuildConfig;
 import com.aren.thewitnesspuzzle.R;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;
 import com.aren.thewitnesspuzzle.service.LockscreenService;
+import com.aren.thewitnesspuzzle.util.VersionComparator;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -185,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
 
                     final String newVersion = js.getString("tag_name");
 
-                    if (!BuildConfig.VERSION_NAME.equals(newVersion)) {
+                    if (VersionComparator.compare(newVersion, BuildConfig.VERSION_NAME) > 0) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -213,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
                     }
-                } catch (IOException | JSONException e) {
+                } catch (IOException | JSONException | IllegalArgumentException e) {
                     e.printStackTrace();
                 }
             }
