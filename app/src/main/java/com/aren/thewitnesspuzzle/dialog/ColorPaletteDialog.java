@@ -149,6 +149,7 @@ public class ColorPaletteDialog extends Dialog {
                     lineColorRef[0] = palette.getCursorColor();
                     successColorRef[0] = palette.getCursorSucceededColor();
                     failureColorRef[0] = palette.getCursorFailedColor();
+                    bloomIntensitySeekBar.setProgress((int)(palette.getBloomIntensity() * 100));
                     updateColors();
                 }
             });
