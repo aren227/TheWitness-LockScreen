@@ -652,9 +652,14 @@ public class CreateCustomPuzzleActivity extends PuzzleEditorActivity implements 
         } else if (currentToolType == ToolType.START) {
             if (gridPuzzle.isEndingPoint(gx, gy))
                 removeEndingPointWithCursor(graphElement);
-            graphElement.removeRule();
 
-            gridPuzzle.addStartingPoint(gx, gy);
+            if (graphElement.getRule() instanceof StartingPointRule) {
+                gridPuzzle.removeStartingPoint(gx, gy);
+            } else {
+                graphElement.removeRule();
+
+                gridPuzzle.addStartingPoint(gx, gy);
+            }
         } else if (currentToolType == ToolType.END) {
             if (gx == 0 || gy == 0 || gx == gridPuzzle.getWidth() || gy == gridPuzzle.getHeight()) {
                 if (graphElement.getRule() instanceof StartingPointRule)
@@ -666,17 +671,34 @@ public class CreateCustomPuzzleActivity extends PuzzleEditorActivity implements 
         } else if (currentToolType == ToolType.BROKEN_LINE) {
             if (puzzleRenderer.getCursor() != null && puzzleRenderer.getCursor().partiallyContainsEdge((Edge) graphElement))
                 puzzleRenderer.setCursor(null);
-            graphElement.setRule(new BrokenLineRule());
+
+            if (graphElement.getRule() instanceof BrokenLineRule)
+                graphElement.removeRule();
+            else
+                graphElement.setRule(new BrokenLineRule());
         } else if (currentToolType == ToolType.REMOVE_LINE) {
             if (puzzleRenderer.getCursor() != null && puzzleRenderer.getCursor().partiallyContainsEdge((Edge) graphElement))
                 puzzleRenderer.setCursor(null);
-            graphElement.setRule(new RemoveEdgeRule());
+
+            if (graphElement.getRule() instanceof RemoveEdgeRule)
+                graphElement.removeRule();
+            else
+                graphElement.setRule(new RemoveEdgeRule());
         } else if (currentToolType == ToolType.HEXAGON) {
-            graphElement.setRule(hexagonRule.clone());
+            if (graphElement.getRule() instanceof HexagonRule && ((HexagonRule) graphElement.getRule()).getSymmetricColor() == hexagonRule.getSymmetricColor())
+                graphElement.removeRule();
+            else
+                graphElement.setRule(hexagonRule.clone());
         } else if (currentToolType == ToolType.SQUARE) {
-            graphElement.setRule(squareRule.clone());
+            if (graphElement.getRule() instanceof SquareRule && ((SquareRule) graphElement.getRule()).color == squareRule.color)
+                graphElement.removeRule();
+            else
+                graphElement.setRule(squareRule.clone());
         } else if (currentToolType == ToolType.SUN) {
-            graphElement.setRule(sunRule.clone());
+            if (graphElement.getRule() instanceof SunRule && ((SunRule) graphElement.getRule()).color == sunRule.color)
+                graphElement.removeRule();
+            else
+                graphElement.setRule(sunRule.clone());
         } else if (currentToolType == ToolType.BLOCKS) {
             boolean hasBlock = false;
             for (int i = 0; i < 5; i++) {
@@ -690,12 +712,26 @@ public class CreateCustomPuzzleActivity extends PuzzleEditorActivity implements 
                     break;
             }
 
-            if (hasBlock)
-                graphElement.setRule(blocksRule.clone());
+            if (hasBlock) {
+                if (graphElement.getRule() instanceof BlocksRule
+                        && BlocksRule.equalBlocks(((BlocksRule) graphElement.getRule()).blocks, blocksRule.blocks)
+                        && ((BlocksRule) graphElement.getRule()).rotatable == blocksRule.rotatable
+                        && ((BlocksRule) graphElement.getRule()).subtractive == blocksRule.subtractive
+                        && ((BlocksRule) graphElement.getRule()).color == blocksRule.color)
+                    graphElement.removeRule();
+                else
+                    graphElement.setRule(blocksRule.clone());
+            }
         } else if (currentToolType == ToolType.ELIMINATION) {
-            graphElement.setRule(eliminationRule.clone());
+            if (graphElement.getRule() instanceof EliminationRule && ((EliminationRule) graphElement.getRule()).color == eliminationRule.color)
+                graphElement.removeRule();
+            else
+                graphElement.setRule(eliminationRule.clone());
         } else if (currentToolType == ToolType.TRIANGLES) {
-            graphElement.setRule(trianglesRule.clone());
+            if (graphElement.getRule() instanceof TrianglesRule && ((TrianglesRule) graphElement.getRule()).count == trianglesRule.count)
+                graphElement.removeRule();
+            else
+                graphElement.setRule(trianglesRule.clone());
         }
 
         game.getPuzzle().shouldUpdateStaticShapes();
