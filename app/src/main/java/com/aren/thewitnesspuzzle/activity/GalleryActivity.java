@@ -612,7 +612,7 @@ public class GalleryActivity extends AppCompatActivity implements Observer {
 
         for (PuzzleFactory factory : puzzleFactoryManager.getAllPuzzleFactories()) {
             UUID uuid = factory.getConfig().getParentFolderUuid();
-            while (uuid != PuzzleFactoryManager.rootFolderUuid && !folderPreviewMap.containsKey(uuid)) {
+            while (!uuid.equals(PuzzleFactoryManager.rootFolderUuid) && !folderPreviewMap.containsKey(uuid)) {
                 PuzzleFactoryManager.Folder folder = puzzleFactoryManager.getFolder(uuid);
                 if (folder == null)
                     uuid = PuzzleFactoryManager.rootFolderUuid;

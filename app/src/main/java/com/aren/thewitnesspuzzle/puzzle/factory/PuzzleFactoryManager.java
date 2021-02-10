@@ -3,6 +3,8 @@ package com.aren.thewitnesspuzzle.puzzle.factory;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.aren.thewitnesspuzzle.gallery.GalleryFolderPreview;
+import com.aren.thewitnesspuzzle.gallery.GalleryPuzzlePreview;
 import com.aren.thewitnesspuzzle.util.Observable;
 import com.aren.thewitnesspuzzle.util.Observer;
 
@@ -393,6 +395,41 @@ public class PuzzleFactoryManager implements Observable {
                 childPuzzleFactories.add(puzzleFactory);
         }
         return childPuzzleFactories;
+    }
+
+    public List<PuzzleFactory> getChildPuzzleFactoriesRecursive(UUID folderUuid) {
+        List<PuzzleFactory> result = new ArrayList<>();
+
+        for (PuzzleFactory factory : getAllPuzzleFactories()) {
+            UUID uuid = factory.getConfig().getParentFolderUuid();
+            while (!uuid.equals(PuzzleFactoryManager.rootFolderUuid) && !uuid.equals(folderUuid)) {
+                PuzzleFactoryManager.Folder folder = getFolder(uuid);
+                if (folder == null)
+                    uuid = PuzzleFactoryManager.rootFolderUuid;
+                else
+                    uuid = folder.getParentFolderUuid();
+            }
+
+            if (uuid.equals(folderUuid)) {
+                result.add(factory);
+            }
+        }
+
+        return result;
+    }
+
+    public boolean isFolderActivated(Profile profile, UUID folderUuid) {
+        for (PuzzleFactory puzzleFactory : getChildPuzzleFactoriesRecursive(folderUuid)) {
+            if (!profile.isActivated(puzzleFactory))
+                return false;
+        }
+        return true;
+    }
+
+    public void setFolderActive(Profile profile, UUID folderUuid, boolean active) {
+        for (PuzzleFactory puzzleFactory : getChildPuzzleFactoriesRecursive(folderUuid)) {
+            profile.setActivated(puzzleFactory, active);
+        }
     }
 
     public void removeFolder(Folder folder) {

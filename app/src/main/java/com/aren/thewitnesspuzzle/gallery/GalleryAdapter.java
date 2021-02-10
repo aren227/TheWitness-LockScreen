@@ -95,7 +95,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }
             });
 
-            if (currentFolder[0] == PuzzleFactoryManager.rootFolderUuid || (puzzleFactoryManager.getFolder(currentFolder[0]) != null && puzzleFactoryManager.getFolder(currentFolder[0]).getDepth() < 2)){
+            if (currentFolder[0].equals(PuzzleFactoryManager.rootFolderUuid) || (puzzleFactoryManager.getFolder(currentFolder[0]) != null && puzzleFactoryManager.getFolder(currentFolder[0]).getDepth() < 2)){
                 viewHolder.addFolderImageView.setVisibility(View.VISIBLE);
             } else {
                 viewHolder.addFolderImageView.setVisibility(View.GONE);
@@ -152,7 +152,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             final GalleryFolderPreview preview = (GalleryFolderPreview) previews.get(position);
             FolderViewHolder viewHolder = (FolderViewHolder) holder;
 
-            PuzzleFactoryManager.Profile lastProfile = puzzleFactoryManager.getLastViewedProfile();
+            final PuzzleFactoryManager.Profile lastProfile = puzzleFactoryManager.getLastViewedProfile();
 
             for (int i = 0; i < 4; i++) {
                 ImageView imageView = viewHolder.imageViewList.get(i);
@@ -183,6 +183,17 @@ public class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 @Override
                 public void onClick(View v) {
                     onPreviewClick.onClick(preview);
+                }
+            });
+
+            viewHolder.folderSelectImageView.setImageResource(puzzleFactoryManager.isFolderActivated(lastProfile, preview.folderUuid)
+                    ? R.drawable.circle_used : R.drawable.circle_unused);
+
+            viewHolder.folderSelectImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    puzzleFactoryManager.setFolderActive(lastProfile, preview.folderUuid, !puzzleFactoryManager.isFolderActivated(lastProfile, preview.folderUuid));
+                    notifyDataSetChanged();
                 }
             });
 
@@ -237,6 +248,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         List<ImageView> imageViewList = new ArrayList<>();
         List<View> outlineViewList = new ArrayList<>();
         TextView textView;
+        ImageView folderSelectImageView;
 
         public FolderViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -254,6 +266,8 @@ public class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             outlineViewList.add(itemView.findViewById(R.id.puzzle_selected_4));
 
             textView = itemView.findViewById(R.id.folder_name);
+
+            folderSelectImageView = itemView.findViewById(R.id.folder_select_button);
         }
     }
 

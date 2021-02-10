@@ -11,6 +11,7 @@
         android:layout_height="wrap_content">
 
         <ImageView
+            android:id="@+id/outline"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:src="@drawable/rounded_square_dashed"
@@ -141,6 +142,15 @@
             </RelativeLayout>
 
         </LinearLayout>
+
+        <ImageView
+            android:id="@+id/folder_select_button"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_margin="4dp"
+            android:src="@drawable/circle_unused"
+            android:layout_alignBottom="@id/outline"
+            android:layout_alignRight="@id/outline" />
 
     </RelativeLayout>
 
