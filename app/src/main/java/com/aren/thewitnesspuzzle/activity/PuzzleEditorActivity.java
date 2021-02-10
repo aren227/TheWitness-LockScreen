@@ -242,13 +242,13 @@ public class PuzzleEditorActivity extends AppCompatActivity {
     protected int getWidth() {
         if (widthEditText.getText().length() == 0) return 4;
         int w = Integer.parseInt(widthEditText.getText().toString());
-        return Math.min(Math.max(w, 1), 7);
+        return Math.min(Math.max(w, 1), 10);
     }
 
     protected int getHeight() {
         if (heightEditText.getText().length() == 0) return 4;
         int h = Integer.parseInt(heightEditText.getText().toString());
-        return Math.min(Math.max(h, 1), 7);
+        return Math.min(Math.max(h, 1), 10);
     }
 
     protected Difficulty getDifficulty() {
