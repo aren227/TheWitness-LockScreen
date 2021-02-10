@@ -143,7 +143,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             viewHolder.root.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    PuzzleFactoryDialog dialog = new PuzzleFactoryDialog(context, preview.puzzleFactory);
+                    PuzzleFactoryDialog dialog = new PuzzleFactoryDialog(context, preview.puzzleFactory, currentFolder[0]);
                     dialog.show();
                     return true;
                 }

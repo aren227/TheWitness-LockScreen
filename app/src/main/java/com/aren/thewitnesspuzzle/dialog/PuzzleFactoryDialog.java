@@ -21,12 +21,15 @@ import com.aren.thewitnesspuzzle.activity.PlayActivity;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactory;
 import com.aren.thewitnesspuzzle.puzzle.factory.PuzzleFactoryManager;
 
+import java.util.UUID;
+
 import androidx.annotation.NonNull;
 
 public class PuzzleFactoryDialog extends Dialog {
 
     PuzzleFactory factory;
     GalleryActivity galleryActivity;
+    UUID folderUuid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,17 +64,19 @@ public class PuzzleFactoryDialog extends Dialog {
                 @Override
                 public void onClick(View v) {
                     dismiss();
+
+                    Intent intent = null;
                     if (factory.getConfig().getFactoryType().equals("pattern")) {
-                        Intent intent = new Intent(getContext(), CreatePatternActivity.class);
-                        intent.putExtra("uuid", factory.getUuid());
-                        getContext().startActivity(intent);
+                        intent = new Intent(getContext(), CreatePatternActivity.class);
                     } else if (factory.getConfig().getFactoryType().equals("random")) {
-                        Intent intent = new Intent(getContext(), CreateRandomPuzzleActivity.class);
+                        intent = new Intent(getContext(), CreateRandomPuzzleActivity.class);
+                    } else if (factory.getConfig().getFactoryType().equals("fixed")) {
+                        intent = new Intent(getContext(), CreateCustomPuzzleActivity.class);
+                    }
+
+                    if (intent != null) {
                         intent.putExtra("uuid", factory.getUuid());
-                        getContext().startActivity(intent);
-                    } else {
-                        Intent intent = new Intent(getContext(), CreateCustomPuzzleActivity.class);
-                        intent.putExtra("uuid", factory.getUuid());
+                        intent.putExtra("folderUuid", folderUuid);
                         getContext().startActivity(intent);
                     }
                 }
@@ -125,9 +130,10 @@ public class PuzzleFactoryDialog extends Dialog {
         });
     }
 
-    public PuzzleFactoryDialog(@NonNull Context context, PuzzleFactory factory) {
+    public PuzzleFactoryDialog(@NonNull Context context, PuzzleFactory factory, UUID folderUuid) {
         super(context);
         this.factory = factory;
+        this.folderUuid = folderUuid;
 
         if (context instanceof GalleryActivity) {
             galleryActivity = (GalleryActivity) context;
