@@ -230,7 +230,7 @@ public class PuzzleRenderer {
 
                 staticShapes.add(new RectangleShape(vertex.getPosition().toVector3(), puzzleBase.getPathWidth(), puzzleBase.getPathWidth(), edge.getAngle(), puzzleBase.getColorPalette().getPathColor()));
                 if (shadowPanel) {
-                    shadow.add(new RectangleShape(new Vector3(vertex.x, vertex.y - puzzleBase.getBoundingBox().getHeight(), 0), puzzleBase.getPathWidth(), puzzleBase.getPathWidth(), edge.getAngle(), puzzleBase.getColorPalette().getPathColor()));
+                    shadow.add(new RectangleShape(new Vector3(vertex.x, vertex.y - puzzleBase.getBoundingBox().getHeight(), 0), puzzleBase.getPathWidth(), puzzleBase.getPathWidth(), edge.getAngle(), shadowPathColor));
                 }
             }
         }
@@ -270,7 +270,8 @@ public class PuzzleRenderer {
                 }
 
                 if (shadowPanel && vertex.getRule() instanceof StartingPointRule) {
-                    Shape shape = ruleShape.get(vertex.getRule());
+                    // Prevent modifying previously generated shape drawing on the main panel.
+                    Shape shape = ruleShape.get(vertex.getRule(), true);
                     shape.center = shape.center.add(new Vector3(0, -puzzleBase.getBoundingBox().getHeight(), 0));
                     shape.color.set(shadowPathColor);
                     shadow.add(shape);
